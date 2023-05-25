@@ -6,7 +6,6 @@ import { UserAuth } from '~/context/AuthContext'
 
 const Login = () => {
   const { login } = UserAuth()
-
   return (
     <OuterContainer>
       <LoginImg>

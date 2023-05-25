@@ -21,12 +21,10 @@ const AuthContext = ({ children }: Props) => {
     try {
       const result: UserCredential = await signInWithPopup(auth, provider)
       const credential = GoogleAuthProvider.credentialFromResult(result)
-      console.log(credential)
       if (credential === null) {
         throw new Error('credential is null')
       }
       const token = credential.idToken
-      console.log(token)
       localStorage.setItem('userAccessToken', JSON.stringify(token))
       navigate('/welcome')
     } catch (error) {
@@ -37,7 +35,8 @@ const AuthContext = ({ children }: Props) => {
   const logout = () => {
     localStorage.removeItem('userAccessToken')
     try {
-      return signOut(auth)
+      signOut(auth)
+      navigate('/')
     } catch (error) {
       console.log(error)
     }
@@ -45,14 +44,10 @@ const AuthContext = ({ children }: Props) => {
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((user) => {
-      if (user) {
-        setUser(user)
-      } else {
-        setUser(null)
-      }
+      setUser(user)
     })
     return () => unsubscribe()
-  }, [user])
+  }, [])
 
   return <UserContext.Provider value={{ login, logout, user }}>{children}</UserContext.Provider>
 }

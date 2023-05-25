@@ -3,9 +3,18 @@ import { LoginContainer, LoginImg, OuterContainer } from './Login.styled'
 import GoogleButton from 'react-google-button'
 import { theme } from '~/global/theme'
 import { UserAuth } from '~/context/AuthContext'
+import { useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 
 const Login = () => {
   const { login } = UserAuth()
+  const navigate = useNavigate()
+  useEffect(() => {
+    const userAccessToken = localStorage.getItem('userAccessToken')
+    if (userAccessToken) {
+      navigate('/system/welcome')
+    }
+  }, [navigate])
   return (
     <OuterContainer>
       <LoginImg>

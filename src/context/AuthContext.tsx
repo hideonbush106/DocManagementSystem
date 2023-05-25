@@ -26,7 +26,7 @@ const AuthContext = ({ children }: Props) => {
       }
       const token = credential.idToken
       localStorage.setItem('userAccessToken', JSON.stringify(token))
-      navigate('/welcome')
+      navigate('system/welcome') // ! TODO: change this to the correct route
     } catch (error) {
       console.log(error)
     }
@@ -43,10 +43,14 @@ const AuthContext = ({ children }: Props) => {
   }
 
   useEffect(() => {
+    const date = Date.now()
     const unsubscribe = auth.onAuthStateChanged((user) => {
       setUser(user)
+      user?.getIdTokenResult().then((result) => console.log(Date.parse(result.expirationTime) - date))
+      // user?.getIdTokenResult(true)
+
+      return () => unsubscribe()
     })
-    return () => unsubscribe()
   }, [])
 
   return <UserContext.Provider value={{ login, logout, user }}>{children}</UserContext.Provider>

@@ -1,22 +1,15 @@
-import React, { useState } from 'react'
 import { Typography } from '@mui/material'
 import { LoginContainer, LoginImg, OuterContainer } from './Login.styled'
 import GoogleButton from 'react-google-button'
 import { theme } from '~/global/theme'
-import { auth, provider } from '~/global/firebase'
-import { signInWithPopup } from 'firebase/auth'
+import { UserAuth } from '~/context/AuthContext'
+
 const Login = () => {
-  const [user, setUser] = useState(null)
+  const { login } = UserAuth()
   const handleLogin = () => {
-    signInWithPopup(auth, provider)
-      .then((result) => {
-        console.log(result.user)
-        // User signed in successfully
-      })
-      .catch((error) => {
-        console.log(error)
-      })
+    login()
   }
+
   return (
     <OuterContainer>
       <LoginImg>

@@ -1,11 +1,14 @@
 import { ThemeProvider } from '@mui/material'
 import { theme } from './global/theme'
 import Login from './routers/auth/Login'
+import AuthContext from './context/AuthContext'
 
 const App = () => {
   return (
     <ThemeProvider theme={theme}>
-      <Login />
+      <AuthContext>
+        <Login />
+      </AuthContext>
     </ThemeProvider>
   )
 }

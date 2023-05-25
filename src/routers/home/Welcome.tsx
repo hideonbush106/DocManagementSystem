@@ -7,7 +7,6 @@ const Welcome = () => {
       <Card sx={{ padding: '2rem', width: 'fit-content' }}>
         <h1>Welcome {user?.displayName}</h1>
         <img src={user?.photoURL} alt='' srcSet='' />
-        
       </Card>
       <Button onClick={logout} variant='outlined'>
         Logout

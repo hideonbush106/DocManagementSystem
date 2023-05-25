@@ -7,7 +7,7 @@ const UserContext = React.createContext({
   login: () => {},
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   logout: () => {},
-  user: undefined as undefined | User
+  user: null as null | User
 })
 
 interface Props {

@@ -6,14 +6,11 @@ import { UserAuth } from '~/context/AuthContext'
 
 const Login = () => {
   const { login } = UserAuth()
-  const handleLogin = () => {
-    login()
-  }
 
   return (
     <OuterContainer>
       <LoginImg>
-        <img src='src/assets/login.svg' alt='' srcSet='' />
+        <img src='/assets/login.svg' alt='' srcSet='' />
       </LoginImg>
       <LoginContainer>
         <div>
@@ -28,7 +25,7 @@ const Login = () => {
             Document Management System
           </Typography>
         </div>
-        <GoogleButton onClick={handleLogin} />
+        <GoogleButton onClick={login} />
       </LoginContainer>
     </OuterContainer>
   )

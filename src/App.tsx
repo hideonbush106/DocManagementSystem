@@ -2,12 +2,25 @@ import { ThemeProvider } from '@mui/material'
 import { theme } from './global/theme'
 import Login from './routers/auth/Login'
 import AuthContext from './context/AuthContext'
+import Welcome from './routers/home/Welcome'
+import { Route, Routes } from 'react-router-dom'
+import ProtectedRoute from './components/ProtectedRoute'
 
 const App = () => {
   return (
     <ThemeProvider theme={theme}>
       <AuthContext>
-        <Login />
+        <Routes>
+          <Route path='/' element={<Login />} />
+          <Route
+            path='/welcome'
+            element={
+              <ProtectedRoute>
+                <Welcome />
+              </ProtectedRoute>
+            }
+          />
+        </Routes>
       </AuthContext>
     </ThemeProvider>
   )

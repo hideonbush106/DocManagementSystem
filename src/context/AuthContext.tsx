@@ -1,8 +1,7 @@
 import { GoogleAuthProvider, signInWithPopup, signOut, User, UserCredential } from 'firebase/auth'
 import React, { ReactNode, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
 import { auth, provider } from '~/global/firebase'
-import { notifyError, notifySuccess } from '~/global/toastify'
+import { notifyError } from '~/global/toastify'
 const UserContext = React.createContext({
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   login: () => {},
@@ -16,45 +15,50 @@ interface Props {
 }
 
 const AuthContext = ({ children }: Props) => {
-  const navigate = useNavigate()
   const [user, setUser] = React.useState<null | User>(null)
+  const [token, setToken] = React.useState<string | null>(null)
   const login = async () => {
     try {
       const result: UserCredential = await signInWithPopup(auth, provider)
-      const credential = GoogleAuthProvider.credentialFromResult(result)
-      if (credential === null) {
-        throw new Error('credential is null')
-      }
-      const token = credential.idToken
+      // const credential = GoogleAuthProvider.credentialFromResult(result)
+      // if (credential === null) {
+      //   throw new Error('credential is null')
+      // }
+      result.user?.getIdToken().then((token) => setToken(token))
       localStorage.setItem('userAccessToken', JSON.stringify(token))
-      navigate('system/welcome') // ! TODO: change this to the correct route
-      notifySuccess('Login success')
+      window.location.href = '/welcome'
     } catch (error) {
       notifyError('Login failed')
       console.log(error)
     }
   }
 
-  const logout = () => {
+  const logout = async () => {
     localStorage.removeItem('userAccessToken')
     try {
-      signOut(auth)
-      navigate('/')
+      await signOut(auth)
+      window.location.href = '/'
     } catch (error) {
       console.log(error)
     }
   }
 
   useEffect(() => {
-    const date = Date.now()
+    // const date = Date.now() / 1000
     const unsubscribe = auth.onAuthStateChanged((user) => {
+      console.log(
+        'user',
+        user?.getIdToken().then((token) => console.log(token))
+      )
       setUser(user)
-      user?.getIdTokenResult().then((result) => console.log(Date.parse(result.expirationTime) - date))
-      // user?.getIdTokenResult(true)
-
+      // user?.getIdTokenResult().then((result) => {
+      //   if (!(Date.parse(result.expirationTime) < date)) {
+      //     user?.getIdTokenResult(true)
+      //   }
+      // })
       return () => unsubscribe()
     })
-  }, [])
+  }, [user])
 
   return <UserContext.Provider value={{ login, logout, user }}>{children}</UserContext.Provider>
 }

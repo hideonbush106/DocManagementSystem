@@ -2,9 +2,9 @@ import React, { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 interface Props {
-  children: React.ReactNode
+  children: React.ReactNode | JSX.Element
 }
-const ProtectedRoute = ({ children }: Props) => {
+const ProtectedRoute = (children: Props) => {
   const navigate = useNavigate()
   useEffect(() => {
     const userAccessToken = localStorage.getItem('userAccessToken')

@@ -1,9 +1,43 @@
-import { RouterProvider, createBrowserRouter } from 'react-router-dom'
-import { routes } from '~/global/routes'
-
+import { publicRoutes, privateRoutes } from '~/routers/routes'
+import { ThemeProvider } from 'styled-components'
+import AuthContext, { UserAuth } from '~/context/AuthContext'
+import { theme } from '~/global/theme'
+import { Routes, Route, BrowserRouter, Navigate } from 'react-router-dom'
+import { useEffect, useState } from 'react'
 const App = () => {
-  const router = createBrowserRouter(routes)
-  return <RouterProvider router={router} />
+  const [isLoggedIn, setIsLoggedIn] = useState(false)
+  const userAcccessToken = localStorage.getItem('userAccessToken')
+  const { user } = UserAuth()
+  // const date = Date.now()
+  // console.log(date)
+  useEffect(() => {
+    if (userAcccessToken) {
+      setIsLoggedIn(true)
+    } else {
+      setIsLoggedIn(false)
+    }
+  }, [isLoggedIn, userAcccessToken, user])
+
+  return (
+    <ThemeProvider theme={theme}>
+      <AuthContext>
+        <BrowserRouter>
+          <Routes>
+            {!isLoggedIn ? (
+              publicRoutes.map((route, index) => <Route key={index} path={route.path} Component={route.component} />)
+            ) : (
+              <Route path='*' element={<Navigate to='/welcome' />} />
+            )}
+            {isLoggedIn ? (
+              privateRoutes.map((route, index) => <Route key={index} path={route.path} Component={route.component} />)
+            ) : (
+              <Route path='*' element={<Navigate to='/' />} />
+            )}
+          </Routes>
+        </BrowserRouter>
+      </AuthContext>
+    </ThemeProvider>
+  )
 }
 
 export default App

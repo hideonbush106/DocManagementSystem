@@ -1,4 +1,4 @@
-import { GoogleAuthProvider, signInWithPopup, signOut, User, UserCredential } from 'firebase/auth'
+import { signInWithPopup, signOut, User, UserCredential } from 'firebase/auth'
 import React, { ReactNode, useEffect } from 'react'
 import { auth, provider } from '~/global/firebase'
 import { notifyError } from '~/global/toastify'
@@ -16,7 +16,6 @@ interface Props {
 
 const AuthContext = ({ children }: Props) => {
   const [user, setUser] = React.useState<null | User>(null)
-  const [token, setToken] = React.useState<string | null>(null)
   const login = async () => {
     try {
       const result: UserCredential = await signInWithPopup(auth, provider)
@@ -24,8 +23,7 @@ const AuthContext = ({ children }: Props) => {
       // if (credential === null) {
       //   throw new Error('credential is null')
       // }
-      result.user?.getIdToken().then((token) => setToken(token))
-      localStorage.setItem('userAccessToken', JSON.stringify(token))
+      result.user?.getIdToken().then((token) => localStorage.setItem('userAccessToken', JSON.stringify(token)))
       window.location.href = '/welcome'
     } catch (error) {
       notifyError('Login failed')

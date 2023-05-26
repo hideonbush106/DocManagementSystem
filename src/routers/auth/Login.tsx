@@ -1,5 +1,5 @@
 import { Typography } from '@mui/material'
-import { LoginContainer, LoginImg, OuterContainer } from './Login.styled'
+import { Footer, FooterText, LoginContainer, LoginImg, OuterContainer } from './Login.styled'
 import GoogleButton from 'react-google-button'
 import { theme } from '~/global/theme'
 import { UserAuth } from '~/context/AuthContext'
@@ -29,12 +29,19 @@ const Login = () => {
           >
             DMS
           </Typography>
-          <Typography sx={{ width: '100%', color: '#8B8C8D', marginBottom: '2.5rem' }} variant='h3' align='center'>
+          <Typography
+            sx={{ width: '100%', fontWeight: 500, color: '#8B8C8D', marginBottom: '4rem' }}
+            variant='h4'
+            align='center'
+          >
             Document Management System
           </Typography>
         </div>
         <GoogleButton onClick={login} />
       </LoginContainer>
+      <Footer>
+        <FooterText>&copy; 2023 | All Rights Reserved</FooterText>
+      </Footer>
     </OuterContainer>
   )
 }

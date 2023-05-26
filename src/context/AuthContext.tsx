@@ -2,6 +2,7 @@ import { GoogleAuthProvider, signInWithPopup, signOut, User, UserCredential } fr
 import React, { ReactNode, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { auth, provider } from '~/global/firebase'
+import { notifyError, notifySuccess } from '~/global/toastify'
 const UserContext = React.createContext({
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   login: () => {},
@@ -27,7 +28,9 @@ const AuthContext = ({ children }: Props) => {
       const token = credential.idToken
       localStorage.setItem('userAccessToken', JSON.stringify(token))
       navigate('system/welcome') // ! TODO: change this to the correct route
+      notifySuccess('Login success')
     } catch (error) {
+      notifyError('Login failed')
       console.log(error)
     }
   }

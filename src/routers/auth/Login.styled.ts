@@ -26,3 +26,16 @@ export const LoginContainer = styled.div`
   align-items: center;
   width: 50%;
 `
+export const Footer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  margin-top: 2rem;
+`
+export const FooterText = styled.p`
+  font-size: 1.2rem;
+  color: #000;
+  margin-right: 0.5rem;
+  font-weight: 500;
+`

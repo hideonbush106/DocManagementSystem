@@ -1,15 +1,16 @@
 import { signInWithPopup, signOut, User, UserCredential } from 'firebase/auth'
 import React, { ReactNode, useEffect } from 'react'
+import { useLocation } from 'react-router-dom'
 import { auth, provider } from '~/global/firebase'
 import { notifyError } from '~/global/toastify'
 
-export const AuthContext = React.createContext({
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
-  login: () => {},
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
-  logout: () => {},
-  user: null as null | User
-})
+export type AuthContextType = {
+  user: User | null
+  login: () => void
+  logout: () => void
+}
+
+export const AuthContext = React.createContext<AuthContextType | null>(null)
 
 interface Props {
   children: ReactNode
@@ -17,17 +18,19 @@ interface Props {
 
 const AuthProvider = ({ children }: Props) => {
   const [user, setUser] = React.useState<null | User>(null)
+  const location = useLocation()
   const login = async () => {
     try {
       const result: UserCredential = await signInWithPopup(auth, provider)
-      result.user?.getIdToken().then((token) => localStorage.setItem('userAccessToken', JSON.stringify(token)))
-      result.user?.getIdTokenResult().then((result) => {
-        const currentTime = Date.now()
-        if (Date.parse(result.expirationTime) < currentTime) {
-          localStorage.removeItem('userAccessToken')
-          logout()
-        }
-      })
+      const idToken = await result.user.getIdToken()
+      localStorage.setItem('userAccessToken', JSON.stringify(idToken))
+      const idTokenResult = await result.user.getIdTokenResult()
+      const currentTime = Date.now()
+      const expirationTime = Date.parse(idTokenResult.expirationTime)
+      if (expirationTime < currentTime) {
+        localStorage.removeItem('userAccessToken')
+        logout()
+      }
       window.location.href = '/welcome'
     } catch (error) {
       notifyError('Login failed')
@@ -46,23 +49,20 @@ const AuthProvider = ({ children }: Props) => {
   }
 
   useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged((user) => {
+    const unsubscribe = auth.onAuthStateChanged(async (user) => {
       setUser(user)
-      user?.getIdTokenResult().then((result) => {
+      if (user) {
+        const idTokenResult = await user.getIdTokenResult()
         const currentTime = Date.now()
-        const exp = result.expirationTime
-        console.log(exp)
-        if (Date.parse(result.expirationTime) < currentTime) {
-          //set new token
-          // user.getIdToken(true).then((token) => localStorage.setItem('userAccessToken', JSON.stringify(token)))
-          //delete old token and logout
+        const expirationTime = Date.parse(idTokenResult.expirationTime)
+        if (expirationTime < currentTime) {
           localStorage.removeItem('userAccessToken')
           logout()
         }
-      })
+      }
       return () => unsubscribe()
     })
-  }, [user])
+  }, [location])
 
   const value = { login, logout, user }
 

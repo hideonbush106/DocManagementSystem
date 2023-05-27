@@ -2,11 +2,10 @@ import { Typography } from '@mui/material'
 import { Footer, FooterText, LoginContainer, LoginImg, OuterContainer } from './Login.styled'
 import GoogleButton from 'react-google-button'
 import { theme } from '~/global/theme'
-import { AuthContext } from '~/context/AuthContext'
-import React from 'react'
+import useAuth from '~/hooks/useAuth'
 
 const Login = () => {
-  const login = React.useContext(AuthContext).login
+  const { login } = useAuth()
   return (
     <OuterContainer>
       <LoginImg>

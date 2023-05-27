@@ -1,46 +1,24 @@
 import { publicRoutes, privateRoutes } from '~/routers/routes'
 import { ThemeProvider } from 'styled-components'
-import AuthProvider, { AuthContext } from '~/context/AuthContext'
+import AuthProvider from '~/context/AuthContext'
 import { theme } from '~/global/theme'
-import { Routes, Route, BrowserRouter, Navigate } from 'react-router-dom'
-import { useEffect, useState, useContext } from 'react'
+import { Routes, Route, BrowserRouter } from 'react-router-dom'
+import PrivateRoute from './routers/PrivateRoute'
 const App = () => {
-  const [isLoggedIn, setIsLoggedIn] = useState(false)
-  const userAcccessToken = localStorage.getItem('userAccessToken')
-  const user = useContext(AuthContext).user
-  const logout = useContext(AuthContext).logout
-
-  const currentTime = Date.now()
-  user?.getIdTokenResult().then((result) => {
-    if (Date.parse(result.expirationTime) < currentTime) {
-      localStorage.removeItem('userAccessToken')
-      logout()
-    }
-  })
-  useEffect(() => {
-    if (userAcccessToken) {
-      setIsLoggedIn(true)
-    }
-  }, [isLoggedIn, userAcccessToken, user])
-
   return (
     <ThemeProvider theme={theme}>
-      <AuthProvider>
-        <BrowserRouter>
+      <BrowserRouter>
+        <AuthProvider>
           <Routes>
-            {!isLoggedIn ? (
-              publicRoutes.map((route, index) => <Route key={index} path={route.path} Component={route.component} />)
-            ) : (
-              <Route path='*' element={<Navigate to='/welcome' />} />
-            )}
-            {isLoggedIn ? (
-              privateRoutes.map((route, index) => <Route key={index} path={route.path} Component={route.component} />)
-            ) : (
-              <Route path='*' element={<Navigate to='/' />} />
-            )}
+            {publicRoutes.map((route, index) => (
+              <Route key={index} path={route.path} Component={route.component} />
+            ))}
+            {privateRoutes.map((route, index) => (
+              <Route key={index} path={route.path} element={<PrivateRoute>{route.component}</PrivateRoute>} />
+            ))}
           </Routes>
-        </BrowserRouter>
-      </AuthProvider>
+        </AuthProvider>
+      </BrowserRouter>
     </ThemeProvider>
   )
 }

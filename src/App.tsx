@@ -1,32 +1,52 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-// eslint-disable-next-line import/no-unresolved
-import viteLogo from '/vite.svg'
-import './App.css'
-
-function App() {
-  const [count, setCount] = useState(0)
-
+import { publicRoutes, privateRoutes } from '~/routers/routes'
+import { ThemeProvider } from 'styled-components'
+import AuthProvider from '~/context/AuthContext'
+import { theme } from '~/global/theme'
+import { Routes, Route, BrowserRouter } from 'react-router-dom'
+import PrivateRoute from './routers/PrivateRoute'
+const App = () => {
   return (
-    <>
-      <div>
-        <a href='https://vitejs.dev' target='_blank' rel='noreferrer'>
-          <img src={viteLogo} className='logo' alt='Vite logo' />
-        </a>
-        <a href='https://react.dev' target='_blank' rel='noreferrer'>
-          <img src={reactLogo} className='logo react' alt='React logo' />
-        </a>
-      </div>
-      <h1>Vite + React TS</h1>
-      <div className='card'>
-        <button onClick={() => setCount((count) => count + 1)}>count is {count}</button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className='read-the-docs'>Click on the Vite and React logos to learn more</p>
-    </>
+    <ThemeProvider theme={theme}>
+      <BrowserRouter>
+        <AuthProvider>
+          <Routes>
+            {publicRoutes.map((route, index) => (
+              <Route key={index} path={route.path} Component={route.component} />
+            ))}
+            {privateRoutes.map((route, index) => (
+              <Route key={index} path={route.path} element={<PrivateRoute>{route.component}</PrivateRoute>} />
+            ))}
+          </Routes>
+        </AuthProvider>
+      </BrowserRouter>
+    </ThemeProvider>
   )
 }
 
 export default App
+// import { useState } from 'react'
+// import './App.css'
+// import Scanner from './Scanner'
+// import { QrcodeSuccessCallback } from 'html5-qrcode'
+
+// const App = () => {
+//   const [decodedResults, setDecodedResults] = useState<string[]>([])
+//   const onNewScanResult = (decodedResult: string) => {
+//     console.log('App [result]', decodedResult)
+//     setDecodedResults((prev) => [...prev, decodedResult])
+//   }
+
+//   return (
+//     <div className='App'>
+//       <section className='App-section' style={{ width: '500px' }}>
+//         <div className='App-section-title'> Html5-qrcode React demo</div>
+//         <br />
+//         <br />
+//         <br />
+//         <Scanner fps={10} qrbox={250} disableFlip={false} qrCodeSuccessCallback={onNewScanResult} />
+//       </section>
+//     </div>
+//   )
+// }
+
+// export default App

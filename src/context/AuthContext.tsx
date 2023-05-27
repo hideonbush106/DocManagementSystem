@@ -21,6 +21,13 @@ const AuthProvider = ({ children }: Props) => {
     try {
       const result: UserCredential = await signInWithPopup(auth, provider)
       result.user?.getIdToken().then((token) => localStorage.setItem('userAccessToken', JSON.stringify(token)))
+      result.user?.getIdTokenResult().then((result) => {
+        const currentTime = Date.now()
+        if (Date.parse(result.expirationTime) < currentTime) {
+          localStorage.removeItem('userAccessToken')
+          logout()
+        }
+      })
       window.location.href = '/welcome'
     } catch (error) {
       notifyError('Login failed')
@@ -40,11 +47,19 @@ const AuthProvider = ({ children }: Props) => {
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((user) => {
-      console.log(
-        'user',
-        user?.getIdToken().then((token) => console.log(token))
-      )
       setUser(user)
+      user?.getIdTokenResult().then((result) => {
+        const currentTime = Date.now()
+        const exp = result.expirationTime
+        console.log(exp)
+        if (Date.parse(result.expirationTime) < currentTime) {
+          //set new token
+          // user.getIdToken(true).then((token) => localStorage.setItem('userAccessToken', JSON.stringify(token)))
+          //delete old token and logout
+          localStorage.removeItem('userAccessToken')
+          logout()
+        }
+      })
       return () => unsubscribe()
     })
   }, [user])

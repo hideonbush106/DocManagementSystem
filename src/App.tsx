@@ -8,13 +8,18 @@ const App = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false)
   const userAcccessToken = localStorage.getItem('userAccessToken')
   const user = useContext(AuthContext).user
-  // const date = Date.now()
-  // console.log(date)
+  const logout = useContext(AuthContext).logout
+
+  const currentTime = Date.now()
+  user?.getIdTokenResult().then((result) => {
+    if (Date.parse(result.expirationTime) < currentTime) {
+      localStorage.removeItem('userAccessToken')
+      logout()
+    }
+  })
   useEffect(() => {
     if (userAcccessToken) {
       setIsLoggedIn(true)
-    } else {
-      setIsLoggedIn(false)
     }
   }, [isLoggedIn, userAcccessToken, user])
 

@@ -1,13 +1,13 @@
 import { publicRoutes, privateRoutes } from '~/routers/routes'
 import { ThemeProvider } from 'styled-components'
-import AuthContext, { UserAuth } from '~/context/AuthContext'
+import AuthProvider, { AuthContext } from '~/context/AuthContext'
 import { theme } from '~/global/theme'
 import { Routes, Route, BrowserRouter, Navigate } from 'react-router-dom'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useContext } from 'react'
 const App = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false)
   const userAcccessToken = localStorage.getItem('userAccessToken')
-  const { user } = UserAuth()
+  const user = useContext(AuthContext).user
   // const date = Date.now()
   // console.log(date)
   useEffect(() => {
@@ -20,7 +20,7 @@ const App = () => {
 
   return (
     <ThemeProvider theme={theme}>
-      <AuthContext>
+      <AuthProvider>
         <BrowserRouter>
           <Routes>
             {!isLoggedIn ? (
@@ -35,7 +35,7 @@ const App = () => {
             )}
           </Routes>
         </BrowserRouter>
-      </AuthContext>
+      </AuthProvider>
     </ThemeProvider>
   )
 }

@@ -1,7 +1,9 @@
 import { Button, Card } from '@mui/material'
-import { UserAuth } from '~/context/AuthContext'
+import React from 'react'
+import { AuthContext } from '~/context/AuthContext'
 const Welcome = () => {
-  const { user, logout } = UserAuth()
+  const user = React.useContext(AuthContext).user
+  const logout = React.useContext(AuthContext).logout
 
   return (
     <div>

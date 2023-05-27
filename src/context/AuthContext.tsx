@@ -2,7 +2,8 @@ import { signInWithPopup, signOut, User, UserCredential } from 'firebase/auth'
 import React, { ReactNode, useEffect } from 'react'
 import { auth, provider } from '~/global/firebase'
 import { notifyError } from '~/global/toastify'
-const UserContext = React.createContext({
+
+export const AuthContext = React.createContext({
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   login: () => {},
   // eslint-disable-next-line @typescript-eslint/no-empty-function
@@ -14,7 +15,7 @@ interface Props {
   children: ReactNode
 }
 
-const AuthContext = ({ children }: Props) => {
+const AuthProvider = ({ children }: Props) => {
   const [user, setUser] = React.useState<null | User>(null)
   const login = async () => {
     try {
@@ -58,10 +59,9 @@ const AuthContext = ({ children }: Props) => {
     })
   }, [user])
 
-  return <UserContext.Provider value={{ login, logout, user }}>{children}</UserContext.Provider>
+  const value = { login, logout, user }
+
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
 }
 
-export default AuthContext
-export const UserAuth = () => {
-  return React.useContext(UserContext)
-}
+export default AuthProvider

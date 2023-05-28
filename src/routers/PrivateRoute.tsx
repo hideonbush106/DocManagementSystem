@@ -1,20 +1,20 @@
-import { Fragment, useEffect, useState } from 'react'
+import { useEffect } from 'react'
+import { useNavigate } from 'react-router'
 
 interface Props {
-  children: () => JSX.Element
+  Component: React.ComponentType
 }
 
-const PrivateRoute = (props: Props) => {
-  const [isLoggedIn, setIsLoggedIn] = useState(false)
-  const userAcccessToken = localStorage.getItem('userAccessToken')
-
+const PrivateRoute = ({ Component }: Props) => {
+  const navigate = useNavigate()
   useEffect(() => {
-    if (userAcccessToken) {
-      setIsLoggedIn(true)
+    const isLogin = localStorage.getItem('isLogin')
+    if (!isLogin) {
+      navigate('/')
     }
-  }, [isLoggedIn, userAcccessToken])
+  }, [navigate])
 
-  return <Fragment>{props.children()}</Fragment>
+  return <Component />
 }
 
 export default PrivateRoute

@@ -27,15 +27,17 @@ const AuthProvider = ({ children }: Props) => {
       const result: UserCredential = await signInWithPopup(auth, provider)
       //check account in database
       const idToken = await result.user.getIdToken()
-      getUserLogin(idToken).catch((error: AxiosError) => {
-        if (error.response?.status === 403 || error.response?.status === 401) {
-          notifyError('Unauthorized account')
-          logout()
-        }
-      })
-
-      navigate('/welcome')
-      localStorage.setItem('isLogin', 'TRUE')
+      getUserLogin(idToken)
+        .then(() => {
+          navigate('/welcome')
+          localStorage.setItem('isLogin', 'TRUE')
+        })
+        .catch((error: AxiosError) => {
+          if (error.response?.status === 403 || error.response?.status === 401) {
+            notifyError('Unauthorized account')
+            navigate('/')
+          }
+        })
     } catch (error) {
       notifyError('Login failed')
       logout()

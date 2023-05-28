@@ -9,13 +9,12 @@ import { useNavigate } from 'react-router'
 const Login = () => {
   const { login } = useAuth()
   const navigate = useNavigate()
-  const isLogin = localStorage.getItem('isLogin')
   useEffect(() => {
-    console.log(isLogin)
+    const isLogin = localStorage.getItem('isLogin')
     if (isLogin) {
       navigate('/welcome')
     }
-  }, [navigate, isLogin])
+  }, [navigate])
   return (
     <OuterContainer>
       <LoginImg>

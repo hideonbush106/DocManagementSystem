@@ -54,6 +54,8 @@ To run this project, you will need to add the following environment variables to
 
 `VITE_MEASUREMENT_ID`
 
+`VITE_API_URL`
+
 ## Authors
 
 - [Vo Minh Tien](https://www.github.com/MinhhTien)

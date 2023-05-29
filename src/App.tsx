@@ -4,6 +4,7 @@ import AuthProvider from '~/context/AuthContext'
 import { theme } from '~/global/theme'
 import { Routes, Route, BrowserRouter } from 'react-router-dom'
 import PrivateRoute from './routers/PrivateRoute'
+import Layout from './components/layouts/Layout'
 const App = () => {
   return (
     <ThemeProvider theme={theme}>
@@ -13,9 +14,19 @@ const App = () => {
             {publicRoutes.map((route, index) => (
               <Route key={index} path={route.path} Component={route.component} />
             ))}
-            {privateRoutes.map((route, index) => (
-              <Route key={index} path={route.path} element={<PrivateRoute Component={route.component} />} />
-            ))}
+            {privateRoutes.map((route, index) => {
+              return (
+                <Route
+                  key={index}
+                  path={route.path}
+                  element={
+                    <Layout title={route.component.name}>
+                      <PrivateRoute Component={route.component} />
+                    </Layout>
+                  }
+                />
+              )
+            })}
           </Routes>
         </AuthProvider>
       </BrowserRouter>
@@ -24,29 +35,3 @@ const App = () => {
 }
 
 export default App
-// import { useState } from 'react'
-// import './App.css'
-// import Scanner from './Scanner'
-// import { QrcodeSuccessCallback } from 'html5-qrcode'
-
-// const App = () => {
-//   const [decodedResults, setDecodedResults] = useState<string[]>([])
-//   const onNewScanResult = (decodedResult: string) => {
-//     console.log('App [result]', decodedResult)
-//     setDecodedResults((prev) => [...prev, decodedResult])
-//   }
-
-//   return (
-//     <div className='App'>
-//       <section className='App-section' style={{ width: '500px' }}>
-//         <div className='App-section-title'> Html5-qrcode React demo</div>
-//         <br />
-//         <br />
-//         <br />
-//         <Scanner fps={10} qrbox={250} disableFlip={false} qrCodeSuccessCallback={onNewScanResult} />
-//       </section>
-//     </div>
-//   )
-// }
-
-// export default App

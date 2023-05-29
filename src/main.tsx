@@ -4,10 +4,13 @@ import App from './App'
 import './index.css'
 import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
+import GlobalStyle from './components/globalStyle/GlobalStyle'
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <React.StrictMode>
-    <App />
+    <GlobalStyle>
+      <App />
+    </GlobalStyle>
     <ToastContainer />
   </React.StrictMode>
 )

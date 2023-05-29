@@ -1,0 +1,21 @@
+:root {
+  --primary-color: #0d66ff;
+  --primary-dark-color: #1152c1;
+  --green-color: #34a853;
+  --green-dark-color: #2a8743;
+  --red-color: #ea4335;
+  --background-color: #e8ecf2;
+  --grey-color: #a5aab5;
+  --black-color: #434343;
+  --black-light-color: #797979;
+  --blue-background-color: #84b1ed;
+  --purple-background-color: #b0a0ff;
+  --green-background-color: #82d999;
+  --white-color: #fff;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}

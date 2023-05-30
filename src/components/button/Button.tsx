@@ -1,12 +1,12 @@
 import { Button } from '@mui/material'
-import { ReactNode } from 'react'
 import AddRoundedIcon from '@mui/icons-material/AddRounded'
-import KeyboardReturnRoundedIcon from '@mui/icons-material/KeyboardReturnRounded';
+import KeyboardReturnRoundedIcon from '@mui/icons-material/KeyboardReturnRounded'
 
 interface ButtonProps {
-  children: ReactNode
+  text: string
 }
-export const ImportButton = ({ children }: ButtonProps) => {
+
+export const ImportButton = ({ text }: ButtonProps) => {
   return (
     <Button
       sx={{
@@ -23,12 +23,12 @@ export const ImportButton = ({ children }: ButtonProps) => {
       variant='contained'
       startIcon={<AddRoundedIcon />}
     >
-      {children}
+      {text}
     </Button>
   )
 }
 
-export const ReturnButton = ({ children }: ButtonProps) => {
+export const ReturnButton = ({ text }: ButtonProps) => {
   return (
     <Button
       sx={{
@@ -45,7 +45,28 @@ export const ReturnButton = ({ children }: ButtonProps) => {
       variant='contained'
       startIcon={<KeyboardReturnRoundedIcon />}
     >
-      {children}
+      {text}
+    </Button>
+  )
+}
+
+export const ViewButton = ({ text }: ButtonProps) => {
+  return (
+    <Button
+      sx={{
+        backgroundColor: 'var(--primary-color)',
+        width: '80px',
+        height: '25px',
+        textTransform: 'uppercase',
+        fontSize: '12px',
+        padding: '5px',
+        '&:hover': {
+          backgroundColor: 'var(--primary-dark-color)'
+        }
+      }}
+      variant='contained'
+    >
+      {text}
     </Button>
   )
 }

@@ -1,4 +1,4 @@
-import { HeaderWrapper, IconDiv, ItemDiv, TextTitle, TextDiv, TextContent } from './HeaderBar.styled'
+import { HeaderWrapper, IconDiv, ItemDiv, TextTitle, TextDiv, TextContent, LineStyled } from './HeaderBar.styled'
 // import { Button } from '@mui/material'
 import { ImportButton, ReturnButton } from '../button/Button'
 const HeaderBar = () => {
@@ -13,6 +13,7 @@ const HeaderBar = () => {
           <TextContent>3 Departments</TextContent>
         </TextDiv>
       </ItemDiv>
+      <LineStyled />
       <ItemDiv>
         <IconDiv purple>
           <img src='/assets/user.svg' alt='sitemap' />
@@ -22,6 +23,7 @@ const HeaderBar = () => {
           <TextContent>50 Members</TextContent>
         </TextDiv>
       </ItemDiv>
+      <LineStyled />
       <ItemDiv>
         <IconDiv green>
           <img src='/assets/folder.svg' alt='sitemap' />
@@ -31,8 +33,8 @@ const HeaderBar = () => {
           <TextContent>870 Files</TextContent>
         </TextDiv>
       </ItemDiv>
-      <ImportButton>New Document</ImportButton>
-      <ReturnButton>Return Document</ReturnButton>
+      <ImportButton text='Import Document'></ImportButton>
+      <ReturnButton text='Return Document'></ReturnButton>
       <IconDiv white style={{ cursor: 'pointer' }}>
         <img src='/assets/bell-ringing.svg' alt='' />
       </IconDiv>

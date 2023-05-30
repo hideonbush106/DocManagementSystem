@@ -4,8 +4,7 @@ import { ButtonWrapper, DocumentWrapper, NavWrapper, TreeWarpper } from './Docum
 import { IconDiv } from '~/components/headerBar/HeaderBar.styled'
 import TreeView from '@mui/lab/TreeView'
 import { Apartment, ChevronRight, ExpandMore, Folder, Work } from '@mui/icons-material'
-import { Typography } from '@mui/material'
-import DocumentTreeItem from '~/components/globalStyle/treeItem/DocumentTreeItem'
+import DocumentTreeItem from '~/components/treeItem/DocumentTreeItem'
 
 const Document = () => {
   return (

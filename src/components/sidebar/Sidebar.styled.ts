@@ -1,45 +1,57 @@
+import { Link } from 'react-router-dom'
 import styled from 'styled-components'
 
 export const Wrapper = styled.section`
   width: 15vw;
   height: 100vh;
+  position: relative;
 `
 
 export const Avatar = styled.div`
+  height: 180px;
   display: flex;
-  justify-content: center;
+  justify-content: space-evenly;
   align-items: center;
   flex-direction: column;
   margin: 2rem 0;
-
 `
-
-export const Heading = styled.text`
-  font-size: 1.2rem;
-  font-weight: 600;
-  margin: 10px;
-`
-
-export const Image = styled.div`
-  margin: 2rem 0 1rem;
+export const Image = styled.img`
   width: 100px;
   height: 100px;
   border-radius: 50%;
   background-color: gray;
   overflow: hidden;
 `
+export const Role = styled.p`
+  color: var(--grey-color);
+  text-align: center;
+  font-size: 14px;
+`
 
 export const Menu = styled.div`
-  margin: 1.5rem 0;
-  padding-left: 2rem;
+  display: flex;
+  flex-direction: column;
+  margin: 0 2rem 0 2.5rem;
 `
 export const Option = styled.div`
+  padding: 1rem 0;
+  color: var(--grey-color);
+`
+export const LinkContainer = styled(Link)`
   display: flex;
   align-items: center;
-  margin: 2rem 0;
 `
-export const Text = styled.text`
+export const Text = styled.p`
+  line-height: 1.5rem;
   margin-left: 1rem;
-  color: var(--grey-color);
-  font-size: 14px;
+  font-size: 15px;
+`
+export const LogOut = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  position: absolute;
+  bottom: 2rem;
+  cursor: pointer;
 `

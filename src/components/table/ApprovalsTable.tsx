@@ -11,7 +11,7 @@ const rows = [
   { id: 2, fileName: 'Bill', createAt: ' 10:34:45, 23th May, 2023' }
 ]
 
-export default function ApprovalsTable() {
+const ApprovalsTable = () => {
   return (
     <div style={{ height: 200, width: '100%', margin: '10px 0' }}>
       <DataGrid
@@ -37,3 +37,5 @@ export default function ApprovalsTable() {
     </div>
   )
 }
+
+export default ApprovalsTable

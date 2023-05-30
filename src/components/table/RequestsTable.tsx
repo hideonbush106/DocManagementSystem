@@ -12,7 +12,7 @@ const rows = [
   { id: 3, fileName: 'Bill', requestBy: ' Duc Anh - Sales' }
 ]
 
-export default function RequestsTable() {
+const RequestsTable = () => {
   return (
     <div style={{ height: 180, width: '100%', margin: '10px 0' }}>
       <DataGrid
@@ -35,3 +35,4 @@ export default function RequestsTable() {
     </div>
   )
 }
+export default RequestsTable

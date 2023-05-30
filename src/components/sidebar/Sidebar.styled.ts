@@ -23,7 +23,7 @@ export const Image = styled.img`
   overflow: hidden;
 `
 export const Role = styled.p`
-  color: var(--grey-color);
+  color: var(--gray-color);
   text-align: center;
   font-size: 14px;
 `
@@ -35,7 +35,7 @@ export const Menu = styled.div`
 `
 export const Option = styled.div`
   padding: 1rem 0;
-  color: var(--grey-color);
+  color: var(--gray-color);
 `
 export const LinkContainer = styled(Link)`
   display: flex;

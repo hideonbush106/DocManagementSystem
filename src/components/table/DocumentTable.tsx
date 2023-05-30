@@ -13,15 +13,14 @@ const columns: GridColDef[] = [
   {
     field: 'status',
     headerName: 'Status',
-    sortable: false,
     width: 90,
     renderCell: (params: GridRenderCellParams) => {
       const status = params.value as string
 
       let statusColor = ''
-      if (status === 'Pending') {
+      if (status === 'Available') {
         statusColor = 'var(--primary-color)'
-      } else if (status === 'Available') {
+      } else if (status === 'Lending') {
         statusColor = 'var(--red-color)'
       }
 
@@ -37,7 +36,7 @@ const rows = [
     department: 'Human Resources',
     location: 'Room 001, Locker 1, Folder Contract',
     category: 'Contract',
-    status: 'Pending'
+    status: 'Lending'
   },
   {
     id: 2,
@@ -53,7 +52,7 @@ const rows = [
     department: 'Accountant',
     location: 'Room 006, Locker 2, Folder Report',
     category: 'Bill',
-    status: 'Pending'
+    status: 'Lending'
   },
   {
     id: 4,
@@ -61,7 +60,7 @@ const rows = [
     department: 'Human Resources',
     location: 'Room 001, Locker 1, Folder Contract',
     category: 'Contract',
-    status: 'Pending'
+    status: 'Available'
   },
   {
     id: 5,
@@ -77,7 +76,7 @@ const rows = [
     department: 'Sales',
     location: 'Room 003, Locker 1, Folder Report',
     category: 'Report',
-    status: 'Pending'
+    status: 'Lending'
   },
   {
     id: 8,
@@ -85,11 +84,11 @@ const rows = [
     department: 'Human Resources',
     location: 'Room 001, Locker 1, Folder Contract',
     category: 'Contract',
-    status: 'Pending'
+    status: 'Lending'
   }
 ]
 
-export default function DataTable() {
+const DocumentTable = () => {
   return (
     <div style={{ height: 260, width: '100%', margin: '10px 0' }}>
       <DataGrid
@@ -135,3 +134,5 @@ export default function DataTable() {
     </div>
   )
 }
+
+export default DocumentTable

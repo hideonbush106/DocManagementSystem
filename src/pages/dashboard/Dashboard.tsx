@@ -15,6 +15,8 @@ import DocumentTable from '~/components/table/DocumentTable'
 import { Link } from 'react-router-dom'
 import RequestsTable from '~/components/table/RequestsTable'
 import ApprovalsTable from '~/components/table/ApprovalsTable'
+import SummaryChart from '~/components/chart/SummaryChart'
+import SpaceChart from '~/components/chart/SpaceChart'
 const Subtitle = styled(Typography)({
   fontWeight: '600',
   fontSize: '0.85rem',
@@ -41,8 +43,9 @@ const Dashboard = () => {
           <DocumentTable />
         </DocumentContainer>
         <SumaryContainer>
-          <Subtitle variant='h6'>Summary</Subtitle>
+          <Subtitle variant='h6'>Document Summary</Subtitle>
           <TitleUnderline />
+          <SummaryChart />
         </SumaryContainer>
         <RequestContainer>
           <SubtitleWrapper>
@@ -69,10 +72,9 @@ const Dashboard = () => {
           <RequestsTable />
         </RequestContainer>
         <StatisticContainer>
-          <Subtitle variant='h6' sx={{ fontWeight: '600', fontSize: '0.85rem', letterSpacing: '1.2px' }}>
-            Monthly Statistics
-          </Subtitle>
+          <Subtitle variant='h6'>Available Space</Subtitle>
           <TitleUnderline />
+          <SpaceChart />
         </StatisticContainer>
       </DashboardWrapper>
     </>

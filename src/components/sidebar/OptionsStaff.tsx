@@ -1,6 +1,4 @@
-import Icon from '@mui/icons-material/SettingsOutlined'
 import {
-  SvgIconComponent,
   GridViewOutlined,
   DescriptionOutlined,
   TaskAltOutlined,

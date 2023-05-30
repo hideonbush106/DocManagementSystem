@@ -1,7 +1,7 @@
 import { Avatar, Image, LogOut, Menu, Option, Role, Text, Wrapper, LinkContainer } from './Sidebar.styled'
 import { Icon, Typography } from '@mui/material'
 import LogoutIcon from '@mui/icons-material/Logout'
-import { Options } from './Options'
+import { Options } from './OptionsStaff'
 import React from 'react'
 import useAuth from '~/hooks/useAuth'
 
@@ -12,7 +12,7 @@ const Sidebar = () => {
       <Avatar>
         <Image src={String(user?.photoURL)} alt='Your Avatar' />
         <Typography align='center' sx={{ width: '100%', fontWeight: 600 }}>
-          Le Do Duc Anh
+          {user?.displayName}
         </Typography>
         <Role>Staff</Role>
       </Avatar>

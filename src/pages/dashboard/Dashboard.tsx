@@ -49,7 +49,7 @@ const Dashboard = () => {
               <Subtitle variant='h6'>Pending Approvals</Subtitle>
               <TitleUnderline />
             </div>
-            <Link to='/'>
+            <Link to='/pending-approval'>
               <ViewButton text='View' />
             </Link>
           </SubtitleWrapper>
@@ -60,7 +60,7 @@ const Dashboard = () => {
               <Subtitle variant='h6'>Borrow Requests</Subtitle>
               <TitleUnderline />
             </div>
-            <Link to='/'>
+            <Link to='/request'>
               <ViewButton text='View' />
             </Link>
           </SubtitleWrapper>

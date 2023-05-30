@@ -1,10 +1,10 @@
-import { DataGrid, GridColDef, GridValueGetterParams } from '@mui/x-data-grid'
+import { DataGrid, GridColDef, GridRenderCellParams } from '@mui/x-data-grid'
 
 const columns: GridColDef[] = [
   { field: 'id', headerName: 'ID', width: 20, sortable: false, filterable: false },
   { field: 'fileName', headerName: 'File name', width: 110 },
   { field: 'department', headerName: 'Department', width: 130 },
-  { field: 'location', headerName: 'Location', width: 180 },
+  { field: 'location', headerName: 'Location', width: 240 },
   {
     field: 'category',
     headerName: 'Category',
@@ -15,9 +15,17 @@ const columns: GridColDef[] = [
     headerName: 'Status',
     sortable: false,
     width: 90,
-    valueGetter: (params: GridValueGetterParams) => {
-      const statusValue = `${params.row.status}`
-      return statusValue
+    renderCell: (params: GridRenderCellParams) => {
+      const status = params.value as string
+
+      let statusColor = ''
+      if (status === 'Pending') {
+        statusColor = 'var(--primary-color)'
+      } else if (status === 'Available') {
+        statusColor = 'var(--red-color)'
+      }
+
+      return <span style={{ color: statusColor, fontWeight: '500' }}>{status}</span>
     }
   }
 ]
@@ -87,6 +95,7 @@ export default function DataTable() {
       <DataGrid
         columnHeaderHeight={40}
         rowHeight={35}
+        disableColumnMenu
         rows={rows}
         columns={columns}
         initialState={{

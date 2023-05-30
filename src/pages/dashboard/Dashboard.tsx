@@ -12,6 +12,7 @@ import { styled } from '@mui/system'
 import { Typography } from '@mui/material'
 import { ViewButton } from '~/components/button/Button'
 import DocumentTable from '~/components/table/DocumentTable'
+import { Link } from 'react-router-dom'
 
 const Subtitle = styled(Typography)({
   fontWeight: '600',
@@ -32,7 +33,9 @@ const Dashboard = () => {
               <Subtitle variant='h6'>Documents</Subtitle>
               <TitleUnderline />
             </div>
-            <ViewButton text='View All' />
+            <Link to='/document'>
+              <ViewButton text='View All' />
+            </Link>
           </SubtitleWrapper>
           <DocumentTable />
         </DocumentContainer>
@@ -46,7 +49,9 @@ const Dashboard = () => {
               <Subtitle variant='h6'>Pending Approvals</Subtitle>
               <TitleUnderline />
             </div>
-            <ViewButton text='View' />
+            <Link to='/'>
+              <ViewButton text='View' />
+            </Link>
           </SubtitleWrapper>
         </RequestContainer>
         <RequestContainer>
@@ -55,7 +60,9 @@ const Dashboard = () => {
               <Subtitle variant='h6'>Borrow Requests</Subtitle>
               <TitleUnderline />
             </div>
-            <ViewButton text='View' />
+            <Link to='/'>
+              <ViewButton text='View' />
+            </Link>
           </SubtitleWrapper>
         </RequestContainer>
         <StatisticContainer>

@@ -11,7 +11,7 @@ const rows = [
   { id: 2, fileName: 'Contract', department: 'Snow' }
 ]
 
-export default function DataTable() {
+export default function ApprovalsTable() {
   return (
     <div style={{ height: 200, width: '100%', margin: '10px 0' }}>
       <DataGrid
@@ -19,6 +19,7 @@ export default function DataTable() {
         rowHeight={27}
         rows={rows}
         columns={columns}
+        hideFooter
         sx={{
           border: 'none',
           fontSize: '12px',

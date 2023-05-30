@@ -22,4 +22,5 @@ export const TreeWarpper = styled.div`
   background: white;
   width: 30%;
   border-radius: 5px;
+  padding: 1rem 0rem 1rem 1rem;
 `

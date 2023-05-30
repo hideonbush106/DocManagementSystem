@@ -83,10 +83,10 @@ const rows = [
 
 export default function DataTable() {
   return (
-    <div style={{ height: 200, width: '100%', margin: '10px 0' }}>
+    <div style={{ height: 260, width: '100%', margin: '10px 0' }}>
       <DataGrid
-        columnHeaderHeight={30}
-        rowHeight={27}
+        columnHeaderHeight={40}
+        rowHeight={35}
         rows={rows}
         columns={columns}
         initialState={{

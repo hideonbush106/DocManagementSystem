@@ -11,10 +11,9 @@ export const Avatar = styled.div`
   align-items: center;
   flex-direction: column;
   margin: 2rem 0;
-
 `
 
-export const Heading = styled.text`
+export const Heading = styled.p`
   font-size: 1.2rem;
   font-weight: 600;
   margin: 10px;
@@ -38,7 +37,7 @@ export const Option = styled.div`
   align-items: center;
   margin: 2rem 0;
 `
-export const Text = styled.text`
+export const Text = styled.p`
   margin-left: 1rem;
   color: var(--grey-color);
   font-size: 14px;

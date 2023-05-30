@@ -1,57 +1,35 @@
-import { Avatar, Heading, Image, Menu, Option, Text, Wrapper } from './Sidebar.styled'
-import GridViewOutlinedIcon from '@mui/icons-material/GridViewOutlined'
-import DescriptionOutlinedIcon from '@mui/icons-material/DescriptionOutlined'
-import TaskAltOutlinedIcon from '@mui/icons-material/TaskAltOutlined'
-import GradingOutlinedIcon from '@mui/icons-material/GradingOutlined'
-import SignalCellularAltOutlinedIcon from '@mui/icons-material/SignalCellularAltOutlined'
-import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined'
-import { Link } from 'react-router-dom'
-import { Logout } from '@mui/icons-material'
+import { Avatar, Image, LogOut, Menu, Option, Role, Text, Wrapper, LinkContainer } from './Sidebar.styled'
+import { Icon, Typography } from '@mui/material'
+import LogoutIcon from '@mui/icons-material/Logout'
+import { Options } from './Options'
+import React from 'react'
 import useAuth from '~/hooks/useAuth'
 
 const Sidebar = () => {
-  const { logout } = useAuth()
+  const { user, logout } = useAuth()
   return (
     <Wrapper>
       <Avatar>
-        <Image></Image>
-        <Heading>Le Do Duc Anh</Heading>
-        <p>Staff</p>
+        <Image src={String(user?.photoURL)} alt='Your Avatar' />
+        <Typography align='center' sx={{ width: '100%', fontWeight: 600 }}>
+          Le Do Duc Anh
+        </Typography>
+        <Role>Staff</Role>
       </Avatar>
       <Menu>
-        <Link to='/dashboard'>
-          <Option>
-            <GridViewOutlinedIcon sx={{ color: 'var(--grey-color)' }} />
-            <Text>Dashboard</Text>
+        {Options.map((option) => (
+          <Option key={option.id}>
+            <LinkContainer to={`/${option.link}`}>
+              <Icon sx={{ scale: '0.9' }}>{React.createElement(option.icon)}</Icon>
+              <Text>{option.text}</Text>
+            </LinkContainer>
           </Option>
-        </Link>
-        <Link to='/document'>
-          <Option>
-            <DescriptionOutlinedIcon sx={{ color: 'var(--grey-color)' }} />
-            <Text>Documents</Text>
-          </Option>
-        </Link>
-        <Option>
-          <TaskAltOutlinedIcon sx={{ color: 'var(--grey-color)' }} />
-          <Text>Pending Approvals</Text>
-        </Option>
-        <Option>
-          <GradingOutlinedIcon sx={{ color: 'var(--grey-color)' }} />
-          <Text>Requests</Text>
-        </Option>
-        <Option>
-          <SignalCellularAltOutlinedIcon sx={{ color: 'var(--grey-color)' }} />
-          <Text>Statistic</Text>
-        </Option>
-        <Option>
-          <SettingsOutlinedIcon sx={{ color: 'var(--grey-color)' }} />
-          <Text>Advanced</Text>
-        </Option>
-        <Option onClick={logout}>
-          <Logout sx={{ color: 'var(--grey-color)' }} />
-          <Text>Logout</Text>
-        </Option>
+        ))}
       </Menu>
+      <LogOut onClick={logout}>
+        <LogoutIcon sx={{ color: 'var(--red-color)' }} />
+        <Typography sx={{ color: 'var(--red-color)', fontWeight: 600, paddingLeft: '1rem' }}>Log Out</Typography>
+      </LogOut>
     </Wrapper>
   )
 }

@@ -20,7 +20,7 @@ export const ButtonWrapper = styled.div`
 export const TreeWarpper = styled.div`
   display: flex;
   background: white;
-  width: 30%;
+  width: fit-content;
   border-radius: 5px;
-  padding: 1rem 0rem 1rem 1rem;
+  padding: 1rem 0rem 2rem 1rem;
 `

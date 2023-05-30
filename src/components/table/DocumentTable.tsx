@@ -1,60 +1,128 @@
-import Table from '@mui/material/Table'
-import TableBody from '@mui/material/TableBody'
-import TableCell from '@mui/material/TableCell'
-import TableContainer from '@mui/material/TableContainer'
-import TableHead from '@mui/material/TableHead'
-import TableRow from '@mui/material/TableRow'
-import Paper from '@mui/material/Paper'
-import { styled } from '@mui/material'
+import { DataGrid, GridColDef, GridValueGetterParams } from '@mui/x-data-grid'
 
-const TableCellCustom = styled(TableCell)({
-  height: '20px',
-  border: 'none',
-  outline: 'none',
-  padding: '5px 10px 5px 0'
-})
-
-const createData = (name: string, calories: number, fat: number, carbs: number, protein: number) => {
-  return { name, calories, fat, carbs, protein }
-}
-
-const rows = [
-  createData('Frozen yoghurt', 159, 6.0, 24, 4.0),
-  createData('Ice cream sandwich', 237, 9.0, 37, 4.3),
-  createData('Eclair', 262, 16.0, 24, 6.0),
-  createData('Cupcake', 305, 3.7, 67, 4.3),
-  createData('Gingerbread', 356, 16.0, 49, 3.9)
+const columns: GridColDef[] = [
+  { field: 'id', headerName: 'ID', width: 20, sortable: false, filterable: false },
+  { field: 'fileName', headerName: 'File name', width: 110 },
+  { field: 'department', headerName: 'Department', width: 130 },
+  { field: 'location', headerName: 'Location', width: 180 },
+  {
+    field: 'category',
+    headerName: 'Category',
+    width: 120
+  },
+  {
+    field: 'status',
+    headerName: 'Status',
+    sortable: false,
+    width: 90,
+    valueGetter: (params: GridValueGetterParams) => {
+      const statusValue = `${params.row.status}`
+      return statusValue
+    }
+  }
 ]
 
-const DocumentTable = () => {
+const rows = [
+  {
+    id: 1,
+    fileName: 'Contract labor 2022',
+    department: 'Human Resources',
+    location: 'Room 001, Locker 1, Folder Contract',
+    category: 'Contract',
+    status: 'Pending'
+  },
+  {
+    id: 2,
+    fileName: 'Report meeting',
+    department: 'Sales',
+    location: 'Room 003, Locker 1, Folder Report',
+    category: 'Report',
+    status: 'Available'
+  },
+  {
+    id: 3,
+    fileName: 'Tax bill',
+    department: 'Accountant',
+    location: 'Room 006, Locker 2, Folder Report',
+    category: 'Bill',
+    status: 'Pending'
+  },
+  {
+    id: 4,
+    fileName: 'Contract',
+    department: 'Human Resources',
+    location: 'Room 001, Locker 1, Folder Contract',
+    category: 'Contract',
+    status: 'Pending'
+  },
+  {
+    id: 5,
+    fileName: 'Bill',
+    department: 'Accountant',
+    location: 'Room 006, Locker 2, Folder Report',
+    category: 'Bill',
+    status: 'Available'
+  },
+  {
+    id: 7,
+    fileName: 'Report',
+    department: 'Sales',
+    location: 'Room 003, Locker 1, Folder Report',
+    category: 'Report',
+    status: 'Pending'
+  },
+  {
+    id: 8,
+    fileName: 'Contract',
+    department: 'Human Resources',
+    location: 'Room 001, Locker 1, Folder Contract',
+    category: 'Contract',
+    status: 'Pending'
+  }
+]
+
+export default function DataTable() {
   return (
-    <TableContainer sx={{ boxShadow: 'none', margin: '10px 0' }} component={Paper}>
-      <Table sx={{ minWidth: 650 }} aria-label='simple table'>
-        <TableHead>
-          <TableRow>
-            <TableCellCustom>Dessert (100g serving)</TableCellCustom>
-            <TableCellCustom align='right'>Calories</TableCellCustom>
-            <TableCellCustom align='right'>Fat&nbsp;(g)</TableCellCustom>
-            <TableCellCustom align='right'>Carbs&nbsp;(g)</TableCellCustom>
-            <TableCellCustom align='right'>Protein&nbsp;(g)</TableCellCustom>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {rows.map((row) => (
-            <TableRow key={row.name} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
-              <TableCellCustom component='th' scope='row'>
-                {row.name}
-              </TableCellCustom>
-              <TableCellCustom align='right'>{row.calories}</TableCellCustom>
-              <TableCellCustom align='right'>{row.fat}</TableCellCustom>
-              <TableCellCustom align='right'>{row.carbs}</TableCellCustom>
-              <TableCellCustom align='right'>{row.protein}</TableCellCustom>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </TableContainer>
+    <div style={{ height: 200, width: '100%', margin: '10px 0' }}>
+      <DataGrid
+        columnHeaderHeight={30}
+        rowHeight={27}
+        rows={rows}
+        columns={columns}
+        initialState={{
+          pagination: {
+            paginationModel: { page: 0, pageSize: 5 }
+          }
+        }}
+        // pageSizeOptions={[5, 10]}
+        sx={{
+          border: 'none',
+          fontSize: '12px',
+          '	.MuiDataGrid-footerContainer': {
+            borderTop: 'none',
+            maxHeight: '30px',
+            minHeight: '30px',
+            display: 'flex',
+            justifyContent: 'flex-end'
+          },
+          '.MuiDataGrid-selectedRowCount': {
+            display: 'none'
+          },
+          '.MuiTablePagination-root': {
+            maxHeight: '30px',
+            minHeight: '30px',
+            paddingLeft: '0',
+            overflow: 'hidden'
+          },
+          '.MuiToolbar-root': {
+            maxHeight: '30px',
+            minHeight: '30px'
+          },
+          '.MuiDataGrid-virtualScroller': {
+            overflow: 'visible'
+          }
+        }}
+      />
+    </div>
   )
 }
-
-export default DocumentTable

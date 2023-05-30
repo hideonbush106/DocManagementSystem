@@ -5,8 +5,12 @@ import TaskAltOutlinedIcon from '@mui/icons-material/TaskAltOutlined'
 import GradingOutlinedIcon from '@mui/icons-material/GradingOutlined'
 import SignalCellularAltOutlinedIcon from '@mui/icons-material/SignalCellularAltOutlined'
 import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined'
+import { Link } from 'react-router-dom'
+import { Logout } from '@mui/icons-material'
+import useAuth from '~/hooks/useAuth'
 
 const Sidebar = () => {
+  const { logout } = useAuth()
   return (
     <Wrapper>
       <Avatar>
@@ -15,14 +19,18 @@ const Sidebar = () => {
         <p>Staff</p>
       </Avatar>
       <Menu>
-        <Option>
-          <GridViewOutlinedIcon sx={{ color: 'var(--grey-color)' }} />
-          <Text>Dashboard</Text>
-        </Option>
-        <Option>
-          <DescriptionOutlinedIcon sx={{ color: 'var(--grey-color)' }} />
-          <Text>Documents</Text>
-        </Option>
+        <Link to='/dashboard'>
+          <Option>
+            <GridViewOutlinedIcon sx={{ color: 'var(--grey-color)' }} />
+            <Text>Dashboard</Text>
+          </Option>
+        </Link>
+        <Link to='/document'>
+          <Option>
+            <DescriptionOutlinedIcon sx={{ color: 'var(--grey-color)' }} />
+            <Text>Documents</Text>
+          </Option>
+        </Link>
         <Option>
           <TaskAltOutlinedIcon sx={{ color: 'var(--grey-color)' }} />
           <Text>Pending Approvals</Text>
@@ -38,6 +46,10 @@ const Sidebar = () => {
         <Option>
           <SettingsOutlinedIcon sx={{ color: 'var(--grey-color)' }} />
           <Text>Advanced</Text>
+        </Option>
+        <Option onClick={logout}>
+          <Logout sx={{ color: 'var(--grey-color)' }} />
+          <Text>Logout</Text>
         </Option>
       </Menu>
     </Wrapper>

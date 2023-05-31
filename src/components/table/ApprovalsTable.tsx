@@ -3,7 +3,7 @@ import { DataGrid, GridColDef } from '@mui/x-data-grid'
 const columns: GridColDef[] = [
   { field: 'id', headerName: 'ID', width: 20, sortable: false, filterable: false },
   { field: 'fileName', headerName: 'File name', width: 110 },
-  { field: 'department', headerName: 'Department', width: 130 },
+  { field: 'department', headerName: 'Department', width: 130 }
 ]
 
 const rows = [

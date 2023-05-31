@@ -1,10 +1,9 @@
 import { Avatar, Image, LogOut, Menu, Option, Role, Wrapper, LinkContainer } from './Sidebar.styled'
-import { Icon, Typography } from '@mui/material'
+import { Icon, Typography, styled } from '@mui/material'
 import LogoutIcon from '@mui/icons-material/Logout'
 import { Options } from './OptionsStaff'
 import React, { useState } from 'react'
 import useAuth from '~/hooks/useAuth'
-import { styled } from '@mui/material'
 
 const Text = styled(Typography)({
   lineHeight: '1.5rem',

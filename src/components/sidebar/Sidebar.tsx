@@ -31,7 +31,7 @@ const Sidebar = () => {
               <Icon
                 sx={{
                   fontWeight: option.id === btn ? 'bold' : 'normal',
-                  color: option.id === btn ? 'var(--black-color)' : 'var(--grey-color)'
+                  color: option.id === btn ? 'var(--black-color)' : 'var(--gray-color)'
                 }}
               >
                 {React.createElement(option.icon)}
@@ -39,7 +39,7 @@ const Sidebar = () => {
               <Text
                 sx={{
                   fontWeight: option.id === btn ? 'bold' : 'normal',
-                  color: option.id === btn ? 'var(--black-color)' : 'var(--grey-color)'
+                  color: option.id === btn ? 'var(--black-color)' : 'var(--gray-color)'
                 }}
               >
                 {option.text}

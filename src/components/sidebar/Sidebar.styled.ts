@@ -34,7 +34,6 @@ export const Menu = styled.div`
 `
 export const Option = styled.div`
   padding: 2vh 0;
-  color: var(--grey-color);
 `
 export const LinkContainer = styled(Link)`
   display: flex;

@@ -20,7 +20,7 @@ export const ItemDiv = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  /* border-right: 0.5px solid var(--grey-color); */
+  /* border-right: 0.5px solid var(--gray-color); */
   /* margin-right: 20px; */
   /* &:last-of-type {
     border-right: none;
@@ -29,7 +29,7 @@ export const ItemDiv = styled.div`
 export const LineStyled = styled.div`
   width: 0.5px;
   height: 50px;
-  background-color: var(--grey-color);
+  background-color: var(--gray-color);
 `
 export const IconDiv = styled.div<IconDivProps>`
   width: 40px;
@@ -69,7 +69,7 @@ export const TextDiv = styled.div`
 `
 
 export const TextTitle = styled.p`
-  color: var(--grey-color);
+  color: var(--gray-color);
   font-size: 14px;
   padding-bottom: 10px;
 `

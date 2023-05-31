@@ -3,7 +3,7 @@ import { DataGrid, GridColDef } from '@mui/x-data-grid'
 const columns: GridColDef[] = [
   { field: 'id', headerName: 'ID', width: 20, sortable: false, filterable: false },
   { field: 'fileName', headerName: 'File name', width: 120 },
-  { field: 'requestBy', headerName: 'Request By', width: 140 }
+  { field: 'requestBy', headerName: 'Request By', width: 180 }
 ]
 
 const rows = [
@@ -12,11 +12,12 @@ const rows = [
   { id: 3, fileName: 'Bill', requestBy: ' Duc Anh - Sales' }
 ]
 
-export default function RequestsTable() {
+const RequestsTable = () => {
   return (
     <div style={{ height: 180, width: '100%', margin: '10px 0' }}>
       <DataGrid
         columnHeaderHeight={30}
+        disableColumnMenu
         rowHeight={27}
         rows={rows}
         columns={columns}
@@ -34,3 +35,4 @@ export default function RequestsTable() {
     </div>
   )
 }
+export default RequestsTable

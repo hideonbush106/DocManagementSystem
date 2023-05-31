@@ -12,7 +12,7 @@ export const DashboardWrapper = styled.section`
 
 export const DocumentContainer = styled.div`
   width: 55.5vw;
-  height: 40vh;
+  height: 43vh;
   background-color: var(--white-color);
   border-radius: 5px;
   margin-bottom: 1.2rem;

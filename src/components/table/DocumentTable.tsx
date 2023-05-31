@@ -1,10 +1,10 @@
-import { DataGrid, GridColDef, GridValueGetterParams } from '@mui/x-data-grid'
+import { DataGrid, GridColDef, GridRenderCellParams } from '@mui/x-data-grid'
 
 const columns: GridColDef[] = [
   { field: 'id', headerName: 'ID', width: 20, sortable: false, filterable: false },
   { field: 'fileName', headerName: 'File name', width: 110 },
   { field: 'department', headerName: 'Department', width: 130 },
-  { field: 'location', headerName: 'Location', width: 180 },
+  { field: 'location', headerName: 'Location', width: 240 },
   {
     field: 'category',
     headerName: 'Category',
@@ -13,11 +13,18 @@ const columns: GridColDef[] = [
   {
     field: 'status',
     headerName: 'Status',
-    sortable: false,
     width: 90,
-    valueGetter: (params: GridValueGetterParams) => {
-      const statusValue = `${params.row.status}`
-      return statusValue
+    renderCell: (params: GridRenderCellParams) => {
+      const status = params.value as string
+
+      let statusColor = ''
+      if (status === 'Available') {
+        statusColor = 'var(--primary-color)'
+      } else if (status === 'Lending') {
+        statusColor = 'var(--red-color)'
+      }
+
+      return <span style={{ color: statusColor, fontWeight: '500' }}>{status}</span>
     }
   }
 ]
@@ -29,7 +36,7 @@ const rows = [
     department: 'Human Resources',
     location: 'Room 001, Locker 1, Folder Contract',
     category: 'Contract',
-    status: 'Pending'
+    status: 'Lending'
   },
   {
     id: 2,
@@ -45,7 +52,7 @@ const rows = [
     department: 'Accountant',
     location: 'Room 006, Locker 2, Folder Report',
     category: 'Bill',
-    status: 'Pending'
+    status: 'Lending'
   },
   {
     id: 4,
@@ -53,7 +60,7 @@ const rows = [
     department: 'Human Resources',
     location: 'Room 001, Locker 1, Folder Contract',
     category: 'Contract',
-    status: 'Pending'
+    status: 'Available'
   },
   {
     id: 5,
@@ -69,7 +76,7 @@ const rows = [
     department: 'Sales',
     location: 'Room 003, Locker 1, Folder Report',
     category: 'Report',
-    status: 'Pending'
+    status: 'Lending'
   },
   {
     id: 8,
@@ -77,16 +84,17 @@ const rows = [
     department: 'Human Resources',
     location: 'Room 001, Locker 1, Folder Contract',
     category: 'Contract',
-    status: 'Pending'
+    status: 'Lending'
   }
 ]
 
-export default function DataTable() {
+const DocumentTable = () => {
   return (
-    <div style={{ height: 200, width: '100%', margin: '10px 0' }}>
+    <div style={{ height: 260, width: '100%', margin: '10px 0' }}>
       <DataGrid
-        columnHeaderHeight={30}
-        rowHeight={27}
+        columnHeaderHeight={40}
+        rowHeight={35}
+        disableColumnMenu
         rows={rows}
         columns={columns}
         initialState={{
@@ -126,3 +134,5 @@ export default function DataTable() {
     </div>
   )
 }
+
+export default DocumentTable

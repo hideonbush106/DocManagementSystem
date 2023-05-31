@@ -13,7 +13,10 @@ import { Typography } from '@mui/material'
 import { ViewButton } from '~/components/button/Button'
 import DocumentTable from '~/components/table/DocumentTable'
 import { Link } from 'react-router-dom'
-
+import RequestsTable from '~/components/table/RequestsTable'
+import ApprovalsTable from '~/components/table/ApprovalsTable'
+import SummaryChart from '~/components/chart/SummaryChart'
+import SpaceChart from '~/components/chart/SpaceChart'
 const Subtitle = styled(Typography)({
   fontWeight: '600',
   fontSize: '0.85rem',
@@ -40,8 +43,9 @@ const Dashboard = () => {
           <DocumentTable />
         </DocumentContainer>
         <SumaryContainer>
-          <Subtitle variant='h6'>Summary</Subtitle>
+          <Subtitle variant='h6'>Document Summary</Subtitle>
           <TitleUnderline />
+          <SummaryChart />
         </SumaryContainer>
         <RequestContainer>
           <SubtitleWrapper>
@@ -49,10 +53,11 @@ const Dashboard = () => {
               <Subtitle variant='h6'>Pending Approvals</Subtitle>
               <TitleUnderline />
             </div>
-            <Link to='/'>
+            <Link to='/pending-approval'>
               <ViewButton text='View' />
             </Link>
           </SubtitleWrapper>
+          <ApprovalsTable />
         </RequestContainer>
         <RequestContainer>
           <SubtitleWrapper>
@@ -60,16 +65,16 @@ const Dashboard = () => {
               <Subtitle variant='h6'>Borrow Requests</Subtitle>
               <TitleUnderline />
             </div>
-            <Link to='/'>
+            <Link to='/request'>
               <ViewButton text='View' />
             </Link>
           </SubtitleWrapper>
+          <RequestsTable />
         </RequestContainer>
         <StatisticContainer>
-          <Subtitle variant='h6' sx={{ fontWeight: '600', fontSize: '0.85rem', letterSpacing: '1.2px' }}>
-            Monthly Statistics
-          </Subtitle>
+          <Subtitle variant='h6'>Available Space</Subtitle>
           <TitleUnderline />
+          <SpaceChart />
         </StatisticContainer>
       </DashboardWrapper>
     </>

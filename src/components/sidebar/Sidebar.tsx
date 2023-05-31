@@ -1,7 +1,7 @@
 import { Avatar, Image, LogOut, Menu, Option, Role, Text, Wrapper, LinkContainer } from './Sidebar.styled'
 import { Icon, Typography } from '@mui/material'
 import LogoutIcon from '@mui/icons-material/Logout'
-import { Options } from './Options'
+import { Options } from './OptionsStaff'
 import React from 'react'
 import useAuth from '~/hooks/useAuth'
 

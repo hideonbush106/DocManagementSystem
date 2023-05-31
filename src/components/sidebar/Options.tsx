@@ -1,6 +1,4 @@
-import Icon from '@mui/icons-material/SettingsOutlined'
 import {
-  SvgIconComponent,
   GridViewOutlined,
   DescriptionOutlined,
   TaskAltOutlined,
@@ -10,7 +8,7 @@ import {
 } from '@mui/icons-material'
 
 export const Options = [
-  { id: 1, text: 'Dashboard', link: '', icon: GridViewOutlined },
+  { id: 1, text: 'Dashboard', link: 'dashboard', icon: GridViewOutlined },
   { id: 2, text: 'Documents', link: 'document', icon: DescriptionOutlined },
   { id: 3, text: 'Pending Approvals', link: 'document', icon: TaskAltOutlined },
   { id: 4, text: 'Requests', link: 'document', icon: GradingOutlined },

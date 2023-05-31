@@ -12,7 +12,7 @@ const Sidebar = () => {
       <Avatar>
         <Image src={String(user?.photoURL)} alt='Your Avatar' />
         <Typography align='center' sx={{ width: '100%', fontWeight: 600 }}>
-          Le Do Duc Anh
+          {user?.displayName}
         </Typography>
         <Role>Staff</Role>
       </Avatar>

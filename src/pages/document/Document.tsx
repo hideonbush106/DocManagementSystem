@@ -1,10 +1,13 @@
 import SearchField from '~/components/TextField/SearchField'
 import { ImportButton, ReturnButton } from '~/components/button/Button'
-import { ButtonWrapper, DocumentWrapper, NavWrapper, TreeWarpper } from './Document.styled'
+import { ButtonWrapper, DocumentGrid, DocumentWrapper, NavWrapper, TreeWarpper } from './Document.styled'
 import { IconDiv } from '~/components/headerBar/HeaderBar.styled'
 import TreeView from '@mui/lab/TreeView'
 import { Apartment, ChevronRight, ExpandMore, Folder, Work } from '@mui/icons-material'
 import DocumentTreeItem from '~/components/treeItem/DocumentTreeItem'
+import { Breadcrumbs, Card, Grid } from '@mui/material'
+import { fakeData } from '~/shared/fakeData'
+import { Link } from 'react-router-dom'
 
 const Document = () => {
   return (
@@ -64,6 +67,37 @@ const Document = () => {
           </DocumentTreeItem>
         </TreeView>
       </TreeWarpper>
+      <DocumentGrid>
+        <Breadcrumbs separator='>'>
+          <Link to='/'>Human Resources</Link>
+          <Link to='/'>Room 001</Link>
+          <Link to='/'>Locker</Link>
+        </Breadcrumbs>
+        <Grid container spacing={3} columnSpacing={4}>
+          {fakeData.map((item, index) => (
+            <Grid key={index} item md={4}>
+              <Link to={`/room?id=${item.room[index].id}`}>
+                <Card sx={{ p: '1rem' }}>{item.department}</Card>
+              </Link>
+            </Grid>
+          ))}
+          {/* <Grid item md={4}>
+          <Card sx={{ p: '1rem' }}>Phong</Card>
+        </Grid>
+        <Grid item md={4}>
+          <Card sx={{ p: '1rem' }}>Phong</Card>
+        </Grid>
+        <Grid item md={4}>
+          <Card sx={{ p: '1rem' }}>Phong</Card>
+        </Grid>
+        <Grid item md={4}>
+          <Card sx={{ p: '1rem' }}>Phong</Card>
+        </Grid>
+        <Grid item md={4}>
+          <Card sx={{ p: '1rem' }}>Phong</Card>
+        </Grid> */}
+        </Grid>
+      </DocumentGrid>
     </DocumentWrapper>
   )
 }

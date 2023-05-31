@@ -3,9 +3,8 @@ import { DataGridPro, GridColDef } from '@mui/x-data-grid-pro'
 
 const columns: GridColDef[] = [
   { field: 'id', headerName: 'ID', width: 20, sortable: false, filterable: false },
-  { field: 'fileName', headerName: 'File name', width: 150 },
-  { field: 'createAt', headerName: 'Create at', width: 160 }
-  // { field: 'more', headerName: '', width: 30 }
+  { field: 'fileName', headerName: 'File name', width: 110 },
+  { field: 'department', headerName: 'Department', width: 130 }
 ]
 
 const rows = [

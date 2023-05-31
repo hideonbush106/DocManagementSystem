@@ -8,12 +8,12 @@ export const Wrapper = styled.section`
 `
 
 export const Avatar = styled.div`
-  height: 150px;
+  height: 18vh;
   display: flex;
   justify-content: space-between;
   align-items: center;
   flex-direction: column;
-  margin: 2rem 0 1rem;
+  margin: 3vh 0;
 `
 export const Image = styled.img`
   width: 90px;
@@ -30,26 +30,21 @@ export const Role = styled.p`
 export const Menu = styled.div`
   display: flex;
   flex-direction: column;
-  margin-left: 2rem;
+  margin-left: 2vw;
 `
 export const Option = styled.div`
-  padding: 1rem 0;
+  padding: 2vh 0;
   color: var(--grey-color);
 `
 export const LinkContainer = styled(Link)`
   display: flex;
   align-items: center;
 `
-export const Text = styled.p`
-  line-height: 1.5rem;
-  margin-left: 0.5rem;
-  font-size: 14px;
-`
 export const LogOut = styled.div`
   display: flex;
-  margin-left: 3rem;
+  margin-left: 4vw;
   width: 100%;
   position: absolute;
-  bottom: 2rem;
+  bottom: 3vh;
   cursor: pointer;
 `

@@ -1,12 +1,21 @@
-import { Avatar, Image, LogOut, Menu, Option, Role, Text, Wrapper, LinkContainer } from './Sidebar.styled'
+import { Avatar, Image, LogOut, Menu, Option, Role, Wrapper, LinkContainer } from './Sidebar.styled'
 import { Icon, Typography } from '@mui/material'
 import LogoutIcon from '@mui/icons-material/Logout'
 import { Options } from './OptionsStaff'
-import React from 'react'
+import React, { useState } from 'react'
 import useAuth from '~/hooks/useAuth'
+import { styled } from '@mui/material'
+
+const Text = styled(Typography)({
+  lineHeight: '1.5rem',
+  fontSize: '14px',
+  paddingLeft: '0.5rem'
+})
 
 const Sidebar = () => {
   const { user, logout } = useAuth()
+  const [btn, setButton] = useState<number | null>(1)
+
   return (
     <Wrapper>
       <Avatar>
@@ -19,15 +28,29 @@ const Sidebar = () => {
       <Menu>
         {Options.map((option) => (
           <Option key={option.id}>
-            <LinkContainer to={`/${option.link}`}>
-              <Icon sx={{ scale: '0.9' }}>{React.createElement(option.icon)}</Icon>
-              <Text>{option.text}</Text>
+            <LinkContainer to={`/${option.link}`} onClick={() => setButton(option.id)}>
+              <Icon
+                sx={{
+                  fontWeight: option.id === btn ? 'bold' : 'normal',
+                  color: option.id === btn ? 'var(--black-color)' : 'var(--grey-color)'
+                }}
+              >
+                {React.createElement(option.icon)}
+              </Icon>
+              <Text
+                sx={{
+                  fontWeight: option.id === btn ? 'bold' : 'normal',
+                  color: option.id === btn ? 'var(--black-color)' : 'var(--grey-color)'
+                }}
+              >
+                {option.text}
+              </Text>
             </LinkContainer>
           </Option>
         ))}
       </Menu>
       <LogOut onClick={logout}>
-        <LogoutIcon sx={{ color: 'var(--red-color)', scale: '0.9' }} />
+        <LogoutIcon sx={{ color: 'var(--red-color)' }} />
         <Typography sx={{ color: 'var(--red-color)', fontWeight: 600, paddingLeft: '0.5rem' }}>Log Out</Typography>
       </LogOut>
     </Wrapper>

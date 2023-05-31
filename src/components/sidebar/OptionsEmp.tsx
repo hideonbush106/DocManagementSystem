@@ -4,5 +4,5 @@ export const Options = [
   { id: 1, text: 'Dashboard', link: 'dashboard', icon: GridViewOutlined },
   { id: 2, text: 'Documents', link: 'document', icon: DescriptionOutlined },
   { id: 4, text: 'Requests', link: 'request', icon: GradingOutlined },
-  { id: 5, text: 'Statistic', link: 'statistic', icon: SignalCellularAltOutlined }
+  { id: 5, text: 'Statistics', link: 'statistic', icon: SignalCellularAltOutlined }
 ]

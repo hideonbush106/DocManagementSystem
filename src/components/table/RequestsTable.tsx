@@ -2,7 +2,7 @@ import { DataGrid, GridColDef } from '@mui/x-data-grid'
 
 const columns: GridColDef[] = [
   { field: 'id', headerName: 'ID', width: 20, sortable: false, filterable: false },
-  { field: 'fileName', headerName: 'File name', width: 120 },
+  { field: 'fileName', headerName: 'File name', width: 140 },
   { field: 'requestBy', headerName: 'Request By', width: 180 }
 ]
 

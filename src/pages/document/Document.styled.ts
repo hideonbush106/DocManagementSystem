@@ -24,7 +24,7 @@ export const ButtonWrapper = styled.div`
 export const TreeWarpper = styled.div`
   display: flex;
   background: white;
-  width: 30%;
+  width: 25%;
   border-radius: 5px;
   height: 70vh;
   overflow-y: scroll;
@@ -32,7 +32,7 @@ export const TreeWarpper = styled.div`
 `
 
 export const DocumentGrid = styled.div`
-  width: 65%;
-  height: fit-content;
+  width: 70%;
+  height: 70vh;
   margin-left: 2rem;
 `

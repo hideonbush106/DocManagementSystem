@@ -13,10 +13,10 @@ export const publicRoutes = [{ path: '/', component: Login }]
 export const privateRoutes = [
   { path: '/welcome', component: Welcome },
   { path: '/test', component: Test },
-  { path: '/dashboard', component: Dashboard },
-  { path: '/document', component: Document },
-  { path: '/request', component: Requests },
-  { path: '/pending-approval', component: PendingApprovals },
-  { path: '/statistic', component: Statistic },
-  { path: '/advanced', component: Advanced }
+  { path: '/dashboard', component: Dashboard, excludeTitle: true },
+  { path: '/document', component: Document, excludeTitle: true },
+  { path: '/request', component: Requests, excludeTitle: true },
+  { path: '/pending-approval', component: PendingApprovals, excludeTitle: false },
+  { path: '/statistic', component: Statistic, excludeTitle: true },
+  { path: '/advanced', component: Advanced, excludeTitle: true }
 ]

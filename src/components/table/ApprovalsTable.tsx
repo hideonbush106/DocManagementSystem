@@ -1,9 +1,11 @@
-import { DataGrid, GridColDef } from '@mui/x-data-grid'
+import { DataGridPro, GridColDef } from '@mui/x-data-grid-pro'
+// import MoreVertOutlinedIcon from '@mui/icons-material/MoreVertOutlined'
 
 const columns: GridColDef[] = [
   { field: 'id', headerName: 'ID', width: 20, sortable: false, filterable: false },
-  { field: 'fileName', headerName: 'File name', width: 120 },
-  { field: 'createAt', headerName: 'Create at', width: 190 }
+  { field: 'fileName', headerName: 'File name', width: 150 },
+  { field: 'createAt', headerName: 'Create at', width: 160 }
+  // { field: 'more', headerName: '', width: 30 }
 ]
 
 const rows = [
@@ -14,7 +16,7 @@ const rows = [
 const ApprovalsTable = () => {
   return (
     <div style={{ height: 200, width: '100%', margin: '10px 0' }}>
-      <DataGrid
+      <DataGridPro
         columnHeaderHeight={30}
         disableColumnMenu
         rowHeight={27}

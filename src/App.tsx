@@ -20,9 +20,17 @@ const App = () => {
                   key={index}
                   path={route.path}
                   element={
-                    <Layout title={route.component.name}>
-                      <PrivateRoute Component={route.component} />
-                    </Layout>
+                    <>
+                      {route.excludeTitle ? (
+                        <Layout title={route.component.name}>
+                          <PrivateRoute Component={route.component} />
+                        </Layout>
+                      ) : (
+                        <Layout>
+                          <PrivateRoute Component={route.component} />
+                        </Layout>
+                      )}
+                    </>
                   }
                 />
               )

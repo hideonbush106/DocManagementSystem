@@ -33,7 +33,7 @@ const Dashboard = () => {
         <DocumentContainer>
           <SubtitleWrapper>
             <div className='title'>
-              <Subtitle variant='h6'>Documents</Subtitle>
+              <Subtitle variant='h6'>Recent Documents</Subtitle>
               <TitleUnderline />
             </div>
             <Link to='/document'>
@@ -43,7 +43,7 @@ const Dashboard = () => {
           <DocumentTable />
         </DocumentContainer>
         <SumaryContainer>
-          <Subtitle variant='h6'>Document Summary</Subtitle>
+          <Subtitle variant='h6'>Document Summary (Files) </Subtitle>
           <TitleUnderline />
           <SummaryChart />
         </SumaryContainer>
@@ -72,7 +72,7 @@ const Dashboard = () => {
           <RequestsTable />
         </RequestContainer>
         <StatisticContainer>
-          <Subtitle variant='h6'>Available Space</Subtitle>
+          <Subtitle variant='h6'>Available Space (Pages) </Subtitle>
           <TitleUnderline />
           <SpaceChart />
         </StatisticContainer>

@@ -3,7 +3,7 @@ import { InputAdornment } from '@mui/material'
 import { SearchFieldStyles } from './SearchField.styled'
 
 interface Props {
-  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void
+  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void
 }
 
 const SearchField = (props: Props) => {

@@ -8,30 +8,29 @@ export const Wrapper = styled.section`
 `
 
 export const Avatar = styled.div`
-  height: 180px;
+  height: 150px;
   display: flex;
-  justify-content: space-evenly;
+  justify-content: space-between;
   align-items: center;
   flex-direction: column;
-  margin: 2rem 0;
+  margin: 2rem 0 1rem;
 `
 export const Image = styled.img`
-  width: 100px;
-  height: 100px;
+  width: 90px;
+  height: 90px;
   border-radius: 50%;
   background-color: gray;
   overflow: hidden;
 `
 export const Role = styled.p`
   color: var(--grey-color);
-  text-align: center;
   font-size: 14px;
 `
 
 export const Menu = styled.div`
   display: flex;
   flex-direction: column;
-  margin: 0 2rem 0 2.5rem;
+  margin-left: 2rem;
 `
 export const Option = styled.div`
   padding: 1rem 0;
@@ -43,13 +42,12 @@ export const LinkContainer = styled(Link)`
 `
 export const Text = styled.p`
   line-height: 1.5rem;
-  margin-left: 1rem;
-  font-size: 15px;
+  margin-left: 0.5rem;
+  font-size: 14px;
 `
 export const LogOut = styled.div`
   display: flex;
-  justify-content: center;
-  align-items: center;
+  margin-left: 3rem;
   width: 100%;
   position: absolute;
   bottom: 2rem;

@@ -27,8 +27,8 @@ const Sidebar = () => {
         ))}
       </Menu>
       <LogOut onClick={logout}>
-        <LogoutIcon sx={{ color: 'var(--red-color)' }} />
-        <Typography sx={{ color: 'var(--red-color)', fontWeight: 600, paddingLeft: '1rem' }}>Log Out</Typography>
+        <LogoutIcon sx={{ color: 'var(--red-color)', scale: '0.9' }} />
+        <Typography sx={{ color: 'var(--red-color)', fontWeight: 600, paddingLeft: '0.5rem' }}>Log Out</Typography>
       </LogOut>
     </Wrapper>
   )

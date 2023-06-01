@@ -36,7 +36,7 @@ const AuthProvider = ({ children }: Props) => {
       const idToken = await result.user.getIdToken()
       getUserLogin(idToken)
         .then(() => {
-          navigate('/welcome')
+          navigate('/dashboard')
           localStorage.setItem('isLogin', 'TRUE')
         })
         .catch((error: AxiosError) => {

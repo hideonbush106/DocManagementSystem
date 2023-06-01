@@ -12,7 +12,7 @@ const Login = () => {
   useEffect(() => {
     const isLogin = localStorage.getItem('isLogin')
     if (isLogin) {
-      navigate('/welcome')
+      navigate('/dashboard')
     }
   }, [navigate])
   return (

@@ -4,8 +4,10 @@ export const theme = createTheme({
   palette: {
     primary: {
       main: '#0D66FF',
+      dark: '#1152C1',
       contrastText: '#000000'
     },
+
     secondary: {
       //sidebar
       main: '#D0DBEE59',

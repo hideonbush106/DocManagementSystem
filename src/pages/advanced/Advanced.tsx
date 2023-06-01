@@ -1,4 +1,3 @@
-
 const Advanced = () => {
   return <div>Advanced</div>
 }

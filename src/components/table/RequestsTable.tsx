@@ -1,9 +1,22 @@
-import { DataGrid, GridColDef } from '@mui/x-data-grid'
+import { DataGrid, GridColDef, GridCellParams } from '@mui/x-data-grid'
+import ActionsCell from './ActionCell'
 
 const columns: GridColDef[] = [
-  { field: 'id', headerName: 'ID', width: 20, sortable: false, filterable: false },
-  { field: 'fileName', headerName: 'File name', width: 140 },
-  { field: 'requestBy', headerName: 'Request By', width: 180 }
+  { field: 'id', headerName: 'No.', width: 20, sortable: false, filterable: false },
+  { field: 'fileName', headerName: 'File name', width: 110 },
+  { field: 'requestBy', headerName: 'Request By', width: 180 },
+  {
+    field: 'actions',
+    headerName: '',
+    width: 20,
+    sortable: false,
+    filterable: false,
+    align: 'left',
+    renderCell: (params: GridCellParams) => {
+      const menuItems = [{ text: 'Detail', onClick: () => console.log('Edit clicked') }]
+      return <ActionsCell id={params.id as number} menuItems={menuItems} />
+    }
+  }
 ]
 
 const rows = [
@@ -29,6 +42,9 @@ const RequestsTable = () => {
             borderTop: 'none',
             maxHeight: '30px',
             minHeight: '30px'
+          },
+          '.MuiDataGrid-virtualScroller': {
+            overflow: 'visible'
           }
         }}
       />

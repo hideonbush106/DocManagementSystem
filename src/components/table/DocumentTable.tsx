@@ -1,7 +1,7 @@
 import { DataGrid, GridColDef, GridRenderCellParams } from '@mui/x-data-grid'
 
 const columns: GridColDef[] = [
-  { field: 'id', headerName: 'ID', width: 20, sortable: false, filterable: false },
+  { field: 'id', headerName: 'No.', width: 20, sortable: false, filterable: false },
   { field: 'fileName', headerName: 'File name', width: 180 },
   { field: 'department', headerName: 'Department', width: 150 },
   { field: 'room', headerName: 'Room', width: 60, align: 'center' },

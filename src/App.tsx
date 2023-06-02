@@ -22,7 +22,7 @@ const App = () => {
                   element={
                     <>
                       {route.excludeTitle ? (
-                        <Layout title={route.component.name}>
+                        <Layout title={route.title}>
                           <PrivateRoute Component={route.component} />
                         </Layout>
                       ) : (

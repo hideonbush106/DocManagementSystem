@@ -1,5 +1,11 @@
+import RequestTab from '~/components/tab/RequestTab'
+
 const Requests = () => {
-  return <div>Request</div>
+  return (
+    <>
+      <RequestTab />
+    </>
+  )
 }
 
 export default Requests

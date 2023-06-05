@@ -8,6 +8,7 @@ import DocumentTreeItem from '~/components/treeItem/DocumentTreeItem'
 import { Breadcrumbs, Card, Grid } from '@mui/material'
 import { fakeData } from '~/shared/fakeData'
 import { Link } from 'react-router-dom'
+import Notification from '~/components/notification/Notification'
 
 const Document = () => {
   // const breadcrumbs = [
@@ -39,9 +40,7 @@ const Document = () => {
           <ImportButton text='New Document' />
           <ReturnButton text='Return Document' />
         </ButtonWrapper>
-        <IconDiv white style={{ cursor: 'pointer' }}>
-          <img src='/assets/bell-ringing.svg' alt='' />
-        </IconDiv>
+        <Notification />
       </NavWrapper>
       <TreeWarpper>
         <TreeView

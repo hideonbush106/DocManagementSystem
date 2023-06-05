@@ -1,6 +1,7 @@
 import { HeaderWrapper, IconDiv, ItemDiv, TextTitle, TextDiv, TextContent, LineStyled } from './HeaderBar.styled'
 // import { Button } from '@mui/material'
 import { ImportButton, ReturnButton } from '../button/Button'
+import Notification from '../notification/Notification'
 const HeaderBar = () => {
   return (
     <HeaderWrapper>
@@ -35,9 +36,7 @@ const HeaderBar = () => {
       </ItemDiv>
       <ImportButton text='Import Document'></ImportButton>
       <ReturnButton text='Return Document'></ReturnButton>
-      <IconDiv white style={{ cursor: 'pointer' }}>
-        <img src='/assets/bell-ringing.svg' alt='' />
-      </IconDiv>
+      <Notification />
     </HeaderWrapper>
   )
 }

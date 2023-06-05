@@ -1,6 +1,8 @@
+import { AxiosError } from 'axios'
 import { signInWithPopup, signOut, User, UserCredential } from 'firebase/auth'
 import React, { ReactNode, useEffect } from 'react'
-import { useLocation } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
+import { getUserLogin } from '~/global/apiendpoint'
 import { auth, provider } from '~/global/firebase'
 import { notifyError } from '~/global/toastify'
 
@@ -18,51 +20,47 @@ interface Props {
 
 const AuthProvider = ({ children }: Props) => {
   const [user, setUser] = React.useState<null | User>(null)
-  const location = useLocation()
+  const navigate = useNavigate()
+
+  useEffect(() => {
+    const unsubscribe = auth.onAuthStateChanged((user) => {
+      setUser(user)
+    })
+    return () => unsubscribe()
+  }, [])
+
   const login = async () => {
     try {
       const result: UserCredential = await signInWithPopup(auth, provider)
+      //check account in database
       const idToken = await result.user.getIdToken()
-      localStorage.setItem('userAccessToken', JSON.stringify(idToken))
-      const idTokenResult = await result.user.getIdTokenResult()
-      const currentTime = Date.now()
-      const expirationTime = Date.parse(idTokenResult.expirationTime)
-      if (expirationTime < currentTime) {
-        localStorage.removeItem('userAccessToken')
-        logout()
-      }
-      window.location.href = '/welcome'
+      getUserLogin(idToken)
+        .then(() => {
+          navigate('/dashboard')
+          localStorage.setItem('isLogin', 'TRUE')
+        })
+        .catch((error: AxiosError) => {
+          if (error.response?.status === 403 || error.response?.status === 401) {
+            notifyError('Unauthorized account')
+            logout()
+          }
+        })
     } catch (error) {
       notifyError('Login failed')
+      logout()
       console.log(error)
     }
   }
 
   const logout = async () => {
-    localStorage.removeItem('userAccessToken')
     try {
+      localStorage.removeItem('isLogin')
       await signOut(auth)
-      window.location.href = '/'
+      navigate('/')
     } catch (error) {
       console.log(error)
     }
   }
-
-  useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged(async (user) => {
-      setUser(user)
-      if (user) {
-        const idTokenResult = await user.getIdTokenResult()
-        const currentTime = Date.now()
-        const expirationTime = Date.parse(idTokenResult.expirationTime)
-        if (expirationTime < currentTime) {
-          localStorage.removeItem('userAccessToken')
-          logout()
-        }
-      }
-      return () => unsubscribe()
-    })
-  }, [location])
 
   const value = { login, logout, user }
 

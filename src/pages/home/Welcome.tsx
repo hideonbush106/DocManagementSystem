@@ -1,7 +1,9 @@
 import { Button, Card } from '@mui/material'
+import { useNavigate } from 'react-router-dom'
 import useAuth from '~/hooks/useAuth'
 const Welcome = () => {
   const { user, logout } = useAuth()
+  const navagite = useNavigate()
 
   return (
     <div>
@@ -11,6 +13,12 @@ const Welcome = () => {
       </Card>
       <Button onClick={logout} variant='outlined'>
         Logout
+      </Button>
+      <Button onClick={() => navagite('/test')} variant='outlined'>
+        Test
+      </Button>
+      <Button onClick={() => navagite('/welcome')} variant='outlined'>
+        Welcome
       </Button>
     </div>
   )

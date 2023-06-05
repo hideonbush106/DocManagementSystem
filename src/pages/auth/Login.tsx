@@ -1,11 +1,20 @@
+import { useEffect } from 'react'
 import { Typography } from '@mui/material'
 import { Footer, FooterText, LoginContainer, LoginImg, OuterContainer } from './Login.styled'
 import GoogleButton from 'react-google-button'
 import { theme } from '~/global/theme'
 import useAuth from '~/hooks/useAuth'
+import { useNavigate } from 'react-router'
 
 const Login = () => {
   const { login } = useAuth()
+  const navigate = useNavigate()
+  useEffect(() => {
+    const isLogin = localStorage.getItem('isLogin')
+    if (isLogin) {
+      navigate('/dashboard')
+    }
+  }, [navigate])
   return (
     <OuterContainer>
       <LoginImg>

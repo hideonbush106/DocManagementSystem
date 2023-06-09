@@ -2,8 +2,9 @@ import { Avatar, Image, LogOut, Menu, Option, Role, Wrapper, LinkContainer } fro
 import { Icon, Typography, styled } from '@mui/material'
 import LogoutIcon from '@mui/icons-material/Logout'
 import { Options } from './OptionsStaff'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import useAuth from '~/hooks/useAuth'
+import { useLocation } from 'react-router-dom'
 
 const Text = styled(Typography)({
   lineHeight: '1.5rem',
@@ -14,6 +15,17 @@ const Text = styled(Typography)({
 const Sidebar = () => {
   const { user, logout } = useAuth()
   const [btn, setButton] = useState<number | null>(1)
+
+  const location = useLocation()
+
+  useEffect(() => {
+    const option = Options.find((option) => `/${option.link}` === location.pathname)
+    if (option) {
+      setButton(option.id)
+    } else {
+      setButton(null)
+    }
+  }, [location])
 
   return (
     <Wrapper>

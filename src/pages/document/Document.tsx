@@ -5,9 +5,11 @@ import { IconDiv } from '~/components/headerBar/HeaderBar.styled'
 import TreeView from '@mui/lab/TreeView'
 import { Apartment, ChevronRight, ExpandMore, Folder, Work } from '@mui/icons-material'
 import DocumentTreeItem from '~/components/treeItem/DocumentTreeItem'
-import { Breadcrumbs, Card, Grid } from '@mui/material'
+import { Breadcrumbs, Grid } from '@mui/material'
 import { fakeData } from '~/shared/fakeData'
 import { Link } from 'react-router-dom'
+import DocumentCard from '~/components/card/DocumentCard'
+import ApartmentIcon from '@mui/icons-material/Apartment'
 
 const Document = () => {
   // const breadcrumbs = [
@@ -90,29 +92,14 @@ const Document = () => {
           <Link to='/'>Room 001</Link>
           <Link to='/'>Locker</Link>
         </Breadcrumbs>
-        <Grid container spacing={3} columnSpacing={4} sx={{ marginTop: '0.5rem' }}>
+        <Grid container spacing={3} sx={{ marginTop: '0.5rem' }}>
           {fakeData.map((item, index) => (
-            <Grid key={index} item md={4}>
+            <Grid key={index} item xs={12} md={6} lg={4}>
               <Link to={`/room?id=${item.room[index].id}`}>
-                <Card sx={{ p: '1rem' }}>{item.department}</Card>
+                <DocumentCard name={item.department} icon={ApartmentIcon} />
               </Link>
             </Grid>
           ))}
-          <Grid item md={4}>
-            <Card sx={{ p: '1rem' }}>Accountant</Card>
-          </Grid>
-          <Grid item md={4}>
-            <Card sx={{ p: '1rem' }}>Phong</Card>
-          </Grid>
-          <Grid item md={4}>
-            <Card sx={{ p: '1rem' }}>Phong</Card>
-          </Grid>
-          <Grid item md={4}>
-            <Card sx={{ p: '1rem' }}>Phong</Card>
-          </Grid>
-          <Grid item md={4}>
-            <Card sx={{ p: '1rem' }}>Phong</Card>
-          </Grid>
         </Grid>
       </DocumentGrid>
     </DocumentWrapper>

@@ -172,7 +172,6 @@ const ApprovalsTable: React.FC<ApprovalsTableProps> = ({ view }) => {
         field: 'action',
         headerName: 'Action',
         flex: 0,
-        resizable: true,
         sortable: false,
         filterable: false,
         headerAlign: 'center',
@@ -182,17 +181,17 @@ const ApprovalsTable: React.FC<ApprovalsTableProps> = ({ view }) => {
             <Button
               variant='outlined'
               size='small'
-              style={{ padding: 2, fontSize: '12px' }}
+              style={{ minWidth: 50, height: 27, padding: 0 }}
               onClick={() => console.log('Action clicked')}
             >
-              Confirm
+              <CheckRoundedIcon />
             </Button>
           </Link>
         )
       }
     ]
     pageSize = 5
-    rowHeight = 32
+    rowHeight = 35
   } else if (view === 'full') {
     columns = [
       {
@@ -205,7 +204,7 @@ const ApprovalsTable: React.FC<ApprovalsTableProps> = ({ view }) => {
         align: 'center'
       },
       { field: 'fileName', headerName: 'File name', flex: 1 },
-      { field: 'department', headerName: 'Department', width: 140 },
+      { field: 'department', headerName: 'Department', flex: 1 },
       { field: 'room', headerName: 'Room', width: 100, headerAlign: 'center', align: 'center' },
       { field: 'locker', headerName: 'Locker', width: 100, headerAlign: 'center', align: 'center' },
       { field: 'folder', headerName: 'Folder', width: 100, headerAlign: 'center', align: 'center' },
@@ -224,7 +223,7 @@ const ApprovalsTable: React.FC<ApprovalsTableProps> = ({ view }) => {
             <Button
               endIcon={<CheckRoundedIcon />}
               size='small'
-              style={{ padding: '5px 10px' }}
+              style={{ padding: '7px 10px', fontWeight: 600, fontSize: 12 }}
               variant='outlined'
               onClick={() => console.log('Action clicked')}
             >
@@ -250,11 +249,10 @@ const ApprovalsTable: React.FC<ApprovalsTableProps> = ({ view }) => {
       }
     ]
   }
-
   return (
-    <div style={{ width: '100%', backgroundColor: 'white', borderRadius: 10 }}>
+    <div style={{ width: '100%', height: '100%', borderRadius: 5 }}>
       <DataGrid
-        columnHeaderHeight={rowHeight}
+        columnHeaderHeight={rowHeight + 5}
         disableColumnMenu
         hideFooterSelectedRowCount
         rowHeight={rowHeight}
@@ -268,17 +266,26 @@ const ApprovalsTable: React.FC<ApprovalsTableProps> = ({ view }) => {
             paginationModel: { page: 0, pageSize: pageSize }
           }
         }}
+        hideFooter={view === 'dashboard'}
+        autoPageSize={true}
         sx={{
           border: 'none',
-          fontSize: '12px',
+          fontSize: '12px', // default: 14px
           '.MuiDataGrid-footerContainer': {
             borderTop: 'none',
-            maxHeight: rowHeight,
-            minHeight: rowHeight
+            maxHeight: rowHeight - 10,
+            minHeight: rowHeight - 10
           },
           '.MuiDataGrid-virtualScroller': {
             overflow: 'visible'
+          },
+          '.MuiToolbar-root': {
+            minHeight: rowHeight
           }
+        }}
+        style={{
+          backgroundColor: view === 'dashboard' ? 'transparent' : 'white',
+          paddingTop: view === 'dashboard' ? 10 : 0
         }}
       />
     </div>

@@ -7,11 +7,7 @@ interface isMobileProps {
 }
 
 export const Wrapper = styled.div`
-<<<<<<< HEAD
   width: 19vw;
-=======
-  width: 20vw;
->>>>>>> 475782e28f8522fa60eca1ee7d88a852a9fb7704
   height: 100%;
   background-color: var(--white-color);
   position: fixed;

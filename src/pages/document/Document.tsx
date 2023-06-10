@@ -5,28 +5,15 @@ import { IconDiv } from '~/components/headerBar/HeaderBar.styled'
 import TreeView from '@mui/lab/TreeView'
 import { Apartment, ChevronRight, ExpandMore, Folder, Work } from '@mui/icons-material'
 import DocumentTreeItem from '~/components/treeItem/DocumentTreeItem'
-import { Breadcrumbs, Card, Grid } from '@mui/material'
-import { fakeData } from '~/shared/fakeData'
-import { Link } from 'react-router-dom'
+import { Outlet } from 'react-router-dom'
+import useData from '~/hooks/useData'
+import { fakeArray } from '~/utils/fakeArray'
+import DataProvider from '~/context/DataContext'
+import { Grid, Skeleton } from '@mui/material'
 
-const Document = () => {
-  // const breadcrumbs = [
-  //   <Link underline='hover' key='1' color='inherit' href='/' onClick={handleClick}>
-  //     MUI
-  //   </Link>,
-  //   <Link
-  //     underline='hover'
-  //     key='2'
-  //     color='inherit'
-  //     href='/material-ui/getting-started/installation/'
-  //     onClick={handleClick}
-  //   >
-  //     Core
-  //   </Link>,
-  //   <Typography key='3' color='text.primary'>
-  //     Breadcrumb
-  //   </Typography>
-  // ]
+const DocumentDisplay = () => {
+  const { documentTree, loading } = useData()
+
   return (
     <DocumentWrapper>
       <NavWrapper>
@@ -44,78 +31,46 @@ const Document = () => {
         </IconDiv>
       </NavWrapper>
       <TreeWarpper>
-        <TreeView
-          defaultExpanded={['1.3', '1.1', '1.2']}
-          defaultCollapseIcon={<ExpandMore />}
-          defaultExpandIcon={<ChevronRight />}
-        >
-          <DocumentTreeItem icon={Apartment} nodeId='1.1' label='Human Resources'>
-            <DocumentTreeItem icon={Work} nodeId='1.1.1' label='Room 001'>
-              <DocumentTreeItem icon={Folder} nodeId='1.1.1.1' label='Locker'></DocumentTreeItem>
-            </DocumentTreeItem>
-            <DocumentTreeItem icon={Work} nodeId='1.1.2' label='Room 001'>
-              <DocumentTreeItem icon={Folder} nodeId='1.1.2.1' label='Locker'></DocumentTreeItem>
-            </DocumentTreeItem>
-            <DocumentTreeItem icon={Work} nodeId='1.1.3' label='Room 001'>
-              <DocumentTreeItem icon={Folder} nodeId='1.1.3.1' label='Locker'></DocumentTreeItem>
-            </DocumentTreeItem>
-          </DocumentTreeItem>
-          <DocumentTreeItem icon={Apartment} nodeId='1.2' label='Accountant'>
-            <DocumentTreeItem icon={Work} nodeId='1.2.1' label='Room 001'>
-              <DocumentTreeItem icon={Folder} nodeId='1.2.1.1' label='Locker'></DocumentTreeItem>
-            </DocumentTreeItem>
-            <DocumentTreeItem icon={Work} nodeId='1.2.2' label='Room 001'>
-              <DocumentTreeItem icon={Folder} nodeId='1.2.2.1' label='Locker'></DocumentTreeItem>
-            </DocumentTreeItem>
-            <DocumentTreeItem icon={Work} nodeId='1.2.3' label='Room 001'>
-              <DocumentTreeItem icon={Folder} nodeId='1.2.3.1' label='Locker'></DocumentTreeItem>
-            </DocumentTreeItem>
-          </DocumentTreeItem>
-          <DocumentTreeItem icon={Apartment} nodeId='1.3' label='Sale'>
-            <DocumentTreeItem icon={Work} nodeId='1.3.1' label='Room 001'>
-              <DocumentTreeItem icon={Folder} nodeId='1.3.1.1' label='Locker'></DocumentTreeItem>
-            </DocumentTreeItem>
-            <DocumentTreeItem icon={Work} nodeId='1.3.2' label='Room 001'>
-              <DocumentTreeItem icon={Folder} nodeId='1.3.2.1' label='Locker'></DocumentTreeItem>
-            </DocumentTreeItem>
-            <DocumentTreeItem icon={Work} nodeId='1.3.3' label='Room 001'>
-              <DocumentTreeItem icon={Folder} nodeId='1.3.3.1' label='Locker'></DocumentTreeItem>
-            </DocumentTreeItem>
-          </DocumentTreeItem>
+        <TreeView defaultCollapseIcon={<ExpandMore />} defaultExpandIcon={<ChevronRight />}>
+          {!loading
+            ? documentTree?.map((dept, index) => (
+                <DocumentTreeItem key={index} nodeId={dept.id} label={dept.name} icon={Apartment}>
+                  {dept.rooms.map((room, index) => (
+                    <DocumentTreeItem key={index} nodeId={room.id} label={room.name} icon={Work}>
+                      {room.lockers.map((locker, index) => (
+                        <DocumentTreeItem key={index} nodeId={locker.id} label={locker.name} icon={Folder}>
+                          {locker.folders.map((folder, index) => (
+                            <DocumentTreeItem key={index} nodeId={folder.id} label={folder.name} icon={Folder} />
+                          ))}
+                        </DocumentTreeItem>
+                      ))}
+                    </DocumentTreeItem>
+                  ))}
+                </DocumentTreeItem>
+              ))
+            : fakeArray(4).map((_, index) => <DocumentTreeItem key={index} nodeId={''} label={''} icon={Folder} />)}
         </TreeView>
       </TreeWarpper>
       <DocumentGrid>
-        <Breadcrumbs separator='>'>
-          <Link to='/'>Human Resources</Link>
-          <Link to='/'>Room 001</Link>
-          <Link to='/'>Locker</Link>
-        </Breadcrumbs>
-        <Grid container spacing={3} columnSpacing={4} sx={{ marginTop: '0.5rem' }}>
-          {fakeData.map((item, index) => (
+        {!loading ? (
+          <Outlet />
+        ) : (
+          fakeArray(6).map((_, index) => (
             <Grid key={index} item md={4}>
-              <Link to={`/room?id=${item.room[index].id}`}>
-                <Card sx={{ p: '1rem' }}>{item.department}</Card>
-              </Link>
+              <Skeleton animation='wave' variant='rounded' height='3rem' />
             </Grid>
-          ))}
-          <Grid item md={4}>
-            <Card sx={{ p: '1rem' }}>Accountant</Card>
-          </Grid>
-          <Grid item md={4}>
-            <Card sx={{ p: '1rem' }}>Phong</Card>
-          </Grid>
-          <Grid item md={4}>
-            <Card sx={{ p: '1rem' }}>Phong</Card>
-          </Grid>
-          <Grid item md={4}>
-            <Card sx={{ p: '1rem' }}>Phong</Card>
-          </Grid>
-          <Grid item md={4}>
-            <Card sx={{ p: '1rem' }}>Phong</Card>
-          </Grid>
-        </Grid>
+          ))
+        )}
       </DocumentGrid>
     </DocumentWrapper>
+  )
+}
+
+const Document = () => {
+  return (
+    <DataProvider>
+      <DocumentDisplay />
+    </DataProvider>
   )
 }
 

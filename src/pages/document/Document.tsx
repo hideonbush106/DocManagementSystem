@@ -10,23 +10,8 @@ import { Link } from 'react-router-dom'
 import Departments from './Departments'
 
 const Document = () => {
-  // const breadcrumbs = [
-  //   <Link underline='hover' key='1' color='inherit' href='/' onClick={handleClick}>
-  //     MUI
-  //   </Link>,
-  //   <Link
-  //     underline='hover'
-  //     key='2'
-  //     color='inherit'
-  //     href='/material-ui/getting-started/installation/'
-  //     onClick={handleClick}
-  //   >
-  //     Core
-  //   </Link>,
-  //   <Typography key='3' color='text.primary'>
-  //     Breadcrumb
-  //   </Typography>
-  // ]
+  const { documentTree, loading } = useData()
+
   return (
     <DocumentWrapper>
       <NavWrapper>
@@ -44,44 +29,24 @@ const Document = () => {
         </IconDiv>
       </NavWrapper>
       <TreeWarpper>
-        <TreeView
-          defaultExpanded={['1.3', '1.1', '1.2']}
-          defaultCollapseIcon={<ExpandMore />}
-          defaultExpandIcon={<ChevronRight />}
-        >
-          <DocumentTreeItem icon={Apartment} nodeId='1.1' label='Human Resources'>
-            <DocumentTreeItem icon={Work} nodeId='1.1.1' label='Room 001'>
-              <DocumentTreeItem icon={Folder} nodeId='1.1.1.1' label='Locker'></DocumentTreeItem>
-            </DocumentTreeItem>
-            <DocumentTreeItem icon={Work} nodeId='1.1.2' label='Room 001'>
-              <DocumentTreeItem icon={Folder} nodeId='1.1.2.1' label='Locker'></DocumentTreeItem>
-            </DocumentTreeItem>
-            <DocumentTreeItem icon={Work} nodeId='1.1.3' label='Room 001'>
-              <DocumentTreeItem icon={Folder} nodeId='1.1.3.1' label='Locker'></DocumentTreeItem>
-            </DocumentTreeItem>
-          </DocumentTreeItem>
-          <DocumentTreeItem icon={Apartment} nodeId='1.2' label='Accountant'>
-            <DocumentTreeItem icon={Work} nodeId='1.2.1' label='Room 001'>
-              <DocumentTreeItem icon={Folder} nodeId='1.2.1.1' label='Locker'></DocumentTreeItem>
-            </DocumentTreeItem>
-            <DocumentTreeItem icon={Work} nodeId='1.2.2' label='Room 001'>
-              <DocumentTreeItem icon={Folder} nodeId='1.2.2.1' label='Locker'></DocumentTreeItem>
-            </DocumentTreeItem>
-            <DocumentTreeItem icon={Work} nodeId='1.2.3' label='Room 001'>
-              <DocumentTreeItem icon={Folder} nodeId='1.2.3.1' label='Locker'></DocumentTreeItem>
-            </DocumentTreeItem>
-          </DocumentTreeItem>
-          <DocumentTreeItem icon={Apartment} nodeId='1.3' label='Sale'>
-            <DocumentTreeItem icon={Work} nodeId='1.3.1' label='Room 001'>
-              <DocumentTreeItem icon={Folder} nodeId='1.3.1.1' label='Locker'></DocumentTreeItem>
-            </DocumentTreeItem>
-            <DocumentTreeItem icon={Work} nodeId='1.3.2' label='Room 001'>
-              <DocumentTreeItem icon={Folder} nodeId='1.3.2.1' label='Locker'></DocumentTreeItem>
-            </DocumentTreeItem>
-            <DocumentTreeItem icon={Work} nodeId='1.3.3' label='Room 001'>
-              <DocumentTreeItem icon={Folder} nodeId='1.3.3.1' label='Locker'></DocumentTreeItem>
-            </DocumentTreeItem>
-          </DocumentTreeItem>
+        <TreeView defaultCollapseIcon={<ExpandMore />} defaultExpandIcon={<ChevronRight />}>
+          {loading
+            ? documentTree?.map((dept, index) => (
+                <DocumentTreeItem key={index} nodeId={dept.id} label={dept.name} icon={Apartment}>
+                  {dept.rooms.map((room, index) => (
+                    <DocumentTreeItem key={index} nodeId={room.id} label={room.name} icon={Work}>
+                      {room.lockers.map((locker, index) => (
+                        <DocumentTreeItem key={index} nodeId={locker.id} label={locker.name} icon={Folder}>
+                          {locker.folders.map((folder, index) => (
+                            <DocumentTreeItem key={index} nodeId={folder.id} label={folder.name} icon={Folder} />
+                          ))}
+                        </DocumentTreeItem>
+                      ))}
+                    </DocumentTreeItem>
+                  ))}
+                </DocumentTreeItem>
+              ))
+            : fakeArray(4).map((_, index) => <DocumentTreeItem key={index} nodeId={''} label={''} icon={Folder} />)}
         </TreeView>
       </TreeWarpper>
       <DocumentGrid>

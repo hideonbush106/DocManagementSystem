@@ -19,7 +19,7 @@ const Sidebar = () => {
   const location = useLocation()
 
   useEffect(() => {
-    const option = Options.find((option) => `/${option.link}` === location.pathname)
+    const option = Options.find((option) => location.pathname.includes(`/${option.link}`))
     if (option) {
       setButton(option.id)
     } else {

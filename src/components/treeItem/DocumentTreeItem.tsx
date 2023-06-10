@@ -18,7 +18,7 @@ const DocumentTreeItem = (props: Props) => {
     <TreeItem
       nodeId={props.nodeId}
       label={
-        loading ? (
+        !loading ? (
           <div style={{ display: 'flex', alignItems: 'center', padding: '0.5rem 0' }}>
             {React.createElement(props.icon)} <p style={{ marginLeft: '0.25rem' }}>{props.label}</p>
           </div>

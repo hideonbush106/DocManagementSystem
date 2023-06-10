@@ -5,12 +5,13 @@ import { IconDiv } from '~/components/headerBar/HeaderBar.styled'
 import TreeView from '@mui/lab/TreeView'
 import { Apartment, ChevronRight, ExpandMore, Folder, Work } from '@mui/icons-material'
 import DocumentTreeItem from '~/components/treeItem/DocumentTreeItem'
-import { Breadcrumbs } from '@mui/material'
-import { fakeData } from '~/shared/fakeData'
-import { Link } from 'react-router-dom'
-import DocumentCardList from '~/components/card/DocumentCardList'
+import { Outlet } from 'react-router-dom'
+import useData from '~/hooks/useData'
+import { fakeArray } from '~/utils/fakeArray'
+import DataProvider from '~/context/DataContext'
+import { Grid, Skeleton } from '@mui/material'
 
-const Document = () => {
+const DocumentDisplay = () => {
   const { documentTree, loading } = useData()
 
   return (
@@ -31,7 +32,7 @@ const Document = () => {
       </NavWrapper>
       <TreeWarpper>
         <TreeView defaultCollapseIcon={<ExpandMore />} defaultExpandIcon={<ChevronRight />}>
-          {loading
+          {!loading
             ? documentTree?.map((dept, index) => (
                 <DocumentTreeItem key={index} nodeId={dept.id} label={dept.name} icon={Apartment}>
                   {dept.rooms.map((room, index) => (
@@ -51,14 +52,25 @@ const Document = () => {
         </TreeView>
       </TreeWarpper>
       <DocumentGrid>
-        <Breadcrumbs separator='>'>
-          <Link to='/'>Human Resources</Link>
-          <Link to='/'>Room 001</Link>
-          <Link to='/'>Locker</Link>
-        </Breadcrumbs>
-        <DocumentCardList items={fakeData} type='department' />
+        {!loading ? (
+          <Outlet />
+        ) : (
+          fakeArray(6).map((_, index) => (
+            <Grid key={index} item md={4}>
+              <Skeleton animation='wave' variant='rounded' height='3rem' />
+            </Grid>
+          ))
+        )}
       </DocumentGrid>
     </DocumentWrapper>
+  )
+}
+
+const Document = () => {
+  return (
+    <DataProvider>
+      <DocumentDisplay />
+    </DataProvider>
   )
 }
 

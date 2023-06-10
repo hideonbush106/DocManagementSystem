@@ -11,6 +11,7 @@ import Department from '~/pages/document/department/Department'
 import Room from '~/pages/document/room/Room'
 import Locker from '~/pages/document/locker/Locker'
 import Folder from '~/pages/document/folder/Folder'
+import File from '~/pages/document/file/File'
 
 export const publicRoutes = [{ path: '/', component: Login }]
 
@@ -24,9 +25,14 @@ export const privateRoutes = [
     excludeTitle: true,
     children: [
       { path: '/document', component: Department, index: true },
-      { path: '/document/dept/:did', component: Room, index: false },
-      { path: '/document/dept/:did/room/:rid', component: Locker, index: false },
-      { path: '/document/dept/:did/room/:rid/locker/:fid', component: Folder, index: false }
+      { path: '/document/department/:departmentId', component: Room, index: false },
+      { path: '/document/department/:departmentId/room/:roomId', component: Locker, index: false },
+      { path: '/document/department/:departmentId/room/:roomId/locker/:lockerId', component: Folder, index: false },
+      {
+        path: '/document/department/:departmentId/room/:roomId/locker/:lockerId/folder/:folderId',
+        component: File,
+        index: false
+      }
     ]
   },
   { path: '/request', component: Requests, excludeTitle: true },

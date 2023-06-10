@@ -2,6 +2,7 @@ import { ReactNode } from 'react'
 import { MainContainer, Wrapper } from './Layout.styled'
 import Sidebar from '~/components/sidebar/Sidebar'
 import { Title } from '~/pages/dashboard/Dashboard.styled'
+import DataProvider from '~/context/DataContext'
 
 interface LayoutProps {
   children: ReactNode
@@ -10,7 +11,7 @@ interface LayoutProps {
 
 const Layout = ({ children, title }: LayoutProps) => {
   return (
-    <div>
+    <DataProvider>
       <Wrapper>
         <Sidebar />
         <MainContainer>
@@ -22,7 +23,7 @@ const Layout = ({ children, title }: LayoutProps) => {
           {children}
         </MainContainer>
       </Wrapper>
-    </div>
+    </DataProvider>
   )
 }
 

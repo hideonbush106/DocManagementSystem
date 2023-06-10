@@ -1,4 +1,3 @@
-import { Link } from 'react-router-dom'
 import styled from 'styled-components'
 
 interface isMobileProps {
@@ -7,7 +6,7 @@ interface isMobileProps {
 }
 
 export const Wrapper = styled.div`
-  width: 19vw;
+  width: 200px;
   height: 100%;
   background-color: var(--white-color);
   position: fixed;
@@ -27,21 +26,20 @@ export const SideBarWrapper = styled.div<isMobileProps>`
   ${({ mobile }) =>
     mobile &&
     `@media (max-width: 900px) {
-    display: flex;
-    align-items: center;
-    
-  }`};
+      display: flex;
+      align-items: center;
+    }`};
 
   ${({ desktop }) =>
     desktop &&
     `@media (min-width: 900px) {
-    display: flex;
-    flex-direction: column;
-  }`};
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }`};
 `
 
 export const Avatar = styled.div`
-  min-height: fit-content;
   width: 100%;
   display: flex;
   justify-content: space-between;
@@ -53,32 +51,18 @@ export const Image = styled.img`
   width: 80px;
   aspect-ratio: 1/1;
   border-radius: 50%;
-  background-color: gray;
+  background-color: var(--white-color);
+  text-align: center;
   overflow: hidden;
   margin: 20px;
 `
 //width of menu in mobile view
-export const Menu = styled.div`
-  width: 250px;
-`
-
-export const Option = styled.div`
+export const MenuMobile = styled.div`
+  width: 200px;
+  height: 100%;
   display: flex;
-`
-
-export const LinkContainer = styled(Link)`
-  width: 100%;
-  display: flex;
+  flex-direction: column;
   align-items: center;
-  padding: 15px 0;
-  padding-left: 10%;
-`
-export const LogOut = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-  position: absolute;
-  bottom: 10px;
-  cursor: pointer;
+  position: relative;
+  clear: both;
 `

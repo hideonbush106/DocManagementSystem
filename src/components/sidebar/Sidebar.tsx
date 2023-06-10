@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react'
-import { Avatar, Image, LogOut, Menu, Option, Wrapper, LinkContainer, SideBarWrapper } from './Sidebar.styled'
-import { Icon, Typography } from '@mui/material'
+import { Avatar, Image, MenuMobile, Wrapper, SideBarWrapper } from './Sidebar.styled'
+import { Typography } from '@mui/material'
 import { Options } from './OptionsStaff'
 import useAuth from '~/hooks/useAuth'
-import { useLocation } from 'react-router-dom'
+import { useLocation, Link } from 'react-router-dom'
 import Drawer from '@mui/material/Drawer'
 import Button from '@mui/material/Button'
 import MenuIcon from '@mui/icons-material/Menu'
@@ -12,6 +12,11 @@ import LogoutIcon from '@mui/icons-material/Logout'
 const Sidebar = () => {
   const { user, logout } = useAuth()
   const [btn, setButton] = useState<number | null>(1) //dashboard is default option
+
+  const handleClick = (id: number) => {
+    setButton(id)
+    window.scrollTo(0, 0)
+  }
 
   //set option bold when navigate to its address
   const location = useLocation()
@@ -37,42 +42,54 @@ const Sidebar = () => {
 
   //menu for mobile view
   const menu = () => (
-    <Menu onClick={toggleDrawer(false)}>
+    <MenuMobile onClick={toggleDrawer(false)}>
       <Avatar>
         <Image src={String(user?.photoURL)} alt='Your Avatar' />
-        <Typography align='center' sx={{ width: '100%', fontWeight: 600 }} whiteSpace={'nowrap'}>
+        <Typography align='center' sx={{ width: '100%', fontWeight: 600 }}>
           {user?.displayName}
         </Typography>
         <Typography color={'var(--gray-color)'}>Staff</Typography>
       </Avatar>
       {Options.map((option) => (
-        <Option key={option.id}>
-          <LinkContainer to={`/${option.link}`} onClick={() => setButton(option.id)}>
-            <Icon
-              sx={{
-                fontWeight: option.id === btn ? 'bold' : 'normal',
-                color: option.id === btn ? 'var(--black-color)' : 'var(--gray-color)'
-              }}
-            >
-              {React.createElement(option.icon)}
-            </Icon>
-            <Typography
-              sx={{
-                fontWeight: option.id === btn ? 'bold' : 'normal',
-                color: option.id === btn ? 'var(--black-color)' : 'var(--gray-color)',
-                paddingLeft: '0.5rem'
-              }}
-            >
-              {option.text}
-            </Typography>
-          </LinkContainer>
-        </Option>
+        <Link
+          key={option.id}
+          to={`/${option.link}`}
+          style={{
+            width: '100%',
+            minHeight: 'fit-content'
+          }}
+        >
+          <Button
+            onClick={() => handleClick(option.id)}
+            sx={{
+              width: '100%',
+              height: '100%',
+              color: option.id === btn ? 'var(--white-color)' : 'var(--black-light-color)',
+              borderRadius: 0,
+              padding: '5% 10%',
+              justifyContent: 'flex-start',
+              textTransform: 'none'
+            }}
+            startIcon={React.createElement(option.icon)}
+            variant={option.id === btn ? 'contained' : 'text'}
+          >
+            {option.text}
+          </Button>
+        </Link>
       ))}
-      <LogOut onClick={logout}>
-        <LogoutIcon sx={{ color: 'var(--red-color)' }} />
-        <Typography sx={{ color: 'var(--red-color)', fontWeight: 600, paddingLeft: '0.5rem' }}>Log Out</Typography>
-      </LogOut>
-    </Menu>
+      <Button
+        startIcon={<LogoutIcon />}
+        sx={{ color: 'var(--red-color)' }}
+        style={{
+          position: 'fixed',
+          bottom: 10,
+          textTransform: 'none'
+        }}
+        onClick={logout}
+      >
+        Log Out
+      </Button>
+    </MenuMobile>
   )
   return (
     <Wrapper>
@@ -93,32 +110,44 @@ const Sidebar = () => {
           <Typography color={'var(--gray-color)'}>Staff</Typography>
         </Avatar>
         {Options.map((option) => (
-          <Option key={option.id}>
-            <LinkContainer to={`/${option.link}`} onClick={() => setButton(option.id)}>
-              <Icon
-                sx={{
-                  fontWeight: option.id === btn ? 'bold' : 'normal',
-                  color: option.id === btn ? 'var(--black-color)' : 'var(--gray-color)'
-                }}
-              >
-                {React.createElement(option.icon)}
-              </Icon>
-              <Typography
-                sx={{
-                  fontWeight: option.id === btn ? 'bold' : 'normal',
-                  color: option.id === btn ? 'var(--black-color)' : 'var(--gray-color)',
-                  paddingLeft: '0.5rem'
-                }}
-              >
-                {option.text}
-              </Typography>
-            </LinkContainer>
-          </Option>
+          <Link
+            key={option.id}
+            to={`/${option.link}`}
+            style={{
+              width: '100%',
+              minHeight: 'fit-content'
+            }}
+          >
+            <Button
+              onClick={() => handleClick(option.id)}
+              sx={{
+                width: '100%',
+                height: '100%',
+                color: option.id === btn ? 'var(--white-color)' : 'var(--black-light-color)',
+                borderRadius: 0,
+                padding: '5% 10%',
+                justifyContent: 'flex-start',
+                textTransform: 'none'
+              }}
+              startIcon={React.createElement(option.icon)}
+              variant={option.id === btn ? 'contained' : 'text'}
+            >
+              {option.text}
+            </Button>
+          </Link>
         ))}
-        <LogOut onClick={logout}>
-          <LogoutIcon sx={{ color: 'var(--red-color)' }} />
-          <Typography sx={{ color: 'var(--red-color)', fontWeight: 600, paddingLeft: '0.5rem' }}>Log Out</Typography>
-        </LogOut>
+        <Button
+          startIcon={<LogoutIcon />}
+          sx={{ color: 'var(--red-color)' }}
+          style={{
+            position: 'fixed',
+            bottom: 10,
+            textTransform: 'none'
+          }}
+          onClick={logout}
+        >
+          Log Out
+        </Button>
       </SideBarWrapper>
     </Wrapper>
   )

@@ -10,19 +10,17 @@ interface LayoutProps {
 
 const Layout = ({ children, title }: LayoutProps) => {
   return (
-    <div>
-      <Wrapper>
-        <Sidebar />
-        <MainContainer>
-          {title && (
-            <Title variant='h5' sx={{ fontWeight: 600 }}>
-              {title}
-            </Title>
-          )}
-          {children}
-        </MainContainer>
-      </Wrapper>
-    </div>
+    <Wrapper>
+      <Sidebar />
+      <MainContainer>
+        {title && (
+          <Title variant='h5' sx={{ fontWeight: 600 }}>
+            {title}
+          </Title>
+        )}
+        {children}
+      </MainContainer>
+    </Wrapper>
   )
 }
 

@@ -8,8 +8,10 @@ import DocumentTreeItem from '~/components/treeItem/DocumentTreeItem'
 import { Outlet } from 'react-router-dom'
 import useData from '~/hooks/useData'
 import { fakeArray } from '~/utils/fakeArray'
-import UpdateDocument from '~/components/modal/UpdateDocument'
-const Document = () => {
+import DataProvider from '~/context/DataContext'
+import { Grid, Skeleton } from '@mui/material'
+
+const DocumentDisplay = () => {
   const { documentTree, loading } = useData()
 
   return (
@@ -30,7 +32,7 @@ const Document = () => {
       </NavWrapper>
       <TreeWarpper>
         <TreeView defaultCollapseIcon={<ExpandMore />} defaultExpandIcon={<ChevronRight />}>
-          {loading
+          {!loading
             ? documentTree?.map((dept, index) => (
                 <DocumentTreeItem key={index} nodeId={dept.id} label={dept.name} icon={Apartment}>
                   {dept.rooms.map((room, index) => (
@@ -50,10 +52,26 @@ const Document = () => {
         </TreeView>
       </TreeWarpper>
       <DocumentGrid>
-        <Outlet />
+        {!loading ? (
+          <Outlet />
+        ) : (
+          fakeArray(6).map((_, index) => (
+            <Grid key={index} item md={4}>
+              <Skeleton animation='wave' variant='rounded' height='3rem' />
+            </Grid>
+          ))
+        )}
       </DocumentGrid>
       <UpdateDocument />
     </DocumentWrapper>
+  )
+}
+
+const Document = () => {
+  return (
+    <DataProvider>
+      <DocumentDisplay />
+    </DataProvider>
   )
 }
 

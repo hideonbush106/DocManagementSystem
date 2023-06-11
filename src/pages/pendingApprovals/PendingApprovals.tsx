@@ -1,5 +1,5 @@
 const PendingApprovals = () => {
-  return <div>Pending Approvals</div>
+  return <div>SCAN QR CODE</div>
 }
 
 export default PendingApprovals

@@ -10,6 +10,7 @@ import useData from '~/hooks/useData'
 import { fakeArray } from '~/utils/fakeArray'
 import DataProvider from '~/context/DataContext'
 import { Grid, Skeleton } from '@mui/material'
+import UpdateDocument from '~/components/modal/UpdateDocument'
 
 const DocumentDisplay = () => {
   const { documentTree, loading } = useData()

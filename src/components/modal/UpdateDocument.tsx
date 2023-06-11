@@ -1,11 +1,17 @@
 import { CreateNewFolderOutlined } from '@mui/icons-material'
-import { Box, Button, FormControl, Menu, MenuItem, Modal, TextField, Typography } from '@mui/material'
+import { Box, Button, FormControl, MenuItem, Modal, TextField, Typography } from '@mui/material'
 import React from 'react'
+import { Form } from 'react-router-dom'
 
 const UpdateDocument = () => {
   const [open, setOpen] = React.useState(false)
   const handleOpen = () => setOpen(true)
   const handleClose = () => setOpen(false)
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    console.log('submit')
+  }
 
   const style = {
     position: 'absolute',
@@ -32,23 +38,51 @@ const UpdateDocument = () => {
               Update Document
             </Typography>
           </Box>
-          <Typography sx={{ fontWeight: 600, color: 'var(--black-color)', my: 2 }} variant='h6'>
+          <Typography sx={{ fontWeight: 600, color: 'var(--black-color)', my: 1.5 }} variant='h6'>
             Document Information
           </Typography>
           <FormControl sx={{ width: '100%' }}>
-            <TextField sx={{ my: 1 }} label='File name' variant='standard' fullWidth />
+            <TextField sx={{ my: 1 }} label='File name' disabled value='Lorem ipsum' variant='standard' fullWidth />
             <TextField sx={{ my: 1 }} label='Description' variant='standard' fullWidth multiline maxRows={4} />
             <Box display={'flex'} sx={{ width: '100%', justifyContent: 'space-between' }}>
-              <TextField sx={{ my: 1, width: '47%' }} select label='Department' variant='standard'>
+              <TextField sx={{ my: 1, width: '46%' }} select label='Department' variant='standard'>
                 <MenuItem value='ABC'>ABC</MenuItem>
                 <MenuItem value='ABC'>ABC</MenuItem>
                 <MenuItem value='ABC'>ABC</MenuItem>
               </TextField>
-              <TextField sx={{ my: 1, width: '47%' }} select label='Category Type' variant='standard'>
+              <TextField sx={{ my: 1, width: '46%' }} select label='Category Type' variant='standard'>
                 <MenuItem value='ABC'>ABC</MenuItem>
                 <MenuItem value='ABC'>ABC</MenuItem>
                 <MenuItem value='ABC'>ABC</MenuItem>
               </TextField>
+            </Box>
+            <Typography sx={{ fontWeight: 600, color: 'var(--black-color)', my: 1.5 }} variant='h6'>
+              Location
+            </Typography>
+            <Box display={'flex'} sx={{ width: '100%', justifyContent: 'space-between' }}>
+              <TextField sx={{ my: 1, width: '31%' }} select label='Department' variant='standard'>
+                <MenuItem value='ABC'>ABC</MenuItem>
+                <MenuItem value='ABC'>ABC</MenuItem>
+                <MenuItem value='ABC'>ABC</MenuItem>
+              </TextField>
+              <TextField sx={{ my: 1, width: '31%' }} select label='Category Type' variant='standard'>
+                <MenuItem value='ABC'>ABC</MenuItem>
+                <MenuItem value='ABC'>ABC</MenuItem>
+                <MenuItem value='ABC'>ABC</MenuItem>
+              </TextField>
+              <TextField sx={{ my: 1, width: '31%' }} select label='Category Type' variant='standard'>
+                <MenuItem value='ABC'>ABC</MenuItem>
+                <MenuItem value='ABC'>ABC</MenuItem>
+                <MenuItem value='ABC'>ABC</MenuItem>
+              </TextField>
+            </Box>
+            <Box>
+              <Button sx={{ my: 1, mr: 1 }} variant='contained' color='primary' type='submit'>
+                Update
+              </Button>
+              <Button sx={{ my: 1 }} color='error' onClick={handleClose}>
+                Cancel
+              </Button>
             </Box>
           </FormControl>
         </Box>

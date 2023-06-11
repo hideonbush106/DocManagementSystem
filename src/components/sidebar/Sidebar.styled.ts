@@ -1,14 +1,46 @@
-import { Link } from 'react-router-dom'
 import styled from 'styled-components'
 
-export const Wrapper = styled.section`
-  width: 15vw;
-  height: 100vh;
-  position: relative;
+interface isMobileProps {
+  mobile?: boolean
+  desktop?: boolean
+}
+
+export const Wrapper = styled.div`
+  width: 200px;
+  height: 100%;
+  background-color: var(--white-color);
+  position: fixed;
+  top: 0;
+  z-index: 1;
+
+  @media (max-width: 900px) {
+    width: 100vw;
+    height: 50px;
+  }
+`
+export const SideBarWrapper = styled.div<isMobileProps>`
+  width: 100%; //for mobile view
+  height: 100%; //for mobile view
+  display: none;
+
+  ${({ mobile }) =>
+    mobile &&
+    `@media (max-width: 900px) {
+      display: flex;
+      align-items: center;
+    }`};
+
+  ${({ desktop }) =>
+    desktop &&
+    `@media (min-width: 900px) {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }`};
 `
 
 export const Avatar = styled.div`
-  height: 18vh;
+  width: 100%;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -16,34 +48,21 @@ export const Avatar = styled.div`
   margin: 3vh 0;
 `
 export const Image = styled.img`
-  width: 90px;
-  height: 90px;
+  width: 80px;
+  aspect-ratio: 1/1;
   border-radius: 50%;
-  background-color: gray;
+  background-color: var(--white-color);
+  text-align: center;
   overflow: hidden;
+  margin: 20px;
 `
-export const Role = styled.p`
-  color: var(--grey-color);
-  font-size: 14px;
-`
-
-export const Menu = styled.div`
+//width of menu in mobile view
+export const MenuMobile = styled.div`
+  width: 200px;
+  height: 100%;
   display: flex;
   flex-direction: column;
-  margin-left: 2vw;
-`
-export const Option = styled.div`
-  padding: 2vh 0;
-`
-export const LinkContainer = styled(Link)`
-  display: flex;
   align-items: center;
-`
-export const LogOut = styled.div`
-  display: flex;
-  margin-left: 4vw;
-  width: 100%;
-  position: absolute;
-  bottom: 3vh;
-  cursor: pointer;
+  position: relative;
+  clear: both;
 `

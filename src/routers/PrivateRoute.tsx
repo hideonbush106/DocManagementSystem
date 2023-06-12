@@ -1,20 +1,22 @@
 import { useEffect } from 'react'
 import { useNavigate } from 'react-router'
+import Loading from '~/components/loading/Loading'
+import useAuth from '~/hooks/useAuth'
 
 interface Props {
   Component: React.ComponentType
 }
 
 const PrivateRoute = ({ Component }: Props) => {
+  const { user, loading } = useAuth()
   const navigate = useNavigate()
   useEffect(() => {
-    const isLogin = localStorage.getItem('isLogin')
-    if (!isLogin) {
+    if (!loading && !user) {
       navigate('/')
     }
-  }, [navigate])
+  }, [user, loading, navigate])
 
-  return <Component />
+  return !loading ? <Component /> : <Loading />
 }
 
 export default PrivateRoute

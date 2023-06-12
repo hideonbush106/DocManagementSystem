@@ -5,17 +5,18 @@ import GoogleButton from 'react-google-button'
 import { theme } from '~/global/theme'
 import useAuth from '~/hooks/useAuth'
 import { useNavigate } from 'react-router'
+import Loading from '~/components/loading/Loading'
 
 const Login = () => {
-  const { login } = useAuth()
+  const { user, loading, login } = useAuth()
   const navigate = useNavigate()
   useEffect(() => {
-    const isLogin = localStorage.getItem('isLogin')
-    if (isLogin) {
+    if (!loading && user) {
       navigate('/dashboard')
     }
-  }, [navigate])
-  return (
+  }, [user, loading, navigate])
+
+  return !loading ? (
     <OuterContainer>
       <LoginImg>
         <img src='/assets/login.svg' alt='' srcSet='' />
@@ -43,6 +44,8 @@ const Login = () => {
         <FooterText>&copy; 2023 | All Rights Reserved</FooterText>
       </Footer>
     </OuterContainer>
+  ) : (
+    <Loading />
   )
 }
 

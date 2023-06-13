@@ -12,7 +12,7 @@ export const Wrapper = styled.section`
 
 export const MainContainer = styled.div`
   background-color: var(--background-color);
-  width: 100vw;
+  width: 100%;
   height: 100vh;
   padding: 20px;
 
@@ -22,6 +22,7 @@ export const MainContainer = styled.div`
   }
   //in desktop view, margin-left: 200px to avoid overlapping with the sidebar
   @media (min-width: 900px) {
+    width: calc(100% - 220px);
     margin-left: 220px;
   }
 `

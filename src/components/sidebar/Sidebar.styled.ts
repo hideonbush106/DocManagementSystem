@@ -6,7 +6,7 @@ interface isMobileProps {
 }
 
 export const Wrapper = styled.div`
-  width: 200px;
+  width: 220px;
   height: 100%;
   background-color: var(--white-color);
   position: fixed;
@@ -28,6 +28,7 @@ export const SideBarWrapper = styled.div<isMobileProps>`
     `@media (max-width: 900px) {
       display: flex;
       align-items: center;
+      box-shadow: 0px 2px 5px 1px rgba(0, 0, 0, 0.15);
     }`};
 
   ${({ desktop }) =>
@@ -36,6 +37,7 @@ export const SideBarWrapper = styled.div<isMobileProps>`
       display: flex;
       flex-direction: column;
       align-items: center;
+      box-shadow: 2px 0px 5px 1px rgba(0, 0, 0, 0.15);
     }`};
 `
 
@@ -55,6 +57,14 @@ export const Image = styled.img`
   text-align: center;
   overflow: hidden;
   margin: 20px;
+`
+
+export const Logo = styled.img`
+  height: 90%;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 `
 //width of menu in mobile view
 export const MenuMobile = styled.div`

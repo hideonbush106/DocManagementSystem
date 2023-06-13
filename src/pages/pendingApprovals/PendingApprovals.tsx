@@ -1,5 +1,7 @@
+import CodeScanner from '~/components/scanner/CodeScanner'
+
 const PendingApprovals = () => {
-  return <div>SCAN QR CODE</div>
+  return <CodeScanner />
 }
 
 export default PendingApprovals

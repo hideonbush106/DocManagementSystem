@@ -2,7 +2,7 @@ import { CreateNewFolderOutlined } from '@mui/icons-material'
 import { Box, Button, FormControl, MenuItem, Modal, TextField, Typography } from '@mui/material'
 import React from 'react'
 
-const UpdateDocument = () => {
+const ImportDocument = () => {
   const [open, setOpen] = React.useState(false)
   const handleOpen = () => setOpen(true)
   const handleClose = () => setOpen(false)
@@ -92,4 +92,4 @@ const UpdateDocument = () => {
   )
 }
 
-export default UpdateDocument
+export default ImportDocument

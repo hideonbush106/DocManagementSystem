@@ -18,6 +18,7 @@ export const MainContainer = styled.div`
 
   //in mobile view, margin-top: 50px to avoid overlapping with the navbar
   @media (max-width: 900px) {
+    height: calc(100vh - 50px);
     margin-top: 50px;
   }
   //in desktop view, margin-left: 200px to avoid overlapping with the sidebar

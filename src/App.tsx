@@ -32,7 +32,11 @@ const App = () => {
                       )}
                     </>
                   }
-                />
+                >
+                  {route.children?.map((child, index) => (
+                    <Route key={index} index={child.index} path={child.path} Component={child.component} />
+                  ))}
+                </Route>
               )
             })}
           </Routes>

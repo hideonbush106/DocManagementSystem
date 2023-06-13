@@ -1,3 +1,4 @@
+import React from 'react'
 import { Typography } from '@mui/material'
 import { Footer, FooterText, LoginContainer, LoginImg, OuterContainer } from './Login.styled'
 import GoogleButton from 'react-google-button'
@@ -9,9 +10,13 @@ import Loading from '~/components/loading/Loading'
 const Login = () => {
   const { user, loading, login } = useAuth()
   const navigate = useNavigate()
-  if (!loading && user) {
-    navigate('/dashboard')
-  }
+
+  React.useEffect(() => {
+    if (!loading && user) {
+      navigate('/dashboard')
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user, loading])
 
   return !loading && !user ? (
     <OuterContainer>

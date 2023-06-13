@@ -1,7 +1,7 @@
 import { AxiosError } from 'axios'
 import { FirebaseError } from 'firebase/app'
 import { signInWithPopup, signOut, User } from 'firebase/auth'
-import React, { ReactNode, useCallback, useEffect } from 'react'
+import React, { ReactNode, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { getUserLogin } from '~/global/apiendpoint'
 import { auth, provider } from '~/global/firebase'
@@ -26,64 +26,94 @@ const AuthProvider = ({ children }: Props) => {
   const [loading, setLoading] = React.useState(true)
   const navigate = useNavigate()
 
-  const logout = useCallback(async () => {
-    localStorage.clear()
+  const logout = async () => {
     try {
       await signOut(auth)
-      navigate('/')
+      localStorage.clear()
+      setUser(null)
+      setIdToken(null)
     } catch (error) {
       console.log(error)
     }
-  }, [navigate])
+  }
+
+  const validateUser = async (user: User) => {
+    try {
+      //check account in database
+      const IdTokenResult = await user.getIdTokenResult()
+      await getUserLogin(IdTokenResult.token)
+      return IdTokenResult
+    } catch (error) {
+      console.log(error)
+      if (error instanceof AxiosError) {
+        if (error.response?.status === 403 || error.response?.status === 401) {
+          notifyError('Unauthorized account')
+          logout()
+        }
+      }
+    }
+  }
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged(async (user) => {
       setLoading(true)
-      // let timeout
-
       if (user) {
-        try {
-          // const expireTime = localStorage.getItem('expireTime')
-          // if (expireTime) {
-          //   const expiresIn = Date.parse(expireTime) - Date.now()
-          //   if (expiresIn > 0) {
-          //     timeout = setTimeout(() => {
-          //       user.getIdTokenResult()
-          //     }, expiresIn)
-          //   }
-          // }
-          //check account in database
-          const IdTokenResult = await user.getIdTokenResult()
-
-          const response = await getUserLogin(IdTokenResult.token)
-          if (response) {
-            localStorage.setItem('expireTime', IdTokenResult.expirationTime)
-            setUser(user)
-            setIdToken(IdTokenResult.token)
-            navigate('/dashboard')
-          }
-        } catch (error) {
-          console.log(error)
-          if (error instanceof AxiosError) {
-            if (error.response?.status === 403 || error.response?.status === 401) {
-              notifyError('Unauthorized account')
-              logout()
-            }
-          }
+        console.log(user)
+        const IdTokenResult = await validateUser(user)
+        if (IdTokenResult) {
+          localStorage.setItem('expireTime', IdTokenResult.expirationTime)
+          setUser(user)
+          setIdToken(IdTokenResult.token)
         }
       } else {
+        localStorage.clear()
         setUser(user)
+        setIdToken(null)
       }
+
       setLoading(false)
     })
-    return () => unsubscribe()
-  }, [navigate, logout])
+    unsubscribe()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
-  // useEffect(() => {})
+  useEffect(() => {
+    if (!loading) {
+      if (user) {
+        navigate('/dashboard')
+      } else {
+        navigate('/')
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [loading, user])
+
+  // if (performance.navigation.type === performance.navigation.TYPE_RELOAD) {
+
+  // const expireTime = localStorage.getItem('expireTime')
+  // if (!expireTime || Date.parse(expireTime) < Date.now()) {
+  //   logout()
+  // }
+
+  // if (!loading && user) {
+  //   const expireIn = Date.parse(expireTime) - Date.now()
+  //   setTimeout(async () => {
+  //     const IdTokenResult = await user.getIdTokenResult(true)
+  //     localStorage.setItem('expireTime', IdTokenResult.expirationTime)
+  //     setUser(user)
+  //     setIdToken(IdTokenResult.token)
+  //   }, 10 * 1000)
+  // }
 
   const login = async () => {
     try {
-      await signInWithPopup(auth, provider)
+      const result = await signInWithPopup(auth, provider)
+      const IdTokenResult = await validateUser(result.user)
+      if (IdTokenResult) {
+        localStorage.setItem('expireTime', IdTokenResult.expirationTime)
+        setUser(result.user)
+        setIdToken(IdTokenResult.token)
+      }
     } catch (error) {
       console.log(error)
       if (error instanceof FirebaseError) {

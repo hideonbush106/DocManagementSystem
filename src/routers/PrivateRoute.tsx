@@ -1,3 +1,4 @@
+import React from 'react'
 import { useNavigate } from 'react-router'
 import Layout from '~/components/layouts/Layout'
 import Loading from '~/components/loading/Loading'
@@ -10,9 +11,12 @@ interface Props {
 const PrivateRoute = ({ Component }: Props) => {
   const { user, loading } = useAuth()
   const navigate = useNavigate()
-  if (!loading && !user) {
-    navigate('/')
-  }
+  React.useEffect(() => {
+    if (!loading && !user) {
+      navigate('/')
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user, loading])
 
   return !loading && user ? (
     <Layout title={Component.name}>

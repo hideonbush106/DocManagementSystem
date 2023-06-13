@@ -22,7 +22,7 @@ export const MainContainer = styled.div`
   }
   //in desktop view, margin-left: 200px to avoid overlapping with the sidebar
   @media (min-width: 900px) {
-    margin-left: 200px;
+    margin-left: 220px;
   }
 `
 export const Title = styled(Typography)`

@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react'
-import { Avatar, Image, MenuMobile, Wrapper, SideBarWrapper } from './Sidebar.styled'
+import { Avatar, Image, MenuMobile, Wrapper, SideBarWrapper, Logo } from './Sidebar.styled'
 import { Typography } from '@mui/material'
 import { Options } from './OptionsStaff'
 import useAuth from '~/hooks/useAuth'
-import { useLocation, Link } from 'react-router-dom'
+import { useLocation, Link, useNavigate } from 'react-router-dom'
 import Drawer from '@mui/material/Drawer'
 import Button from '@mui/material/Button'
 import MenuIcon from '@mui/icons-material/Menu'
@@ -12,6 +12,7 @@ import LogoutIcon from '@mui/icons-material/Logout'
 const Sidebar = () => {
   const { user, logout } = useAuth()
   const [btn, setButton] = useState<number | null>(1) //dashboard is default option
+  const navigate = useNavigate()
 
   const handleClick = (id: number) => {
     setButton(id)
@@ -68,7 +69,8 @@ const Sidebar = () => {
               borderRadius: 0,
               padding: '5% 10%',
               justifyContent: 'flex-start',
-              textTransform: 'none'
+              textTransform: 'none',
+              fontFamily: 'inherit'
             }}
             startIcon={React.createElement(option.icon)}
             variant={option.id === btn ? 'contained' : 'text'}
@@ -83,7 +85,8 @@ const Sidebar = () => {
         style={{
           position: 'fixed',
           bottom: 10,
-          textTransform: 'none'
+          textTransform: 'none',
+          fontFamily: 'inherit'
         }}
         onClick={logout}
       >
@@ -97,6 +100,7 @@ const Sidebar = () => {
         <Button onClick={toggleDrawer(true)}>
           <MenuIcon />
         </Button>
+        <Logo src='/assets/DMS.png' alt='logo' onClick={() => navigate('/dashboard')} />
         <Drawer anchor={'left'} open={toggle} onClose={toggleDrawer(false)}>
           {menu()}
         </Drawer>
@@ -127,7 +131,8 @@ const Sidebar = () => {
                 borderRadius: 0,
                 padding: '5% 10%',
                 justifyContent: 'flex-start',
-                textTransform: 'none'
+                textTransform: 'none',
+                fontFamily: 'inherit'
               }}
               startIcon={React.createElement(option.icon)}
               variant={option.id === btn ? 'contained' : 'text'}
@@ -142,7 +147,8 @@ const Sidebar = () => {
           style={{
             position: 'fixed',
             bottom: 10,
-            textTransform: 'none'
+            textTransform: 'none',
+            fontFamily: 'inherit'
           }}
           onClick={logout}
         >

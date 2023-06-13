@@ -1,6 +1,6 @@
 import { AxiosError } from 'axios'
 import { FirebaseError } from 'firebase/app'
-import { signInWithPopup, signOut, User, UserCredential } from 'firebase/auth'
+import { signInWithPopup, signOut, User } from 'firebase/auth'
 import React, { ReactNode, useCallback, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { getUserLogin } from '~/global/apiendpoint'
@@ -26,9 +26,7 @@ const AuthProvider = ({ children }: Props) => {
   const [loading, setLoading] = React.useState(true)
   const navigate = useNavigate()
 
-
   const logout = useCallback(async () => {
-    setLoading(true)
     localStorage.clear()
     try {
       await signOut(auth)
@@ -36,54 +34,62 @@ const AuthProvider = ({ children }: Props) => {
     } catch (error) {
       console.log(error)
     }
-    setLoading(false)
   }, [navigate])
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged(async (user) => {
+      setLoading(true)
+      // let timeout
+
       if (user) {
-        console.log(user)
-        const expireTime = localStorage.getItem('expireTime')
-        if (expireTime && Date.parse(expireTime) > Date.now()) {
-          const idTokenResult = await user.getIdTokenResult()
-          setIdToken(idTokenResult.token)
-        } else {
-          console.log('out')
-          await logout()
+        try {
+          // const expireTime = localStorage.getItem('expireTime')
+          // if (expireTime) {
+          //   const expiresIn = Date.parse(expireTime) - Date.now()
+          //   if (expiresIn > 0) {
+          //     timeout = setTimeout(() => {
+          //       user.getIdTokenResult()
+          //     }, expiresIn)
+          //   }
+          // }
+          //check account in database
+          const IdTokenResult = await user.getIdTokenResult()
+
+          const response = await getUserLogin(IdTokenResult.token)
+          if (response) {
+            localStorage.setItem('expireTime', IdTokenResult.expirationTime)
+            setUser(user)
+            setIdToken(IdTokenResult.token)
+            navigate('/dashboard')
+          }
+        } catch (error) {
+          console.log(error)
+          if (error instanceof AxiosError) {
+            if (error.response?.status === 403 || error.response?.status === 401) {
+              notifyError('Unauthorized account')
+              logout()
+            }
+          }
         }
+      } else {
+        setUser(user)
       }
-      setUser(user)
+      setLoading(false)
     })
-    setLoading(false)
     return () => unsubscribe()
-  }, [logout])
+  }, [navigate, logout])
+
+  // useEffect(() => {})
 
   const login = async () => {
     try {
-      const result: UserCredential = await signInWithPopup(auth, provider)
-      //check account in database
-      const IdTokenResult = await result.user.getIdTokenResult()
-
-      getUserLogin(IdTokenResult.token)
-        .then(() => {
-          localStorage.setItem('expireTime', IdTokenResult.expirationTime)
-          setIdToken(IdTokenResult.token)
-          navigate('/dashboard')
-        })
-        .catch((error: AxiosError) => {
-          if (error.response?.status === 403 || error.response?.status === 401) {
-            notifyError('Unauthorized account')
-            logout()
-          }
-        })
+      await signInWithPopup(auth, provider)
     } catch (error) {
-      if (
-        error instanceof FirebaseError &&
-        error.code !== 'auth/popup-closed-by-user' &&
-        error.code !== 'auth/cancelled-popup-request'
-      )
-        notifyError('Login failed')
       console.log(error)
+      if (error instanceof FirebaseError) {
+        if (error.code !== 'auth/popup-closed-by-user' && error.code !== 'auth/cancelled-popup-request')
+          notifyError('Login failed')
+      }
     }
   }
 

@@ -1,4 +1,3 @@
-import { useEffect } from 'react'
 import { Typography } from '@mui/material'
 import { Footer, FooterText, LoginContainer, LoginImg, OuterContainer } from './Login.styled'
 import GoogleButton from 'react-google-button'
@@ -10,13 +9,11 @@ import Loading from '~/components/loading/Loading'
 const Login = () => {
   const { user, loading, login } = useAuth()
   const navigate = useNavigate()
-  useEffect(() => {
-    if (!loading && user) {
-      navigate('/dashboard')
-    }
-  }, [user, loading, navigate])
+  if (!loading && user) {
+    navigate('/dashboard')
+  }
 
-  return !loading ? (
+  return !loading && !user ? (
     <OuterContainer>
       <LoginImg>
         <img src='/assets/login.svg' alt='' srcSet='' />

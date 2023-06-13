@@ -17,6 +17,7 @@ import RequestsTable from '~/components/table/RequestsTable'
 import ApprovalsTable from '~/components/table/ApprovalsTable'
 import SummaryChart from '~/components/chart/SummaryChart'
 import SpaceChart from '~/components/chart/SpaceChart'
+
 const Subtitle = styled(Typography)({
   fontWeight: '600',
   fontSize: '0.85rem',

@@ -166,28 +166,22 @@ const ApprovalsTable: React.FC<ApprovalsTableProps> = ({ view }) => {
   let rowHeight = 50
   if (view === 'dashboard') {
     columns = [
-      { field: 'fileName', headerName: 'File Name', flex: 1 },
-      { field: 'createAt', headerName: 'Create at', flex: 1 },
+      { field: 'fileName', headerName: 'File Name', flex: 1, minWidth: 150 },
+      { field: 'createAt', headerName: 'Create at', flex: 1, minWidth: 180 },
       {
-        field: 'action',
-        headerName: 'Action',
-        flex: 0,
+        field: 'more-options',
+        headerName: '',
+        width: 50,
         sortable: false,
         filterable: false,
-        headerAlign: 'center',
-        align: 'center',
-        renderCell: () => (
-          <Link to={''}>
-            <Button
-              variant='outlined'
-              size='small'
-              style={{ minWidth: 50, height: 27, padding: 0 }}
-              onClick={() => console.log('Action clicked')}
-            >
-              <CheckRoundedIcon />
-            </Button>
-          </Link>
-        )
+        align: 'left',
+        renderCell: (params: GridRenderCellParams) => {
+          const menuItems = [
+            { text: 'Detail', onClick: () => console.log('Detail clicked') },
+            { text: 'Confirm', onClick: () => console.log('Confirm clicked') }
+          ]
+          return <ActionsCell id={params.row.id as number} menuItems={menuItems} />
+        }
       }
     ]
     pageSize = 5
@@ -203,13 +197,13 @@ const ApprovalsTable: React.FC<ApprovalsTableProps> = ({ view }) => {
         headerAlign: 'center',
         align: 'center'
       },
-      { field: 'fileName', headerName: 'File name', flex: 1 },
-      { field: 'department', headerName: 'Department', flex: 1 },
+      { field: 'fileName', headerName: 'File name', flex: 1, minWidth: 200 },
+      { field: 'department', headerName: 'Department', flex: 1, minWidth: 150 },
       { field: 'room', headerName: 'Room', width: 100, headerAlign: 'center', align: 'center' },
       { field: 'locker', headerName: 'Locker', width: 100, headerAlign: 'center', align: 'center' },
       { field: 'folder', headerName: 'Folder', width: 100, headerAlign: 'center', align: 'center' },
-      { field: 'category', headerName: 'Category', width: 120 },
-      { field: 'createAt', headerName: 'Create at', flex: 1 },
+      { field: 'category', headerName: 'Category', minWidth: 120 },
+      { field: 'createAt', headerName: 'Create at', flex: 1, minWidth: 180 },
       {
         field: 'action',
         headerName: 'Action',
@@ -252,7 +246,7 @@ const ApprovalsTable: React.FC<ApprovalsTableProps> = ({ view }) => {
   return (
     <div style={{ width: '100%', height: '100%', borderRadius: 5 }}>
       <DataGrid
-        columnHeaderHeight={rowHeight + 5}
+        columnHeaderHeight={rowHeight + 10}
         disableColumnMenu
         hideFooterSelectedRowCount
         rowHeight={rowHeight}
@@ -275,9 +269,6 @@ const ApprovalsTable: React.FC<ApprovalsTableProps> = ({ view }) => {
             borderTop: 'none',
             maxHeight: rowHeight - 10,
             minHeight: rowHeight - 10
-          },
-          '.MuiDataGrid-virtualScroller': {
-            overflow: 'visible'
           },
           '.MuiToolbar-root': {
             minHeight: rowHeight

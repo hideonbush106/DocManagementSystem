@@ -1,3 +1,4 @@
+import { Button, FormControl, InputLabel, MenuItem, Select } from '@mui/material'
 import { useState } from 'react'
 import { useMediaDevices } from 'react-media-devices'
 import { useZxing } from 'react-zxing'
@@ -13,31 +14,48 @@ const CodeScanner = () => {
   })
   const videoDevicesList = devices?.filter((device) => device.kind === 'videoinput')
   const [videoDevice, setVideoDevice] = useState(videoDevicesList?.[0].deviceId)
-
+  const [result, setResult] = useState<string>('')
   const { ref } = useZxing({
-    deviceId: videoDevice?.[1],
+    deviceId: videoDevice,
+    paused: !!result,
     onResult(result) {
-      console.log(result)
+      console.log(result.getBarcodeFormat())
+      setResult(result.getText())
     }
   })
 
   return (
     <div>
-      <video ref={ref}></video>
-      <h1>react-media-devices example</h1>
-      <ul>
-        {videoDevicesList?.map((device, index) => (
-          <li key={index}>
-            <strong>Label: {device.label || 'undefined'}</strong>
-            <br />
-            <small>Device id: {device.deviceId}</small>
-            <br />
-            <small>Group id: {device.groupId}</small>
-            <br />
-            <small>Kind: {device.kind}</small>
-          </li>
-        ))}
-      </ul>
+      {!result ? (
+        <div>
+          <div style={{ width: '500px', objectFit: 'cover' }}>
+            <video ref={ref}>
+              <track kind='captions' />
+            </video>
+          </div>
+          <FormControl sx={{ m: 1, minWidth: 120 }}>
+            <InputLabel>Device list</InputLabel>
+            <Select
+              defaultValue={videoDevicesList?.[0].deviceId}
+              label='device list'
+              value={videoDevice}
+              onChange={(e) => setVideoDevice(e.target.value)}
+            >
+              {videoDevicesList?.map((device, index) => (
+                <MenuItem key={index} value={device.deviceId}>
+                  {device.label}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+        </div>
+      ) : (
+        ''
+      )}
+      <div>{result}</div>
+      <Button variant='contained' onClick={() => setResult('')}>
+        Reset
+      </Button>
     </div>
   )
 }

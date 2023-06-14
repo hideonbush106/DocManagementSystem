@@ -2,20 +2,21 @@ import { DataGrid, GridColDef, GridRenderCellParams } from '@mui/x-data-grid'
 
 const columns: GridColDef[] = [
   { field: 'id', headerName: 'No.', width: 20, sortable: false, filterable: false },
-  { field: 'fileName', headerName: 'File name', width: 180 },
-  { field: 'department', headerName: 'Department', width: 150 },
-  { field: 'room', headerName: 'Room', width: 60, align: 'center' },
-  { field: 'locker', headerName: 'Locker', width: 60, align: 'center' },
-  { field: 'folder', headerName: 'Folder', width: 100 },
+  { field: 'fileName', headerName: 'File name', flex: 1, minWidth: 180 },
+  { field: 'department', headerName: 'Department', flex: 1, minWidth: 150 },
+  { field: 'room', headerName: 'Room', width: 100, align: 'center', headerAlign: 'center' },
+  { field: 'locker', headerName: 'Locker', width: 100, align: 'center', headerAlign: 'center' },
+  { field: 'folder', headerName: 'Folder', width: 100, align: 'center', headerAlign: 'center' },
   {
     field: 'category',
     headerName: 'Category',
-    width: 120
+    flex: 1,
+    minWidth: 120
   },
   {
     field: 'status',
     headerName: 'Status',
-    width: 90,
+    width: 100,
     renderCell: (params: GridRenderCellParams) => {
       const status = params.value as string
 
@@ -36,9 +37,9 @@ const rows = [
     id: 1,
     fileName: 'Contract labor 2022',
     department: 'Human Resources',
-    room: '001',
+    room: '1',
     locker: '1',
-    folder: 'Contact',
+    folder: '1',
     category: 'Contract',
     status: 'Lending'
   },
@@ -46,9 +47,9 @@ const rows = [
     id: 2,
     fileName: 'Report meeting',
     department: 'Sales',
-    room: '003',
+    room: '3',
     locker: '2',
-    folder: 'Report',
+    folder: '2',
     category: 'Report',
     status: 'Available'
   },
@@ -56,9 +57,9 @@ const rows = [
     id: 3,
     fileName: 'Tax bill',
     department: 'Accountant',
-    room: '006',
+    room: '6',
     locker: '6',
-    folder: 'Bill',
+    folder: '6',
     category: 'Bill',
     status: 'Lending'
   },
@@ -66,9 +67,9 @@ const rows = [
     id: 4,
     fileName: 'Contract',
     department: 'Human Resources',
-    room: '001',
+    room: '1',
     locker: '1',
-    folder: 'Contact',
+    folder: '2',
     category: 'Contract',
     status: 'Available'
   },
@@ -76,9 +77,9 @@ const rows = [
     id: 5,
     fileName: 'Bill',
     department: 'Accountant',
-    room: '001',
+    room: '1',
     locker: '1',
-    folder: 'Bill',
+    folder: '1',
     category: 'Bill',
     status: 'Available'
   },
@@ -86,9 +87,9 @@ const rows = [
     id: 7,
     fileName: 'Report',
     department: 'Sales',
-    room: '001',
+    room: '1',
     locker: '1',
-    folder: 'Report meeting',
+    folder: '1',
     category: 'Report',
     status: 'Lending'
   },
@@ -96,9 +97,9 @@ const rows = [
     id: 8,
     fileName: 'Contract',
     department: 'Human Resources',
-    room: '001',
+    room: '1',
     locker: '1',
-    folder: 'Contact',
+    folder: '1',
     category: 'Contract',
     status: 'Lending'
   }
@@ -106,19 +107,13 @@ const rows = [
 
 const DocumentTable = () => {
   return (
-    <div style={{ height: 275, width: '100%', margin: '10px 0' }}>
+    <div style={{ height: '100%', width: '100%', margin: '10px 0' }}>
       <DataGrid
-        columnHeaderHeight={42}
-        rowHeight={38}
+        columnHeaderHeight={30}
         disableColumnMenu
         rows={rows}
         columns={columns}
-        initialState={{
-          pagination: {
-            paginationModel: { page: 0, pageSize: 5 }
-          }
-        }}
-        // pageSizeOptions={[5, 10]}
+        autoPageSize={true}
         sx={{
           border: 'none',
           fontSize: '12px',

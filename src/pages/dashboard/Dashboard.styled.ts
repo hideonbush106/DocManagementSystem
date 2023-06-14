@@ -1,37 +1,34 @@
 import styled from 'styled-components'
 import { Typography } from '@mui/material'
+import Grid from '@mui/material/Unstable_Grid2'
 
 export const Title = styled(Typography)`
   color: var(--black-color);
 `
-export const DashboardWrapper = styled.section`
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
+export const DashboardWrapper = styled(Grid)``
+
+export const DocumentContainer = styled(Grid)`
+  height: 40vh;
+  @media (max-width: 600px) {
+    margin-top: 1rem;
+  }
 `
 
-export const DocumentContainer = styled.div`
-  width: 55.5vw;
-  height: 43vh;
+export const Wrapper = styled.div`
   background-color: var(--white-color);
-  border-radius: 5px;
-  margin-bottom: 1.2rem;
+  width: 100%;
+  height: 100%;
   padding: 1rem;
-`
-export const SumaryContainer = styled(DocumentContainer)`
-  width: 25vw;
-  margin-right: 0;
-`
-export const RequestContainer = styled(DocumentContainer)`
-  width: 27vw;
-  height: 35vh;
-  margin-bottom: 0;
+  border-radius: 5px;
 `
 
-export const StatisticContainer = styled(SumaryContainer)`
-  height: 35vh;
-  margin-bottom: 0;
-`
+export const SumaryContainer = styled(DocumentContainer)``
+
+export const ApprovalContainer = styled(DocumentContainer)``
+
+export const RequestContainer = styled(DocumentContainer)``
+
+export const StatisticContainer = styled(SumaryContainer)``
 
 export const TitleUnderline = styled.div`
   height: 3px;

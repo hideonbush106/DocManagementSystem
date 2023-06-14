@@ -2,7 +2,7 @@ import { FirebaseError } from 'firebase/app'
 import { signInWithPopup, signOut, User } from 'firebase/auth'
 import React, { ReactNode, useEffect } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
-import { getUserLogin } from '~/global/apiendpoint'
+import { getUserLogin } from '~/utils/apiendpoint'
 import { auth, provider } from '~/global/firebase'
 import { notifyError, notifySuccess } from '~/global/toastify'
 
@@ -97,7 +97,6 @@ const AuthProvider = ({ children }: Props) => {
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged(async (user) => {
       if (user) {
-        console.log((await user.getIdTokenResult()).expirationTime)
         const token = await user.getIdToken()
         const isValidate = await validateUser(user, token)
         if (isValidate) {

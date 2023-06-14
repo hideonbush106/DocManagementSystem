@@ -6,10 +6,9 @@ import useAuth from '~/hooks/useAuth'
 
 interface Props {
   Component: React.ComponentType
-  title?: string
 }
 
-const PrivateRoute = ({ Component, title }: Props) => {
+const PrivateRoute = ({ Component }: Props) => {
   const { user, loading } = useAuth()
   const navigate = useNavigate()
   React.useEffect(() => {
@@ -20,7 +19,7 @@ const PrivateRoute = ({ Component, title }: Props) => {
   }, [user, loading])
 
   return !loading && user ? (
-    <Layout title={title}>
+    <Layout title={Component.name}>
       <Component />
     </Layout>
   ) : (

@@ -28,3 +28,27 @@ export const getUserLogin = (auth: string): Promise<AxiosResponse | void> => {
     }
   })
 }
+
+export const getDocumentTree = (auth: string): Promise<AxiosResponse> => {
+  return get('/trees', {}, { Authentication: auth, accept: 'application/json' })
+}
+
+export const getDepartments = (auth: string): Promise<AxiosResponse> => {
+  return get('/departments', {}, { Authentication: auth, accept: 'application/json' })
+}
+
+export const getDepartment = (auth: string, did: string | undefined): Promise<AxiosResponse> => {
+  return get(`/departments/${did}`, {}, { Authentication: auth, accept: 'application/json' })
+}
+
+export const getRooms = (auth: string, did: string | undefined): Promise<AxiosResponse> => {
+  return get(`/rooms/?departmentId=${did}`, {}, { Authentication: auth, accept: 'application/json' })
+}
+
+export const getRoom = (auth: string, did: string | undefined): Promise<AxiosResponse> => {
+  return get(`/rooms/${did}`, {}, { Authentication: auth, accept: 'application/json' })
+}
+
+export const getLockers = (auth: string, rid: string | undefined): Promise<AxiosResponse> => {
+  return get(`/lockers/?roomId=${rid}`, {}, { Authentication: auth, accept: 'application/json' })
+}

@@ -16,13 +16,12 @@ import File from '~/pages/document/file/File'
 export const publicRoutes = [{ path: '/', component: Login }]
 
 export const privateRoutes = [
-  { path: '/welcome', component: Welcome },
+  { path: '/welcome', component: Welcome, title: 'Welcome' },
   { path: '/test', component: Test },
-  { path: '/dashboard', component: Dashboard, excludeTitle: true },
+  { path: '/dashboard', component: Dashboard, title: 'Dashboard' },
   {
     path: '/document',
     component: Document,
-    excludeTitle: true,
     children: [
       { path: '/document', component: Department, index: true },
       { path: '/document/department/:departmentId', component: Room, index: false },
@@ -35,8 +34,8 @@ export const privateRoutes = [
       }
     ]
   },
-  { path: '/request', component: Requests, excludeTitle: true },
-  { path: '/pending-approval', component: PendingApprovals, excludeTitle: false },
-  { path: '/statistic', component: Statistic, excludeTitle: true },
-  { path: '/advanced', component: Advanced, excludeTitle: true }
+  { path: '/request', component: Requests },
+  { path: '/pending-approval', component: PendingApprovals },
+  { path: '/statistic', component: Statistic },
+  { path: '/advanced', component: Advanced }
 ]

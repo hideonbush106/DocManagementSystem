@@ -162,12 +162,11 @@ const ApprovalsTable: React.FC<ApprovalsTableProps> = ({ view }) => {
       createAt: '12:54:45, 23th May, 2023'
     }
   ]
-  let pageSize = 10
   let rowHeight = 50
   if (view === 'dashboard') {
     columns = [
-      { field: 'fileName', headerName: 'File Name', flex: 1, minWidth: 150 },
-      { field: 'createAt', headerName: 'Create at', flex: 1, minWidth: 180 },
+      { field: 'fileName', headerName: 'File Name', flex: 1 },
+      { field: 'createAt', headerName: 'Create at', flex: 1 },
       {
         field: 'more-options',
         headerName: '',
@@ -184,7 +183,6 @@ const ApprovalsTable: React.FC<ApprovalsTableProps> = ({ view }) => {
         }
       }
     ]
-    pageSize = 5
     rowHeight = 35
   } else if (view === 'full') {
     columns = [
@@ -255,9 +253,6 @@ const ApprovalsTable: React.FC<ApprovalsTableProps> = ({ view }) => {
         initialState={{
           sorting: {
             sortModel: [{ field: 'createAt', sort: 'asc' }]
-          },
-          pagination: {
-            paginationModel: { page: 0, pageSize: pageSize }
           }
         }}
         hideFooter={view === 'dashboard'}

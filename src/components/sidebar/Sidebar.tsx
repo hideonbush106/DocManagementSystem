@@ -30,9 +30,9 @@ const Sidebar = () => {
   return (
     <Wrapper>
       <Avatar>
-        <Image src={String(user?.photoURL)} alt='Your Avatar' />
+        <Image src={String(user?.photoUrl)} alt='Your Avatar' />
         <Typography align='center' sx={{ width: '100%', fontWeight: 600 }}>
-          {user?.displayName}
+          {user?.name}
         </Typography>
         <Role>Staff</Role>
       </Avatar>

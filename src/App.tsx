@@ -15,7 +15,11 @@ const App = () => {
               <Route key={index} path={route.path} Component={route.component} />
             ))}
             {privateRoutes.map((route, index) => (
-              <Route key={index} path={route.path} element={<PrivateRoute Component={route.component} />} />
+              <Route
+                key={index}
+                path={route.path}
+                element={<PrivateRoute Component={route.component} title={route.title} />}
+              />
             ))}
           </Routes>
         </AuthProvider>

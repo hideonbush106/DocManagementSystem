@@ -11,12 +11,12 @@ import Advanced from '~/pages/advanced/Advanced'
 export const publicRoutes = [{ path: '/', component: Login }]
 
 export const privateRoutes = [
-  { path: '/welcome', component: Welcome },
+  { path: '/welcome', component: Welcome, title: 'Welcome' },
   { path: '/test', component: Test },
-  { path: '/dashboard', component: Dashboard },
-  { path: '/document', component: Document },
-  { path: '/request', component: Requests },
-  { path: '/pending-approval', component: PendingApprovals },
-  { path: '/statistic', component: Statistic },
-  { path: '/advanced', component: Advanced }
+  { path: '/dashboard', component: Dashboard, title: 'Dashboard' },
+  { path: '/document', component: Document, title: 'Document' },
+  { path: '/request', component: Requests, title: 'Request' },
+  { path: '/pending-approval', component: PendingApprovals, title: 'Pending Approvals' },
+  { path: '/statistic', component: Statistic, title: 'Statistic' },
+  { path: '/advanced', component: Advanced, title: 'Advanced' }
 ]

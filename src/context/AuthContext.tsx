@@ -1,17 +1,25 @@
-import { AxiosError } from 'axios'
 import { FirebaseError } from 'firebase/app'
 import { signInWithPopup, signOut, User } from 'firebase/auth'
 import React, { ReactNode, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import { getUserLogin } from '~/global/apiendpoint'
 import { auth, provider } from '~/global/firebase'
-import { notifyError } from '~/global/toastify'
+import { notifyError, notifySuccess } from '~/global/toastify'
+
+interface UserInterface {
+  name: string | null
+  email: string | null
+  phone: string | null
+  photoUrl: string | null
+  accessToken: string | null
+}
 
 export type AuthContextType = {
-  user: User | null
+  user: UserInterface | null
   loading: boolean
   login: () => void
   logout: () => void
+  refreshAccessToken: () => Promise<string | void>
 }
 
 export const AuthContext = React.createContext<AuthContextType | null>(null)
@@ -25,95 +33,40 @@ const AuthProvider = ({ children }: Props) => {
   const [idToken, setIdToken] = React.useState<string | null>(null)
   const [loading, setLoading] = React.useState(true)
   const navigate = useNavigate()
+  const location = useLocation()
 
-  const logout = async () => {
-    try {
-      await signOut(auth)
-      localStorage.clear()
-      setUser(null)
-      setIdToken(null)
-    } catch (error) {
-      console.log(error)
-    }
-  }
-
-  const validateUser = async (user: User) => {
+  const validateUser = async (user: User, token: string): Promise<boolean> => {
     try {
       //check account in database
-      const IdTokenResult = await user.getIdTokenResult()
-      await getUserLogin(IdTokenResult.token)
-      return IdTokenResult
+      await getUserLogin(token)
+      return true
     } catch (error) {
       console.log(error)
-      if (error instanceof AxiosError) {
-        if (error.response?.status === 403 || error.response?.status === 401) {
-          notifyError('Unauthorized account')
+      if (error instanceof Error) {
+        if (error.message === 'Token expired') {
+          const newToken = await user.getIdToken()
+          setIdToken(newToken)
+        } else {
+          notifyError(error.message)
           logout()
         }
       }
+      return false
     }
   }
 
-  useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged(async (user) => {
-      setLoading(true)
-      if (user) {
-        console.log(user)
-        const IdTokenResult = await validateUser(user)
-        if (IdTokenResult) {
-          localStorage.setItem('expireTime', IdTokenResult.expirationTime)
-          setUser(user)
-          setIdToken(IdTokenResult.token)
-        }
-      } else {
-        localStorage.clear()
-        setUser(user)
-        setIdToken(null)
-      }
-
-      setLoading(false)
-    })
-    unsubscribe()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
-
-  useEffect(() => {
-    if (!loading) {
-      if (user) {
-        navigate('/dashboard')
-      } else {
-        navigate('/')
-      }
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [loading, user])
-
-  // if (performance.navigation.type === performance.navigation.TYPE_RELOAD) {
-
-  // const expireTime = localStorage.getItem('expireTime')
-  // if (!expireTime || Date.parse(expireTime) < Date.now()) {
-  //   logout()
-  // }
-
-  // if (!loading && user) {
-  //   const expireIn = Date.parse(expireTime) - Date.now()
-  //   setTimeout(async () => {
-  //     const IdTokenResult = await user.getIdTokenResult(true)
-  //     localStorage.setItem('expireTime', IdTokenResult.expirationTime)
-  //     setUser(user)
-  //     setIdToken(IdTokenResult.token)
-  //   }, 10 * 1000)
-  // }
-
   const login = async () => {
     try {
-      const result = await signInWithPopup(auth, provider)
-      const IdTokenResult = await validateUser(result.user)
-      if (IdTokenResult) {
-        localStorage.setItem('expireTime', IdTokenResult.expirationTime)
-        setUser(result.user)
-        setIdToken(IdTokenResult.token)
+      const userCredential = await signInWithPopup(auth, provider)
+      setLoading(true)
+      const token = await userCredential.user.getIdToken()
+      const isValidate = await validateUser(userCredential.user, token)
+      if (isValidate) {
+        notifySuccess('Login successfully')
+        setUser(userCredential.user)
+        setIdToken(token)
       }
+      setLoading(false)
     } catch (error) {
       console.log(error)
       if (error instanceof FirebaseError) {
@@ -123,7 +76,68 @@ const AuthProvider = ({ children }: Props) => {
     }
   }
 
-  const value = { user, idToken, loading, login, logout }
+  const logout = async () => {
+    try {
+      await signOut(auth)
+      setUser(null)
+      setIdToken(null)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  const refreshAccessToken = async () => {
+    if (user) {
+      const newIdToken = await user.getIdToken(true)
+      setIdToken(newIdToken)
+      return newIdToken
+    }
+  }
+
+  useEffect(() => {
+    const unsubscribe = auth.onAuthStateChanged(async (user) => {
+      if (user) {
+        console.log((await user.getIdTokenResult()).expirationTime)
+        const token = await user.getIdToken()
+        const isValidate = await validateUser(user, token)
+        if (isValidate) {
+          setUser(user)
+          setIdToken(token)
+        }
+      } else {
+        navigate('/')
+      }
+      setLoading(false)
+    })
+    unsubscribe()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  useEffect(() => {
+    if (!loading && user && idToken) validateUser(user, idToken)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [location.pathname])
+
+  useEffect(() => {
+    if (!loading) user ? navigate('/dashboard') : navigate('/')
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [loading, user])
+
+  const value = {
+    user: user
+      ? {
+          name: user.displayName,
+          email: user.email,
+          phone: user.phoneNumber,
+          photoUrl: user.photoURL,
+          accessToken: idToken
+        }
+      : null,
+    loading,
+    login,
+    logout,
+    refreshAccessToken
+  }
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
 }

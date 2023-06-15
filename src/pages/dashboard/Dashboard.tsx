@@ -57,7 +57,7 @@ const Dashboard = () => {
               <ViewButton text='View' />
             </Link>
           </SubtitleWrapper>
-          <ApprovalsTable view='dashboard'/>
+          <ApprovalsTable view='dashboard' />
         </RequestContainer>
         <RequestContainer>
           <SubtitleWrapper>

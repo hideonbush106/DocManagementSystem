@@ -1,18 +1,45 @@
 import { CreateNewFolderOutlined } from '@mui/icons-material'
 import { Box, Button, FormControl, MenuItem, TextField, Typography } from '@mui/material'
-import React, { useState } from 'react'
+import React, { ChangeEvent, useState } from 'react'
 import FileUpload from 'react-material-file-upload'
 
 interface ImportDocumentProps {
   handleClose: () => void
 }
 
+interface FormData {
+  name: string
+  description: string
+  numOfPages: number
+  folder: {
+    id: string
+  }
+  category: {
+    id: string
+  }
+}
+
 const ImportDocument = (props: ImportDocumentProps) => {
   const [files, setFiles] = useState<File[]>([])
+  const [formData, setFormData] = useState<FormData>({
+    name: '',
+    description: '',
+    numOfPages: 1,
+    folder: {
+      id: ''
+    },
+    category: {
+      id: ''
+    }
+  })
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    console.log('submit')
+    console.log(formData)
+  }
+
+  const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value })
   }
 
   return (
@@ -34,7 +61,7 @@ const ImportDocument = (props: ImportDocumentProps) => {
           Import Document
         </Typography>
       </Box>
-      <form onSubmit={handleSubmit} action=''>
+      <form onSubmit={handleSubmit} action='POST'>
         <FormControl sx={{ width: '100%', px: 5 }}>
           <Typography sx={{ fontWeight: 600, color: 'var(--black-color)', my: 1.5 }} variant='h6'>
             Document Information
@@ -48,6 +75,7 @@ const ImportDocument = (props: ImportDocumentProps) => {
             name='numOfPages'
             variant='standard'
             fullWidth
+            onChange={handleChange}
           />
           <TextField
             required
@@ -56,17 +84,30 @@ const ImportDocument = (props: ImportDocumentProps) => {
             name='description'
             variant='standard'
             fullWidth
+            onChange={handleChange}
             multiline
             maxRows={4}
           />
           <Box display={'flex'} sx={{ width: '100%', justifyContent: 'space-between' }}>
-            <TextField sx={{ my: 1, width: '46%' }} select label='Department' variant='standard'>
+            <TextField
+              onChange={handleChange}
+              sx={{ my: 1, width: '46%' }}
+              select
+              label='Department'
+              variant='standard'
+            >
               {/** Todo: call dept API */}
               <MenuItem value='ABC'>ABC</MenuItem>
               <MenuItem value='ABC'>ABC</MenuItem>
               <MenuItem value='ABC'>ABC</MenuItem>
             </TextField>
-            <TextField sx={{ my: 1, width: '46%' }} select label='Category Type' variant='standard'>
+            <TextField
+              onChange={handleChange}
+              sx={{ my: 1, width: '46%' }}
+              select
+              label='Category Type'
+              variant='standard'
+            >
               <MenuItem value='ABC'>ABC</MenuItem>
               <MenuItem value='ABC'>ABC</MenuItem>
               <MenuItem value='ABC'>ABC</MenuItem>

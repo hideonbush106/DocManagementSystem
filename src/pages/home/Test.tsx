@@ -6,6 +6,7 @@ import ModalTest from '~/components/test/ModalTest'
 const Test = () => {
   //Muốn dùng close button thì làm theo component này
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [open, setOpen] = useState(false)
 
   const handleClose = () => {

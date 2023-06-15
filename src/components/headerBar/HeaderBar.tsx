@@ -33,7 +33,7 @@ const HeaderBar = () => {
           <TextContent>870 Files</TextContent>
         </TextDiv>
       </ItemDiv>
-      <ImportButton text='Import Document'></ImportButton>
+      <ImportButton text='New Document'></ImportButton>
       <ReturnButton text='Return Document'></ReturnButton>
       <IconDiv white style={{ cursor: 'pointer' }}>
         <img src='/assets/bell-ringing.svg' alt='' />

@@ -35,6 +35,7 @@
     "react-dom": "^18.2.0",
     "react-google-button": "^0.7.2",
     "react-icons": "^4.8.0",
+    "react-material-file-upload": "^0.0.4",
     "react-media-devices": "^1.1.1",
     "react-router-dom": "^6.11.2",
     "react-toastify": "^9.1.3",

@@ -1,10 +1,11 @@
-import { CameraAltOutlined } from '@mui/icons-material'
 import { Box, Button, FormControl, InputLabel, MenuItem, Paper, Select, Typography } from '@mui/material'
 import { useState } from 'react'
 import { useMediaDevices } from 'react-media-devices'
 import { useZxing } from 'react-zxing'
-
-const CodeScanner = () => {
+interface CodeScannerProps {
+  handleClose: () => void
+}
+const CodeScanner = (props: CodeScannerProps) => {
   const constraints: MediaStreamConstraints = {
     video: true,
     audio: false
@@ -26,39 +27,9 @@ const CodeScanner = () => {
   })
 
   return (
-    <Box
-      sx={{
-        display: 'flex',
-        justifyContent: 'center'
-      }}
-    >
+    <Box sx={{ px: 5, py: 3 }}>
       {!result ? (
-        <Paper
-          square
-          elevation={3}
-          sx={{
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            width: {
-              lg: '50%',
-              md: '70%',
-              sm: '90%'
-            },
-            p: 3
-          }}
-        >
-          <CameraAltOutlined
-            color='primary'
-            sx={{
-              fontSize: {
-                lg: 80,
-                md: 50,
-                sm: 40
-              },
-              m: '0 auto'
-            }}
-          />
+        <Box sx={{ display: 'flex', flexDirection: 'column', alignContent: 'center', justifyContent: 'center' }}>
           <Typography
             variant='h6'
             align='center'
@@ -68,8 +39,8 @@ const CodeScanner = () => {
           >
             {`Please move your camera over document's barcode`}
           </Typography>
-          <Box sx={{ width: 'fit-content', display: 'flex', my: 2, justifyContent: 'center' }}>
-            <video ref={ref} width='80%'>
+          <Box sx={{ width: '100%', display: 'flex', my: 2, justifyContent: 'center' }}>
+            <video ref={ref} width='60%'>
               <track kind='captions' />
             </video>
           </Box>
@@ -88,10 +59,7 @@ const CodeScanner = () => {
               ))}
             </Select>
           </FormControl>
-          <Box>
-            <Button sx={{ mx: 1 }}>Back</Button>
-          </Box>
-        </Paper>
+        </Box>
       ) : (
         <>
           <Paper>
@@ -110,6 +78,9 @@ const CodeScanner = () => {
           </Button>
         </>
       )}
+      <Button sx={{ my: 1 }} color='error' onClick={props.handleClose}>
+        Cancel
+      </Button>
     </Box>
   )
 }

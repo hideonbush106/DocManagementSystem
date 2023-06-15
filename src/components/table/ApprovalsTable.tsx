@@ -165,12 +165,21 @@ const ApprovalsTable: React.FC<ApprovalsTableProps> = ({ view }) => {
   let rowHeight = 50
   if (view === 'dashboard') {
     columns = [
+      {
+        field: 'id',
+        headerName: 'No.',
+        width: 50,
+        sortable: false,
+        filterable: false,
+        headerAlign: 'center',
+        align: 'center'
+      },
       { field: 'fileName', headerName: 'File Name', flex: 1 },
-      { field: 'createAt', headerName: 'Create at', flex: 1 },
+      { field: 'createAt', headerName: 'Create at', flex: 2 },
       {
         field: 'more-options',
         headerName: '',
-        width: 50,
+        width: 20,
         sortable: false,
         filterable: false,
         align: 'left',
@@ -189,23 +198,48 @@ const ApprovalsTable: React.FC<ApprovalsTableProps> = ({ view }) => {
       {
         field: 'id',
         headerName: 'No.',
-        width: 20,
+        width: 50,
         sortable: false,
         filterable: false,
         headerAlign: 'center',
         align: 'center'
       },
-      { field: 'fileName', headerName: 'File name', flex: 1, minWidth: 200 },
-      { field: 'department', headerName: 'Department', flex: 1, minWidth: 150 },
-      { field: 'room', headerName: 'Room', width: 100, headerAlign: 'center', align: 'center' },
-      { field: 'locker', headerName: 'Locker', width: 100, headerAlign: 'center', align: 'center' },
-      { field: 'folder', headerName: 'Folder', width: 100, headerAlign: 'center', align: 'center' },
-      { field: 'category', headerName: 'Category', minWidth: 120 },
-      { field: 'createAt', headerName: 'Create at', flex: 1, minWidth: 180 },
+      { field: 'fileName', headerName: 'File name', flex: 1, minWidth: 100, maxWidth: 250 },
+      { field: 'department', headerName: 'Department', flex: 1, minWidth: 80, maxWidth: 200 },
+      {
+        field: 'room',
+        headerName: 'Room',
+        minWidth: 50,
+        maxWidth: 120,
+
+        flex: 1,
+        headerAlign: 'center',
+        align: 'center'
+      },
+      {
+        field: 'locker',
+        headerName: 'Locker',
+        minWidth: 50,
+        maxWidth: 120,
+        flex: 1,
+        headerAlign: 'center',
+        align: 'center'
+      },
+      {
+        field: 'folder',
+        headerName: 'Folder',
+        minWidth: 50,
+        maxWidth: 120,
+        flex: 1,
+        headerAlign: 'center',
+        align: 'center'
+      },
+      { field: 'category', headerName: 'Category', minWidth: 75, maxWidth: 150, flex: 1 },
+      { field: 'createAt', headerName: 'Create at', flex: 1, minWidth: 140 },
       {
         field: 'action',
         headerName: 'Action',
-        width: 150,
+        width: 125,
         sortable: false,
         filterable: false,
         headerAlign: 'center',
@@ -227,7 +261,7 @@ const ApprovalsTable: React.FC<ApprovalsTableProps> = ({ view }) => {
       {
         field: 'more-options',
         headerName: '',
-        width: 50,
+        width: 20,
         sortable: false,
         filterable: false,
         align: 'left',
@@ -242,9 +276,16 @@ const ApprovalsTable: React.FC<ApprovalsTableProps> = ({ view }) => {
     ]
   }
   return (
-    <div style={{ width: '100%', height: '100%', borderRadius: 5 }}>
+    <div
+      style={{
+        width: '100%',
+        height: view === 'dashboard' ? 'calc(100% - 30px)' : '100%',
+        borderRadius: 5,
+        margin: '10px 0'
+      }}
+    >
       <DataGrid
-        columnHeaderHeight={rowHeight + 10}
+        columnHeaderHeight={rowHeight + 5}
         disableColumnMenu
         hideFooterSelectedRowCount
         rowHeight={rowHeight}
@@ -255,23 +296,21 @@ const ApprovalsTable: React.FC<ApprovalsTableProps> = ({ view }) => {
             sortModel: [{ field: 'createAt', sort: 'asc' }]
           }
         }}
-        hideFooter={view === 'dashboard'}
         autoPageSize={true}
         sx={{
           border: 'none',
           fontSize: '12px', // default: 14px
           '.MuiDataGrid-footerContainer': {
             borderTop: 'none',
-            maxHeight: rowHeight - 10,
-            minHeight: rowHeight - 10
+            maxHeight: rowHeight,
+            minHeight: rowHeight
           },
           '.MuiToolbar-root': {
             minHeight: rowHeight
           }
         }}
         style={{
-          backgroundColor: view === 'dashboard' ? 'transparent' : 'white',
-          paddingTop: view === 'dashboard' ? 10 : 0
+          backgroundColor: view === 'dashboard' ? 'transparent' : 'white'
         }}
       />
     </div>

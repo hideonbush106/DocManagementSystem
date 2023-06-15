@@ -2,7 +2,7 @@ import { AxiosError } from 'axios'
 import { signInWithPopup, signOut, User, UserCredential } from 'firebase/auth'
 import React, { ReactNode, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { getUserLogin } from '~/global/apiendpoint'
+import { getUserLogin } from '~/utils/apiendpoint'
 import { auth, provider } from '~/global/firebase'
 import { notifyError } from '~/global/toastify'
 
@@ -34,10 +34,12 @@ const AuthProvider = ({ children }: Props) => {
       const result: UserCredential = await signInWithPopup(auth, provider)
       //check account in database
       const idToken = await result.user.getIdToken()
+      console.log(idToken)
       getUserLogin(idToken)
         .then(() => {
           navigate('/dashboard')
           localStorage.setItem('isLogin', 'TRUE')
+          localStorage.setItem('token', idToken)
         })
         .catch((error: AxiosError) => {
           if (error.response?.status === 403 || error.response?.status === 401) {

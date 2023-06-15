@@ -44,6 +44,8 @@ const RequestCard = ({ request, children }: RequestCardProps) => {
 
   const handleAccept = () => {
     const updatedRequest = { ...request, status: 'accepted' }
+    localStorage.setItem('status', 'accepted')
+    setStatus('accepted')
     console.log('Accepted:', updatedRequest)
   }
 
@@ -57,6 +59,8 @@ const RequestCard = ({ request, children }: RequestCardProps) => {
 
   const handleModalSubmit = (reason: string) => {
     const updatedRequest = { ...request, status: 'rejected', reason }
+    localStorage.setItem('status', 'rejected') // Set the status in localStorage
+    setStatus('rejected') // Update the status in state
     console.log('Rejected:', updatedRequest)
     setIsModalOpen(false)
   }

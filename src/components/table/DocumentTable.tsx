@@ -1,22 +1,30 @@
 import { DataGrid, GridColDef, GridRenderCellParams } from '@mui/x-data-grid'
 
 const columns: GridColDef[] = [
-  { field: 'id', headerName: 'No.', width: 20, sortable: false, filterable: false },
-  { field: 'fileName', headerName: 'File name', flex: 1, minWidth: 180 },
-  { field: 'department', headerName: 'Department', flex: 1, minWidth: 150 },
-  { field: 'room', headerName: 'Room', width: 100, align: 'center', headerAlign: 'center' },
-  { field: 'locker', headerName: 'Locker', width: 100, align: 'center', headerAlign: 'center' },
-  { field: 'folder', headerName: 'Folder', width: 100, align: 'center', headerAlign: 'center' },
+  {
+    field: 'id',
+    headerName: 'No.',
+    sortable: false,
+    filterable: false,
+    headerAlign: 'center',
+    align: 'center',
+    width: 50
+  },
+  { field: 'fileName', headerName: 'File name', flex: 1, minWidth: 150 },
+  { field: 'department', headerName: 'Department', flex: 1, minWidth: 140 },
+  { field: 'room', headerName: 'Room', flex: 1, minWidth: 60, align: 'center', headerAlign: 'center' },
+  { field: 'locker', headerName: 'Locker', flex: 1, minWidth: 60, align: 'center', headerAlign: 'center' },
+  { field: 'folder', headerName: 'Folder', flex: 1, minWidth: 60, align: 'center', headerAlign: 'center' },
   {
     field: 'category',
     headerName: 'Category',
     flex: 1,
-    minWidth: 120
+    minWidth: 80
   },
   {
     field: 'status',
     headerName: 'Status',
-    width: 100,
+    width: 80,
     renderCell: (params: GridRenderCellParams) => {
       const status = params.value as string
 
@@ -107,10 +115,12 @@ const rows = [
 
 const DocumentTable = () => {
   return (
-    <div style={{ height: '100%', width: '100%', margin: '10px 0' }}>
+    <div style={{ height: 'calc(100% - 30px)', width: '100%', margin: '10px 0' }}>
       <DataGrid
-        columnHeaderHeight={30}
+        columnHeaderHeight={40}
         disableColumnMenu
+        hideFooterSelectedRowCount
+        rowHeight={35}
         rows={rows}
         columns={columns}
         autoPageSize={true}
@@ -119,26 +129,14 @@ const DocumentTable = () => {
           fontSize: '12px',
           '	.MuiDataGrid-footerContainer': {
             borderTop: 'none',
-            maxHeight: '30px',
-            minHeight: '30px',
-            display: 'flex',
-            justifyContent: 'flex-end'
-          },
-          '.MuiDataGrid-selectedRowCount': {
-            display: 'none'
-          },
-          '.MuiTablePagination-root': {
-            maxHeight: '30px',
-            minHeight: '30px',
-            paddingLeft: '0',
-            overflow: 'hidden'
-          },
-          '.MuiToolbar-root': {
-            maxHeight: '30px',
-            minHeight: '30px'
+            maxHeight: '40px',
+            minHeight: '40px'
           },
           '.MuiDataGrid-virtualScroller': {
-            overflow: 'visible'
+            // overflow: 'visible'
+          },
+          '.MuiToolbar-root': {
+            minHeight: 40
           }
         }}
       />

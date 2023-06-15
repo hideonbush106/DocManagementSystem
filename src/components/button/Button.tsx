@@ -58,7 +58,7 @@ export const ViewButton = ({ text }: ButtonProps) => {
       sx={{
         backgroundColor: 'var(--primary-color)',
         width: '80px',
-        height: '25px',
+        height: '30px',
         textTransform: 'uppercase',
         fontSize: '12px',
         padding: '5px',

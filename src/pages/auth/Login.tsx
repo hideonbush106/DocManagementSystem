@@ -1,21 +1,24 @@
-import { useEffect } from 'react'
+import React from 'react'
 import { Typography } from '@mui/material'
 import { Footer, FooterText, LoginContainer, LoginImg, OuterContainer } from './Login.styled'
 import GoogleButton from 'react-google-button'
 import { theme } from '~/global/theme'
 import useAuth from '~/hooks/useAuth'
 import { useNavigate } from 'react-router'
+import Loading from '~/components/loading/Loading'
 
 const Login = () => {
-  const { login } = useAuth()
+  const { user, loading, login } = useAuth()
   const navigate = useNavigate()
-  useEffect(() => {
-    const isLogin = localStorage.getItem('isLogin')
-    if (isLogin) {
+
+  React.useEffect(() => {
+    if (!loading && user) {
       navigate('/dashboard')
     }
-  }, [navigate])
-  return (
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user, loading])
+
+  return !loading && !user ? (
     <OuterContainer>
       <LoginImg>
         <img src='/assets/login.svg' alt='' srcSet='' />
@@ -43,6 +46,8 @@ const Login = () => {
         <FooterText>&copy; 2023 | All Rights Reserved</FooterText>
       </Footer>
     </OuterContainer>
+  ) : (
+    <Loading />
   )
 }
 

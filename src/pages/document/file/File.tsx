@@ -18,7 +18,7 @@ const File = () => {
         <Link to='/document'>DEPARTMENT</Link>
         <Link to={`${location.pathname.substring(0, location.pathname.indexOf('room'))}`}>{department?.name}</Link>
         <Link to={`${location.pathname.substring(0, location.pathname.indexOf('locker'))}`}>{room?.name}</Link>
-        <Link to={`${location.pathname.substring(0, location.pathname.indexOf('room'))}`}>{locker?.name}</Link>
+        <Link to={`${location.pathname.substring(0, location.pathname.indexOf('folder'))}`}>{locker?.name}</Link>
         <p>{folder?.name}</p>
       </Breadcrumbs>
       <DocumentCardList type='locker' items={files ? files : []} />

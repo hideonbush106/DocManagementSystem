@@ -1,5 +1,5 @@
 import { CreateNewFolderOutlined } from '@mui/icons-material'
-import { Box, Button, FormControl, Input, MenuItem, TextField, Typography, withTheme } from '@mui/material'
+import { Box, Button, FormControl, MenuItem, TextField, Typography } from '@mui/material'
 import React, { useState } from 'react'
 import FileUpload from 'react-material-file-upload'
 
@@ -8,8 +8,6 @@ interface ImportDocumentProps {
 }
 
 const ImportDocument = (props: ImportDocumentProps) => {
-  const [open, setOpen] = React.useState(false)
-  const handleClose = () => setOpen(false)
   const [files, setFiles] = useState<File[]>([])
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {

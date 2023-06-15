@@ -1,18 +1,45 @@
 import { CreateNewFolderOutlined } from '@mui/icons-material'
 import { Box, Button, FormControl, MenuItem, TextField, Typography } from '@mui/material'
-import React, { useState } from 'react'
+import React, { ChangeEvent, useState } from 'react'
 import FileUpload from 'react-material-file-upload'
 
 interface UpdateDocumentProps {
   handleClose: () => void
 }
 
+interface FormData {
+  name: string
+  description: string
+  numOfPages: number
+  folder: {
+    id: string
+  }
+  category: {
+    id: string
+  }
+}
+
 const UpdateDocument = (props: UpdateDocumentProps) => {
   const [files, setFiles] = useState<File[]>([])
+  const [formData, setFormData] = useState<FormData>({
+    name: '',
+    description: '',
+    numOfPages: 1,
+    folder: {
+      id: ''
+    },
+    category: {
+      id: ''
+    }
+  })
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    console.log('submit')
+    console.log(formData)
+  }
+
+  const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value })
   }
 
   return (
@@ -20,7 +47,10 @@ const UpdateDocument = (props: UpdateDocumentProps) => {
       <Box
         display={'inline-flex'}
         sx={{
-          p: 3,
+          p: {
+            xs: 1.5,
+            sm: 3
+          },
           position: 'sticky',
           top: 0,
           background: 'white',
@@ -30,13 +60,34 @@ const UpdateDocument = (props: UpdateDocumentProps) => {
         }}
       >
         <CreateNewFolderOutlined fontSize='large' sx={{ color: 'var(--black-color)', mx: 1 }} />
-        <Typography sx={{ fontWeight: 600, color: 'var(--black-color)' }} variant='h4'>
+        <Typography
+          sx={{
+            fontWeight: 600,
+            color: 'var(--black-color)',
+            fontSize: {
+              xs: '1.5rem',
+              sm: '2rem'
+            }
+          }}
+          variant='h4'
+        >
           Update Document
         </Typography>
       </Box>
-      <form onSubmit={handleSubmit} action=''>
+      <form onSubmit={handleSubmit} action='POST'>
         <FormControl sx={{ width: '100%', px: 5 }}>
-          <Typography sx={{ fontWeight: 600, color: 'var(--black-color)', my: 1.5 }} variant='h6'>
+          <Typography
+            sx={{
+              fontWeight: 600,
+              color: 'var(--black-color)',
+              my: 1.5,
+              fontSize: {
+                xs: '1.2rem',
+                sm: '1.5rem'
+              }
+            }}
+            variant='h6'
+          >
             Document Information
           </Typography>
           <TextField required sx={{ my: 1 }} label='File name' name='name' variant='standard' fullWidth />
@@ -48,6 +99,7 @@ const UpdateDocument = (props: UpdateDocumentProps) => {
             name='numOfPages'
             variant='standard'
             fullWidth
+            onChange={handleChange}
           />
           <TextField
             required
@@ -56,37 +108,106 @@ const UpdateDocument = (props: UpdateDocumentProps) => {
             name='description'
             variant='standard'
             fullWidth
+            onChange={handleChange}
             multiline
             maxRows={4}
           />
-          <Box display={'flex'} sx={{ width: '100%', justifyContent: 'space-between' }}>
-            <TextField sx={{ my: 1, width: '46%' }} select label='Department' variant='standard'>
+          <Box display={'flex'} sx={{ width: '100%', justifyContent: 'space-between', flexWrap: 'wrap' }}>
+            <TextField
+              onChange={handleChange}
+              sx={{
+                my: 1,
+                width: {
+                  xs: '100%',
+                  sm: '47%'
+                }
+              }}
+              select
+              label='Department'
+              variant='standard'
+            >
               {/** Todo: call dept API */}
               <MenuItem value='ABC'>ABC</MenuItem>
               <MenuItem value='ABC'>ABC</MenuItem>
               <MenuItem value='ABC'>ABC</MenuItem>
             </TextField>
-            <TextField sx={{ my: 1, width: '46%' }} select label='Category Type' variant='standard'>
+            <TextField
+              onChange={handleChange}
+              sx={{
+                my: 1,
+                width: {
+                  xs: '100%',
+                  sm: '47%'
+                }
+              }}
+              select
+              label='Category Type'
+              variant='standard'
+            >
               <MenuItem value='ABC'>ABC</MenuItem>
               <MenuItem value='ABC'>ABC</MenuItem>
               <MenuItem value='ABC'>ABC</MenuItem>
             </TextField>
           </Box>
-          <Typography sx={{ fontWeight: 600, color: 'var(--black-color)', my: 1.5 }} variant='h6'>
+          <Typography
+            sx={{
+              fontWeight: 600,
+              color: 'var(--black-color)',
+              my: 1.5,
+              fontSize: {
+                xs: '1.2rem',
+                sm: '1.5rem'
+              }
+            }}
+            variant='h6'
+          >
             Location
           </Typography>
-          <Box display={'flex'} sx={{ width: '100%', justifyContent: 'space-between' }}>
-            <TextField sx={{ my: 1, width: '31%' }} select label='Department' variant='standard'>
+          <Box display={'flex'} sx={{ width: '100%', justifyContent: 'space-between', flexWrap: 'wrap' }}>
+            <TextField
+              sx={{
+                my: 1,
+                width: {
+                  xs: '100%',
+                  sm: '31%'
+                }
+              }}
+              select
+              label='Room'
+              variant='standard'
+            >
               <MenuItem value='ABC'>ABC</MenuItem>
               <MenuItem value='ABC'>ABC</MenuItem>
               <MenuItem value='ABC'>ABC</MenuItem>
             </TextField>
-            <TextField sx={{ my: 1, width: '31%' }} select label='Category Type' variant='standard'>
+            <TextField
+              sx={{
+                my: 1,
+                width: {
+                  xs: '100%',
+                  sm: '31%'
+                }
+              }}
+              select
+              label='Locker'
+              variant='standard'
+            >
               <MenuItem value='ABC'>ABC</MenuItem>
               <MenuItem value='ABC'>ABC</MenuItem>
               <MenuItem value='ABC'>ABC</MenuItem>
             </TextField>
-            <TextField sx={{ my: 1, width: '31%' }} select label='Category Type' variant='standard'>
+            <TextField
+              sx={{
+                my: 1,
+                width: {
+                  xs: '100%',
+                  sm: '31%'
+                }
+              }}
+              select
+              label='Folder'
+              variant='standard'
+            >
               <MenuItem value='ABC'>ABC</MenuItem>
               <MenuItem value='ABC'>ABC</MenuItem>
               <MenuItem value='ABC'>ABC</MenuItem>
@@ -94,7 +215,13 @@ const UpdateDocument = (props: UpdateDocumentProps) => {
           </Box>
           <Box sx={{ display: 'flex', justifyContent: 'center', my: 1 }}>
             <FileUpload
-              sx={{ my: 1, width: '80%' }}
+              sx={{
+                my: 1,
+                width: {
+                  xs: '100%',
+                  sm: '80%'
+                }
+              }}
               value={files}
               onChange={setFiles}
               title={`Drag 'n' drop some files here, or click to select files`}

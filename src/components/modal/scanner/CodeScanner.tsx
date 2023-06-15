@@ -1,4 +1,4 @@
-import { Box, Button, FormControl, InputLabel, MenuItem, Paper, Select, Typography } from '@mui/material'
+import { Box, Button, FormControl, Grid, InputLabel, MenuItem, Paper, Select, Typography } from '@mui/material'
 import { useState } from 'react'
 import { useMediaDevices } from 'react-media-devices'
 import { useZxing } from 'react-zxing'
@@ -27,7 +27,14 @@ const CodeScanner = (props: CodeScannerProps) => {
   })
 
   return (
-    <Box sx={{ px: 5, py: 3 }}>
+    <Box
+      sx={{
+        p: {
+          xs: 1,
+          sm: 4
+        }
+      }}
+    >
       {!result ? (
         <Box sx={{ display: 'flex', flexDirection: 'column', alignContent: 'center', justifyContent: 'center' }}>
           <Typography
@@ -39,11 +46,13 @@ const CodeScanner = (props: CodeScannerProps) => {
           >
             {`Please move your camera over document's barcode`}
           </Typography>
-          <Box sx={{ width: '100%', display: 'flex', my: 2, justifyContent: 'center' }}>
-            <video ref={ref} width='60%'>
-              <track kind='captions' />
-            </video>
-          </Box>
+          <Grid container justifyContent='center' sx={{ width: '100%', my: 2 }}>
+            <Grid item xs={12} sm={8} md={8}>
+              <video ref={ref} width='100%'>
+                <track kind='captions' />
+              </video>
+            </Grid>
+          </Grid>
           <FormControl sx={{ m: 1, minWidth: 120 }}>
             <InputLabel>Device list</InputLabel>
             <Select

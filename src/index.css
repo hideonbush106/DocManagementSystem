@@ -61,3 +61,13 @@ a:link {
   text-decoration: none;
   cursor: pointer;
 }
+*::-webkit-scrollbar {
+  width: 10px;
+}
+*::-webkit-scrollbar-track {
+  background-color: #0000;
+}
+*::-webkit-scrollbar-thumb {
+  background-color: var(--gray-color);
+  border-radius: 50px;
+}

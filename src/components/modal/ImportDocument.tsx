@@ -47,7 +47,10 @@ const ImportDocument = (props: ImportDocumentProps) => {
       <Box
         display={'inline-flex'}
         sx={{
-          p: 3,
+          p: {
+            xs: 1.5,
+            sm: 3
+          },
           position: 'sticky',
           top: 0,
           background: 'white',
@@ -57,13 +60,34 @@ const ImportDocument = (props: ImportDocumentProps) => {
         }}
       >
         <CreateNewFolderOutlined fontSize='large' sx={{ color: 'var(--black-color)', mx: 1 }} />
-        <Typography sx={{ fontWeight: 600, color: 'var(--black-color)' }} variant='h4'>
+        <Typography
+          sx={{
+            fontWeight: 600,
+            color: 'var(--black-color)',
+            fontSize: {
+              xs: '1.5rem',
+              sm: '2rem'
+            }
+          }}
+          variant='h4'
+        >
           Import Document
         </Typography>
       </Box>
       <form onSubmit={handleSubmit} action='POST'>
         <FormControl sx={{ width: '100%', px: 5 }}>
-          <Typography sx={{ fontWeight: 600, color: 'var(--black-color)', my: 1.5 }} variant='h6'>
+          <Typography
+            sx={{
+              fontWeight: 600,
+              color: 'var(--black-color)',
+              my: 1.5,
+              fontSize: {
+                xs: '1.2rem',
+                sm: '1.5rem'
+              }
+            }}
+            variant='h6'
+          >
             Document Information
           </Typography>
           <TextField required sx={{ my: 1 }} label='File name' name='name' variant='standard' fullWidth />
@@ -88,10 +112,16 @@ const ImportDocument = (props: ImportDocumentProps) => {
             multiline
             maxRows={4}
           />
-          <Box display={'flex'} sx={{ width: '100%', justifyContent: 'space-between' }}>
+          <Box display={'flex'} sx={{ width: '100%', justifyContent: 'space-between', flexWrap: 'wrap' }}>
             <TextField
               onChange={handleChange}
-              sx={{ my: 1, width: '46%' }}
+              sx={{
+                my: 1,
+                width: {
+                  xs: '100%',
+                  sm: '47%'
+                }
+              }}
               select
               label='Department'
               variant='standard'
@@ -103,7 +133,13 @@ const ImportDocument = (props: ImportDocumentProps) => {
             </TextField>
             <TextField
               onChange={handleChange}
-              sx={{ my: 1, width: '46%' }}
+              sx={{
+                my: 1,
+                width: {
+                  xs: '100%',
+                  sm: '47%'
+                }
+              }}
               select
               label='Category Type'
               variant='standard'
@@ -113,21 +149,65 @@ const ImportDocument = (props: ImportDocumentProps) => {
               <MenuItem value='ABC'>ABC</MenuItem>
             </TextField>
           </Box>
-          <Typography sx={{ fontWeight: 600, color: 'var(--black-color)', my: 1.5 }} variant='h6'>
+          <Typography
+            sx={{
+              fontWeight: 600,
+              color: 'var(--black-color)',
+              my: 1.5,
+              fontSize: {
+                xs: '1.2rem',
+                sm: '1.5rem'
+              }
+            }}
+            variant='h6'
+          >
             Location
           </Typography>
-          <Box display={'flex'} sx={{ width: '100%', justifyContent: 'space-between' }}>
-            <TextField sx={{ my: 1, width: '31%' }} select label='Department' variant='standard'>
+          <Box display={'flex'} sx={{ width: '100%', justifyContent: 'space-between', flexWrap: 'wrap' }}>
+            <TextField
+              sx={{
+                my: 1,
+                width: {
+                  xs: '100%',
+                  sm: '31%'
+                }
+              }}
+              select
+              label='Room'
+              variant='standard'
+            >
               <MenuItem value='ABC'>ABC</MenuItem>
               <MenuItem value='ABC'>ABC</MenuItem>
               <MenuItem value='ABC'>ABC</MenuItem>
             </TextField>
-            <TextField sx={{ my: 1, width: '31%' }} select label='Category Type' variant='standard'>
+            <TextField
+              sx={{
+                my: 1,
+                width: {
+                  xs: '100%',
+                  sm: '31%'
+                }
+              }}
+              select
+              label='Locker'
+              variant='standard'
+            >
               <MenuItem value='ABC'>ABC</MenuItem>
               <MenuItem value='ABC'>ABC</MenuItem>
               <MenuItem value='ABC'>ABC</MenuItem>
             </TextField>
-            <TextField sx={{ my: 1, width: '31%' }} select label='Category Type' variant='standard'>
+            <TextField
+              sx={{
+                my: 1,
+                width: {
+                  xs: '100%',
+                  sm: '31%'
+                }
+              }}
+              select
+              label='Folder'
+              variant='standard'
+            >
               <MenuItem value='ABC'>ABC</MenuItem>
               <MenuItem value='ABC'>ABC</MenuItem>
               <MenuItem value='ABC'>ABC</MenuItem>
@@ -135,7 +215,13 @@ const ImportDocument = (props: ImportDocumentProps) => {
           </Box>
           <Box sx={{ display: 'flex', justifyContent: 'center', my: 1 }}>
             <FileUpload
-              sx={{ my: 1, width: '80%' }}
+              sx={{
+                my: 1,
+                width: {
+                  xs: '100%',
+                  sm: '80%'
+                }
+              }}
               value={files}
               onChange={setFiles}
               title={`Drag 'n' drop some files here, or click to select files`}

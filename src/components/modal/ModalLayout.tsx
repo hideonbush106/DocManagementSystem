@@ -22,10 +22,17 @@ const ModalLayout = (props: ModalLayoutProps) => {
     top: '50%',
     left: '50%',
     transform: 'translate(-50%, -50%)',
-    width: '50vw',
+    width: {
+      xs: '95vw',
+      md: '60vw',
+      lg: '40vw'
+    },
     bgcolor: 'white',
     boxShadow: 24,
-    maxHeight: '80vh'
+    maxHeight: {
+      xs: '100vh',
+      md: '80vh'
+    }
   }
   return (
     <>

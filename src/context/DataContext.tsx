@@ -19,8 +19,8 @@ const DataProvider = ({ children }: Props) => {
   const [documentMap, setDocumentMap] = React.useState<Map<string, Department>>(new Map())
   const [loading, setLoading] = React.useState<boolean>(true)
   React.useEffect(() => {
-    user?.getIdToken().then((idToken) => {
-      getDocumentTree(idToken)
+    if (user) {
+      getDocumentTree(user.accessToken as string)
         .then((res) => {
           const tree: DepartmentTree[] = res.data.data
           setDocumentTree(tree)
@@ -49,7 +49,7 @@ const DataProvider = ({ children }: Props) => {
         .catch((err) => {
           console.log(err)
         })
-    })
+    }
   }, [user])
 
   const value = { documentTree, documentMap, loading }

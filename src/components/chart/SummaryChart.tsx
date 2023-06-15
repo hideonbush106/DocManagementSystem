@@ -5,14 +5,16 @@ const SummaryChart = () => {
     <>
       <Chart
         type='donut'
-        width={280}
-        height={280}
+        width={'100%'}
+        height={'100%'}
+        minHeight={'300px'}
         series={[46, 90]}
         options={{
           labels: ['Lending', 'Available'],
           colors: ['var(--red-color)', 'var(--primary-color)'],
           plotOptions: {
             pie: {
+              customScale: 0.9,
               expandOnClick: false,
               donut: {
                 labels: {
@@ -31,21 +33,35 @@ const SummaryChart = () => {
           },
           legend: {
             position: 'bottom',
-            offsetX: 10,
+            offsetX: 0,
             formatter: function (legendName, opts) {
               return legendName + ' - ' + opts.w.globals.series[opts.seriesIndex]
             },
             itemMargin: {
-              horizontal: 10
+              horizontal: 15
             }
           },
           dataLabels: {
             enabled: false
           },
-          chart: {
-            offsetX: 20,
-            offsetY: 10
-          }
+          responsive: [
+            {
+              breakpoint: 900,
+              options: {
+                legend: {
+                  position: 'right'
+                }
+              }
+            },
+            {
+              breakpoint: 600,
+              options: {
+                legend: {
+                  position: 'bottom'
+                }
+              }
+            }
+          ]
         }}
       />
     </>

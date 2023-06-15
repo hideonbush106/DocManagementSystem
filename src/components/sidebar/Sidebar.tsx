@@ -45,9 +45,9 @@ const Sidebar = () => {
   const menu = () => (
     <MenuMobile onClick={toggleDrawer(false)}>
       <Avatar>
-        <Image src={String(user?.photoURL)} alt='Your Avatar' />
+        <Image src={String(user?.photoUrl)} alt='Your Avatar' />
         <Typography align='center' sx={{ width: '100%', fontWeight: 600 }}>
-          {user?.displayName}
+          {user?.name}
         </Typography>
         <Typography color={'var(--gray-color)'}>Staff</Typography>
       </Avatar>
@@ -107,9 +107,9 @@ const Sidebar = () => {
       </SideBarWrapper>
       <SideBarWrapper desktop>
         <Avatar>
-          <Image src={String(user?.photoURL)} alt='Your Avatar' />
+          <Image src={String(user?.photoUrl)} alt='Your Avatar' />
           <Typography align='center' sx={{ width: '100%', fontWeight: 600 }}>
-            {user?.displayName}
+            {user?.name}
           </Typography>
           <Typography color={'var(--gray-color)'}>Staff</Typography>
         </Avatar>

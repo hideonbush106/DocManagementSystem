@@ -8,8 +8,8 @@ const Welcome = () => {
   return (
     <div>
       <Card sx={{ padding: '2rem', width: 'fit-content' }}>
-        <h1>Welcome {user?.displayName}</h1>
-        <img src={String(user?.photoURL)} alt='' srcSet='' />
+        <h1>Welcome {user?.name}</h1>
+        <img src={user?.photoUrl as string} alt='' srcSet='' />
       </Card>
       <Button onClick={logout} variant='outlined'>
         Logout

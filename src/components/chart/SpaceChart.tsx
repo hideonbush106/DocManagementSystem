@@ -5,8 +5,8 @@ const SpaceChart = () => {
     <>
       <Chart
         type='bar'
-        width={350}
-        height={200}
+        width={'100%'}
+        height={'95%'}
         series={[
           {
             name: 'Stored',
@@ -27,7 +27,7 @@ const SpaceChart = () => {
           plotOptions: {
             bar: {
               horizontal: true,
-              columnWidth: '100%'
+              columnWidth: '50%'
             }
           },
           xaxis: {
@@ -35,6 +35,9 @@ const SpaceChart = () => {
           },
           legend: {
             position: 'bottom',
+            offsetX: 15,
+            offsetY: 10,
+            height: 35,
             itemMargin: {
               horizontal: 20
             }
@@ -43,18 +46,11 @@ const SpaceChart = () => {
             enabled: true
           },
           grid: {
-            show: false,
-            xaxis: {
-              lines: {
-                show: false
-              }
-            },
-            yaxis: {
-              lines: {
-                show: false
-              }
-            }
-          }
+            show: false
+          },
+          responsive: [
+            // {breakpoint: }
+          ]
         }}
       />
     </>

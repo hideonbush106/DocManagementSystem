@@ -15,6 +15,7 @@ export const MainContainer = styled.div`
   width: 100%;
   height: 100vh;
   padding: 20px;
+  overflow: scroll;
 
   //in mobile view, margin-top: 50px to avoid overlapping with the navbar
   @media (max-width: 900px) {

@@ -11,11 +11,12 @@ export const ImportButton = ({ text }: ButtonProps) => {
     <Button
       sx={{
         backgroundColor: 'var(--primary-color)',
-        width: '155px',
-        height: '35px',
+        width: { sm: '165px', xs: '115px' },
+        height: '45px',
         textTransform: 'capitalize',
         fontSize: '14px',
-        padding: '5px',
+        padding: '10px',
+        lineHeight: '1.2',
         '&:hover': {
           backgroundColor: 'var(--primary-dark-color)'
         }
@@ -33,11 +34,12 @@ export const ReturnButton = ({ text }: ButtonProps) => {
     <Button
       sx={{
         backgroundColor: 'var(--green-color)',
-        width: '155px',
-        height: '35px',
+        width: { sm: '165px', xs: '125px' },
+        height: '45px',
         textTransform: 'capitalize',
         fontSize: '14px',
-        padding: '5px',
+        padding: '10px',
+        lineHeight: '1.2',
         '&:hover': {
           backgroundColor: 'var(--green-dark-color)'
         }
@@ -56,7 +58,7 @@ export const ViewButton = ({ text }: ButtonProps) => {
       sx={{
         backgroundColor: 'var(--primary-color)',
         width: '80px',
-        height: '25px',
+        height: '30px',
         textTransform: 'uppercase',
         fontSize: '12px',
         padding: '5px',

@@ -11,8 +11,12 @@ export const PendingApprovalsWrapper = styled.section`
   display: flex;
   flex-direction: column;
   align-items: center;
-  height: 100%;
+  height: calc(100% - 2rem);
   padding: 1rem;
+
+  @media (max-width: 900px) {
+    padding: 1rem 0;
+  }
 `
 export const HeaderWrapper = styled.div`
   width: 100%;

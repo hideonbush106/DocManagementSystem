@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import { Avatar, Image, MenuMobile, Wrapper, SideBarWrapper, Logo } from './Sidebar.styled'
 import { Typography } from '@mui/material'
-import { Options } from './OptionsStaff'
+import { OptionsStaff } from './OptionsStaff'
+// import { OptionsEmp } from './OptionsEmp'
 import useAuth from '~/hooks/useAuth'
 import { useLocation, Link, useNavigate } from 'react-router-dom'
 import Drawer from '@mui/material/Drawer'
@@ -9,20 +10,26 @@ import Button from '@mui/material/Button'
 import MenuIcon from '@mui/icons-material/Menu'
 import LogoutIcon from '@mui/icons-material/Logout'
 
-const Sidebar = () => {
+interface SidebarProps {
+  mainContainerRef: React.RefObject<HTMLDivElement>
+}
+
+const Sidebar: React.FC<SidebarProps> = ({ mainContainerRef }) => {
   const { user, logout } = useAuth()
   const [btn, setButton] = useState<number | null>(1) //dashboard is default option
   const navigate = useNavigate()
 
   const handleClick = (id: number) => {
     setButton(id)
-    window.scrollTo(0, 0)
+    if (mainContainerRef.current) {
+      mainContainerRef.current.scrollTo(0, 0)
+    }
   }
 
   //set option bold when navigate to its address
   const location = useLocation()
   useEffect(() => {
-    const option = Options.find((option) => location.pathname.includes(`/${option.link}`))
+    const option = OptionsStaff.find((option) => location.pathname.includes(`/${option.link}`))
     if (option) {
       setButton(option.id)
     } else {
@@ -51,7 +58,7 @@ const Sidebar = () => {
         </Typography>
         <Typography color={'var(--gray-color)'}>Staff</Typography>
       </Avatar>
-      {Options.map((option) => (
+      {OptionsStaff.map((option) => (
         <Link
           key={option.id}
           to={`/${option.link}`}
@@ -113,7 +120,7 @@ const Sidebar = () => {
           </Typography>
           <Typography color={'var(--gray-color)'}>Staff</Typography>
         </Avatar>
-        {Options.map((option) => (
+        {OptionsStaff.map((option) => (
           <Link
             key={option.id}
             to={`/${option.link}`}

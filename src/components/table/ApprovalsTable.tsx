@@ -1,15 +1,25 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { DataGrid, GridColDef, GridRenderCellParams } from '@mui/x-data-grid'
 import ActionsCell from './ActionCell'
 import PropTypes, { Validator } from 'prop-types'
-import { Button } from '@mui/material'
 import { Link } from 'react-router-dom'
 import CheckRoundedIcon from '@mui/icons-material/CheckRounded'
+import ModalLayout from '../modal/ModalLayout'
+import CodeScanner from '../modal/scanner/CodeScanner'
+import { useState } from 'react'
 interface ApprovalsTableProps {
   view: 'dashboard' | 'full'
 }
 
 const ApprovalsTable: React.FC<ApprovalsTableProps> = ({ view }) => {
   let columns: GridColDef[] = []
+
+  const [open, setOpen] = useState(false)
+
+  const handleClose = () => {
+    setOpen(false)
+  }
+
   const rows = [
     {
       id: 1,
@@ -182,6 +192,7 @@ const ApprovalsTable: React.FC<ApprovalsTableProps> = ({ view }) => {
         width: 20,
         sortable: false,
         filterable: false,
+
         align: 'left',
         renderCell: (params: GridRenderCellParams) => {
           const menuItems = [
@@ -246,7 +257,7 @@ const ApprovalsTable: React.FC<ApprovalsTableProps> = ({ view }) => {
         align: 'center',
         renderCell: () => (
           <Link to={''}>
-            <Button
+            {/* <Button
               endIcon={<CheckRoundedIcon />}
               size='small'
               style={{ padding: '7px 10px', fontWeight: 600, fontSize: 12 }}
@@ -254,7 +265,16 @@ const ApprovalsTable: React.FC<ApprovalsTableProps> = ({ view }) => {
               onClick={() => console.log('Action clicked')}
             >
               Confirm
-            </Button>
+            </Button> */}
+            <ModalLayout
+              size='small'
+              style={{ padding: '7px 10px', fontWeight: 600, fontSize: 12 }}
+              variant='outlined'
+              button='confirm'
+              endIcon={<CheckRoundedIcon />}
+            >
+              <CodeScanner handleClose={handleClose} />
+            </ModalLayout>
           </Link>
         )
       },
@@ -285,7 +305,7 @@ const ApprovalsTable: React.FC<ApprovalsTableProps> = ({ view }) => {
       }}
     >
       <DataGrid
-        columnHeaderHeight={rowHeight + 5}
+        columnHeaderHeight={rowHeight + 10}
         disableColumnMenu
         hideFooterSelectedRowCount
         rowHeight={rowHeight}

@@ -11,15 +11,15 @@ interface UserInterface {
   email: string | null
   phone: string | null
   photoUrl: string | null
-  accessToken: string | null
 }
 
 export type AuthContextType = {
   user: UserInterface | null
   loading: boolean
-  login: () => void
-  logout: () => void
-  refreshAccessToken: () => Promise<string | void>
+  login: () => Promise<void>
+  logout: () => Promise<void>
+  accessToken: string | null
+  refreshAccessToken: () => Promise<void>
 }
 
 export const AuthContext = React.createContext<AuthContextType | null>(null)
@@ -90,10 +90,10 @@ const AuthProvider = ({ children }: Props) => {
     if (user) {
       const newIdToken = await user.getIdToken(true)
       setIdToken(newIdToken)
-      return newIdToken
     }
   }
 
+  // get user state when app start
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged(async (user) => {
       if (user) {
@@ -103,8 +103,6 @@ const AuthProvider = ({ children }: Props) => {
           setUser(user)
           setIdToken(token)
         }
-      } else {
-        navigate('/')
       }
       setLoading(false)
     })
@@ -112,15 +110,32 @@ const AuthProvider = ({ children }: Props) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
+  // refresh access token before expire
+  useEffect(() => {
+    if (!loading && user) {
+      let idTimeout: NodeJS.Timeout
+      user.getIdTokenResult().then(({ expirationTime }) => {
+        const expireIn = Date.parse(expirationTime) - Date.now() - 5 * 60 * 1000 // 5 minutes before expire
+        idTimeout = setTimeout(async () => {
+          await refreshAccessToken()
+        }, expireIn)
+      })
+      return () => clearInterval(idTimeout)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user, idToken])
+
+  // redirect to dashboard if user is logged in
+  useEffect(() => {
+    if (!loading) user ? navigate(location.pathname) : navigate('/')
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user])
+
+  // validate user when route change
   useEffect(() => {
     if (!loading && user && idToken) validateUser(user, idToken)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [location.pathname])
-
-  useEffect(() => {
-    if (!loading) user ? navigate('/dashboard') : navigate('/')
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [loading, user])
 
   const value = {
     user: user
@@ -128,13 +143,13 @@ const AuthProvider = ({ children }: Props) => {
           name: user.displayName,
           email: user.email,
           phone: user.phoneNumber,
-          photoUrl: user.photoURL,
-          accessToken: idToken
+          photoUrl: user.photoURL
         }
       : null,
     loading,
     login,
     logout,
+    accessToken: idToken,
     refreshAccessToken
   }
 

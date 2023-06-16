@@ -65,7 +65,7 @@ const RequestsTable = () => {
             // overflow: 'visible'
           },
           '.MuiToolbar-root': {
-            minHeight: 40
+            minHeight: 35
           }
         }}
       />

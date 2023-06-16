@@ -22,6 +22,7 @@ export const privateRoutes = [
   {
     path: '/document',
     component: Document,
+    title: 'Document',
     children: [
       { path: '/document', component: Department, index: true },
       { path: '/document/department/:departmentId', component: Room, index: false },
@@ -34,8 +35,8 @@ export const privateRoutes = [
       }
     ]
   },
-  { path: '/request', component: Requests },
-  { path: '/pending-approval', component: PendingApprovals },
-  { path: '/statistic', component: Statistic },
-  { path: '/advanced', component: Advanced }
+  { path: '/request', component: Requests, title: 'Requests' },
+  { path: '/pending-approval', component: PendingApprovals, title: 'Pending Approvals' },
+  { path: '/statistic', component: Statistic, title: 'Statistics' },
+  { path: '/advanced', component: Advanced, title: 'Advanced' }
 ]

@@ -1,15 +1,14 @@
 import SearchField from '~/components/TextField/SearchField'
 import { ImportButton, ReturnButton } from '~/components/button/Button'
 import { ButtonWrapper, DocumentGrid, DocumentWrapper, NavWrapper, TreeWarpper } from './Document.styled'
-import { IconDiv } from '~/components/headerBar/HeaderBar.styled'
 import TreeView from '@mui/lab/TreeView'
-import { Apartment, ChevronRight, ExpandMore, Folder, Work } from '@mui/icons-material'
+import { Apartment, ChevronRight, ExpandMore, Folder, Notifications, Work } from '@mui/icons-material'
 import DocumentTreeItem from '~/components/treeItem/DocumentTreeItem'
 import { Outlet } from 'react-router-dom'
 import useData from '~/hooks/useData'
 import { fakeArray } from '~/utils/fakeArray'
 import DataProvider from '~/context/DataContext'
-import { Grid, Skeleton } from '@mui/material'
+import { Grid, IconButton, Skeleton } from '@mui/material'
 
 const DocumentDisplay = () => {
   const { documentTree, loading } = useData()
@@ -25,10 +24,10 @@ const DocumentDisplay = () => {
         <ButtonWrapper>
           <ImportButton text='New Document' />
           <ReturnButton text='Return Document' />
+          <IconButton color='primary' size='large'>
+            <Notifications />
+          </IconButton>
         </ButtonWrapper>
-        <IconDiv white style={{ cursor: 'pointer' }}>
-          <img src='/assets/bell-ringing.svg' alt='' />
-        </IconDiv>
       </NavWrapper>
       <TreeWarpper>
         <TreeView defaultCollapseIcon={<ExpandMore />} defaultExpandIcon={<ChevronRight />}>

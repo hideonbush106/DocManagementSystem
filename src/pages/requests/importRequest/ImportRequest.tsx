@@ -15,7 +15,7 @@ const ImportRequest = () => {
   const isMediumScreen = useMediaQuery('(min-width:1000px)')
   const isSmallScreen = useMediaQuery('(min-width:900px)')
 
-  let PER_PAGE = 4
+  let PER_PAGE = 6
   if (isExtraLargeScreen) {
     PER_PAGE = 10
   } else if (isLargeScreen) {

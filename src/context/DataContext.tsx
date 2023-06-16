@@ -14,13 +14,13 @@ interface Props {
   children: ReactNode
 }
 const DataProvider = ({ children }: Props) => {
-  const { user } = useAuth()
+  const { accessToken } = useAuth()
   const [documentTree, setDocumentTree] = React.useState<DepartmentTree[] | null>([])
   const [documentMap, setDocumentMap] = React.useState<Map<string, Department>>(new Map())
   const [loading, setLoading] = React.useState<boolean>(true)
   React.useEffect(() => {
-    if (user) {
-      getDocumentTree(user.accessToken as string)
+    if (accessToken) {
+      getDocumentTree(accessToken)
         .then((res) => {
           const tree: DepartmentTree[] = res.data.data
           setDocumentTree(tree)
@@ -50,7 +50,7 @@ const DataProvider = ({ children }: Props) => {
           console.log(err)
         })
     }
-  }, [user])
+  }, [accessToken])
 
   const value = { documentTree, documentMap, loading }
 

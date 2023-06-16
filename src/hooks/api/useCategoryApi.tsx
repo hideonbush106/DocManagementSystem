@@ -1,6 +1,6 @@
 import { Categories, UpdateCategories } from '~/global/interface'
 import useApi from './useApi'
-
+//TODO: waiting for back-end document api :)
 const useCategoryApi = () => {
   const callApi = useApi()
   const rootEndpoint = 'categories'
@@ -35,7 +35,7 @@ const useCategoryApi = () => {
     }
   }
 
-  return { getCategories }
+  return { getCategories, createCategory, updateCategory }
 }
 
 export default useCategoryApi

@@ -70,3 +70,71 @@ export interface Categories {
 export interface UpdateCategories extends Categories {
   name: string
 }
+
+export interface CreateDepartment {
+  name: string
+}
+
+export interface UpdateDepartment extends CreateDepartment {
+  id: string
+}
+
+export interface CreateDocument {
+  name: string
+  description: string
+  status: string
+  numOfPage: number
+  folder: {
+    id: string
+  }
+  category: {
+    id: string
+  }
+}
+
+export interface ConfirmDocument {
+  id: string
+  locationQRcode: string
+}
+
+export interface CreateFolder {
+  name: string
+  capacity: number
+  locker: {
+    id: string
+  }
+}
+
+export interface UpdateFolder {
+  id: string
+  name: string
+  capacity: number
+}
+
+export interface UpdateLocker {
+  id: string
+  name: string
+  capacity: number
+}
+
+export interface CreateLocker {
+  name: string
+  capacity: number
+  room: {
+    id: string
+  }
+}
+
+export interface CreateRoom {
+  name: string
+  capacity: number
+  department: {
+    id: string
+  }
+}
+
+export interface UpdateRoom {
+  id: string
+  name: string
+  capacity: number
+}

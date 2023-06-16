@@ -15,7 +15,7 @@ const PendingApprovals = () => {
       <Typography variant='h5' width={'100%'} fontWeight={'bold'} padding={'2rem 0 1rem'}>
         Files
       </Typography>
-      <ApprovalsTable view='full'/>
+      <ApprovalsTable view='full' />
     </PendingApprovalsWrapper>
   )
 }

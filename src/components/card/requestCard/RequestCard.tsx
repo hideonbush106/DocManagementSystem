@@ -1,7 +1,7 @@
 import Card from '@mui/material/Card'
 import CardActions from '@mui/material/CardActions'
 import CardContent from '@mui/material/CardContent'
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { AcceptButton, RejectButton } from '~/components/button/Button'
 import styled from 'styled-components'
 import RejectRequestModal from '~/components/model/rejectRequestModel/RejectRequestModel'
@@ -59,13 +59,13 @@ const RequestCard = ({ request, children }: RequestCardProps) => {
 
   const handleModalSubmit = (reason: string) => {
     const updatedRequest = { ...request, status: 'rejected', reason }
-    localStorage.setItem('status', 'rejected') // Set the status in localStorage
-    setStatus('rejected') // Update the status in state
+    localStorage.setItem('status', 'rejected')
+    setStatus('rejected')
     console.log('Rejected:', updatedRequest)
     setIsModalOpen(false)
   }
 
-  const renderStatusText = () => {
+  const renderStatusText = useCallback(() => {
     if (status === 'rejected') {
       return <StatusDiv rejected>Rejected</StatusDiv>
     }
@@ -73,16 +73,16 @@ const RequestCard = ({ request, children }: RequestCardProps) => {
       return <StatusDiv accepted>Accepted</StatusDiv>
     }
     return null
-  }
+  }, [status])
 
   useEffect(() => {
     renderStatusText()
-  }, [status])
+  }, [renderStatusText, status])
 
   return (
     <>
-      <Card sx={{ maxWidth: '14.5rem', margin: '0 20px 15px 0' }}>
-        <CardContent sx={{ height: '14rem', overflow: 'visible' }}>{children}</CardContent>
+      <Card sx={{ maxWidth: '13.25rem', margin: '0 20px 15px 0' }}>
+        <CardContent sx={{ height: '13.5rem', overflow: 'visible' }}>{children}</CardContent>
         <CardActions sx={{ justifyContent: 'space-evenly', margin: '10px 0' }}>
           {status === 'pending' && (
             <>

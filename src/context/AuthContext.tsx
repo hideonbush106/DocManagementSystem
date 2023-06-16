@@ -1,15 +1,25 @@
-import { AxiosError } from 'axios'
-import { signInWithPopup, signOut, User, UserCredential } from 'firebase/auth'
+import { FirebaseError } from 'firebase/app'
+import { signInWithPopup, signOut, User } from 'firebase/auth'
 import React, { ReactNode, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import { getUserLogin } from '~/utils/apiendpoint'
 import { auth, provider } from '~/global/firebase'
-import { notifyError } from '~/global/toastify'
+import { notifyError, notifySuccess } from '~/global/toastify'
+
+interface UserInterface {
+  name: string | null
+  email: string | null
+  phone: string | null
+  photoUrl: string | null
+  accessToken: string | null
+}
 
 export type AuthContextType = {
-  user: User | null
+  user: UserInterface | null
+  loading: boolean
   login: () => void
   logout: () => void
+  refreshAccessToken: () => Promise<string | void>
 }
 
 export const AuthContext = React.createContext<AuthContextType | null>(null)
@@ -19,52 +29,114 @@ interface Props {
 }
 
 const AuthProvider = ({ children }: Props) => {
-  const [user, setUser] = React.useState<null | User>(null)
+  const [user, setUser] = React.useState<User | null>(null)
+  const [idToken, setIdToken] = React.useState<string | null>(null)
+  const [loading, setLoading] = React.useState(true)
   const navigate = useNavigate()
+  const location = useLocation()
 
-  useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged((user) => {
-      setUser(user)
-    })
-    return () => unsubscribe()
-  }, [])
+  const validateUser = async (user: User, token: string): Promise<boolean> => {
+    try {
+      //check account in database
+      await getUserLogin(token)
+      return true
+    } catch (error) {
+      console.log(error)
+      if (error instanceof Error) {
+        if (error.message === 'Token expired') {
+          const newToken = await user.getIdToken()
+          setIdToken(newToken)
+        } else {
+          notifyError(error.message)
+          logout()
+        }
+      }
+      return false
+    }
+  }
 
   const login = async () => {
     try {
-      const result: UserCredential = await signInWithPopup(auth, provider)
-      //check account in database
-      const idToken = await result.user.getIdToken()
-      console.log(idToken)
-      getUserLogin(idToken)
-        .then(() => {
-          navigate('/dashboard')
-          localStorage.setItem('isLogin', 'TRUE')
-          localStorage.setItem('token', idToken)
-        })
-        .catch((error: AxiosError) => {
-          if (error.response?.status === 403 || error.response?.status === 401) {
-            notifyError('Unauthorized account')
-            logout()
-          }
-        })
+      const userCredential = await signInWithPopup(auth, provider)
+      setLoading(true)
+      const token = await userCredential.user.getIdToken()
+      const isValidate = await validateUser(userCredential.user, token)
+      if (isValidate) {
+        notifySuccess('Login successfully')
+        setUser(userCredential.user)
+        setIdToken(token)
+      }
+      setLoading(false)
     } catch (error) {
-      notifyError('Login failed')
-      logout()
       console.log(error)
+      if (error instanceof FirebaseError) {
+        if (error.code !== 'auth/popup-closed-by-user' && error.code !== 'auth/cancelled-popup-request')
+          notifyError('Login failed')
+      }
     }
   }
 
   const logout = async () => {
     try {
-      localStorage.removeItem('isLogin')
       await signOut(auth)
-      navigate('/')
+      setUser(null)
+      setIdToken(null)
     } catch (error) {
       console.log(error)
     }
   }
 
-  const value = { login, logout, user }
+  const refreshAccessToken = async () => {
+    if (user) {
+      const newIdToken = await user.getIdToken(true)
+      setIdToken(newIdToken)
+      return newIdToken
+    }
+  }
+
+  useEffect(() => {
+    const unsubscribe = auth.onAuthStateChanged(async (user) => {
+      if (user) {
+        const token = await user.getIdToken()
+        const isValidate = await validateUser(user, token)
+        if (isValidate) {
+          setUser(user)
+          setIdToken(token)
+        }
+      } else {
+        navigate('/')
+      }
+      setLoading(false)
+    })
+    unsubscribe()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  useEffect(() => {
+    if (!loading && user && idToken) validateUser(user, idToken)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [location.pathname])
+
+  useEffect(() => {
+    if (!loading) user ? navigate('/dashboard') : navigate('/')
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [loading, user])
+
+  const value = {
+    user: user
+      ? {
+          name: user.displayName,
+          email: user.email,
+          phone: user.phoneNumber,
+          photoUrl: user.photoURL,
+          accessToken: idToken
+        }
+      : null,
+    loading,
+    login,
+    logout,
+    refreshAccessToken
+  }
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
 }

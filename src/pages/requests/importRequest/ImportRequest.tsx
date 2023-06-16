@@ -1,5 +1,5 @@
 import RequestCard from '~/components/card/requestCard/RequestCard'
-import { Avatar, Box, Pagination, Typography, styled } from '@mui/material'
+import { Avatar, Box, Pagination, Typography, styled, useMediaQuery, useTheme } from '@mui/material'
 import { mockRequest } from '~/shared/mockRequest'
 import { useState } from 'react'
 import usePagination from '~/hooks/usePagination'
@@ -10,8 +10,23 @@ const Text = styled(Typography)`
 `
 
 const ImportRequest = () => {
+  const isExtraLargeScreen = useMediaQuery('(min-width:1500px)')
+  const isLargeScreen = useMediaQuery('(min-width:1270px)')
+  const isMediumScreen = useMediaQuery('(min-width:1000px)')
+  const isSmallScreen = useMediaQuery('(min-width:900px)')
+
+  let PER_PAGE = 4
+  if (isExtraLargeScreen) {
+    PER_PAGE = 10
+  } else if (isLargeScreen) {
+    PER_PAGE = 8
+  } else if (isMediumScreen) {
+    PER_PAGE = 6
+  } else if (isSmallScreen) {
+    PER_PAGE = 4
+  }
+
   const [page, setPage] = useState(1)
-  const PER_PAGE = 10
 
   const count = Math.ceil(mockRequest.length / PER_PAGE)
   const _DATA = usePagination(mockRequest, PER_PAGE)
@@ -24,11 +39,11 @@ const ImportRequest = () => {
 
   return (
     <>
-      <Box display='flex' flexDirection='column' justifyContent='space-between' minHeight='85vh'>
+      <Box display='flex' flexDirection='column' justifyContent='space-between' minHeight='81vh'>
         <Box display='flex' flexWrap='wrap'>
           {_DATA.currentData().map((request) => (
             <RequestCard key={request.id} request={request}>
-              <div style={{ display: 'flex', alignItems: 'center', marginBottom: '15px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
                 <Avatar sx={{ width: '50px', height: '50px' }} />
                 <div style={{ display: 'flex', flexDirection: 'column', marginLeft: '0.75rem' }}>
                   <Typography sx={{ fontSize: '18px', fontWeight: '600' }}>{request.name}</Typography>

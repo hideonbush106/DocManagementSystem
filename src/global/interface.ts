@@ -50,3 +50,23 @@ export interface RoomTree extends Room {
 export interface DepartmentTree extends Department {
   rooms: RoomTree[]
 }
+
+export interface BorrowRequest {
+  document: {
+    id: string
+  }
+  description: string
+  startDate: Date
+  borrowDuration: number
+}
+
+export interface Categories {
+  id: string
+  department: {
+    id: string
+  }
+}
+
+export interface UpdateCategories extends Categories {
+  name: string
+}

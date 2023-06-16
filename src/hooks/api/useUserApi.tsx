@@ -15,7 +15,7 @@ const useUserApi = () => {
   }
 
   const getUserOwn = async () => {
-    const endpoint = '/user/login'
+    const endpoint = '/user/own'
     try {
       const response = await callApi('get', endpoint)
       return response

@@ -1,4 +1,4 @@
-import { ReactNode } from 'react'
+import { ReactNode, useRef } from 'react'
 import { MainContainer, Wrapper } from './Layout.styled'
 import Sidebar from '~/components/sidebar/Sidebar'
 import { Title } from '~/pages/dashboard/Dashboard.styled'
@@ -9,10 +9,12 @@ interface LayoutProps {
 }
 
 const Layout = ({ children, title }: LayoutProps) => {
+  const mainContainerRef = useRef<HTMLDivElement>(null)
+
   return (
     <Wrapper>
-      <Sidebar />
-      <MainContainer>
+      <Sidebar mainContainerRef={mainContainerRef} />
+      <MainContainer ref={mainContainerRef}>
         {title && (
           <Title variant='h5' sx={{ fontWeight: 600 }}>
             {title}

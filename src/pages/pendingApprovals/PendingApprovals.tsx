@@ -12,10 +12,10 @@ const PendingApprovals = () => {
           <img src='/assets/bell-ringing.svg' alt='' />
         </IconDiv>
       </HeaderWrapper>
-      <Typography variant='h5' width={'100%'} fontWeight={'bold'} padding={'2rem 0 1rem'}>
+      <Typography variant='h5' width={'100%'} fontWeight={'bold'} paddingTop={'1rem'}>
         Files
       </Typography>
-      <ApprovalsTable view='full'/>
+      <ApprovalsTable view='full' />
     </PendingApprovalsWrapper>
   )
 }

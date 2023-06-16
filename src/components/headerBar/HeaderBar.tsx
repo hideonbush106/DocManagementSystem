@@ -10,7 +10,6 @@ import {
   ButtonWrapper
 } from './HeaderBar.styled'
 import { ImportButton, ReturnButton } from '../button/Button'
-import Notification from '../notification/Notification'
 const HeaderBar = () => {
   return (
     <HeaderWrapper container spacing={{ sm: 3, xs: 0 }} style={{ margin: 0 }}>

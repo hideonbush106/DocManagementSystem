@@ -1,5 +1,5 @@
 import RequestCard from '~/components/card/requestCard/RequestCard'
-import { Avatar, Box, Pagination, Typography, styled, useMediaQuery, useTheme } from '@mui/material'
+import { Avatar, Box, Pagination, Typography, styled, useMediaQuery } from '@mui/material'
 import { mockRequest } from '~/shared/mockRequest'
 import { useState } from 'react'
 import usePagination from '~/hooks/usePagination'
@@ -11,7 +11,7 @@ const Text = styled(Typography)`
 
 const ImportRequest = () => {
   const isExtraLargeScreen = useMediaQuery('(min-width:1500px)')
-  const isLargeScreen = useMediaQuery('(min-width:1270px)')
+  const isLargeScreen = useMediaQuery('(min-width:1200px)')
   const isMediumScreen = useMediaQuery('(min-width:1000px)')
   const isSmallScreen = useMediaQuery('(min-width:900px)')
 

@@ -4,7 +4,7 @@ import CardContent from '@mui/material/CardContent'
 import { useCallback, useEffect, useState } from 'react'
 import { AcceptButton, RejectButton } from '~/components/button/Button'
 import styled from 'styled-components'
-import RejectRequestModal from '~/components/model/rejectRequestModel/RejectRequestModel'
+import RejectRequestModal from '~/components/modal/RejectRequestModal'
 import { mockRequestProps } from '~/shared/mockRequest'
 
 interface StatusDivProps {

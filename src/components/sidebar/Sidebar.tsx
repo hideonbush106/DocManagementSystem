@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { Avatar, Image, MenuMobile, Wrapper, SideBarWrapper, Logo } from './Sidebar.styled'
 import { Typography } from '@mui/material'
-import { OptionsStaff } from './OptionsStaff'
-// import { OptionsEmp } from './OptionsEmp'
+import { OptionsStaff, OptionsEmp } from './Options'
 import useAuth from '~/hooks/useAuth'
 import { useLocation, Link, useNavigate } from 'react-router-dom'
 import Drawer from '@mui/material/Drawer'
@@ -19,6 +18,8 @@ const Sidebar: React.FC<SidebarProps> = ({ mainContainerRef }) => {
   const [btn, setButton] = useState<number | null>(1) //dashboard is default option
   const navigate = useNavigate()
 
+  const Role = user?.role.toLocaleUpperCase() === 'STAFF' ? OptionsStaff : OptionsEmp
+
   const handleClick = (id: number) => {
     setButton(id)
     if (mainContainerRef.current) {
@@ -29,13 +30,18 @@ const Sidebar: React.FC<SidebarProps> = ({ mainContainerRef }) => {
   //set option bold when navigate to its address
   const location = useLocation()
   useEffect(() => {
-    const option = OptionsStaff.find((option) => location.pathname.includes(`/${option.link}`))
+    let option
+    if (Role === OptionsStaff) {
+      option = OptionsStaff.find((option) => location.pathname.includes(`/${option.link}`))
+    } else {
+      option = OptionsEmp.find((option) => location.pathname.includes(`/${option.link}`))
+    }
     if (option) {
       setButton(option.id)
     } else {
       setButton(null)
     }
-  }, [location])
+  }, [location, Role])
 
   //set togle on or off in mobile view, default off
   const [toggle, setToggle] = React.useState(false)
@@ -58,7 +64,7 @@ const Sidebar: React.FC<SidebarProps> = ({ mainContainerRef }) => {
         </Typography>
         <Typography color={'var(--gray-color)'}>{user?.role}</Typography>
       </Avatar>
-      {OptionsStaff.map((option) => (
+      {Role.map((option) => (
         <Link
           key={option.id}
           to={`/${option.link}`}
@@ -120,7 +126,7 @@ const Sidebar: React.FC<SidebarProps> = ({ mainContainerRef }) => {
           </Typography>
           <Typography color={'var(--gray-color)'}>{user?.role}</Typography>
         </Avatar>
-        {OptionsStaff.map((option) => (
+        {Role.map((option) => (
           <Link
             key={option.id}
             to={`/${option.link}`}

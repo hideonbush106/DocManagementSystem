@@ -2,9 +2,9 @@ import useApi from './useApi'
 
 const useUserApi = () => {
   const callApi = useApi()
-
+  const rootEndpoint = 'user'
   const getUserLogin = async (token: string) => {
-    const endpoint = '/user/login'
+    const endpoint = `/${rootEndpoint}/login`
     const headers = { Authentication: token }
     try {
       const response = await callApi('get', endpoint, headers)
@@ -15,7 +15,7 @@ const useUserApi = () => {
   }
 
   const getUserOwn = async () => {
-    const endpoint = '/user/login'
+    const endpoint = `/${rootEndpoint}/own`
     try {
       const response = await callApi('get', endpoint)
       return response

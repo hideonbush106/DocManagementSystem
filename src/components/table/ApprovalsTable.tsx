@@ -14,7 +14,7 @@ interface ApprovalsTableProps {
 const ApprovalsTable: React.FC<ApprovalsTableProps> = ({ view }) => {
   let columns: GridColDef[] = []
 
-  const [open, setOpen] = useState(false)
+  const [_open, setOpen] = useState(false)
 
   const handleClose = () => {
     setOpen(false)

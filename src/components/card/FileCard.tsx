@@ -3,7 +3,10 @@ import { SvgIconComponent } from '@mui/icons-material'
 import ActionsCell from '../table/ActionCell'
 
 type Props = {
-  icon: SvgIconComponent
+  icon: {
+    Component: SvgIconComponent
+    color?: string
+  }
   name: string
 }
 
@@ -32,7 +35,9 @@ const FileCard = (props: Props) => {
   const { icon, name } = props
   return (
     <DocumentCard icon={icon} name={name}>
-      <ActionsCell menuItems={actions} />
+      <div style={{ marginLeft: 'auto', marginRight: '-18px' }}>
+        <ActionsCell menuItems={actions} />
+      </div>
     </DocumentCard>
   )
 }

@@ -1,13 +1,16 @@
 import React from 'react'
-import { Breadcrumbs } from '@mui/material'
+import { Breadcrumbs, Grid, Skeleton, Typography } from '@mui/material'
 import { Link, useParams } from 'react-router-dom'
 import DocumentCardList from '~/components/card/DocumentCardList'
 import useDocumentApi from '~/hooks/api/useDocumentApi'
 import useData from '~/hooks/useData'
 import { File as FileType } from '~/global/interface'
+import { fakeArray } from '~/utils/fakeArray'
+import { notifyError } from '~/global/toastify'
 
 const File = () => {
   const [files, setFile] = React.useState<FileType[]>([])
+  const [loading, setLoading] = React.useState<boolean>(false)
   const { departmentId, roomId, lockerId, folderId } = useParams()
   const { documentMap } = useData()
   const { getDocumentsInFolder } = useDocumentApi()
@@ -18,9 +21,16 @@ const File = () => {
 
   React.useEffect(() => {
     if (folder) {
-      getDocumentsInFolder(folder.id).then(({ data }) => {
-        setFile(data as FileType[])
-      })
+      setLoading(true)
+      getDocumentsInFolder(folder.id)
+        .then(({ data }) => {
+          setFile(data as FileType[])
+        })
+        .catch((error) => {
+          console.log(error)
+          notifyError('Failed to get files')
+        })
+      setLoading(false)
     }
   }, [folder, getDocumentsInFolder])
 
@@ -33,7 +43,21 @@ const File = () => {
         <Link to={`${location.pathname.substring(0, location.pathname.indexOf('folder'))}`}>{locker?.name}</Link>
         <p>{folder?.name}</p>
       </Breadcrumbs>
-      <DocumentCardList type='file' items={files ? files : []} />
+      {!loading ? (
+        files.length > 0 ? (
+          <DocumentCardList type='file' items={files} />
+        ) : (
+          <Typography variant='h5' textAlign='center' mt='20px' fontFamily='inherit'>
+            There is no files
+          </Typography>
+        )
+      ) : (
+        fakeArray(6).map((_, index) => (
+          <Grid key={index} item md={4}>
+            <Skeleton animation='wave' variant='rounded' height='3rem' />
+          </Grid>
+        ))
+      )}
     </>
   )
 }

@@ -38,13 +38,13 @@ const DocumentCardList = (props: Props) => {
     <Grid container spacing={3} sx={{ marginTop: '0.5rem' }}>
       {items.map((item) => (
         <Grid key={item.id} item xs={12} md={6} lg={4}>
-          <Link to={`${type}/${item.id}`}>
-            {type === 'file' ? (
-              <FileCard icon={icon} name={item.name} />
-            ) : (
+          {type === 'file' ? (
+            <FileCard icon={icon} name={item.name} />
+          ) : (
+            <Link to={`${type}/${item.id}`}>
               <DocumentCard icon={icon} name={item.name} key={item.id} />
-            )}
-          </Link>
+            </Link>
+          )}
         </Grid>
       ))}
     </Grid>

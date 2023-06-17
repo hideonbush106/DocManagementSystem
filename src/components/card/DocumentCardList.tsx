@@ -10,26 +10,29 @@ type Props = {
 
 const DocumentCardList = (props: Props) => {
   const { items, type } = props
-  let icon: SvgIconComponent
+  let icon: {
+    Component: SvgIconComponent
+    color?: string
+  }
   switch (type) {
     case 'department': {
-      icon = Apartment
+      icon = { Component: Apartment }
       break
     }
     case 'room': {
-      icon = Work
+      icon = { Component: Work }
       break
     }
     case 'locker': {
-      icon = Lock
+      icon = { Component: Lock }
       break
     }
     case 'folder': {
-      icon = Folder
+      icon = { Component: Folder }
       break
     }
     default: {
-      icon = DescriptionOutlined
+      icon = { Component: DescriptionOutlined, color: '#84B1ED' }
     }
   }
 

@@ -13,7 +13,7 @@ interface ButtonProps {
 }
 
 export const ImportButton = ({ text }: ButtonProps) => {
-  const [open, setOpen] = useState(false)
+  const [_open, setOpen] = useState(false)
 
   const handleClose = () => {
     setOpen(false)

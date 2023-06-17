@@ -1,47 +1,17 @@
-import React, { useEffect, useState } from 'react'
-import { Avatar, Image, MenuMobile, Wrapper, SideBarWrapper, Logo } from './Sidebar.styled'
-import { Typography } from '@mui/material'
-import { OptionsStaff, OptionsEmp } from './Options'
-import useAuth from '~/hooks/useAuth'
-import { useLocation, Link, useNavigate } from 'react-router-dom'
+import React from 'react'
+import { MenuMobile, Wrapper, SideBarWrapper, Logo } from './Sidebar.styled'
+import { useNavigate } from 'react-router-dom'
 import Drawer from '@mui/material/Drawer'
 import Button from '@mui/material/Button'
 import MenuIcon from '@mui/icons-material/Menu'
-import LogoutIcon from '@mui/icons-material/Logout'
+import OptionList from './OptionList'
 
-interface SidebarProps {
+interface SidebarProp {
   mainContainerRef: React.RefObject<HTMLDivElement>
 }
 
-const Sidebar: React.FC<SidebarProps> = ({ mainContainerRef }) => {
-  const { user, logout } = useAuth()
-  const [btn, setButton] = useState<number | null>(1) //dashboard is default option
+const Sidebar: React.FC<SidebarProp> = ({ mainContainerRef }) => {
   const navigate = useNavigate()
-
-  const Role = user?.role.toLocaleUpperCase() === 'STAFF' ? OptionsStaff : OptionsEmp
-
-  const handleClick = (id: number) => {
-    setButton(id)
-    if (mainContainerRef.current) {
-      mainContainerRef.current.scrollTo(0, 0)
-    }
-  }
-
-  //set option bold when navigate to its address
-  const location = useLocation()
-  useEffect(() => {
-    let option
-    if (Role === OptionsStaff) {
-      option = OptionsStaff.find((option) => location.pathname.includes(`/${option.link}`))
-    } else {
-      option = OptionsEmp.find((option) => location.pathname.includes(`/${option.link}`))
-    }
-    if (option) {
-      setButton(option.id)
-    } else {
-      setButton(null)
-    }
-  }, [location, Role])
 
   //set togle on or off in mobile view, default off
   const [toggle, setToggle] = React.useState(false)
@@ -57,56 +27,10 @@ const Sidebar: React.FC<SidebarProps> = ({ mainContainerRef }) => {
   //menu for mobile view
   const menu = () => (
     <MenuMobile onClick={toggleDrawer(false)}>
-      <Avatar>
-        <Image src={String(user?.photoUrl)} alt='Your Avatar' />
-        <Typography align='center' sx={{ width: '100%', fontWeight: 600 }}>
-          {user?.name}
-        </Typography>
-        <Typography color={'var(--gray-color)'}>{user?.role}</Typography>
-      </Avatar>
-      {Role.map((option) => (
-        <Link
-          key={option.id}
-          to={`/${option.link}`}
-          style={{
-            width: '100%',
-            minHeight: 'fit-content'
-          }}
-        >
-          <Button
-            onClick={() => handleClick(option.id)}
-            sx={{
-              width: '100%',
-              height: '100%',
-              color: option.id === btn ? 'var(--white-color)' : 'var(--black-light-color)',
-              borderRadius: 0,
-              padding: '5% 10%',
-              justifyContent: 'flex-start',
-              textTransform: 'none',
-              fontFamily: 'inherit'
-            }}
-            startIcon={React.createElement(option.icon)}
-            variant={option.id === btn ? 'contained' : 'text'}
-          >
-            {option.text}
-          </Button>
-        </Link>
-      ))}
-      <Button
-        startIcon={<LogoutIcon />}
-        sx={{ color: 'var(--red-color)' }}
-        style={{
-          position: 'fixed',
-          bottom: 10,
-          textTransform: 'none',
-          fontFamily: 'inherit'
-        }}
-        onClick={logout}
-      >
-        Log Out
-      </Button>
+      <OptionList prop={mainContainerRef} />
     </MenuMobile>
   )
+
   return (
     <Wrapper>
       <SideBarWrapper mobile>
@@ -119,54 +43,7 @@ const Sidebar: React.FC<SidebarProps> = ({ mainContainerRef }) => {
         </Drawer>
       </SideBarWrapper>
       <SideBarWrapper desktop>
-        <Avatar>
-          <Image src={String(user?.photoUrl)} alt='Your Avatar' />
-          <Typography align='center' sx={{ width: '100%', fontWeight: 600 }}>
-            {user?.name}
-          </Typography>
-          <Typography color={'var(--gray-color)'}>{user?.role}</Typography>
-        </Avatar>
-        {Role.map((option) => (
-          <Link
-            key={option.id}
-            to={`/${option.link}`}
-            style={{
-              width: '100%',
-              minHeight: 'fit-content'
-            }}
-          >
-            <Button
-              onClick={() => handleClick(option.id)}
-              sx={{
-                width: '100%',
-                height: '100%',
-                color: option.id === btn ? 'var(--white-color)' : 'var(--black-light-color)',
-                borderRadius: 0,
-                padding: '5% 10%',
-                justifyContent: 'flex-start',
-                textTransform: 'none',
-                fontFamily: 'inherit'
-              }}
-              startIcon={React.createElement(option.icon)}
-              variant={option.id === btn ? 'contained' : 'text'}
-            >
-              {option.text}
-            </Button>
-          </Link>
-        ))}
-        <Button
-          startIcon={<LogoutIcon />}
-          sx={{ color: 'var(--red-color)' }}
-          style={{
-            position: 'fixed',
-            bottom: 10,
-            textTransform: 'none',
-            fontFamily: 'inherit'
-          }}
-          onClick={logout}
-        >
-          Log Out
-        </Button>
+        <OptionList prop={mainContainerRef} />
       </SideBarWrapper>
     </Wrapper>
   )

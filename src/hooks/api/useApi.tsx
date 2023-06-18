@@ -2,6 +2,7 @@ import { AxiosError, AxiosResponse } from 'axios'
 import useAuth from '../useAuth'
 import { get, post, put, remove } from '~/utils/apicaller'
 import { notifyError } from '~/global/toastify'
+import React from 'react'
 
 const useApi = () => {
   const { accessToken, logout, refreshAccessToken } = useAuth()
@@ -41,40 +42,44 @@ const useApi = () => {
    * @returns {Promise<any>} - A promise that resolves to the response data from the API.
    * @throws {Error} - If an error occurs during the API call.
    */
-  const callApi = async (
-    method: 'get' | 'post' | 'put' | 'delete',
-    endpoint: string,
-    headers: object = {},
-    params: object = {},
-    body: object = {}
-  ) => {
-    const headersDefault = { accept: 'application/json', Authentication: accessToken }
-    Object.assign(headersDefault, headers)
-    let response: AxiosResponse
-    try {
-      switch (method) {
-        case 'get': {
-          response = await get(endpoint, params, headersDefault)
-          break
+  const callApi = React.useCallback(
+    async (
+      method: 'get' | 'post' | 'put' | 'delete',
+      endpoint: string,
+      headers: object = {},
+      params: object = {},
+      body: object = {}
+    ) => {
+      const headersDefault = { accept: 'application/json', Authentication: accessToken }
+      Object.assign(headersDefault, headers)
+      let response: AxiosResponse
+      try {
+        switch (method) {
+          case 'get': {
+            response = await get(endpoint, params, headersDefault)
+            break
+          }
+          case 'post': {
+            response = await post(endpoint, body, params, headersDefault)
+            break
+          }
+          case 'put': {
+            response = await put(endpoint, body, params, headersDefault)
+            break
+          }
+          case 'delete': {
+            response = await remove(endpoint, body, params, headersDefault)
+            break
+          }
         }
-        case 'post': {
-          response = await post(endpoint, body, params, headersDefault)
-          break
-        }
-        case 'put': {
-          response = await put(endpoint, body, params, headersDefault)
-          break
-        }
-        case 'delete': {
-          response = await remove(endpoint, body, params, headersDefault)
-          break
-        }
+        return response.data
+      } catch (error) {
+        handleError(error)
       }
-      return response.data
-    } catch (error) {
-      handleError(error)
-    }
-  }
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [accessToken]
+  )
 
   return callApi
 }

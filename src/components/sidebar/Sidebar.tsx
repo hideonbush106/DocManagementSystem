@@ -1,27 +1,35 @@
 import React, { useEffect, useState } from 'react'
-import { Avatar, Image, MenuMobile, Wrapper, SideBarWrapper } from './Sidebar.styled'
+import { Avatar, Image, MenuMobile, Wrapper, SideBarWrapper, Logo } from './Sidebar.styled'
 import { Typography } from '@mui/material'
-import { Options } from './OptionsStaff'
+import { OptionsStaff } from './OptionsStaff'
+// import { OptionsEmp } from './OptionsEmp'
 import useAuth from '~/hooks/useAuth'
-import { useLocation, Link } from 'react-router-dom'
+import { useLocation, Link, useNavigate } from 'react-router-dom'
 import Drawer from '@mui/material/Drawer'
 import Button from '@mui/material/Button'
 import MenuIcon from '@mui/icons-material/Menu'
 import LogoutIcon from '@mui/icons-material/Logout'
 
-const Sidebar = () => {
+interface SidebarProps {
+  mainContainerRef: React.RefObject<HTMLDivElement>
+}
+
+const Sidebar: React.FC<SidebarProps> = ({ mainContainerRef }) => {
   const { user, logout } = useAuth()
   const [btn, setButton] = useState<number | null>(1) //dashboard is default option
+  const navigate = useNavigate()
 
   const handleClick = (id: number) => {
     setButton(id)
-    window.scrollTo(0, 0)
+    if (mainContainerRef.current) {
+      mainContainerRef.current.scrollTo(0, 0)
+    }
   }
 
   //set option bold when navigate to its address
   const location = useLocation()
   useEffect(() => {
-    const option = Options.find((option) => location.pathname.includes(`/${option.link}`))
+    const option = OptionsStaff.find((option) => location.pathname.includes(`/${option.link}`))
     if (option) {
       setButton(option.id)
     } else {
@@ -44,13 +52,13 @@ const Sidebar = () => {
   const menu = () => (
     <MenuMobile onClick={toggleDrawer(false)}>
       <Avatar>
-        <Image src={String(user?.photoURL)} alt='Your Avatar' />
+        <Image src={String(user?.photoUrl)} alt='Your Avatar' />
         <Typography align='center' sx={{ width: '100%', fontWeight: 600 }}>
-          {user?.displayName}
+          {user?.name}
         </Typography>
-        <Typography color={'var(--gray-color)'}>Staff</Typography>
+        <Typography color={'var(--gray-color)'}>{user?.role}</Typography>
       </Avatar>
-      {Options.map((option) => (
+      {OptionsStaff.map((option) => (
         <Link
           key={option.id}
           to={`/${option.link}`}
@@ -68,7 +76,8 @@ const Sidebar = () => {
               borderRadius: 0,
               padding: '5% 10%',
               justifyContent: 'flex-start',
-              textTransform: 'none'
+              textTransform: 'none',
+              fontFamily: 'inherit'
             }}
             startIcon={React.createElement(option.icon)}
             variant={option.id === btn ? 'contained' : 'text'}
@@ -83,7 +92,8 @@ const Sidebar = () => {
         style={{
           position: 'fixed',
           bottom: 10,
-          textTransform: 'none'
+          textTransform: 'none',
+          fontFamily: 'inherit'
         }}
         onClick={logout}
       >
@@ -97,19 +107,20 @@ const Sidebar = () => {
         <Button onClick={toggleDrawer(true)}>
           <MenuIcon />
         </Button>
+        <Logo src='/assets/DMS.png' alt='logo' onClick={() => navigate('/dashboard')} />
         <Drawer anchor={'left'} open={toggle} onClose={toggleDrawer(false)}>
           {menu()}
         </Drawer>
       </SideBarWrapper>
       <SideBarWrapper desktop>
         <Avatar>
-          <Image src={String(user?.photoURL)} alt='Your Avatar' />
+          <Image src={String(user?.photoUrl)} alt='Your Avatar' />
           <Typography align='center' sx={{ width: '100%', fontWeight: 600 }}>
-            {user?.displayName}
+            {user?.name}
           </Typography>
-          <Typography color={'var(--gray-color)'}>Staff</Typography>
+          <Typography color={'var(--gray-color)'}>{user?.role}</Typography>
         </Avatar>
-        {Options.map((option) => (
+        {OptionsStaff.map((option) => (
           <Link
             key={option.id}
             to={`/${option.link}`}
@@ -127,7 +138,8 @@ const Sidebar = () => {
                 borderRadius: 0,
                 padding: '5% 10%',
                 justifyContent: 'flex-start',
-                textTransform: 'none'
+                textTransform: 'none',
+                fontFamily: 'inherit'
               }}
               startIcon={React.createElement(option.icon)}
               variant={option.id === btn ? 'contained' : 'text'}
@@ -142,7 +154,8 @@ const Sidebar = () => {
           style={{
             position: 'fixed',
             bottom: 10,
-            textTransform: 'none'
+            textTransform: 'none',
+            fontFamily: 'inherit'
           }}
           onClick={logout}
         >

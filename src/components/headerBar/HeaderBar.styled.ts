@@ -1,3 +1,4 @@
+import Grid from '@mui/material/Unstable_Grid2'
 import styled from 'styled-components'
 
 interface IconDivProps {
@@ -8,23 +9,38 @@ interface IconDivProps {
   last?: boolean
 }
 
-export const HeaderWrapper = styled.section`
+export const HeaderWrapper = styled(Grid)`
+  width: 100%;
+  display: flex;
+  justify-content: end;
+  align-items: center;
+  padding: 0.5rem 0;
+`
+
+export const ItemWrapper = styled(Grid)`
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+
+  @media (max-width: 900px) {
+    display: none;
+  }
+
+  @media (max-width: 1200px) {
+    justify-content: space-between;
+  }
+`
+
+export const ButtonWrapper = styled(Grid)`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  height: 3.125rem;
-  margin: 0.5rem 0 0.75rem;
 `
 
 export const ItemDiv = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  /* border-right: 0.5px solid var(--gray-color); */
-  /* margin-right: 20px; */
-  /* &:last-of-type {
-    border-right: none;
-  } */
 `
 export const LineStyled = styled.div`
   width: 0.5px;

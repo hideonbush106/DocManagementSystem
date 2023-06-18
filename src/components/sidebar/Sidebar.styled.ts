@@ -6,36 +6,48 @@ interface isMobileProps {
 }
 
 export const Wrapper = styled.div`
-  width: 200px;
-  height: 100%;
   background-color: var(--white-color);
   position: fixed;
   top: 0;
   z-index: 1;
 
-  @media (max-width: 900px) {
+  @media (min-width: 0px) {
     width: 100vw;
     height: 50px;
   }
+
+  @media (min-width: 900px) {
+    width: 220px;
+    height: 100%;
+  }
 `
 export const SideBarWrapper = styled.div<isMobileProps>`
-  width: 100%; //for mobile view
-  height: 100%; //for mobile view
-  display: none;
-
   ${({ mobile }) =>
     mobile &&
-    `@media (max-width: 900px) {
+    `@media (min-width: 0px) {
+      width: 100%;
+      height: 100%;
       display: flex;
       align-items: center;
+      box-shadow: 0px 2px 5px 1px rgba(0, 0, 0, 0.15);
+    }
+    
+    @media (min-width: 900px) {
+      display: none;
     }`};
 
   ${({ desktop }) =>
     desktop &&
-    `@media (min-width: 900px) {
+    `@media (min-width: 0px) {
+      display: none;
+    }
+    @media (min-width: 900px) {
+      width: 100%;
+      height: 100%;
       display: flex;
       flex-direction: column;
       align-items: center;
+      box-shadow: 2px 0px 5px 1px rgba(0, 0, 0, 0.15);
     }`};
 `
 
@@ -56,9 +68,17 @@ export const Image = styled.img`
   overflow: hidden;
   margin: 20px;
 `
+
+export const Logo = styled.img`
+  height: 90%;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+`
 //width of menu in mobile view
 export const MenuMobile = styled.div`
-  width: 200px;
+  width: 220px;
   height: 100%;
   display: flex;
   flex-direction: column;

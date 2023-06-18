@@ -6,7 +6,9 @@ import {
   SumaryContainer,
   StatisticContainer,
   TitleUnderline,
-  SubtitleWrapper
+  SubtitleWrapper,
+  Wrapper,
+  ApprovalContainer
 } from './Dashboard.styled'
 import { styled } from '@mui/system'
 import { Typography } from '@mui/material'
@@ -17,6 +19,7 @@ import RequestsTable from '~/components/table/RequestsTable'
 import ApprovalsTable from '~/components/table/ApprovalsTable'
 import SummaryChart from '~/components/chart/SummaryChart'
 import SpaceChart from '~/components/chart/SpaceChart'
+
 const Subtitle = styled(Typography)({
   fontWeight: '600',
   fontSize: '0.85rem',
@@ -29,52 +32,62 @@ const Dashboard = () => {
   return (
     <>
       <HeaderBar />
-      <DashboardWrapper>
-        <DocumentContainer>
-          <SubtitleWrapper>
-            <div className='title'>
-              <Subtitle variant='h6'>Recent Documents</Subtitle>
-              <TitleUnderline />
-            </div>
-            <Link to='/document'>
-              <ViewButton text='View All' />
-            </Link>
-          </SubtitleWrapper>
-          <DocumentTable />
+      <DashboardWrapper container spacing={{ sm: 2, xs: 0 }} margin={0}>
+        <DocumentContainer xs={12} lg={8}>
+          <Wrapper>
+            <SubtitleWrapper>
+              <div className='title'>
+                <Subtitle variant='h6'>Recent Documents</Subtitle>
+                <TitleUnderline />
+              </div>
+              <Link to='/document'>
+                <ViewButton text='View All' />
+              </Link>
+            </SubtitleWrapper>
+            <DocumentTable />
+          </Wrapper>
         </DocumentContainer>
-        <SumaryContainer>
-          <Subtitle variant='h6'>Document Summary (Files) </Subtitle>
-          <TitleUnderline />
-          <SummaryChart />
+        <SumaryContainer xs={12} md={6} lg={4}>
+          <Wrapper>
+            <Subtitle variant='h6'>Document Summary (Files) </Subtitle>
+            <TitleUnderline />
+            <SummaryChart />
+          </Wrapper>
         </SumaryContainer>
-        <RequestContainer>
-          <SubtitleWrapper>
-            <div className='title'>
-              <Subtitle variant='h6'>Pending Approvals</Subtitle>
-              <TitleUnderline />
-            </div>
-            <Link to='/pending-approval'>
-              <ViewButton text='View' />
-            </Link>
-          </SubtitleWrapper>
-          <ApprovalsTable />
+        <ApprovalContainer xs={12} md={6} lg={4}>
+          <Wrapper>
+            <SubtitleWrapper>
+              <div className='title'>
+                <Subtitle variant='h6'>Pending Approvals</Subtitle>
+                <TitleUnderline />
+              </div>
+              <Link to='/pending-approval'>
+                <ViewButton text='View' />
+              </Link>
+            </SubtitleWrapper>
+            <ApprovalsTable view='dashboard' />
+          </Wrapper>
+        </ApprovalContainer>
+        <RequestContainer xs={12} md={6} lg={4}>
+          <Wrapper>
+            <SubtitleWrapper>
+              <div className='title'>
+                <Subtitle variant='h6'>Borrow Requests</Subtitle>
+                <TitleUnderline />
+              </div>
+              <Link to='/request'>
+                <ViewButton text='View' />
+              </Link>
+            </SubtitleWrapper>
+            <RequestsTable />
+          </Wrapper>
         </RequestContainer>
-        <RequestContainer>
-          <SubtitleWrapper>
-            <div className='title'>
-              <Subtitle variant='h6'>Borrow Requests</Subtitle>
-              <TitleUnderline />
-            </div>
-            <Link to='/request'>
-              <ViewButton text='View' />
-            </Link>
-          </SubtitleWrapper>
-          <RequestsTable />
-        </RequestContainer>
-        <StatisticContainer>
-          <Subtitle variant='h6'>Available Space (Pages) </Subtitle>
-          <TitleUnderline />
-          <SpaceChart />
+        <StatisticContainer xs={12} md={6} lg={4}>
+          <Wrapper>
+            <Subtitle variant='h6'>Available Space (Pages) </Subtitle>
+            <TitleUnderline />
+            <SpaceChart />
+          </Wrapper>
         </StatisticContainer>
       </DashboardWrapper>
     </>

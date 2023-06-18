@@ -107,8 +107,8 @@ const AuthProvider = ({ children }: Props) => {
       const token = await userCredential.user.getIdToken()
       const isValidate = await validateUser(userCredential.user, token)
       if (isValidate) {
-        notifySuccess('Login successfully')
         toast.dismiss()
+        notifySuccess('Login successfully')
         getUserInfo(userCredential.user, token)
         setUser(userCredential.user)
         setIdToken(token)

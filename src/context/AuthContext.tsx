@@ -104,12 +104,12 @@ const AuthProvider = ({ children }: Props) => {
       const userCredential = await signInWithPopup(auth, provider)
       setLoading(true)
       const token = await userCredential.user.getIdToken()
-      const isValidate = await validateUser(userCredential.user, token)
-      if (isValidate) {
-        notifySuccess('Login successfully')
-        getUserInfo(userCredential.user, token)
+      const info = await getUserInfo(userCredential.user, token)
+      if (info) {
         setUser(userCredential.user)
+        setUserInfo(info)
         setIdToken(token)
+        notifySuccess('Login successfully')
       }
       setLoading(false)
     } catch (error) {

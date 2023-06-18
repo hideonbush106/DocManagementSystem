@@ -3,6 +3,7 @@ import { FirebaseError } from 'firebase/app'
 import { signInWithPopup, signOut, User } from 'firebase/auth'
 import React, { ReactNode, useEffect } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
+import { toast } from 'react-toastify'
 import { auth, provider } from '~/global/firebase'
 import { notifyError, notifySuccess } from '~/global/toastify'
 import { get } from '~/utils/apicaller'
@@ -107,6 +108,7 @@ const AuthProvider = ({ children }: Props) => {
       const isValidate = await validateUser(userCredential.user, token)
       if (isValidate) {
         notifySuccess('Login successfully')
+        toast.dismiss()
         getUserInfo(userCredential.user, token)
         setUser(userCredential.user)
         setIdToken(token)

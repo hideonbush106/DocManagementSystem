@@ -1,9 +1,10 @@
+import React from 'react'
 import useApi from './useApi'
 
 const useDocumentsTreeApi = () => {
   const callApi = useApi()
 
-  const getDocumentsTree = async () => {
+  const getDocumentsTree = React.useCallback(async () => {
     const endpoint = `/trees`
     try {
       const response = await callApi('get', endpoint)
@@ -11,7 +12,7 @@ const useDocumentsTreeApi = () => {
     } catch (error) {
       console.log(error)
     }
-  }
+  }, [callApi])
 
   return { getDocumentsTree }
 }

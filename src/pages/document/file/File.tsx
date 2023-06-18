@@ -10,7 +10,7 @@ import { notifyError } from '~/global/toastify'
 
 const File = () => {
   const [files, setFile] = React.useState<FileType[]>([])
-  const [loading, setLoading] = React.useState<boolean>(false)
+  const [loading, setLoading] = React.useState<boolean>(true)
   const { departmentId, roomId, lockerId, folderId } = useParams()
   const { documentMap } = useData()
   const { getDocumentsInFolder } = useDocumentApi()
@@ -24,13 +24,14 @@ const File = () => {
       setLoading(true)
       getDocumentsInFolder(folder.id)
         .then(({ data }) => {
-          setFile(data as FileType[])
+          setFile(data.data as FileType[])
+          setLoading(false)
         })
         .catch((error) => {
           console.log(error)
+          setLoading(false)
           notifyError('Failed to get files')
         })
-      setLoading(false)
     }
   }, [folder, getDocumentsInFolder])
 

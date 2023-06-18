@@ -68,7 +68,7 @@ const AuthProvider = ({ children }: Props) => {
     }
   }
 
-  const validateUser = async (user: User, token: string): Promise<boolean> => {
+  const sendUserActivity = async (user: User, token: string): Promise<boolean> => {
     // check account in database
     try {
       await get('/users/login', {}, { Authentication: token, accept: 'application/json' })
@@ -80,10 +80,10 @@ const AuthProvider = ({ children }: Props) => {
     }
   }
 
-  const getUserInfo = async (user: User, token: string): Promise<void> => {
+  const getUserInfo = async (user: User, token: string): Promise<UserInfo | null> => {
     try {
       const { data } = await get('/users/own', {}, { Authentication: token, accept: 'application/json' })
-      const info: UserInfo = {
+      return {
         id: data.id,
         code: data.code,
         name: `${data.firstName} ${data.lastName}`,
@@ -93,10 +93,10 @@ const AuthProvider = ({ children }: Props) => {
         role: data.role.name,
         department: data.department.name
       }
-      setUserInfo(info)
     } catch (error) {
       console.log(error)
       handleError(user, error)
+      return null
     }
   }
 
@@ -127,6 +127,7 @@ const AuthProvider = ({ children }: Props) => {
     try {
       await signOut(auth)
       setUser(null)
+      setUserInfo(null)
       setIdToken(null)
     } catch (error) {
       console.log(error)
@@ -145,9 +146,9 @@ const AuthProvider = ({ children }: Props) => {
     const unsubscribe = auth.onAuthStateChanged(async (user) => {
       if (user) {
         const token = await user.getIdToken()
-        const isValidate = await validateUser(user, token)
-        if (isValidate) {
-          getUserInfo(user, token)
+        const info = await getUserInfo(user, token)
+        if (info) {
+          setUserInfo(info)
           setUser(user)
           setIdToken(token)
         }
@@ -175,13 +176,13 @@ const AuthProvider = ({ children }: Props) => {
 
   // redirect to dashboard if user is logged in
   useEffect(() => {
-    if (!loading) user ? navigate(location.pathname) : navigate('/')
+    if (!loading) !user && navigate('/')
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user])
+  }, [loading, user])
 
-  // get user information when route change
+  // send user activity when route change
   useEffect(() => {
-    if (!loading && user && idToken) getUserInfo(user, idToken)
+    if (!loading && user && idToken) sendUserActivity(user, idToken)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [location.pathname])
 

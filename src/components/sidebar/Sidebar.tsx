@@ -56,7 +56,7 @@ const Sidebar: React.FC<SidebarProps> = ({ mainContainerRef }) => {
         <Typography align='center' sx={{ width: '100%', fontWeight: 600 }}>
           {user?.name}
         </Typography>
-        <Typography color={'var(--gray-color)'}>Staff</Typography>
+        <Typography color={'var(--gray-color)'}>{user?.role}</Typography>
       </Avatar>
       {OptionsStaff.map((option) => (
         <Link
@@ -118,7 +118,7 @@ const Sidebar: React.FC<SidebarProps> = ({ mainContainerRef }) => {
           <Typography align='center' sx={{ width: '100%', fontWeight: 600 }}>
             {user?.name}
           </Typography>
-          <Typography color={'var(--gray-color)'}>Staff</Typography>
+          <Typography color={'var(--gray-color)'}>{user?.role}</Typography>
         </Avatar>
         {OptionsStaff.map((option) => (
           <Link

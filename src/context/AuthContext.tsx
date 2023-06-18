@@ -1,20 +1,25 @@
+import { AxiosError } from 'axios'
 import { FirebaseError } from 'firebase/app'
 import { signInWithPopup, signOut, User } from 'firebase/auth'
 import React, { ReactNode, useEffect } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
-import { getUserLogin } from '~/utils/apiendpoint'
 import { auth, provider } from '~/global/firebase'
 import { notifyError, notifySuccess } from '~/global/toastify'
+import { get } from '~/utils/apicaller'
 
-interface UserInterface {
-  name: string | null
-  email: string | null
-  phone: string | null
+interface UserInfo {
+  id: string
+  code: string
+  name: string
+  email: string
+  phone: string
   photoUrl: string | null
+  role: string
+  department: string
 }
 
 export type AuthContextType = {
-  user: UserInterface | null
+  user: UserInfo | null
   loading: boolean
   login: () => Promise<void>
   logout: () => Promise<void>
@@ -30,28 +35,67 @@ interface Props {
 
 const AuthProvider = ({ children }: Props) => {
   const [user, setUser] = React.useState<User | null>(null)
+  const [userInfo, setUserInfo] = React.useState<UserInfo | null>(null)
   const [idToken, setIdToken] = React.useState<string | null>(null)
   const [loading, setLoading] = React.useState(true)
   const navigate = useNavigate()
   const location = useLocation()
 
+  const handleError = async (user: User, error: unknown) => {
+    if (error instanceof AxiosError) {
+      console.log(error)
+      const errorDetails = error.response?.data.details
+      switch (errorDetails) {
+        case 'Access denied': {
+          await logout()
+          notifyError('Account is not allowed to access the system')
+          break
+        }
+        case 'Token revoked': {
+          await logout()
+          notifyError('Session time out. Please login again')
+          break
+        }
+        case 'Token expired': {
+          const newToken = await user.getIdToken()
+          setIdToken(newToken)
+          break
+        }
+        default:
+          notifyError('Something went wrong')
+      }
+    }
+  }
+
   const validateUser = async (user: User, token: string): Promise<boolean> => {
+    // check account in database
     try {
-      //check account in database
-      await getUserLogin(token)
+      await get('/users/login', {}, { Authentication: token, accept: 'application/json' })
       return true
     } catch (error) {
       console.log(error)
-      if (error instanceof Error) {
-        if (error.message === 'Token expired') {
-          const newToken = await user.getIdToken()
-          setIdToken(newToken)
-        } else {
-          notifyError(error.message)
-          logout()
-        }
-      }
+      handleError(user, error)
       return false
+    }
+  }
+
+  const getUserInfo = async (user: User, token: string): Promise<void> => {
+    try {
+      const { data } = await get('/users/own', {}, { Authentication: token, accept: 'application/json' })
+      const info: UserInfo = {
+        id: data.id,
+        code: data.code,
+        name: `${data.firstName} ${data.lastName}`,
+        email: data.email,
+        phone: data.phone,
+        photoUrl: user.photoURL,
+        role: data.role.name,
+        department: data.department.name
+      }
+      setUserInfo(info)
+    } catch (error) {
+      console.log(error)
+      handleError(user, error)
     }
   }
 
@@ -63,6 +107,7 @@ const AuthProvider = ({ children }: Props) => {
       const isValidate = await validateUser(userCredential.user, token)
       if (isValidate) {
         notifySuccess('Login successfully')
+        getUserInfo(userCredential.user, token)
         setUser(userCredential.user)
         setIdToken(token)
       }
@@ -100,6 +145,7 @@ const AuthProvider = ({ children }: Props) => {
         const token = await user.getIdToken()
         const isValidate = await validateUser(user, token)
         if (isValidate) {
+          getUserInfo(user, token)
           setUser(user)
           setIdToken(token)
         }
@@ -131,21 +177,14 @@ const AuthProvider = ({ children }: Props) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user])
 
-  // validate user when route change
+  // get user information when route change
   useEffect(() => {
-    if (!loading && user && idToken) validateUser(user, idToken)
+    if (!loading && user && idToken) getUserInfo(user, idToken)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [location.pathname])
 
   const value = {
-    user: user
-      ? {
-          name: user.displayName,
-          email: user.email,
-          phone: user.phoneNumber,
-          photoUrl: user.photoURL
-        }
-      : null,
+    user: userInfo,
     loading,
     login,
     logout,

@@ -29,7 +29,7 @@ const Login = () => {
             sx={{
               width: '100%',
               fontSize: {
-                xs: '5rem',
+                xs: '3rem',
                 sm: '4rem',
                 md: '3rem',
                 lg: '4rem'
@@ -49,14 +49,14 @@ const Login = () => {
             sx={{
               width: '100%',
               fontSize: {
-                xs: '2rem',
+                xs: '1.5rem',
                 sm: '2.5rem',
                 md: '1.25rem',
                 lg: '2rem'
               },
               fontWeight: 500,
               color: '#8B8C8D',
-              marginBottom: '4rem',
+              marginBottom: '2rem',
               textAlign: {
                 xs: 'center',
                 md: 'left'

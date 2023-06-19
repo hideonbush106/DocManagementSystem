@@ -1,46 +1,75 @@
 import { CreateNewFolderOutlined } from '@mui/icons-material'
 import { Box, Button, FormControl, MenuItem, TextField, Typography } from '@mui/material'
-import React, { ChangeEvent, useState } from 'react'
+import { useEffect, useState } from 'react'
 import FileUpload from 'react-material-file-upload'
-
+import { useFormik } from 'formik'
+import useDepartmentApi from '~/hooks/api/useDepartmentApi'
+import { Categories, Department, Folder, Room } from '~/global/interface'
+import useCategoryApi from '~/hooks/api/useCategoryApi'
+import useRoomApi from '~/hooks/api/useRoomApi'
+import useLockerApi from '~/hooks/api/useLockerApi'
+import useFolderApi from '~/hooks/api/useFolderApi'
+import { string } from 'prop-types'
 interface ImportDocumentProps {
   handleClose: () => void
 }
 
-interface FormData {
-  name: string
-  description: string
-  numOfPages: number
-  folder: {
-    id: string
-  }
-  category: {
-    id: string
-  }
-}
-
 const ImportDocument = (props: ImportDocumentProps) => {
   const [files, setFiles] = useState<File[]>([])
-  const [formData, setFormData] = useState<FormData>({
-    name: '',
-    description: '',
-    numOfPages: 1,
-    folder: {
-      id: ''
+  const [departments, setDepartments] = useState<Department[]>([])
+  const [categories, setCategories] = useState<Categories[]>([])
+  const [rooms, setRooms] = useState<Room[]>([])
+  const [lockers, setLockers] = useState<Room[]>([])
+  const [folders, setFolders] = useState<Folder[]>([])
+  const { getAllDepartments } = useDepartmentApi()
+  const { getCategories } = useCategoryApi()
+  const { getRoomsInDepartment } = useRoomApi()
+  const { getLockerInRoom } = useLockerApi()
+  const { getFoldersInLocker } = useFolderApi()
+  const formik = useFormik({
+    initialValues: {
+      name: 'Lorem Ipsum',
+      description: 'Lorem Ipsum',
+      numOfPages: 1,
+      folder: {
+        id: 'Lorem Ipsum'
+      },
+      category: {
+        id: 'Lorem Ipsum'
+      }
     },
-    category: {
-      id: ''
+    onSubmit: (values) => {
+      console.log(values)
     }
   })
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
-    console.log(formData)
+  const departmentHandleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    //TODO: will fix to getAllCategories
+    getCategories(event.target.value).then((res) => {
+      setCategories(res.data)
+    })
+    getRoomsInDepartment(event.target.value).then((res) => {
+      setRooms(res.data)
+    })
   }
 
-  const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value })
+  const roomHandleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    getLockerInRoom(event.target.value).then((res) => {
+      setLockers(res.data)
+    })
   }
+
+  const lockerHandleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    getFoldersInLocker(event.target.value).then((res) => {
+      setFolders(res.data)
+    })
+  }
+
+  useEffect(() => {
+    getAllDepartments().then((res) => {
+      setDepartments(res.data)
+    })
+  }, [getAllDepartments])
 
   return (
     <>
@@ -74,7 +103,7 @@ const ImportDocument = (props: ImportDocumentProps) => {
           Import Document
         </Typography>
       </Box>
-      <form onSubmit={handleSubmit} action='POST'>
+      <form onSubmit={formik.handleSubmit} action='POST'>
         <FormControl sx={{ width: '100%', px: 5 }}>
           <Typography
             sx={{
@@ -90,31 +119,42 @@ const ImportDocument = (props: ImportDocumentProps) => {
           >
             Document Information
           </Typography>
-          <TextField required sx={{ my: 1 }} label='File name' name='name' variant='standard' fullWidth />
+          <TextField
+            required
+            sx={{ my: 1 }}
+            value={formik.values.name}
+            label='File name'
+            name='name'
+            variant='standard'
+            fullWidth
+            onChange={formik.handleChange}
+          />
           <TextField
             required
             sx={{ my: 1 }}
             label='Number of pages'
+            value={formik.values.numOfPages}
             type='number'
             name='numOfPages'
             variant='standard'
             fullWidth
-            onChange={handleChange}
+            onChange={formik.handleChange}
           />
           <TextField
             required
             sx={{ my: 1 }}
             label='Description'
+            value={formik.values.description}
             name='description'
             variant='standard'
             fullWidth
-            onChange={handleChange}
+            onChange={formik.handleChange}
             multiline
             maxRows={4}
           />
           <Box display={'flex'} sx={{ width: '100%', justifyContent: 'space-between', flexWrap: 'wrap' }}>
             <TextField
-              onChange={handleChange}
+              onChange={departmentHandleChange}
               sx={{
                 my: 1,
                 width: {
@@ -126,13 +166,15 @@ const ImportDocument = (props: ImportDocumentProps) => {
               label='Department'
               variant='standard'
             >
-              {/** Todo: call dept API */}
-              <MenuItem value='ABC'>ABC</MenuItem>
-              <MenuItem value='ABC'>ABC</MenuItem>
-              <MenuItem value='ABC'>ABC</MenuItem>
+              {departments.map((dept) => (
+                <MenuItem key={dept.id} value={dept.id}>
+                  {dept.name}
+                </MenuItem>
+              ))}
             </TextField>
             <TextField
-              onChange={handleChange}
+              value={formik.values.category.id}
+              onChange={formik.handleChange}
               sx={{
                 my: 1,
                 width: {
@@ -143,10 +185,14 @@ const ImportDocument = (props: ImportDocumentProps) => {
               select
               label='Category Type'
               variant='standard'
+              name='category.id'
+              defaultValue={''}
             >
-              <MenuItem value='ABC'>ABC</MenuItem>
-              <MenuItem value='ABC'>ABC</MenuItem>
-              <MenuItem value='ABC'>ABC</MenuItem>
+              {categories.map((cate) => (
+                <MenuItem key={cate.id} value={cate.id}>
+                  {cate.name}
+                </MenuItem>
+              ))}
             </TextField>
           </Box>
           <Typography
@@ -165,6 +211,7 @@ const ImportDocument = (props: ImportDocumentProps) => {
           </Typography>
           <Box display={'flex'} sx={{ width: '100%', justifyContent: 'space-between', flexWrap: 'wrap' }}>
             <TextField
+              onChange={roomHandleChange}
               sx={{
                 my: 1,
                 width: {
@@ -176,11 +223,14 @@ const ImportDocument = (props: ImportDocumentProps) => {
               label='Room'
               variant='standard'
             >
-              <MenuItem value='ABC'>ABC</MenuItem>
-              <MenuItem value='ABC'>ABC</MenuItem>
-              <MenuItem value='ABC'>ABC</MenuItem>
+              {rooms.map((room) => (
+                <MenuItem key={room.id} value={room.id}>
+                  {room.name}
+                </MenuItem>
+              ))}
             </TextField>
             <TextField
+              onChange={lockerHandleChange}
               sx={{
                 my: 1,
                 width: {
@@ -192,11 +242,16 @@ const ImportDocument = (props: ImportDocumentProps) => {
               label='Locker'
               variant='standard'
             >
-              <MenuItem value='ABC'>ABC</MenuItem>
-              <MenuItem value='ABC'>ABC</MenuItem>
-              <MenuItem value='ABC'>ABC</MenuItem>
+              {lockers.map((locker) => (
+                <MenuItem key={locker.id} value={locker.id}>
+                  {locker.name}
+                </MenuItem>
+              ))}
             </TextField>
             <TextField
+              value={formik.values.folder.id}
+              onChange={formik.handleChange}
+              name='folder.id'
               sx={{
                 my: 1,
                 width: {
@@ -208,9 +263,11 @@ const ImportDocument = (props: ImportDocumentProps) => {
               label='Folder'
               variant='standard'
             >
-              <MenuItem value='ABC'>ABC</MenuItem>
-              <MenuItem value='ABC'>ABC</MenuItem>
-              <MenuItem value='ABC'>ABC</MenuItem>
+              {folders.map((folder) => (
+                <MenuItem key={folder.id} value={folder.id}>
+                  {folder.name}
+                </MenuItem>
+              ))}
             </TextField>
           </Box>
           <Box sx={{ display: 'flex', justifyContent: 'center', my: 1 }}>

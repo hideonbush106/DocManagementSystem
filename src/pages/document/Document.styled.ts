@@ -21,6 +21,14 @@ export const NavWrapper = styled.div`
     flex-direction: column-reverse;
     align-items: end;
   }
+  @media (min-width: 900px) {
+    display: flex;
+    flex-direction: row;
+  }
+  @media (min-width: 1200px) {
+    display: flex;
+    flex-direction: row;
+  }
 `
 
 export const ButtonWrapper = styled.div`

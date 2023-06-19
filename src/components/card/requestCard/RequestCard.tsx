@@ -5,7 +5,6 @@ import { useCallback, useEffect, useState } from 'react'
 import { AcceptButton, RejectButton } from '~/components/button/Button'
 import styled from 'styled-components'
 import RejectRequestModal from '~/components/modal/RejectRequestModal'
-import { mockRequestProps } from '~/shared/mockRequest'
 
 interface StatusDivProps {
   accepted?: boolean
@@ -13,7 +12,6 @@ interface StatusDivProps {
 }
 
 interface RequestCardProps {
-  request: mockRequestProps
   children?: React.ReactNode
 }
 
@@ -38,15 +36,12 @@ const StatusDiv = styled.div<StatusDivProps>`
   `}
 `
 
-const RequestCard = ({ request, children }: RequestCardProps) => {
+const RequestCard = ({ children }: RequestCardProps) => {
   const [status, setStatus] = useState('pending')
   const [isModalOpen, setIsModalOpen] = useState(false)
 
   const handleAccept = () => {
-    const updatedRequest = { ...request, status: 'accepted' }
-    localStorage.setItem('status', 'accepted')
-    setStatus('accepted')
-    console.log('Accepted:', updatedRequest)
+    console.log('Accepted')
   }
 
   const handleReject = () => {
@@ -58,10 +53,8 @@ const RequestCard = ({ request, children }: RequestCardProps) => {
   }
 
   const handleModalSubmit = (reason: string) => {
-    const updatedRequest = { ...request, status: 'rejected', reason }
-    localStorage.setItem('status', 'rejected')
-    setStatus('rejected')
-    console.log('Rejected:', updatedRequest)
+    console.log('Rejected:', reason)
+
     setIsModalOpen(false)
   }
 

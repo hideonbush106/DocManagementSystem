@@ -1,8 +1,8 @@
 import RequestCard from '~/components/card/requestCard/RequestCard'
 import { Avatar, Box, Pagination, Typography, styled, useMediaQuery } from '@mui/material'
-import { mockRequest } from '~/shared/mockRequest'
-import { useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import usePagination from '~/hooks/usePagination'
+import { RequestDataContext } from '~/context/ImportDataContext'
 
 const Text = styled(Typography)`
   color: var(--black-color);
@@ -25,11 +25,16 @@ const ImportRequest = () => {
   } else if (isSmallScreen) {
     PER_PAGE = 4
   }
-
   const [page, setPage] = useState(1)
+  const { requestData } = useContext(RequestDataContext)
+  const [totalPages, setTotalPages] = useState(0)
 
-  const count = Math.ceil(mockRequest.length / PER_PAGE)
-  const _DATA = usePagination(mockRequest, PER_PAGE)
+  useEffect(() => {
+    setTotalPages(Math.ceil(requestData.length / PER_PAGE))
+  }, [requestData, PER_PAGE])
+
+  const count = totalPages
+  const _DATA = usePagination(requestData, PER_PAGE)
 
   const handleChange = (e: React.ChangeEvent<unknown>, pageNumber: number) => {
     setPage(pageNumber)
@@ -41,27 +46,40 @@ const ImportRequest = () => {
     <>
       <Box display='flex' flexDirection='column' justifyContent='space-between' minHeight='81vh'>
         <Box display='flex' flexWrap='wrap'>
-          {_DATA.currentData().map((request) => (
-            <RequestCard key={request.id} request={request}>
-              <div style={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
-                <Avatar sx={{ width: '50px', height: '50px' }} />
-                <div style={{ display: 'flex', flexDirection: 'column', marginLeft: '0.75rem' }}>
-                  <Typography sx={{ fontSize: '18px', fontWeight: '600' }}>{request.name}</Typography>
-                  <Typography sx={{ color: '#a5aab5', letterSpacing: '0', fontSize: '16px' }}>
-                    {request.role}
-                  </Typography>
+          {requestData.length === 0 ? (
+            <Typography variant='body2'>Loading...</Typography>
+          ) : (
+            _DATA.currentData().map((request) => (
+              <RequestCard key={request.id}>
+                <div style={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
+                  <Avatar sx={{ width: '50px', height: '50px' }} />
+                  <div style={{ display: 'flex', flexDirection: 'column', marginLeft: '0.75rem' }}>
+                    <Typography
+                      sx={{ fontSize: '18px', fontWeight: '600' }}
+                    >{`${request.createdBy.firstName} ${request.createdBy.lastName}`}</Typography>
+                    <Typography sx={{ color: '#a5aab5', letterSpacing: '0', fontSize: '16px' }}>
+                      {request.code}
+                    </Typography>
+                  </div>
                 </div>
-              </div>
-              <Text variant='body2'>
-                <strong> Title: </strong>
-                {request.title}
-              </Text>
-              <Text variant='body2'>
-                <strong> Time request: </strong>
-                {request.timeRequest.toLocaleString()}
-              </Text>
-            </RequestCard>
-          ))}
+                <Text variant='body2'>
+                  <strong> Description: </strong>
+                  {request.description}
+                </Text>
+                <Text variant='body2'>
+                  <strong> Time request: </strong>
+                  {new Date(request.createdAt).toLocaleString('en-US', {
+                    year: 'numeric',
+                    month: '2-digit',
+                    day: '2-digit',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    second: '2-digit'
+                  })}
+                </Text>
+              </RequestCard>
+            ))
+          )}
         </Box>
         <Pagination count={count} size='large' page={page} variant='outlined' shape='rounded' onChange={handleChange} />
       </Box>

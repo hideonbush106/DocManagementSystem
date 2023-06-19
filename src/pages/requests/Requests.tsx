@@ -1,6 +1,8 @@
 import ImportRequest from './importRequest/ImportRequest'
 import BorrowRequest from './borrowRequest/BorrowRequest'
 import NavTabs from '~/components/tab/NavTabs'
+import { BorrowDataContextProvider } from '~/context/BorrowDataContext'
+import { ImportDataContextProvider } from '~/context/ImportDataContext'
 
 const Requests = () => {
   const tabs = [
@@ -9,7 +11,11 @@ const Requests = () => {
   ]
   return (
     <>
-      <NavTabs tabs={tabs} />
+      <ImportDataContextProvider>
+        <BorrowDataContextProvider>
+          <NavTabs tabs={tabs} />
+        </BorrowDataContextProvider>
+      </ImportDataContextProvider>
     </>
   )
 }

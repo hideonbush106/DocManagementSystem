@@ -8,7 +8,7 @@ import { SvgIconComponent } from '@mui/icons-material'
 interface LinkTabProps extends TabProps {
   label?: string
   to?: string
-  iconProp?: SvgIconComponent
+  iconprop?: SvgIconComponent
 }
 
 function LinkTab(props: LinkTabProps) {
@@ -18,7 +18,7 @@ function LinkTab(props: LinkTabProps) {
       onClick={(event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
         event.preventDefault()
       }}
-      icon={props.iconProp ? React.createElement(props.iconProp) : ''}
+      icon={props.iconprop ? React.createElement(props.iconprop) : ''}
       iconPosition='start'
       sx={{
         fontWeight: 'bold',
@@ -67,11 +67,11 @@ const NavTabs = ({ tabs }: NavTabsProps) => {
             '.MuiTab-root.Mui-selected': {
               backgroundColor: 'var(--white-color)'
             },
-            margin: '10px 0 20px'
+            margin: '10px 0 0'
           }}
         >
           {tabs.map((tab, index) => (
-            <LinkTab key={index} label={tab.label} iconProp={tab.icon} />
+            <LinkTab key={index} label={tab.label} iconprop={tab.icon} />
           ))}
         </Tabs>
         {renderTabContent()}

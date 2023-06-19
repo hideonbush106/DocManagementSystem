@@ -39,7 +39,7 @@ const ImportRequest = () => {
 
   return (
     <>
-      <Box display='flex' flexDirection='column' justifyContent='space-between' minHeight='81vh'>
+      <Box display='flex' flexDirection='column' justifyContent='space-between' minHeight='81vh' marginTop='20px'>
         <Box display='flex' flexWrap='wrap'>
           {_DATA.currentData().map((request) => (
             <RequestCard key={request.id} request={request}>

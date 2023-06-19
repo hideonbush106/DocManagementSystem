@@ -18,10 +18,10 @@ const useBorrowRequestApi = () => {
     },
     [callApi]
   )
-
+  // ? API undone
   const getBorrowRequestsAll = React.useCallback(
-    async (documentId: string) => {
-      const endpoint = `/${rootEndpoint}?documentId=${documentId}`
+    async (status: string, documentId: string, take?: number, page?: number) => {
+      const endpoint = `/${rootEndpoint}?status=${status}&documentId=${documentId}&take=${take}&page=${page}`
       try {
         const response = await callApi('get', endpoint)
         return response
@@ -45,6 +45,8 @@ const useBorrowRequestApi = () => {
     [callApi]
   )
 
+  //For employee
+  // ? API undone
   const getOwnBorrowRequests = React.useCallback(async () => {
     const endpoint = `/${rootEndpoint}/own`
     try {

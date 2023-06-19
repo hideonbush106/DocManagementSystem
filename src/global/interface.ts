@@ -61,14 +61,18 @@ export interface BorrowRequest {
 }
 
 export interface Categories {
-  id: string
+  name: string
   department: {
     id: string
   }
 }
 
-export interface UpdateCategories extends Categories {
+export interface UpdateCategories {
+  id: string
   name: string
+  department: {
+    id: string
+  }
 }
 
 export interface CreateDepartment {

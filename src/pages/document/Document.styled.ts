@@ -11,11 +11,25 @@ export const NavWrapper = styled.div`
   justify-content: space-between;
   flex-wrap: wrap;
   align-items: center;
-  margin-bottom: 2rem;
+
   width: 100%;
+  @media (min-width: 0px) {
+    flex-direction: column-reverse;
+    align-items: end;
+  }
+  @media (min-width: 600px) {
+    flex-direction: column-reverse;
+    align-items: end;
+  }
 `
 
 export const ButtonWrapper = styled.div`
+  @media (min-width: 0px) {
+    margin: 1rem 0;
+  }
+  @media (min-width: 600px) {
+    margin: 1rem 0;
+  }
   button {
     margin-inline: 0.5rem;
   }

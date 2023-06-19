@@ -1,20 +1,25 @@
+import { AxiosError } from 'axios'
 import { FirebaseError } from 'firebase/app'
 import { signInWithPopup, signOut, User } from 'firebase/auth'
 import React, { ReactNode, useEffect } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
-import { getUserLogin } from '~/utils/apiendpoint'
 import { auth, provider } from '~/global/firebase'
 import { notifyError, notifySuccess } from '~/global/toastify'
+import { get } from '~/utils/apicaller'
 
-interface UserInterface {
-  name: string | null
-  email: string | null
-  phone: string | null
+interface UserInfo {
+  id: string
+  code: string
+  name: string
+  email: string
+  phone: string
   photoUrl: string | null
+  role: string
+  department: string
 }
 
 export type AuthContextType = {
-  user: UserInterface | null
+  user: UserInfo | null
   loading: boolean
   login: () => Promise<void>
   logout: () => Promise<void>
@@ -30,28 +35,67 @@ interface Props {
 
 const AuthProvider = ({ children }: Props) => {
   const [user, setUser] = React.useState<User | null>(null)
+  const [userInfo, setUserInfo] = React.useState<UserInfo | null>(null)
   const [idToken, setIdToken] = React.useState<string | null>(null)
   const [loading, setLoading] = React.useState(true)
   const navigate = useNavigate()
   const location = useLocation()
 
-  const validateUser = async (user: User, token: string): Promise<boolean> => {
+  const handleError = async (user: User, error: unknown) => {
+    if (error instanceof AxiosError) {
+      console.log(error)
+      const errorDetails = error.response?.data.details
+      switch (errorDetails) {
+        case 'Access denied': {
+          await logout()
+          notifyError('Account is not allowed to access the system')
+          break
+        }
+        case 'Token revoked': {
+          await logout()
+          notifyError('Session time out. Please login again')
+          break
+        }
+        case 'Token expired': {
+          const newToken = await user.getIdToken()
+          setIdToken(newToken)
+          break
+        }
+        default:
+          notifyError('Something went wrong')
+      }
+    }
+  }
+
+  const sendUserActivity = async (user: User, token: string): Promise<boolean> => {
+    // check account in database
     try {
-      //check account in database
-      await getUserLogin(token)
+      await get('/users/login', {}, { Authentication: token, accept: 'application/json' })
       return true
     } catch (error) {
       console.log(error)
-      if (error instanceof Error) {
-        if (error.message === 'Token expired') {
-          const newToken = await user.getIdToken()
-          setIdToken(newToken)
-        } else {
-          notifyError(error.message)
-          logout()
-        }
-      }
+      handleError(user, error)
       return false
+    }
+  }
+
+  const getUserInfo = async (user: User, token: string): Promise<UserInfo | null> => {
+    try {
+      const { data } = await get('/users/own', {}, { Authentication: token, accept: 'application/json' })
+      return {
+        id: data.id,
+        code: data.code,
+        name: `${data.firstName} ${data.lastName}`,
+        email: data.email,
+        phone: data.phone,
+        photoUrl: user.photoURL,
+        role: data.role.name,
+        department: data.department.name
+      }
+    } catch (error) {
+      console.log(error)
+      handleError(user, error)
+      return null
     }
   }
 
@@ -60,11 +104,12 @@ const AuthProvider = ({ children }: Props) => {
       const userCredential = await signInWithPopup(auth, provider)
       setLoading(true)
       const token = await userCredential.user.getIdToken()
-      const isValidate = await validateUser(userCredential.user, token)
-      if (isValidate) {
-        notifySuccess('Login successfully')
+      const info = await getUserInfo(userCredential.user, token)
+      if (info) {
         setUser(userCredential.user)
+        setUserInfo(info)
         setIdToken(token)
+        notifySuccess('Login successfully')
       }
       setLoading(false)
     } catch (error) {
@@ -80,6 +125,7 @@ const AuthProvider = ({ children }: Props) => {
     try {
       await signOut(auth)
       setUser(null)
+      setUserInfo(null)
       setIdToken(null)
     } catch (error) {
       console.log(error)
@@ -98,8 +144,9 @@ const AuthProvider = ({ children }: Props) => {
     const unsubscribe = auth.onAuthStateChanged(async (user) => {
       if (user) {
         const token = await user.getIdToken()
-        const isValidate = await validateUser(user, token)
-        if (isValidate) {
+        const info = await getUserInfo(user, token)
+        if (info) {
+          setUserInfo(info)
           setUser(user)
           setIdToken(token)
         }
@@ -127,25 +174,18 @@ const AuthProvider = ({ children }: Props) => {
 
   // redirect to dashboard if user is logged in
   useEffect(() => {
-    if (!loading) user ? navigate(location.pathname) : navigate('/')
+    if (!loading) !user && navigate('/')
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user])
+  }, [loading, user])
 
-  // validate user when route change
+  // send user activity when route change
   useEffect(() => {
-    if (!loading && user && idToken) validateUser(user, idToken)
+    if (!loading && user && idToken) sendUserActivity(user, idToken)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [location.pathname])
 
   const value = {
-    user: user
-      ? {
-          name: user.displayName,
-          email: user.email,
-          phone: user.phoneNumber,
-          photoUrl: user.photoURL
-        }
-      : null,
+    user: userInfo,
     loading,
     login,
     logout,

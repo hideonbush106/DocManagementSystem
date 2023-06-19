@@ -1,69 +1,88 @@
 import { CreateFolder, UpdateFolder } from '~/global/interface'
 import useApi from './useApi'
+import React from 'react'
 
 const useFolderApi = () => {
   const callApi = useApi()
   const rootEndpoint = 'folders'
 
-  const getFolders = async (folderId: string) => {
-    const endpoint = `/${rootEndpoint}/${folderId}`
-    try {
-      const response = await callApi('get', endpoint)
-      return response
-    } catch (error) {
-      console.log(error)
-    }
-  }
+  const getFolders = React.useCallback(
+    async (folderId: string) => {
+      const endpoint = `/${rootEndpoint}/${folderId}`
+      try {
+        const response = await callApi('get', endpoint)
+        return response
+      } catch (error) {
+        console.log(error)
+      }
+    },
+    [callApi]
+  )
 
-  const deleteFolder = async (folderId: string) => {
-    const endpoint = `/${rootEndpoint}/${folderId}`
-    try {
-      const response = await callApi('delete', endpoint)
-      return response
-    } catch (error) {
-      console.log(error)
-    }
-  }
+  const deleteFolder = React.useCallback(
+    async (folderId: string) => {
+      const endpoint = `/${rootEndpoint}/${folderId}`
+      try {
+        const response = await callApi('delete', endpoint)
+        return response
+      } catch (error) {
+        console.log(error)
+      }
+    },
+    [callApi]
+  )
 
-  const folderQRcode = async (folderId: string) => {
-    const endpoint = `/${rootEndpoint}/barcode/${folderId}`
-    try {
-      const response = await callApi('get', endpoint)
-      return response
-    } catch (error) {
-      console.log(error)
-    }
-  }
+  const folderQRcode = React.useCallback(
+    async (folderId: string) => {
+      const endpoint = `/${rootEndpoint}/barcode/${folderId}`
+      try {
+        const response = await callApi('get', endpoint)
+        return response
+      } catch (error) {
+        console.log(error)
+      }
+    },
+    [callApi]
+  )
 
-  const getFoldersInLocker = async (lockerId: string) => {
-    const endpoint = `/${rootEndpoint}?lockerId=${lockerId}`
-    try {
-      const response = await callApi('get', endpoint)
-      return response
-    } catch (error) {
-      console.log(error)
-    }
-  }
+  const getFoldersInLocker = React.useCallback(
+    async (lockerId: string) => {
+      const endpoint = `/${rootEndpoint}?lockerId=${lockerId}`
+      try {
+        const response = await callApi('get', endpoint)
+        return response
+      } catch (error) {
+        console.log(error)
+      }
+    },
+    [callApi]
+  )
 
-  const createFolder = async (data: CreateFolder) => {
-    const endpoint = `/${rootEndpoint}`
-    try {
-      const response = await callApi('post', endpoint, {}, {}, data)
-      return response
-    } catch (error) {
-      console.log(error)
-    }
-  }
+  const createFolder = React.useCallback(
+    async (data: CreateFolder) => {
+      const endpoint = `/${rootEndpoint}`
+      try {
+        const response = await callApi('post', endpoint, {}, {}, data)
+        return response
+      } catch (error) {
+        console.log(error)
+      }
+    },
+    [callApi]
+  )
 
-  const updateFolder = async (data: UpdateFolder) => {
-    const endpoint = `/${rootEndpoint}`
-    try {
-      const response = await callApi('put', endpoint, {}, {}, data)
-      return response
-    } catch (error) {
-      console.log(error)
-    }
-  }
+  const updateFolder = React.useCallback(
+    async (data: UpdateFolder) => {
+      const endpoint = `/${rootEndpoint}`
+      try {
+        const response = await callApi('put', endpoint, {}, {}, data)
+        return response
+      } catch (error) {
+        console.log(error)
+      }
+    },
+    [callApi]
+  )
 
   return { getFolders, deleteFolder, folderQRcode, getFoldersInLocker, createFolder, updateFolder }
 }

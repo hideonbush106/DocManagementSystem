@@ -26,16 +26,43 @@ const Login = () => {
       <LoginContainer>
         <div>
           <Typography
-            sx={{ width: '100%', fontWeight: 600, color: theme.palette.primary.main }}
+            sx={{
+              width: '100%',
+              fontSize: {
+                xs: '5rem',
+                sm: '4rem',
+                md: '3rem',
+                lg: '4rem'
+              },
+              fontWeight: 600,
+              color: theme.palette.primary.main,
+              textAlign: {
+                xs: 'center',
+                md: 'left'
+              }
+            }}
             variant='h2'
-            align='left'
           >
             DMS
           </Typography>
           <Typography
-            sx={{ width: '100%', fontWeight: 500, color: '#8B8C8D', marginBottom: '4rem' }}
+            sx={{
+              width: '100%',
+              fontSize: {
+                xs: '2rem',
+                sm: '2.5rem',
+                md: '1.25rem',
+                lg: '2rem'
+              },
+              fontWeight: 500,
+              color: '#8B8C8D',
+              marginBottom: '4rem',
+              textAlign: {
+                xs: 'center',
+                md: 'left'
+              }
+            }}
             variant='h4'
-            align='center'
           >
             Document Management System
           </Typography>

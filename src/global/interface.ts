@@ -62,6 +62,7 @@ export interface BorrowRequest {
 
 export interface Categories {
   id: string
+  name: string
   department: {
     id: string
   }

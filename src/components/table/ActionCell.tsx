@@ -9,7 +9,7 @@ interface MenuItem {
 }
 
 interface ActionsCellProps {
-  id: number
+  id?: number
   menuItems: MenuItem[]
 }
 

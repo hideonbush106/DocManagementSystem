@@ -158,7 +158,7 @@ export interface ImportRequest {
   description: string
 }
 
-export interface RejectImportRequest {
+export interface Reject {
   id: string
-  rejectReason: string
+  rejectedReason: string
 }

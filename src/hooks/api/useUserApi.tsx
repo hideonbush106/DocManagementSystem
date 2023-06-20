@@ -3,7 +3,7 @@ import useApi from './useApi'
 
 const useUserApi = () => {
   const callApi = useApi()
-  const rootEndpoint = 'user'
+  const rootEndpoint = 'users'
 
   const getUserLogin = React.useCallback(
     async (token: string) => {

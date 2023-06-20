@@ -6,7 +6,7 @@ const useCategoryApi = () => {
   const callApi = useApi()
   const rootEndpoint = 'categories'
 
-  const getCategories = React.useCallback(
+  const getAllCategories = React.useCallback(
     async (departmentId: string) => {
       const endpoint = `/${rootEndpoint}?departmentId=${departmentId}`
       try {
@@ -45,7 +45,33 @@ const useCategoryApi = () => {
     [callApi]
   )
 
-  return { getCategories, createCategory, updateCategory }
+  const getCategory = React.useCallback(
+    async (categoryId: string) => {
+      const endpoint = `/${rootEndpoint}/${categoryId}`
+      try {
+        const response = await callApi('get', endpoint)
+        return response
+      } catch (error) {
+        console.log(error)
+      }
+    },
+    [callApi]
+  )
+
+  const deleteCategory = React.useCallback(
+    async (categoryId: string) => {
+      const endpoint = `/${rootEndpoint}/${categoryId}`
+      try {
+        const response = await callApi('delete', endpoint)
+        return response
+      } catch (error) {
+        console.log(error)
+      }
+    },
+    [callApi]
+  )
+
+  return { getAllCategories, createCategory, updateCategory, getCategory, deleteCategory }
 }
 
 export default useCategoryApi

@@ -12,9 +12,11 @@ const Emmiter: ToastOptions = {
 }
 
 export const notifyError = (msg: string) => {
+  toast.dismiss()
   toast.error(msg, Emmiter)
 }
 
 export const notifySuccess = (msg: string) => {
+  toast.dismiss()
   toast.success(msg, Emmiter)
 }

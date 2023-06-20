@@ -1,6 +1,6 @@
 import { CreateNewFolderOutlined } from '@mui/icons-material'
 import { Box, Button, FormControl, MenuItem, TextField, Typography } from '@mui/material'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import FileUpload from 'react-material-file-upload'
 import { useFormik } from 'formik'
 import useDepartmentApi from '~/hooks/api/useDepartmentApi'
@@ -11,6 +11,7 @@ import useLockerApi from '~/hooks/api/useLockerApi'
 import useFolderApi from '~/hooks/api/useFolderApi'
 import * as yup from 'yup'
 import useDocumentApi from '~/hooks/api/useDocumentApi'
+import Barcode from 'react-barcode'
 
 interface ImportDocumentProps {
   handleClose: () => void
@@ -23,12 +24,15 @@ const ImportDocument = (props: ImportDocumentProps) => {
   const [rooms, setRooms] = useState<Room[]>([])
   const [lockers, setLockers] = useState<Locker[]>([])
   const [folders, setFolders] = useState<Folder[]>([])
+  const [barcode, setBarcode] = useState<string>('')
   const { createDocument, uploadDocumentPdf } = useDocumentApi()
   const { getAllDepartments } = useDepartmentApi()
   const { getAllCategories } = useCategoryApi()
   const { getRoomsInDepartment } = useRoomApi()
   const { getLockerInRoom } = useLockerApi()
   const { getFoldersInLocker } = useFolderApi()
+
+  const componentRef = useRef<HTMLDivElement>(null)
 
   const validationSchema = yup.object({
     name: yup.string().required('Name is required'),
@@ -59,6 +63,7 @@ const ImportDocument = (props: ImportDocumentProps) => {
       createDocument(values).then((res) => {
         console.log(res)
         console.log(files)
+        setBarcode(res.data.barcode)
         uploadDocumentPdf(res.data.id, files).then((res) => {
           console.log(res)
         })
@@ -86,6 +91,17 @@ const ImportDocument = (props: ImportDocumentProps) => {
     getFoldersInLocker(event.target.value).then((res) => {
       setFolders(res.data)
     })
+  }
+
+  const handleExport = () => {
+    const printWindow = window.open('')
+    if (componentRef.current && printWindow) {
+      const componentHTML = componentRef.current.innerHTML
+      printWindow.document.open()
+      printWindow.document.write(`${componentHTML}`)
+      printWindow.document.close()
+      printWindow.print()
+    }
   }
 
   useEffect(() => {
@@ -308,6 +324,11 @@ const ImportDocument = (props: ImportDocumentProps) => {
               title={`Drag 'n' drop some files here, or click to select files`}
             />
           </Box>
+          {barcode ? (
+            <Box ref={componentRef} id='barcode' display={'flex'} sx={{ justifyContent: 'center', width: '100%' }}>
+              <Barcode format='CODE128' value={barcode} />
+            </Box>
+          ) : null}
         </FormControl>
 
         <Box
@@ -323,9 +344,16 @@ const ImportDocument = (props: ImportDocumentProps) => {
             boxShadow: 'rgba(100, 100, 111, 0.2) 0px 7px 29px 0px'
           }}
         >
-          <Button sx={{ my: 1, mr: 1 }} variant='contained' color='primary' type='submit'>
-            Submit
-          </Button>
+          {barcode ? (
+            <Button sx={{ my: 1, mr: 1 }} variant='contained' color='primary' onClick={handleExport}>
+              Export
+            </Button>
+          ) : (
+            <Button sx={{ my: 1, mr: 1 }} variant='contained' color='primary' type='submit'>
+              Submit
+            </Button>
+          )}
+
           <Button sx={{ my: 1 }} color='error' onClick={props.handleClose}>
             Cancel
           </Button>

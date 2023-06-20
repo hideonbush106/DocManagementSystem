@@ -142,3 +142,23 @@ export interface UpdateRoom {
   name: string
   capacity: number
 }
+
+export interface ImportRequest {
+  document: {
+    name: string
+    description: string
+    numOfPages: number
+    folder: {
+      id: string
+    }
+    category: {
+      id: string
+    }
+  }
+  description: string
+}
+
+export interface RejectImportRequest {
+  id: string
+  rejectReason: string
+}

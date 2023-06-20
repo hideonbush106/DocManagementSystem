@@ -1,41 +1,63 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import RequestCard from '~/components/card/requestCard/RequestCard'
-import { Avatar, Box, Pagination, Typography, styled, useMediaQuery } from '@mui/material'
-import { useContext, useEffect, useState } from 'react'
+import { Avatar, Box, CardActions, Pagination, Typography, styled } from '@mui/material'
+import { useEffect, useState } from 'react'
 import usePagination from '~/hooks/usePagination'
-import { RequestDataContext } from '~/context/BorrowDataContext'
+import useApi from '~/hooks/api/useApi'
+import InfoIcon from '@mui/icons-material/Info'
+import DetailRequestModal from '~/components/modal/DetailRequestModal'
+import { StatusDiv } from '~/pages/requests/importRequest/ImportRequest.styled'
+import { AcceptButton, RejectButton } from '~/components/button/Button'
+import RejectRequestModal from '~/components/modal/RejectRequestModal'
 
 const Text = styled(Typography)`
   color: var(--black-color);
   margin: 0.5rem 0;
 `
 
-const BorrowRequest = () => {
-  const isExtraLargeScreen = useMediaQuery('(min-width:1500px)')
-  const isLargeScreen = useMediaQuery('(min-width:1200px)')
-  const isMediumScreen = useMediaQuery('(min-width:1000px)')
-  const isSmallScreen = useMediaQuery('(min-width:900px)')
-
-  let PER_PAGE = 6
-  if (isExtraLargeScreen) {
-    PER_PAGE = 10
-  } else if (isLargeScreen) {
-    PER_PAGE = 8
-  } else if (isMediumScreen) {
-    PER_PAGE = 6
-  } else if (isSmallScreen) {
-    PER_PAGE = 4
+const StatusText = ({ status }: { status: string }) => {
+  if (status === 'REJECTED') {
+    return <StatusDiv rejected>Rejected</StatusDiv>
   }
+  if (status === 'APPROVED') {
+    return <StatusDiv accepted>Accepted</StatusDiv>
+  }
+  return null
+}
+
+const ImportRequest = () => {
+  const PER_PAGE = 10
 
   const [page, setPage] = useState(1)
-  const { requestData } = useContext(RequestDataContext)
-  const [totalPages, setTotalPages] = useState(0)
+  const [importRequests, setImportRequests] = useState<any[]>([])
+  const [totalPages, setTotalPages] = useState(1)
+  const [selectedRequest, setSelectedRequest] = useState<any | null>(null)
+  const [isModalOpen, setIsModalOpen] = useState(false)
+  const callApi = useApi()
 
   useEffect(() => {
-    setTotalPages(Math.ceil(requestData.length / PER_PAGE))
-  }, [requestData, PER_PAGE])
+    const fetchImportRequests = async () => {
+      try {
+        const response = await callApi('get', '/borrow-requests')
+        // console.log(response.data)
+
+        const responseData = response.data.data
+        const totalPages = response.data.total
+
+        if (responseData && Array.isArray(responseData)) {
+          setImportRequests(responseData)
+          setTotalPages(Math.ceil(totalPages / PER_PAGE))
+        }
+      } catch (error) {
+        console.log(error)
+      }
+    }
+
+    fetchImportRequests()
+  }, [PER_PAGE, callApi])
 
   const count = totalPages
-  const _DATA = usePagination(requestData, PER_PAGE)
+  const _DATA = usePagination(importRequests, PER_PAGE)
 
   const handleChange = (e: React.ChangeEvent<unknown>, pageNumber: number) => {
     setPage(pageNumber)
@@ -43,49 +65,116 @@ const BorrowRequest = () => {
     console.log(e)
   }
 
+  const handleInfoIconClick = async (id: number) => {
+    try {
+      const response = await callApi('get', `/borrow-requests/${id}`)
+      const requestDetails = response.data
+      setSelectedRequest(requestDetails)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  const handleClosePopup = () => {
+    setSelectedRequest(null)
+  }
+
+  const handleAccept = () => {
+    console.log('Accepted')
+  }
+
+  const handleReject = () => {
+    setSelectedRequest(null)
+    setIsModalOpen(true)
+  }
+
+  const handleRejectModalClose = () => {
+    setIsModalOpen(false)
+  }
+
+  const handleRejectModalSubmit = (reason: string) => {
+    console.log('Rejected:', reason)
+    setIsModalOpen(false)
+  }
+
   return (
     <>
       <Box display='flex' flexDirection='column' justifyContent='space-between' minHeight='81vh'>
         <Box display='flex' flexWrap='wrap'>
-          {requestData.length === 0 ? (
+          {importRequests.length === 0 ? (
             <Typography variant='body2'>Loading...</Typography>
           ) : (
             _DATA.currentData().map((request) => (
               <RequestCard key={request.id}>
-                <div style={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
-                  <Avatar sx={{ width: '50px', height: '50px' }} />
-                  <div style={{ display: 'flex', flexDirection: 'column', marginLeft: '0.75rem' }}>
-                    <Typography
-                      sx={{ fontSize: '18px', fontWeight: '600' }}
-                    >{`${request.createdBy.firstName} ${request.createdBy.lastName}`}</Typography>
-                    <Typography sx={{ color: '#a5aab5', letterSpacing: '0', fontSize: '16px' }}>
-                      {request.code}
-                    </Typography>
+                <div
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between'
+                  }}
+                >
+                  <div
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center'
+                    }}
+                  >
+                    <Avatar sx={{ width: '45px', height: '45px' }} />
+                    <div style={{ display: 'flex', flexDirection: 'column', marginLeft: '0.75rem' }}>
+                      <Typography
+                        sx={{ fontSize: '16px', fontWeight: '600', marginRight: '10px' }}
+                      >{`${request.createdBy.firstName} ${request.createdBy.lastName}`}</Typography>
+                      <Typography sx={{ color: '#a5aab5', letterSpacing: '0', fontSize: '16px' }}>
+                        {request.code}
+                      </Typography>
+                    </div>
                   </div>
+                  <InfoIcon
+                    sx={{ color: 'var(--black-light-color)' }}
+                    onClick={() => handleInfoIconClick(request.id)}
+                  />
                 </div>
-                <Text variant='body2'>
-                  <strong> Description: </strong>
-                  {request.description}
-                </Text>
-                <Text variant='body2'>
-                  <strong> Time request: </strong>
-                  {new Date(request.createdAt).toLocaleString('en-US', {
-                    year: 'numeric',
-                    month: '2-digit',
-                    day: '2-digit',
-                    hour: '2-digit',
-                    minute: '2-digit',
-                    second: '2-digit'
-                  })}
-                </Text>
+                <div style={{ height: '200px' }}>
+                  <Text variant='body2'>
+                    <strong> Description: </strong>
+                    {request.description}
+                  </Text>
+                  <Text variant='body2'>
+                    <strong> Time request: </strong>
+                    {new Date(request.createdAt).toLocaleString('en-US', {
+                      year: 'numeric',
+                      month: '2-digit',
+                      day: '2-digit',
+                      hour: '2-digit',
+                      minute: '2-digit',
+                      second: '2-digit'
+                    })}
+                  </Text>
+                </div>
+                <CardActions sx={{ justifyContent: 'space-evenly', margin: '10px 0' }}>
+                  {request.status === 'PENDING' ? (
+                    <>
+                      <AcceptButton text='Accept' onClick={handleAccept} />
+                      <RejectButton text='Reject' onClick={handleReject} />
+                    </>
+                  ) : (
+                    <StatusText status={request.status} />
+                  )}
+                </CardActions>
               </RequestCard>
             ))
           )}
         </Box>
         <Pagination count={count} size='large' page={page} variant='outlined' shape='rounded' onChange={handleChange} />
+        <DetailRequestModal
+          open={selectedRequest !== null}
+          handleClose={handleClosePopup}
+          selectedRequest={selectedRequest}
+        />
+        <RejectRequestModal open={isModalOpen} onClose={handleRejectModalClose} onSubmit={handleRejectModalSubmit} />
       </Box>
     </>
   )
 }
 
-export default BorrowRequest
+export default ImportRequest

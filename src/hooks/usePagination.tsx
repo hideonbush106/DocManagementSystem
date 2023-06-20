@@ -2,7 +2,9 @@ import { useState } from 'react'
 
 function usePagination<T>(data: T[], itemsPerPage: number) {
   const [currentPage, setCurrentPage] = useState<number>(1)
+
   const maxPage = Math.ceil(data.length / itemsPerPage)
+  console.log(maxPage)
 
   function currentData(): T[] {
     const begin = (currentPage - 1) * itemsPerPage

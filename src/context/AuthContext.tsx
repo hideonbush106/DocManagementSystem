@@ -110,6 +110,7 @@ const AuthProvider = ({ children }: Props) => {
         setUserInfo(info)
         setIdToken(token)
         notifySuccess('Login successfully')
+        localStorage.setItem('token', token)
       }
       setLoading(false)
     } catch (error) {

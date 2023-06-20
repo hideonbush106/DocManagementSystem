@@ -1,92 +1,26 @@
 import Card from '@mui/material/Card'
-import CardActions from '@mui/material/CardActions'
 import CardContent from '@mui/material/CardContent'
-import { useCallback, useEffect, useState } from 'react'
-import { AcceptButton, RejectButton } from '~/components/button/Button'
-import styled from 'styled-components'
-import RejectRequestModal from '~/components/modal/RejectRequestModal'
-
-interface StatusDivProps {
-  accepted?: boolean
-  rejected?: boolean
-}
 
 interface RequestCardProps {
   children?: React.ReactNode
 }
 
-const StatusDiv = styled.div<StatusDivProps>`
-  width: fit-content;
-  height: 30px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  color: var(--white-color);
-  border-radius: 5px;
-  padding: 5px 15px;
-  ${({ accepted }) =>
-    accepted &&
-    `
-    background-color: var(--green-color);
-    `};
-  ${({ rejected }) =>
-    rejected &&
-    `
-    background-color: var(--red-color);
-  `}
-`
-
 const RequestCard = ({ children }: RequestCardProps) => {
-  const [status, setStatus] = useState('pending')
-  const [isModalOpen, setIsModalOpen] = useState(false)
-
-  const handleAccept = () => {
-    console.log('Accepted')
-  }
-
-  const handleReject = () => {
-    setIsModalOpen(true)
-  }
-
-  const handleModalClose = () => {
-    setIsModalOpen(false)
-  }
-
-  const handleModalSubmit = (reason: string) => {
-    console.log('Rejected:', reason)
-
-    setIsModalOpen(false)
-  }
-
-  const renderStatusText = useCallback(() => {
-    if (status === 'rejected') {
-      return <StatusDiv rejected>Rejected</StatusDiv>
-    }
-    if (status === 'accepted') {
-      return <StatusDiv accepted>Accepted</StatusDiv>
-    }
-    return null
-  }, [status])
-
-  useEffect(() => {
-    renderStatusText()
-  }, [renderStatusText, status])
-
   return (
     <>
-      <Card sx={{ maxWidth: '13.25rem', margin: '0 20px 15px 0' }}>
-        <CardContent sx={{ height: '13.5rem', overflow: 'visible' }}>{children}</CardContent>
-        <CardActions sx={{ justifyContent: 'space-evenly', margin: '10px 0' }}>
-          {status === 'pending' && (
-            <>
-              <AcceptButton text='Accept' onClick={handleAccept} />
-              <RejectButton text='Reject' onClick={handleReject} />
-            </>
-          )}
-          {renderStatusText()}
-        </CardActions>
+      <Card sx={{ maxWidth: '14.5rem', margin: '0 20px 15px 0' }}>
+        <CardContent
+          sx={{
+            height: '18rem',
+            overflow: 'visible',
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'space-between'
+          }}
+        >
+          {children}
+        </CardContent>
       </Card>
-      <RejectRequestModal open={isModalOpen} onClose={handleModalClose} onSubmit={handleModalSubmit} />
     </>
   )
 }

@@ -4,12 +4,13 @@ import { useEffect, useState } from 'react'
 import FileUpload from 'react-material-file-upload'
 import { useFormik } from 'formik'
 import useDepartmentApi from '~/hooks/api/useDepartmentApi'
-import { Categories, Department, Folder, Room } from '~/global/interface'
+import { Categories, Department, Folder, Locker, Room } from '~/global/interface'
 import useCategoryApi from '~/hooks/api/useCategoryApi'
 import useRoomApi from '~/hooks/api/useRoomApi'
 import useLockerApi from '~/hooks/api/useLockerApi'
 import useFolderApi from '~/hooks/api/useFolderApi'
-import { string } from 'prop-types'
+import * as yup from 'yup'
+
 interface ImportDocumentProps {
   handleClose: () => void
 }
@@ -19,33 +20,46 @@ const ImportDocument = (props: ImportDocumentProps) => {
   const [departments, setDepartments] = useState<Department[]>([])
   const [categories, setCategories] = useState<Categories[]>([])
   const [rooms, setRooms] = useState<Room[]>([])
-  const [lockers, setLockers] = useState<Room[]>([])
+  const [lockers, setLockers] = useState<Locker[]>([])
   const [folders, setFolders] = useState<Folder[]>([])
   const { getAllDepartments } = useDepartmentApi()
-  const { getCategories } = useCategoryApi()
+  const { getAllCategories } = useCategoryApi()
   const { getRoomsInDepartment } = useRoomApi()
   const { getLockerInRoom } = useLockerApi()
   const { getFoldersInLocker } = useFolderApi()
+
+  const validationSchema = yup.object({
+    name: yup.string().required('Name is required'),
+    description: yup.string().required('Description is required'),
+    numOfPages: yup.number().required('Number of pages is required'),
+    folder: yup.object({
+      id: yup.string().required('Folder is required')
+    }),
+    category: yup.object({
+      id: yup.string().required('Category is required')
+    })
+  })
+
   const formik = useFormik({
     initialValues: {
-      name: 'Lorem Ipsum',
-      description: 'Lorem Ipsum',
+      name: '',
+      description: '',
       numOfPages: 1,
       folder: {
-        id: 'Lorem Ipsum'
+        id: ''
       },
       category: {
-        id: 'Lorem Ipsum'
+        id: ''
       }
     },
+    validationSchema: validationSchema,
     onSubmit: (values) => {
       console.log(values)
     }
   })
 
   const departmentHandleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    //TODO: will fix to getAllCategories
-    getCategories(event.target.value).then((res) => {
+    getAllCategories(event.target.value).then((res) => {
       setCategories(res.data)
     })
     getRoomsInDepartment(event.target.value).then((res) => {
@@ -123,7 +137,7 @@ const ImportDocument = (props: ImportDocumentProps) => {
             required
             sx={{ my: 1 }}
             value={formik.values.name}
-            label='File name'
+            label='Document name'
             name='name'
             variant='standard'
             fullWidth
@@ -186,7 +200,6 @@ const ImportDocument = (props: ImportDocumentProps) => {
               label='Category Type'
               variant='standard'
               name='category.id'
-              defaultValue={''}
             >
               {categories.map((cate) => (
                 <MenuItem key={cate.id} value={cate.id}>

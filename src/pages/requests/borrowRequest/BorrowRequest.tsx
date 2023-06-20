@@ -44,7 +44,7 @@ const BorrowRequest = () => {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const callApi = useApi()
   const { acceptBorrowRequest, rejectBorrowRequest } = useBorrowRequestApi()
-  const { getUserProfile } = useUserApi()
+  useUserApi()
   const { user } = useAuth()
   const role = user?.role
   useEffect(() => {

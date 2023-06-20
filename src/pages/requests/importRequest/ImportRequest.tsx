@@ -44,7 +44,7 @@ const ImportRequest = () => {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const callApi = useApi()
   const { acceptImportRequest, rejectImportRequest } = useImportRequestApi()
-  const { getUserProfile } = useUserApi()
+  useUserApi()
   const { user } = useAuth()
   const role = user?.role
   useEffect(() => {

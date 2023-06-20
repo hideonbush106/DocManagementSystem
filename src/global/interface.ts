@@ -87,8 +87,7 @@ export interface UpdateDepartment extends CreateDepartment {
 export interface CreateDocument {
   name: string
   description: string
-  status: string
-  numOfPage: number
+  numOfPages: number
   folder: {
     id: string
   }

@@ -4,12 +4,13 @@ import { useEffect, useState } from 'react'
 import FileUpload from 'react-material-file-upload'
 import { useFormik } from 'formik'
 import useDepartmentApi from '~/hooks/api/useDepartmentApi'
-import { Categories, Department, Folder, Locker, Room } from '~/global/interface'
+import { Categories, CreateDocument, Department, Folder, Locker, Room } from '~/global/interface'
 import useCategoryApi from '~/hooks/api/useCategoryApi'
 import useRoomApi from '~/hooks/api/useRoomApi'
 import useLockerApi from '~/hooks/api/useLockerApi'
 import useFolderApi from '~/hooks/api/useFolderApi'
 import * as yup from 'yup'
+import useDocumentApi from '~/hooks/api/useDocumentApi'
 
 interface ImportDocumentProps {
   handleClose: () => void
@@ -22,6 +23,7 @@ const ImportDocument = (props: ImportDocumentProps) => {
   const [rooms, setRooms] = useState<Room[]>([])
   const [lockers, setLockers] = useState<Locker[]>([])
   const [folders, setFolders] = useState<Folder[]>([])
+  const { createDocument, uploadDocumentPdf } = useDocumentApi()
   const { getAllDepartments } = useDepartmentApi()
   const { getAllCategories } = useCategoryApi()
   const { getRoomsInDepartment } = useRoomApi()
@@ -53,8 +55,15 @@ const ImportDocument = (props: ImportDocumentProps) => {
       }
     },
     validationSchema: validationSchema,
-    onSubmit: (values) => {
-      console.log(values)
+    onSubmit: (values: CreateDocument) => {
+      createDocument(values).then((res) => {
+        console.log(res)
+        console.log(files)
+        uploadDocumentPdf(res.data.id, files).then((res) => {
+          console.log(res)
+        })
+        console.log(values)
+      })
     }
   })
 
@@ -294,6 +303,8 @@ const ImportDocument = (props: ImportDocumentProps) => {
               }}
               value={files}
               onChange={setFiles}
+              maxFiles={1}
+              accept='application/pdf'
               title={`Drag 'n' drop some files here, or click to select files`}
             />
           </Box>

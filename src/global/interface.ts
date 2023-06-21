@@ -62,13 +62,18 @@ export interface BorrowRequest {
 
 export interface Categories {
   id: string
+  name: string
   department: {
     id: string
   }
 }
 
-export interface UpdateCategories extends Categories {
+export interface UpdateCategories {
+  id: string
   name: string
+  department: {
+    id: string
+  }
 }
 
 export interface CreateDepartment {
@@ -137,4 +142,24 @@ export interface UpdateRoom {
   id: string
   name: string
   capacity: number
+}
+
+export interface ImportRequest {
+  document: {
+    name: string
+    description: string
+    numOfPages: number
+    folder: {
+      id: string
+    }
+    category: {
+      id: string
+    }
+  }
+  description: string
+}
+
+export interface Reject {
+  id: string
+  rejectedReason: string
 }

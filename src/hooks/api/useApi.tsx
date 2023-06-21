@@ -11,6 +11,7 @@ const useApi = () => {
     if (error instanceof AxiosError) {
       console.log(error)
       const errorDetails = error.response?.data.details
+      notifyError(errorDetails)
       if (errorDetails === 'Access denied') {
         await logout()
         notifyError('Account is not allowed to access the system')

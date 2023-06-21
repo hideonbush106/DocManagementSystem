@@ -35,9 +35,14 @@ const ImportDocument = (props: ImportDocumentProps) => {
   const componentRef = useRef<HTMLDivElement>(null)
 
   const validationSchema = yup.object({
-    name: yup.string().required('Name is required'),
+    name: yup.string().required('Document name is required'),
     description: yup.string().required('Description is required'),
-    numOfPages: yup.number().required('Number of pages is required'),
+    numOfPages: yup
+      .number()
+      .integer('Number of pages must be an integer')
+      .min(1, 'Number of pages must be greater than 0')
+      .max(500000, 'Number of pages must be less than 500000')
+      .required('Number of pages is required'),
     folder: yup.object({
       id: yup.string().required('Folder is required')
     }),
@@ -60,13 +65,17 @@ const ImportDocument = (props: ImportDocumentProps) => {
     },
     validationSchema: validationSchema,
     onSubmit: (values: CreateDocument) => {
+      values.name = values.name.trim().replace(/\s\s+/g, ' ')
+      values.description = values.description.trim().replace(/\s\s+/g, ' ')
       createDocument(values).then((res) => {
         console.log(res)
         console.log(files)
         setBarcode(res.data.barcode)
-        uploadDocumentPdf(res.data.id, files).then((res) => {
-          console.log(res)
-        })
+        if (files.length > 0) {
+          uploadDocumentPdf(res.data.id, files).then((res) => {
+            console.log(res)
+          })
+        }
         console.log(values)
       })
     }
@@ -159,7 +168,6 @@ const ImportDocument = (props: ImportDocumentProps) => {
             Document Information
           </Typography>
           <TextField
-            required
             sx={{ my: 1 }}
             value={formik.values.name}
             label='Document name'
@@ -167,9 +175,11 @@ const ImportDocument = (props: ImportDocumentProps) => {
             variant='standard'
             fullWidth
             onChange={formik.handleChange}
+            error={Boolean(formik.errors.name)}
+            helperText={formik.errors.name}
+            required
           />
           <TextField
-            required
             sx={{ my: 1 }}
             label='Number of pages'
             value={formik.values.numOfPages}
@@ -178,9 +188,11 @@ const ImportDocument = (props: ImportDocumentProps) => {
             variant='standard'
             fullWidth
             onChange={formik.handleChange}
+            error={Boolean(formik.errors.numOfPages)}
+            helperText={formik.errors.numOfPages}
+            required
           />
           <TextField
-            required
             sx={{ my: 1 }}
             label='Description'
             value={formik.values.description}
@@ -190,6 +202,9 @@ const ImportDocument = (props: ImportDocumentProps) => {
             onChange={formik.handleChange}
             multiline
             maxRows={4}
+            error={Boolean(formik.errors.description)}
+            helperText={formik.errors.description}
+            required
           />
           <Box display={'flex'} sx={{ width: '100%', justifyContent: 'space-between', flexWrap: 'wrap' }}>
             <TextField
@@ -204,6 +219,7 @@ const ImportDocument = (props: ImportDocumentProps) => {
               select
               label='Department'
               variant='standard'
+              required
             >
               {departments.map((dept) => (
                 <MenuItem key={dept.id} value={dept.id}>
@@ -225,6 +241,8 @@ const ImportDocument = (props: ImportDocumentProps) => {
               label='Category Type'
               variant='standard'
               name='category.id'
+              required
+              disabled={categories.length === 0}
             >
               {categories.map((cate) => (
                 <MenuItem key={cate.id} value={cate.id}>
@@ -260,6 +278,8 @@ const ImportDocument = (props: ImportDocumentProps) => {
               select
               label='Room'
               variant='standard'
+              required
+              disabled={rooms.length === 0}
             >
               {rooms.map((room) => (
                 <MenuItem key={room.id} value={room.id}>
@@ -279,6 +299,8 @@ const ImportDocument = (props: ImportDocumentProps) => {
               select
               label='Locker'
               variant='standard'
+              required
+              disabled={lockers.length === 0}
             >
               {lockers.map((locker) => (
                 <MenuItem key={locker.id} value={locker.id}>
@@ -300,6 +322,8 @@ const ImportDocument = (props: ImportDocumentProps) => {
               select
               label='Folder'
               variant='standard'
+              required
+              disabled={folders.length === 0}
             >
               {folders.map((folder) => (
                 <MenuItem key={folder.id} value={folder.id}>

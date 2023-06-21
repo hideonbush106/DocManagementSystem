@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { DataGrid, GridColDef, GridRenderCellParams } from '@mui/x-data-grid'
 import ActionsCell from './ActionCell'
 import PropTypes, { Validator } from 'prop-types'
@@ -6,172 +5,54 @@ import { Link } from 'react-router-dom'
 import CheckRoundedIcon from '@mui/icons-material/CheckRounded'
 import ModalLayout from '../modal/ModalLayout'
 import CodeScanner from '../modal/scanner/CodeScanner'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import useDocumentApi from '~/hooks/api/useDocumentApi'
 interface ApprovalsTableProps {
   view: 'dashboard' | 'full'
 }
 
+interface PaginationModel {
+  page: number
+  pageSize: number
+}
+
 const ApprovalsTable: React.FC<ApprovalsTableProps> = ({ view }) => {
   let columns: GridColDef[] = []
-
+  const { getPendingDocuments } = useDocumentApi()
   const [_open, setOpen] = useState(false)
+  const [isLoading, setIsLoading] = useState(true)
+  const [data, setData] = useState([])
+  const [rowCountState, setRowCountState] = useState<number>(0)
+  const [paginationModel, setPaginationModel] = useState<PaginationModel>({
+    page: 0,
+    pageSize: 10
+  })
+
+  const fetchData = async () => {
+    if (isLoading) {
+      const result = await getPendingDocuments(paginationModel.pageSize, paginationModel.page)
+      setData(result.data.data)
+      setRowCountState((prevRowCountState) => (result.data.total !== undefined ? result.data.total : prevRowCountState))
+      setIsLoading(false)
+    }
+  }
+
+  const handlePaginationModelChange = (newPaginationModel: PaginationModel) => {
+    console.log(newPaginationModel)
+    setIsLoading(true)
+    setData([])
+    setPaginationModel(newPaginationModel)
+    fetchData()
+  }
+
+  useEffect(() => {
+    fetchData()
+  })
 
   const handleClose = () => {
     setOpen(false)
   }
 
-  const rows = [
-    {
-      id: 1,
-      fileName: 'Contract Labor 2022',
-      department: 'Human Resources',
-      room: '1',
-      locker: '1',
-      folder: '1',
-      category: 'Contract',
-      createAt: '13:34:45, 23th May, 2023'
-    },
-    {
-      id: 2,
-      fileName: 'Report meeting',
-      department: 'Sales',
-      room: '2',
-      locker: '2',
-      folder: '2',
-      category: 'Report',
-      createAt: '10:44:45, 23th May, 2023'
-    },
-    {
-      id: 3,
-      fileName: 'Tax bill',
-      department: 'Accountant',
-      room: '3',
-      locker: '3',
-      folder: '3',
-      category: 'Tax',
-      createAt: '10:54:45, 23th May, 2023'
-    },
-    {
-      id: 4,
-      fileName: 'Contract Labor 2022',
-      department: 'Human Resources',
-      room: '1',
-      locker: '1',
-      folder: '1',
-      category: 'Contract',
-      createAt: '11:04:45, 23th May, 2023'
-    },
-    {
-      id: 5,
-      fileName: 'Report meeting',
-      department: 'Sales',
-      room: '2',
-      locker: '2',
-      folder: '2',
-      category: 'Report',
-      createAt: '11:14:45, 23th May, 2023'
-    },
-    {
-      id: 6,
-      fileName: 'Tax bill',
-      department: 'Accountant',
-      room: '3',
-      locker: '3',
-      folder: '3',
-      category: 'Tax',
-      createAt: '11:24:45, 23th May, 2023'
-    },
-    {
-      id: 7,
-      fileName: 'Contract Labor 2022',
-      department: 'Human Resources',
-      room: '1',
-      locker: '1',
-      folder: '1',
-      category: 'Contract',
-      createAt: '11:34:45, 23th May, 2023'
-    },
-    {
-      id: 8,
-      fileName: 'Report meeting',
-      department: 'Sales',
-      room: '2',
-      locker: '2',
-      folder: '2',
-      category: 'Report',
-      createAt: '11:44:45, 23th May, 2023'
-    },
-    {
-      id: 9,
-      fileName: 'Tax bill',
-      department: 'Accountant',
-      room: '3',
-      locker: '3',
-      folder: '3',
-      category: 'Tax',
-      createAt: '11:54:45, 23th May, 2023'
-    },
-    {
-      id: 10,
-      fileName: 'Contract Labor 2022',
-      department: 'Human Resources',
-      room: '1',
-      locker: '1',
-      folder: '1',
-      category: 'Contract',
-      createAt: '12:04:45, 23th May, 2023'
-    },
-    {
-      id: 11,
-      fileName: 'Report meeting',
-      department: 'Sales',
-      room: '2',
-      locker: '2',
-      folder: '2',
-      category: 'Report',
-      createAt: '12:14:45, 23th May, 2023'
-    },
-    {
-      id: 12,
-      fileName: 'Tax bill',
-      department: 'Accountant',
-      room: '3',
-      locker: '3',
-      folder: '3',
-      category: 'Tax',
-      createAt: '12:34:45, 23th May, 2023'
-    },
-    {
-      id: 13,
-      fileName: 'Contract Labor 2022',
-      department: 'Human Resources',
-      room: '1',
-      locker: '1',
-      folder: '1',
-      category: 'Contract',
-      createAt: '12:24:45, 23th May, 2023'
-    },
-    {
-      id: 14,
-      fileName: 'Report meeting',
-      department: 'Sales',
-      room: '2',
-      locker: '2',
-      folder: '2',
-      category: 'Report',
-      createAt: '12:44:45, 23th May, 2023'
-    },
-    {
-      id: 15,
-      fileName: 'Tax bill',
-      department: 'Accountant',
-      room: '3',
-      locker: '3',
-      folder: '3',
-      category: 'Tax',
-      createAt: '12:54:45, 23th May, 2023'
-    }
-  ]
   let rowHeight = 50
   if (view === 'dashboard') {
     columns = [
@@ -213,19 +94,34 @@ const ApprovalsTable: React.FC<ApprovalsTableProps> = ({ view }) => {
         sortable: false,
         filterable: false,
         headerAlign: 'center',
-        align: 'center'
+        align: 'center',
+        renderCell: (params) =>
+          paginationModel.pageSize * paginationModel.page +
+          params.api.getRowIndexRelativeToVisibleRows(params.row.id) +
+          1
       },
-      { field: 'fileName', headerName: 'File name', flex: 1, minWidth: 100, maxWidth: 250 },
-      { field: 'department', headerName: 'Department', flex: 1, minWidth: 80, maxWidth: 200 },
+      { field: 'name', headerName: 'Name', flex: 1, minWidth: 100, maxWidth: 250 },
+      {
+        field: 'department',
+        headerName: 'Department',
+        flex: 1,
+        minWidth: 80,
+        maxWidth: 200,
+        valueGetter: ({ row }) => {
+          return row.folder.locker.room.department.name
+        }
+      },
       {
         field: 'room',
         headerName: 'Room',
         minWidth: 50,
         maxWidth: 120,
-
         flex: 1,
         headerAlign: 'center',
-        align: 'center'
+        align: 'center',
+        valueGetter: ({ row }) => {
+          return row.folder.locker.room.name
+        }
       },
       {
         field: 'locker',
@@ -234,7 +130,10 @@ const ApprovalsTable: React.FC<ApprovalsTableProps> = ({ view }) => {
         maxWidth: 120,
         flex: 1,
         headerAlign: 'center',
-        align: 'center'
+        align: 'center',
+        valueGetter: ({ row }) => {
+          return row.folder.locker.name
+        }
       },
       {
         field: 'folder',
@@ -243,10 +142,18 @@ const ApprovalsTable: React.FC<ApprovalsTableProps> = ({ view }) => {
         maxWidth: 120,
         flex: 1,
         headerAlign: 'center',
-        align: 'center'
+        align: 'center',
+        valueFormatter: ({ value }) => value.name
       },
-      { field: 'category', headerName: 'Category', minWidth: 75, maxWidth: 150, flex: 1 },
-      { field: 'createAt', headerName: 'Create at', flex: 1, minWidth: 140 },
+      {
+        field: 'category',
+        headerName: 'Category',
+        minWidth: 75,
+        maxWidth: 150,
+        flex: 1,
+        valueFormatter: ({ value }) => value.name
+      },
+      { field: 'createdAt', headerName: 'Created at', flex: 1, minWidth: 140 },
       {
         field: 'action',
         headerName: 'Action',
@@ -309,14 +216,19 @@ const ApprovalsTable: React.FC<ApprovalsTableProps> = ({ view }) => {
         disableColumnMenu
         hideFooterSelectedRowCount
         rowHeight={rowHeight}
-        rows={rows}
+        rows={data}
         columns={columns}
+        rowCount={rowCountState}
+        loading={isLoading}
+        pageSizeOptions={[10]}
+        paginationModel={paginationModel}
+        paginationMode='server'
+        onPaginationModelChange={handlePaginationModelChange}
         initialState={{
           sorting: {
-            sortModel: [{ field: 'createAt', sort: 'asc' }]
+            sortModel: [{ field: 'createdAt', sort: 'asc' }]
           }
         }}
-        autoPageSize={true}
         sx={{
           border: 'none',
           fontSize: '12px', // default: 14px

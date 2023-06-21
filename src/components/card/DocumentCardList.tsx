@@ -1,4 +1,4 @@
-import { Grid, Skeleton } from '@mui/material'
+import { Grid } from '@mui/material'
 import { Link } from 'react-router-dom'
 import DocumentCard from './DocumentCard'
 import { Apartment, SvgIconComponent, Work, Lock, Folder, DescriptionOutlined } from '@mui/icons-material'
@@ -10,7 +10,6 @@ type Props = {
 }
 
 const DocumentCardList = (props: Props) => {
-  const { loading } = useData()
   const { items, type } = props
   let icon: {
     Component: SvgIconComponent

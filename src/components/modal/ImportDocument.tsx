@@ -9,7 +9,6 @@ import useCategoryApi from '~/hooks/api/useCategoryApi'
 import useRoomApi from '~/hooks/api/useRoomApi'
 import useLockerApi from '~/hooks/api/useLockerApi'
 import useFolderApi from '~/hooks/api/useFolderApi'
-import { string } from 'prop-types'
 interface ImportDocumentProps {
   handleClose: () => void
 }

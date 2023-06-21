@@ -2,6 +2,7 @@ import { Grid } from '@mui/material'
 import { Link } from 'react-router-dom'
 import DocumentCard from './DocumentCard'
 import { Apartment, SvgIconComponent, Work, Lock, Folder, DescriptionOutlined } from '@mui/icons-material'
+import FileCard from './FileCard'
 
 type Props = {
   items: { id: string; name: string }[]
@@ -10,26 +11,29 @@ type Props = {
 
 const DocumentCardList = (props: Props) => {
   const { items, type } = props
-  let icon: SvgIconComponent
+  let icon: {
+    Component: SvgIconComponent
+    color?: string
+  }
   switch (type) {
     case 'department': {
-      icon = Apartment
+      icon = { Component: Apartment }
       break
     }
     case 'room': {
-      icon = Work
+      icon = { Component: Work }
       break
     }
     case 'locker': {
-      icon = Lock
+      icon = { Component: Lock }
       break
     }
     case 'folder': {
-      icon = Folder
+      icon = { Component: Folder }
       break
     }
     default: {
-      icon = DescriptionOutlined
+      icon = { Component: DescriptionOutlined, color: '#84B1ED' }
     }
   }
 
@@ -37,9 +41,13 @@ const DocumentCardList = (props: Props) => {
     <Grid container spacing={3} sx={{ marginTop: '0.5rem' }}>
       {items.map((item) => (
         <Grid key={item.id} item xs={12} md={6} lg={4}>
-          <Link to={`${type}/${item.id}`}>
-            <DocumentCard icon={icon} name={item.name} key={item.id} />
-          </Link>
+          {type === 'file' ? (
+            <FileCard icon={icon} name={item.name} />
+          ) : (
+            <Link to={`${type}/${item.id}`}>
+              <DocumentCard icon={icon} name={item.name} key={item.id} />
+            </Link>
+          )}
         </Grid>
       ))}
     </Grid>

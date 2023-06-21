@@ -87,8 +87,7 @@ export interface UpdateDepartment extends CreateDepartment {
 export interface CreateDocument {
   name: string
   description: string
-  status: string
-  numOfPage: number
+  numOfPages: number
   folder: {
     id: string
   }
@@ -142,4 +141,24 @@ export interface UpdateRoom {
   id: string
   name: string
   capacity: number
+}
+
+export interface ImportRequest {
+  document: {
+    name: string
+    description: string
+    numOfPages: number
+    folder: {
+      id: string
+    }
+    category: {
+      id: string
+    }
+  }
+  description: string
+}
+
+export interface Reject {
+  id: string
+  rejectedReason: string
 }

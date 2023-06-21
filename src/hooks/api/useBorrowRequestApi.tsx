@@ -1,4 +1,4 @@
-import { BorrowRequest } from '~/global/interface'
+import { BorrowRequest, Reject } from '~/global/interface'
 import useApi from './useApi'
 import React from 'react'
 
@@ -20,7 +20,7 @@ const useBorrowRequestApi = () => {
   )
   // ? API undone
   const getBorrowRequestsAll = React.useCallback(
-    async (status: string, documentId: string, take?: number, page?: number) => {
+    async (status: string, documentId?: string, take?: number, page?: number) => {
       const endpoint = `/${rootEndpoint}?status=${status}&documentId=${documentId}&take=${take}&page=${page}`
       try {
         const response = await callApi('get', endpoint)
@@ -70,15 +70,18 @@ const useBorrowRequestApi = () => {
     [callApi]
   )
 
-  const rejectBorrowRequest = React.useCallback(async () => {
-    const endpoint = `/${rootEndpoint}/reject`
-    try {
-      const response = await callApi('post', endpoint)
-      return response
-    } catch (error) {
-      console.log(error)
-    }
-  }, [callApi])
+  const rejectBorrowRequest = React.useCallback(
+    async (data: Reject) => {
+      const endpoint = `/${rootEndpoint}/reject`
+      try {
+        const response = await callApi('post', endpoint, {}, {}, data)
+        return response
+      } catch (error) {
+        console.log(error)
+      }
+    },
+    [callApi]
+  )
 
   const cancelBorrowRequest = React.useCallback(
     async (borrowRequestId: string) => {

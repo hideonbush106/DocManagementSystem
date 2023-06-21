@@ -78,25 +78,28 @@ const ImportDocument = (props: ImportDocumentProps) => {
     }
   })
 
-  const departmentHandleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    getAllCategories(event.target.value).then((res) => {
-      setCategories(res.data)
-    })
-    getRoomsInDepartment(event.target.value).then((res) => {
-      setRooms(res.data)
-    })
+  const departmentHandleChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    setCategories([])
+    setRooms([])
+    setLockers([])
+    setFolders([])
+    const categories = await getAllCategories(event.target.value)
+    setCategories(categories.data)
+    const rooms = await getRoomsInDepartment(event.target.value)
+    setRooms(rooms.data)
   }
 
-  const roomHandleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    getLockerInRoom(event.target.value).then((res) => {
-      setLockers(res.data)
-    })
+  const roomHandleChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    setLockers([])
+    setFolders([])
+    const lockers = await getLockerInRoom(event.target.value)
+    setLockers(lockers.data)
   }
 
-  const lockerHandleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    getFoldersInLocker(event.target.value).then((res) => {
-      setFolders(res.data)
-    })
+  const lockerHandleChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    setFolders([])
+    const folder = await getFoldersInLocker(event.target.value)
+    setFolders(folder.data)
   }
 
   const handleExport = () => {
@@ -111,9 +114,11 @@ const ImportDocument = (props: ImportDocumentProps) => {
   }
 
   useEffect(() => {
-    getAllDepartments().then((res) => {
-      setDepartments(res.data)
-    })
+    const asyncFunc = async () => {
+      const departments = await getAllDepartments()
+      setDepartments(departments.data)
+    }
+    asyncFunc()
   }, [getAllDepartments])
 
   return (

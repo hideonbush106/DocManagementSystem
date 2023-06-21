@@ -12,6 +12,7 @@ import useFolderApi from '~/hooks/api/useFolderApi'
 import * as yup from 'yup'
 import useDocumentApi from '~/hooks/api/useDocumentApi'
 import Barcode from 'react-barcode'
+import { notifySuccess } from '~/global/toastify'
 
 interface ImportDocumentProps {
   handleClose: () => void
@@ -68,15 +69,11 @@ const ImportDocument = (props: ImportDocumentProps) => {
       values.name = values.name.trim().replace(/\s\s+/g, ' ')
       values.description = values.description.trim().replace(/\s\s+/g, ' ')
       createDocument(values).then((res) => {
-        console.log(res)
-        console.log(files)
         setBarcode(res.data.barcode)
         if (files.length > 0) {
-          uploadDocumentPdf(res.data.id, files).then((res) => {
-            console.log(res)
-          })
+          uploadDocumentPdf(res.data.id, files)
         }
-        console.log(values)
+        notifySuccess('Import document successfully')
       })
     }
   })
@@ -378,8 +375,8 @@ const ImportDocument = (props: ImportDocumentProps) => {
             </Button>
           )}
 
-          <Button sx={{ my: 1 }} color='error' onClick={props.handleClose}>
-            Cancel
+          <Button sx={{ my: 1 }} color='error' variant='outlined' onClick={props.handleClose}>
+            {barcode ? 'Close' : 'Cancel'}
           </Button>
         </Box>
       </form>

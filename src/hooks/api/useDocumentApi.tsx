@@ -86,7 +86,30 @@ const useDocumentApi = () => {
     [callApi]
   )
 
-  return { getDocumentsInFolder, getDocument, getDocumentBarcode, createDocument, uploadDocumentPdf, confirmDocument }
+  const getPendingDocuments = React.useCallback(
+    async (take: number, page: number, keyword?: string, folderId?: string) => {
+      let endpoint = `/${rootEndpoint}/pending?take=${take}&page=${page + 1}`
+      if (keyword) endpoint += `&keyword=${keyword}`
+      if (folderId) endpoint += `&folderId=${folderId}`
+      try {
+        const response = await callApi('get', endpoint)
+        return response
+      } catch (error) {
+        console.log(error)
+      }
+    },
+    [callApi]
+  )
+
+  return {
+    getDocumentsInFolder,
+    getDocument,
+    getDocumentBarcode,
+    createDocument,
+    uploadDocumentPdf,
+    confirmDocument,
+    getPendingDocuments
+  }
 }
 
 export default useDocumentApi

@@ -35,7 +35,7 @@ function LinkTab(props: LinkTabProps) {
 }
 
 interface NavTabsProps {
-  tabs: { label: string; component: React.ReactNode; icon: SvgIconComponent }[]
+  tabs: { label: string; component: React.ReactNode; icon?: SvgIconComponent }[]
 }
 
 const NavTabs = ({ tabs }: NavTabsProps) => {

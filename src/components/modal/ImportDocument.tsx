@@ -35,8 +35,8 @@ const ImportDocument = (props: ImportDocumentProps) => {
   const componentRef = useRef<HTMLDivElement>(null)
 
   const validationSchema = yup.object({
-    name: yup.string().required('Document name is required'),
-    description: yup.string().required('Description is required'),
+    name: yup.string().required('Document name is required').trim(),
+    description: yup.string().required('Description is required').trim(),
     numOfPages: yup
       .number()
       .integer('Number of pages must be an integer')

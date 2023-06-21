@@ -108,7 +108,7 @@ const AuthProvider = ({ children }: Props) => {
         name: `${data.firstName} ${data.lastName}`,
         email: data.email,
         phone: data.phone,
-        photoUrl: data.photoUrl,
+        photoUrl: data.photoURL,
         role: data.role.name,
         department: data.department.name
       }

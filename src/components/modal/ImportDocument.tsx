@@ -1,14 +1,19 @@
 import { CreateNewFolderOutlined } from '@mui/icons-material'
 import { Box, Button, FormControl, MenuItem, TextField, Typography } from '@mui/material'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import FileUpload from 'react-material-file-upload'
 import { useFormik } from 'formik'
 import useDepartmentApi from '~/hooks/api/useDepartmentApi'
-import { Categories, Department, Folder, Room } from '~/global/interface'
+import { Categories, CreateDocument, Department, Folder, Locker, Room } from '~/global/interface'
 import useCategoryApi from '~/hooks/api/useCategoryApi'
 import useRoomApi from '~/hooks/api/useRoomApi'
 import useLockerApi from '~/hooks/api/useLockerApi'
 import useFolderApi from '~/hooks/api/useFolderApi'
+import * as yup from 'yup'
+import useDocumentApi from '~/hooks/api/useDocumentApi'
+import Barcode from 'react-barcode'
+import { notifySuccess } from '~/global/toastify'
+
 interface ImportDocumentProps {
   handleClose: () => void
 }
@@ -18,33 +23,63 @@ const ImportDocument = (props: ImportDocumentProps) => {
   const [departments, setDepartments] = useState<Department[]>([])
   const [categories, setCategories] = useState<Categories[]>([])
   const [rooms, setRooms] = useState<Room[]>([])
-  const [lockers, setLockers] = useState<Room[]>([])
+  const [lockers, setLockers] = useState<Locker[]>([])
   const [folders, setFolders] = useState<Folder[]>([])
+  const [barcode, setBarcode] = useState<string>('')
+  const { createDocument, uploadDocumentPdf } = useDocumentApi()
   const { getAllDepartments } = useDepartmentApi()
-  const { getCategories } = useCategoryApi()
+  const { getAllCategories } = useCategoryApi()
   const { getRoomsInDepartment } = useRoomApi()
   const { getLockerInRoom } = useLockerApi()
   const { getFoldersInLocker } = useFolderApi()
+
+  const componentRef = useRef<HTMLDivElement>(null)
+
+  const validationSchema = yup.object({
+    name: yup.string().required('Document name is required').trim(),
+    description: yup.string().required('Description is required').trim(),
+    numOfPages: yup
+      .number()
+      .integer('Number of pages must be an integer')
+      .min(1, 'Number of pages must be greater than 0')
+      .max(500000, 'Number of pages must be less than 500000')
+      .required('Number of pages is required'),
+    folder: yup.object({
+      id: yup.string().required('Folder is required')
+    }),
+    category: yup.object({
+      id: yup.string().required('Category is required')
+    })
+  })
+
   const formik = useFormik({
     initialValues: {
-      name: 'Lorem Ipsum',
-      description: 'Lorem Ipsum',
+      name: '',
+      description: '',
       numOfPages: 1,
       folder: {
-        id: 'Lorem Ipsum'
+        id: ''
       },
       category: {
-        id: 'Lorem Ipsum'
+        id: ''
       }
     },
-    onSubmit: (values) => {
-      console.log(values)
+    validationSchema: validationSchema,
+    onSubmit: (values: CreateDocument) => {
+      values.name = values.name.trim().replace(/\s\s+/g, ' ')
+      values.description = values.description.trim().replace(/\s\s+/g, ' ')
+      createDocument(values).then((res) => {
+        setBarcode(res.data.barcode)
+        if (files.length > 0) {
+          uploadDocumentPdf(res.data.id, files)
+        }
+        notifySuccess('Import document successfully')
+      })
     }
   })
 
   const departmentHandleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    //TODO: will fix to getAllCategories
-    getCategories(event.target.value).then((res) => {
+    getAllCategories(event.target.value).then((res) => {
       setCategories(res.data)
     })
     getRoomsInDepartment(event.target.value).then((res) => {
@@ -62,6 +97,17 @@ const ImportDocument = (props: ImportDocumentProps) => {
     getFoldersInLocker(event.target.value).then((res) => {
       setFolders(res.data)
     })
+  }
+
+  const handleExport = () => {
+    const printWindow = window.open('')
+    if (componentRef.current && printWindow) {
+      const componentHTML = componentRef.current.innerHTML
+      printWindow.document.open()
+      printWindow.document.write(`${componentHTML}`)
+      printWindow.document.close()
+      printWindow.print()
+    }
   }
 
   useEffect(() => {
@@ -119,17 +165,18 @@ const ImportDocument = (props: ImportDocumentProps) => {
             Document Information
           </Typography>
           <TextField
-            required
             sx={{ my: 1 }}
             value={formik.values.name}
-            label='File name'
+            label='Document name'
             name='name'
             variant='standard'
             fullWidth
             onChange={formik.handleChange}
+            error={Boolean(formik.errors.name)}
+            helperText={formik.errors.name}
+            required
           />
           <TextField
-            required
             sx={{ my: 1 }}
             label='Number of pages'
             value={formik.values.numOfPages}
@@ -138,9 +185,11 @@ const ImportDocument = (props: ImportDocumentProps) => {
             variant='standard'
             fullWidth
             onChange={formik.handleChange}
+            error={Boolean(formik.errors.numOfPages)}
+            helperText={formik.errors.numOfPages}
+            required
           />
           <TextField
-            required
             sx={{ my: 1 }}
             label='Description'
             value={formik.values.description}
@@ -150,6 +199,9 @@ const ImportDocument = (props: ImportDocumentProps) => {
             onChange={formik.handleChange}
             multiline
             maxRows={4}
+            error={Boolean(formik.errors.description)}
+            helperText={formik.errors.description}
+            required
           />
           <Box display={'flex'} sx={{ width: '100%', justifyContent: 'space-between', flexWrap: 'wrap' }}>
             <TextField
@@ -164,6 +216,7 @@ const ImportDocument = (props: ImportDocumentProps) => {
               select
               label='Department'
               variant='standard'
+              required
             >
               {departments.map((dept) => (
                 <MenuItem key={dept.id} value={dept.id}>
@@ -185,7 +238,8 @@ const ImportDocument = (props: ImportDocumentProps) => {
               label='Category Type'
               variant='standard'
               name='category.id'
-              defaultValue={''}
+              required
+              disabled={categories.length === 0}
             >
               {categories.map((cate) => (
                 <MenuItem key={cate.id} value={cate.id}>
@@ -221,6 +275,8 @@ const ImportDocument = (props: ImportDocumentProps) => {
               select
               label='Room'
               variant='standard'
+              required
+              disabled={rooms.length === 0}
             >
               {rooms.map((room) => (
                 <MenuItem key={room.id} value={room.id}>
@@ -240,6 +296,8 @@ const ImportDocument = (props: ImportDocumentProps) => {
               select
               label='Locker'
               variant='standard'
+              required
+              disabled={lockers.length === 0}
             >
               {lockers.map((locker) => (
                 <MenuItem key={locker.id} value={locker.id}>
@@ -261,6 +319,8 @@ const ImportDocument = (props: ImportDocumentProps) => {
               select
               label='Folder'
               variant='standard'
+              required
+              disabled={folders.length === 0}
             >
               {folders.map((folder) => (
                 <MenuItem key={folder.id} value={folder.id}>
@@ -280,9 +340,16 @@ const ImportDocument = (props: ImportDocumentProps) => {
               }}
               value={files}
               onChange={setFiles}
+              maxFiles={1}
+              accept='application/pdf'
               title={`Drag 'n' drop some files here, or click to select files`}
             />
           </Box>
+          {barcode ? (
+            <Box ref={componentRef} id='barcode' display={'flex'} sx={{ justifyContent: 'center', width: '100%' }}>
+              <Barcode format='CODE128' value={barcode} />
+            </Box>
+          ) : null}
         </FormControl>
 
         <Box
@@ -298,11 +365,18 @@ const ImportDocument = (props: ImportDocumentProps) => {
             boxShadow: 'rgba(100, 100, 111, 0.2) 0px 7px 29px 0px'
           }}
         >
-          <Button sx={{ my: 1, mr: 1 }} variant='contained' color='primary' type='submit'>
-            Submit
-          </Button>
-          <Button sx={{ my: 1 }} color='error' onClick={props.handleClose}>
-            Cancel
+          {barcode ? (
+            <Button sx={{ my: 1, mr: 1 }} variant='contained' color='primary' onClick={handleExport}>
+              Export
+            </Button>
+          ) : (
+            <Button sx={{ my: 1, mr: 1 }} variant='contained' color='primary' type='submit'>
+              Submit
+            </Button>
+          )}
+
+          <Button sx={{ my: 1 }} color='error' variant='outlined' onClick={props.handleClose}>
+            {barcode ? 'Close' : 'Cancel'}
           </Button>
         </Box>
       </form>

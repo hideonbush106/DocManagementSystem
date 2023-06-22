@@ -46,7 +46,7 @@ const ApprovalsTable: React.FC<ApprovalsTableProps> = ({ view }) => {
 
   useEffect(() => {
     fetchData()
-  })
+  }, [])
 
   const handleClose = () => {
     setOpen(false)

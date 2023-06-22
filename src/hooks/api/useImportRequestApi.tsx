@@ -1,6 +1,6 @@
 import React from 'react'
 import useApi from './useApi'
-import { ImportRequest, RejectImportRequest } from '~/global/interface'
+import { ImportRequest, Reject } from '~/global/interface'
 
 const useImportRequestApi = () => {
   const callApi = useApi()
@@ -72,7 +72,7 @@ const useImportRequestApi = () => {
   )
 
   const rejectImportRequest = React.useCallback(
-    async (data: RejectImportRequest) => {
+    async (data: Reject) => {
       const endpoint = `/${rootEndpoint}/reject`
       try {
         const response = await callApi('put', endpoint, {}, {}, data)

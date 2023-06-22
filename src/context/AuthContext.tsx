@@ -105,6 +105,7 @@ const AuthProvider = ({ children }: Props) => {
       setLoading(true)
       const token = await userCredential.user.getIdToken()
       const info = await getUserInfo(userCredential.user, token)
+      console.log(token)
       if (info) {
         setUser(userCredential.user)
         setUserInfo(info)

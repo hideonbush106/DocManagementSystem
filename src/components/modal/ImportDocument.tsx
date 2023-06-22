@@ -118,11 +118,11 @@ const ImportDocument = (props: ImportDocumentProps) => {
   }
 
   useEffect(() => {
-    const asyncFunc = async () => {
+    const fetchData = async () => {
       const departments = await getAllDepartments()
       setDepartments(departments.data)
     }
-    asyncFunc()
+    fetchData()
   }, [getAllDepartments])
 
   return (

@@ -104,6 +104,7 @@ const AuthProvider = ({ children }: Props) => {
       const userCredential = await signInWithPopup(auth, provider)
       setLoading(true)
       const token = await userCredential.user.getIdToken()
+      console.log(token)
       const info = await getUserInfo(userCredential.user, token)
       if (info) {
         setUser(userCredential.user)

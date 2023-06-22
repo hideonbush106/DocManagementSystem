@@ -8,7 +8,7 @@ import CloseRoundedIcon from '@mui/icons-material/CloseRounded'
 import ModalLayout from '../modal/ModalLayout'
 import ImportDocument from '../modal/ImportDocument'
 import { useState } from 'react'
-import UpdateDepartmentModal from '../modal/UpdateDepartment'
+import UpdateDepartmentModal from '../modal/advanced/UpdateDepartment'
 import { UpdateDepartment } from '~/global/interface'
 interface ButtonProps {
   text: string

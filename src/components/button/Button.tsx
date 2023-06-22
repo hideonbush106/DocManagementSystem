@@ -8,10 +8,13 @@ import CloseRoundedIcon from '@mui/icons-material/CloseRounded'
 import ModalLayout from '../modal/ModalLayout'
 import ImportDocument from '../modal/ImportDocument'
 import { useState } from 'react'
-import UpdateDepartment from '../modal/UpdateDepartment'
+import UpdateDepartmentModal from '../modal/UpdateDepartment'
+import { UpdateDepartment } from '~/global/interface'
 interface ButtonProps {
   text: string
   prop?: { id: string; name: string }
+  handleClose?: () => void
+  onSubmit?: (values: UpdateDepartment) => void
   onClick?: () => void
 }
 
@@ -135,13 +138,8 @@ export const RejectButton = ({ text, onClick }: ButtonProps) => {
   )
 }
 
-export const UpdateButton = ({ text, prop }: ButtonProps) => {
+export const UpdateButton = ({ text, prop, onSubmit, handleClose }: ButtonProps) => {
   //advanced button
-  const [_open, setOpen] = useState(false)
-
-  const handleClose = () => {
-    setOpen(false)
-  }
   return (
     <ModalLayout
       variant='outlined'
@@ -160,7 +158,7 @@ export const UpdateButton = ({ text, prop }: ButtonProps) => {
       }}
       button={text}
     >
-      <UpdateDepartment handleClose={handleClose} prop={prop} />
+      <UpdateDepartmentModal handleClose={handleClose} prop={prop} onSubmit={onSubmit} />
     </ModalLayout>
   )
 }

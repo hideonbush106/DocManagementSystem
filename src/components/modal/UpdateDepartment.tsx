@@ -1,22 +1,17 @@
 import { Box, Button, FormControl, TextField, Typography } from '@mui/material'
 import { useFormik } from 'formik'
-import React from 'react'
 import * as yup from 'yup'
 import { UpdateDepartment } from '~/global/interface'
-import { notifySuccess } from '~/global/toastify'
-import useDepartmentApi from '~/hooks/api/useDepartmentApi'
 
 interface UpdateDepartmentProps {
-  handleClose: () => void
+  handleClose?: () => void
+  onSubmit?: (values: UpdateDepartment) => void
   prop?: { id: string; name: string }
 }
 
 const UpdateDepartmentModal = (props: UpdateDepartmentProps) => {
-  const { updateDepartment } = useDepartmentApi()
-  const [response, setResponse] = React.useState({ message: '', data: false })
-
   const validationSchema = yup.object({
-    name: yup.string().required('Department name is required').trim()
+    name: yup.string().trim().required('Department name is required')
   })
 
   const formik = useFormik({
@@ -27,9 +22,7 @@ const UpdateDepartmentModal = (props: UpdateDepartmentProps) => {
     validationSchema: validationSchema,
     onSubmit: (values: UpdateDepartment) => {
       values.name = values.name.trim().replace(/\s\s+/g, ' ')
-      updateDepartment(values).then((res) => {
-        setResponse({ message: res.message, data: res.data })
-      })
+      props.onSubmit?.(values)
     }
   })
 
@@ -65,9 +58,8 @@ const UpdateDepartmentModal = (props: UpdateDepartmentProps) => {
         </Typography>
       </Box>
       <form action='POST' onSubmit={formik.handleSubmit}>
-        <FormControl sx={{ width: '100%', px: 4, py: 2 }}>
+        <FormControl sx={{ width: '100%', height: '100px', px: 4, py: 2 }}>
           <TextField
-            required
             sx={{
               my: 1
             }}
@@ -76,8 +68,9 @@ const UpdateDepartmentModal = (props: UpdateDepartmentProps) => {
             onChange={formik.handleChange}
             value={formik.values.name}
             placeholder={props.prop?.name}
+            error={Boolean(formik.errors.name)}
+            helperText={formik.errors.name}
             fullWidth
-            disabled={response.data ? true : false}
           />
         </FormControl>
         <Box
@@ -92,26 +85,12 @@ const UpdateDepartmentModal = (props: UpdateDepartmentProps) => {
             width: '100%'
           }}
         >
-          {response.data ? (
-            <Typography
-              variant='subtitle1'
-              sx={{ width: '100%', textAlign: 'left', my: 'auto', color: 'var(--green-color)' }}
-            >
-              {'* ' + response.message}
-            </Typography>
-          ) : (
-            <Button sx={{ my: 1, mr: 1 }} variant='contained' color='primary' type='submit'>
-              Update
-            </Button>
-          )}
+          <Button sx={{ my: 1, mr: 1 }} variant='contained' color='primary' type='submit'>
+            Update
+          </Button>
 
-          <Button
-            sx={{ my: 1 }}
-            variant={response.data ? 'contained' : 'text'}
-            onClick={props.handleClose}
-            color={response.data ? 'primary' : 'error'}
-          >
-            {response.data ? 'Return' : 'Cancel'}
+          <Button sx={{ my: 1 }} onClick={props.handleClose} color={'error'}>
+            Cancel
           </Button>
         </Box>
       </form>

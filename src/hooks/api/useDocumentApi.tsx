@@ -46,12 +46,15 @@ const useDocumentApi = () => {
   )
   //Todo: fix this
   const uploadDocumentPdf = React.useCallback(
-    async (documentId: string, data: CreateDocument, token: string) => {
+    async (documentId: string, file: File[]) => {
       const endpoint = `/${rootEndpoint}/upload/${documentId}`
-      const headers = { Authentication: token, 'Content-Type': 'multipart/form-data' }
-
+      const formData = new FormData()
+      formData.append('file', file[0], file[0].name)
+      const header = {
+        'Content-Type': 'multipart/form-data'
+      }
       try {
-        const response = await callApi('post', endpoint, headers, {}, data)
+        const response = await callApi('post', endpoint, header, {}, formData)
         return response
       } catch (error) {
         console.log(error)

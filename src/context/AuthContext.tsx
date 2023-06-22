@@ -1,11 +1,17 @@
-import { AxiosError } from 'axios'
+// react
+import React, { ReactNode } from 'react'
+import { useNavigate } from 'react-router-dom'
+// firebase
+import { auth, provider } from '~/global/firebase'
 import { FirebaseError } from 'firebase/app'
 import { signInWithPopup, signOut, User } from 'firebase/auth'
-import React, { ReactNode, useEffect } from 'react'
-import { useLocation, useNavigate } from 'react-router-dom'
-import { auth, provider } from '~/global/firebase'
+// components
+import Loading from '~/components/loading/Loading'
+// function
 import { notifyError, notifySuccess } from '~/global/toastify'
 import { get } from '~/utils/apicaller'
+// class
+import { AxiosError } from 'axios'
 
 interface UserInfo {
   id: string
@@ -19,12 +25,9 @@ interface UserInfo {
 }
 
 export type AuthContextType = {
-  user: UserInfo | null
-  loading: boolean
+  user: UserInfo | undefined
   login: () => Promise<void>
-  logout: () => Promise<void>
-  accessToken: string | null
-  refreshAccessToken: () => Promise<void>
+  logout: () => Promise<boolean>
 }
 
 export const AuthContext = React.createContext<AuthContextType | null>(null)
@@ -34,53 +37,70 @@ interface Props {
 }
 
 const AuthProvider = ({ children }: Props) => {
-  const [user, setUser] = React.useState<User | null>(null)
-  const [userInfo, setUserInfo] = React.useState<UserInfo | null>(null)
-  const [idToken, setIdToken] = React.useState<string | null>(null)
+  const [user, setUser] = React.useState<UserInfo | undefined>()
+  const [firebaseUser, setFirebaseUser] = React.useState<User | null>(null)
   const [loading, setLoading] = React.useState(true)
   const navigate = useNavigate()
-  const location = useLocation()
 
-  const handleError = async (user: User, error: unknown) => {
-    if (error instanceof AxiosError) {
-      console.log(error)
-      const errorDetails = error.response?.data.details
-      switch (errorDetails) {
-        case 'Access denied': {
-          await logout()
-          notifyError('Account is not allowed to access the system')
-          break
-        }
-        case 'Token revoked': {
-          await logout()
-          notifyError('Session time out. Please login again')
-          break
-        }
-        case 'Token expired': {
-          const newToken = await user.getIdToken()
-          setIdToken(newToken)
-          break
-        }
-        default:
-          notifyError('Something went wrong')
-      }
-    }
-  }
-
-  const sendUserActivity = async (user: User, token: string): Promise<boolean> => {
-    // check account in database
+  const logout = React.useCallback(async () => {
     try {
-      await get('/users/login', {}, { Authentication: token, accept: 'application/json' })
+      await signOut(auth)
+      localStorage.clear()
+      setUser(undefined)
+      setFirebaseUser(null)
       return true
     } catch (error) {
       console.log(error)
-      handleError(user, error)
+      notifyError('Fail to logout')
       return false
     }
-  }
+  }, [])
 
-  const getUserInfo = async (user: User, token: string): Promise<UserInfo | null> => {
+  const refreshToken = React.useCallback(async () => {
+    if (firebaseUser) {
+      try {
+        const token = await firebaseUser.getIdToken(true)
+        localStorage.setItem('idToken', token)
+      } catch (error) {
+        console.log(error)
+      }
+    }
+  }, [firebaseUser])
+
+  const handleError = React.useCallback(
+    async (error: unknown) => {
+      let message = ''
+      if (error instanceof AxiosError) {
+        const errorDetails = error.response?.data.details
+        switch (errorDetails) {
+          case 'Access denied': {
+            const status = await logout()
+            if (status) message = 'Account is not allowed to access the system'
+            break
+          }
+          case 'Session expired': {
+            const status = await logout()
+            if (status) message = 'Session expired. Please login again'
+            break
+          }
+          case 'Invalid token': {
+            await logout()
+            break
+          }
+          default:
+            message = 'Something went wrong'
+        }
+      }
+      if (message) {
+        notifyError(message)
+      }
+    },
+    [logout]
+  )
+
+  const getUserInfo = React.useCallback(async () => {
     try {
+      const token = localStorage.getItem('idToken')
       const { data } = await get('/users/own', {}, { Authentication: token, accept: 'application/json' })
       return {
         id: data.id,
@@ -88,28 +108,27 @@ const AuthProvider = ({ children }: Props) => {
         name: `${data.firstName} ${data.lastName}`,
         email: data.email,
         phone: data.phone,
-        photoUrl: user.photoURL,
+        photoUrl: data.photoURL,
         role: data.role.name,
         department: data.department.name
       }
     } catch (error) {
       console.log(error)
-      handleError(user, error)
-      return null
+      handleError(error)
     }
-  }
+  }, [handleError])
 
-  const login = async () => {
+  const login = React.useCallback(async () => {
     try {
       const userCredential = await signInWithPopup(auth, provider)
-      setLoading(true)
       const token = await userCredential.user.getIdToken()
-      console.log(token)
-      const info = await getUserInfo(userCredential.user, token)
-      if (info) {
-        setUser(userCredential.user)
-        setUserInfo(info)
-        setIdToken(token)
+      localStorage.setItem('idToken', token)
+      setLoading(true)
+      const login = await get('/users/login', {}, { Authentication: token, accept: 'application/json' })
+      if (login) {
+        const userInfo = await getUserInfo()
+        setUser(userInfo)
+        setFirebaseUser(userCredential.user)
         notifySuccess('Login successfully')
       }
       setLoading(false)
@@ -120,81 +139,47 @@ const AuthProvider = ({ children }: Props) => {
           notifyError('Login failed')
       }
     }
-  }
+  }, [getUserInfo])
 
-  const logout = async () => {
-    try {
-      await signOut(auth)
-      setUser(null)
-      setUserInfo(null)
-      setIdToken(null)
-    } catch (error) {
-      console.log(error)
-    }
-  }
-
-  const refreshAccessToken = async () => {
-    if (user) {
-      const newIdToken = await user.getIdToken(true)
-      setIdToken(newIdToken)
-    }
-  }
-
-  // get user state when app start
-  useEffect(() => {
+  React.useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged(async (user) => {
       if (user) {
-        const token = await user.getIdToken()
-        const info = await getUserInfo(user, token)
-        if (info) {
-          setUserInfo(info)
-          setUser(user)
-          setIdToken(token)
+        const userInfo = await getUserInfo()
+        if (userInfo) {
+          setUser(userInfo)
+          setFirebaseUser(user)
         }
       }
       setLoading(false)
     })
     unsubscribe()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [getUserInfo])
+
+  React.useEffect(() => {
+    if (!loading && !user) navigate('/')
+  }, [loading, navigate, user])
 
   // refresh access token before expire
-  useEffect(() => {
-    if (!loading && user) {
+  React.useEffect(() => {
+    if (!loading && firebaseUser) {
       let idTimeout: NodeJS.Timeout
-      user.getIdTokenResult().then(({ expirationTime }) => {
+      firebaseUser.getIdTokenResult().then(({ expirationTime }) => {
         const expireIn = Date.parse(expirationTime) - Date.now() - 5 * 60 * 1000 // 5 minutes before expire
         idTimeout = setTimeout(async () => {
-          await refreshAccessToken()
+          await refreshToken()
         }, expireIn)
       })
       return () => clearInterval(idTimeout)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user, idToken])
+  }, [firebaseUser, loading, refreshToken])
 
-  // redirect to dashboard if user is logged in
-  useEffect(() => {
-    if (!loading) !user && navigate('/')
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [loading, user])
-
-  // send user activity when route change
-  useEffect(() => {
-    if (!loading && user && idToken) sendUserActivity(user, idToken)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [location.pathname])
-
-  const value = {
-    user: userInfo,
-    loading,
+  const value: AuthContextType = {
+    user: user,
     login,
-    logout,
-    accessToken: idToken,
-    refreshAccessToken
+    logout
   }
 
-  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
+  return !loading ? <AuthContext.Provider value={value}>{children}</AuthContext.Provider> : <Loading />
 }
 
 export default AuthProvider

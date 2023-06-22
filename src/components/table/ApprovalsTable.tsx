@@ -38,7 +38,6 @@ const ApprovalsTable: React.FC<ApprovalsTableProps> = ({ view }) => {
   }
 
   const handlePaginationModelChange = (newPaginationModel: PaginationModel) => {
-    console.log(newPaginationModel)
     setIsLoading(true)
     setData([])
     setPaginationModel(newPaginationModel)

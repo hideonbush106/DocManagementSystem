@@ -1,17 +1,11 @@
 import { Apartment } from '@mui/icons-material'
-import { Button, List, ListItemButton, ListItemIcon, ListItemText, Skeleton } from '@mui/material'
-import EditRoundedIcon from '@mui/icons-material/EditRounded'
-import CloseRoundedIcon from '@mui/icons-material/CloseRounded'
+import { List, ListItemButton, ListItemIcon, ListItemText, Skeleton } from '@mui/material'
 import AddRoundedIcon from '@mui/icons-material/AddRounded'
 import React, { useEffect, useState } from 'react'
 import { Department } from '~/global/interface'
 import useDepartmentApi from '~/hooks/api/useDepartmentApi'
 import { fakeArray } from '~/utils/fakeArray'
-
-const button = [
-  { name: 'Update', icon: EditRoundedIcon, color: 'var(--primary-color)' },
-  { name: 'Remove', icon: CloseRoundedIcon, color: 'var(--red-color)' }
-]
+import { RejectButton, UpdateButton } from '~/components/button/Button'
 
 const DepartmentAdvanced = () => {
   const [departments, setDepartments] = useState<Department[]>([])
@@ -39,27 +33,8 @@ const DepartmentAdvanced = () => {
                   primary={dept.name}
                   primaryTypographyProps={{ fontFamily: 'inherit', color: 'var(--black-color)' }}
                 />
-                {button.map((btn) => (
-                  <Button
-                    key={btn.name}
-                    startIcon={React.createElement(btn.icon)}
-                    size='small'
-                    style={{
-                      width: 110,
-                      margin: '0 10px',
-                      padding: '7px 10px',
-                      fontWeight: 600,
-                      fontSize: 12,
-                      color: `${btn.color}`,
-                      borderColor: `${btn.color}`,
-                      fontFamily: 'inherit',
-                      textTransform: 'none'
-                    }}
-                    variant='outlined'
-                  >
-                    {btn.name}
-                  </Button>
-                ))}
+                <UpdateButton text={'Update'} prop={dept} />
+                <RejectButton text={'Remove'} />
               </ListItemButton>
             ))}
             <ListItemButton sx={{ paddingLeft: '5rem', paddingRight: '5rem', height: '53px' }}>

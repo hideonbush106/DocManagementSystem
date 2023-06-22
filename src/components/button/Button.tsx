@@ -3,12 +3,15 @@ import { Button } from '@mui/material'
 import AddRoundedIcon from '@mui/icons-material/AddRounded'
 import KeyboardReturnRoundedIcon from '@mui/icons-material/KeyboardReturnRounded'
 import DoneRoundedIcon from '@mui/icons-material/DoneRounded'
+import EditRoundedIcon from '@mui/icons-material/EditRounded'
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded'
 import ModalLayout from '../modal/ModalLayout'
 import ImportDocument from '../modal/ImportDocument'
 import { useState } from 'react'
+import UpdateDepartment from '../modal/UpdateDepartment'
 interface ButtonProps {
   text: string
+  prop?: { id: string; name: string }
   onClick?: () => void
 }
 
@@ -129,5 +132,35 @@ export const RejectButton = ({ text, onClick }: ButtonProps) => {
     >
       {text}
     </Button>
+  )
+}
+
+export const UpdateButton = ({ text, prop }: ButtonProps) => {
+  //advanced button
+  const [_open, setOpen] = useState(false)
+
+  const handleClose = () => {
+    setOpen(false)
+  }
+  return (
+    <ModalLayout
+      variant='outlined'
+      startIcon={<EditRoundedIcon />}
+      style={{
+        color: 'var(--primary-color)',
+        border: '0.5px solid var(--primary-color)',
+        '&:hover': {
+          backgroundColor: 'var(--background-dark-color)',
+          borderColor: 'var(--primary-color)',
+          transition: '0.3 ease in out'
+        },
+        padding: '5px 10px',
+        fontSize: '12px',
+        marginRight: '10px'
+      }}
+      button={text}
+    >
+      <UpdateDepartment handleClose={handleClose} prop={prop} />
+    </ModalLayout>
   )
 }

@@ -12,12 +12,12 @@ const PrivateRoute = ({ Component }: Props) => {
   const route = privateRoutes.find((r) => r.component === Component)
   const title = route ? route.title : ''
 
-  return (
-    user && (
-      <Layout title={title}>
-        <Component />
-      </Layout>
-    )
+  return user ? (
+    <Layout title={title}>
+      <Component />
+    </Layout>
+  ) : (
+    <></>
   )
 }
 

@@ -5,29 +5,43 @@ import { notifyError } from '~/global/toastify'
 import React from 'react'
 
 const useApi = () => {
-  const { accessToken, logout, refreshAccessToken } = useAuth()
+  const { logout } = useAuth()
 
-  const handleError = async (error: unknown) => {
-    if (error instanceof AxiosError) {
-      console.log(error)
-      const errorDetails = error.response?.data.details
-      if (errorDetails === 'Access denied') {
-        await logout()
-        notifyError('Account is not allowed to access the system')
+  const handleError = React.useCallback(
+    async (error: unknown) => {
+      let message = ''
+      if (error instanceof AxiosError) {
+        console.log(error)
+        const errorDetails = error.response?.data.details
+        switch (errorDetails) {
+          case 'Access denied': {
+            const status = await logout()
+            if (status) message = 'Account is not allowed to access the system'
+            break
+          }
+          case 'Session expired': {
+            const status = await logout()
+            if (status) message = 'Session expired. Please login again'
+            break
+          }
+          case 'Invalid token': {
+            await logout()
+            break
+          }
+          case 'Not permitted': {
+            message = 'Account is not allowed to access the resource'
+            break
+          }
+          default:
+            throw error
+        }
       }
-      if (errorDetails === 'Not permitted') {
-        notifyError('Account is not allowed to access the resource')
+      if (message) {
+        notifyError(message)
       }
-      if (errorDetails === 'Token expired') {
-        await refreshAccessToken()
-      }
-      if (errorDetails === 'Token revoked') {
-        await logout()
-        notifyError('Session time out. Please login again')
-      }
-    }
-    throw error
-  }
+    },
+    [logout]
+  )
   /**
    * Function Documentation: `callApi`
    *
@@ -50,6 +64,7 @@ const useApi = () => {
       params: object = {},
       body: object = {}
     ) => {
+      const accessToken = localStorage.getItem('idToken')
       const headersDefault = { accept: 'application/json', Authentication: accessToken }
       Object.assign(headersDefault, headers)
       let response: AxiosResponse
@@ -77,8 +92,7 @@ const useApi = () => {
         handleError(error)
       }
     },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [accessToken]
+    [handleError]
   )
 
   return callApi

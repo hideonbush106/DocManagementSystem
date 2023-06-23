@@ -1,6 +1,10 @@
 import { styled as mstyled, Modal, Box, Typography, Button } from '@mui/material'
+import LoadingButton from '@mui/lab/LoadingButton'
 import dayjs from 'dayjs'
+import { useCallback, useEffect, useState } from 'react'
+import Barcode from 'react-barcode'
 import styled from 'styled-components'
+import useDocumentApi from '~/hooks/api/useDocumentApi'
 
 const TitleText = styled.span`
   font-weight: 600;
@@ -8,6 +12,11 @@ const TitleText = styled.span`
 
 const Text = mstyled(Typography)`
   padding: 5px 0;
+  font-size: {
+    xs: '0.8rem',
+    md: '1rem',
+    lg: '1.2rem'    
+  }
 `
 interface RequestModalProps {
   open: boolean
@@ -17,6 +26,10 @@ interface RequestModalProps {
 }
 
 const DetailRequestModal = ({ open, handleClose, selectedRequest }: RequestModalProps) => {
+  const [valueBarcode, setValueBarcode] = useState('')
+  const { getDocumentBarcode } = useDocumentApi()
+  const [loading, setLoading] = useState(true)
+
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'PENDING':
@@ -32,6 +45,26 @@ const DetailRequestModal = ({ open, handleClose, selectedRequest }: RequestModal
   const handleViewPdf = () => {
     window.open(selectedRequest.document.storageUrl)
   }
+
+  const getValueBarcode = useCallback(async () => {
+    if (selectedRequest) {
+      try {
+        const response = await getDocumentBarcode(selectedRequest.document.id)
+        if (response && response.data.barcode) {
+          setValueBarcode(response.data.barcode)
+        }
+      } catch (error) {
+        console.log(error)
+      } finally {
+        setLoading(false)
+      }
+    }
+  }, [getDocumentBarcode, selectedRequest])
+
+  useEffect(() => {
+    getValueBarcode()
+  }, [getValueBarcode, selectedRequest, loading])
+
   return (
     <Modal open={open} onClose={handleClose} closeAfterTransition>
       <Box
@@ -41,7 +74,11 @@ const DetailRequestModal = ({ open, handleClose, selectedRequest }: RequestModal
           top: '50%',
           left: '50%',
           transform: 'translate(-50%, -50%)',
-          width: 500,
+          width: {
+            xs: '65vw',
+            md: '45vw',
+            lg: '32vw'
+          },
           height: 'fit-content',
           bgcolor: 'background.paper',
           boxShadow: 24,
@@ -87,13 +124,46 @@ const DetailRequestModal = ({ open, handleClose, selectedRequest }: RequestModal
               <TitleText>Status: </TitleText>
               <span style={{ color: getStatusColor(selectedRequest.status) }}>{selectedRequest.status}</span>
             </Text>
-            <div style={{ display: 'flex', justifyContent: 'center', width: '450px', margin: '20px 0 0' }}>
+            {selectedRequest.status === 'APPROVED' && (
+              <>
+                {loading ? (
+                  <LoadingButton
+                    variant='text'
+                    loading={loading}
+                    sx={{
+                      display: 'flex',
+                      justifyContent: 'center',
+                      width: {
+                        xs: '55vw',
+                        md: '40vw',
+                        lg: '28vw'
+                      },
+                      height: 'fit-content'
+                    }}
+                  />
+                ) : (
+                  <Barcode value={valueBarcode} />
+                )}
+              </>
+            )}
+            <Box
+              sx={{
+                display: 'flex',
+                justifyContent: 'center',
+                width: {
+                  xs: '55vw',
+                  md: '40vw',
+                  lg: '28vw'
+                },
+                margin: '20px 0 0'
+              }}
+            >
               {selectedRequest.document.storageUrl && (
                 <Button variant='contained' onClick={handleViewPdf}>
                   View PDF
                 </Button>
               )}
-            </div>
+            </Box>
           </div>
         )}
       </Box>

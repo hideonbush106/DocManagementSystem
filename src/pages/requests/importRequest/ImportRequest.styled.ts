@@ -7,7 +7,7 @@ interface StatusDivProps {
 
 export const StatusDiv = styled.div<StatusDivProps>`
   width: fit-content;
-  height: 30px;
+  height: 33px;
   display: flex;
   justify-content: center;
   align-items: center;

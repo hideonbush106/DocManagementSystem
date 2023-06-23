@@ -12,6 +12,7 @@ import RejectRequestModal from '~/components/modal/RejectRequestModal'
 import useBorrowRequestApi from '~/hooks/api/useBorrowRequestApi'
 import useUserApi from '~/hooks/api/useUserApi'
 import dayjs from 'dayjs'
+import useAuth from '~/hooks/useAuth'
 
 const Text = styled(Typography)`
   color: var(--black-color);
@@ -44,11 +45,17 @@ const BorrowRequest = () => {
   const callApi = useApi()
   const { acceptBorrowRequest, rejectBorrowRequest } = useBorrowRequestApi()
   const { getUserProfile } = useUserApi()
-
+  const { user } = useAuth()
+  const role = user?.role
   useEffect(() => {
     const fetchBorrowRequests = async () => {
       try {
-        const response = await callApi('get', `/borrow-requests?page=${page}`)
+        let endpoint = '/borrow-requests'
+
+        if (role === 'EMPLOYEE') {
+          endpoint = '/borrow-requests/own'
+        }
+        const response = await callApi('get', `${endpoint}?page=${page}`)
         // console.log(response.data)
 
         const responseData = response.data.data
@@ -64,7 +71,7 @@ const BorrowRequest = () => {
     }
 
     fetchBorrowRequests()
-  }, [PER_PAGE, callApi, page])
+  }, [PER_PAGE, callApi, page, role])
 
   const count = totalPages
   const _DATA = usePagination(borrowRequests, PER_PAGE)
@@ -131,83 +138,94 @@ const BorrowRequest = () => {
 
   return (
     <>
-      <Box display='flex' flexDirection='column' justifyContent='space-between' minHeight='81vh'>
-        <Box display='flex' flexWrap='wrap'>
-          {borrowRequests.length === 0 ? (
-            <Box sx={{ width: 300 }}>
-              <Skeleton />
-              <Skeleton animation='wave' />
-              <Skeleton animation={false} />
-            </Box>
-          ) : (
-            _DATA.currentData().map((request) => (
-              <RequestCard key={request.id}>
-                <div
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'space-between'
-                  }}
-                >
+      {role === 'STAFF' ? (
+        <Box display='flex' flexDirection='column' justifyContent='space-between' minHeight='81vh'>
+          <Box display='flex' flexWrap='wrap'>
+            {borrowRequests.length === 0 ? (
+              <Box sx={{ width: 300 }}>
+                <Skeleton />
+                <Skeleton animation='wave' />
+                <Skeleton animation={false} />
+              </Box>
+            ) : (
+              _DATA.currentData().map((request) => (
+                <RequestCard key={request.id}>
                   <div
                     style={{
                       display: 'flex',
-                      alignItems: 'center'
+                      alignItems: 'center',
+                      justifyContent: 'space-between'
                     }}
                   >
-                    <Avatar sx={{ width: '45px', height: '45px' }} />
-                    <div style={{ display: 'flex', flexDirection: 'column', marginLeft: '0.75rem' }}>
-                      <Typography
-                        sx={{ fontSize: '16px', fontWeight: '600', marginRight: '10px' }}
-                      >{`${request.createdBy.firstName} ${request.createdBy.lastName}`}</Typography>
-                      <Typography sx={{ color: '#a5aab5', letterSpacing: '0', fontSize: '16px' }}>
-                        {request.code}
-                      </Typography>
+                    <div
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center'
+                      }}
+                    >
+                      <Avatar sx={{ width: '45px', height: '45px' }} />
+                      <div style={{ display: 'flex', flexDirection: 'column', marginLeft: '0.75rem' }}>
+                        <Typography
+                          sx={{ fontSize: '16px', fontWeight: '600', marginRight: '10px' }}
+                        >{`${request.createdBy.firstName} ${request.createdBy.lastName}`}</Typography>
+                        <Typography sx={{ color: '#a5aab5', letterSpacing: '0', fontSize: '16px' }}>
+                          {request.code}
+                        </Typography>
+                      </div>
                     </div>
+                    <InfoIcon
+                      sx={{ color: 'var(--black-light-color)' }}
+                      onClick={() => handleInfoIconClick(request.id)}
+                    />
                   </div>
-                  <InfoIcon
-                    sx={{ color: 'var(--black-light-color)' }}
-                    onClick={() => handleInfoIconClick(request.id)}
-                  />
-                </div>
-                <div style={{ height: '200px' }}>
-                  <Text variant='body2'>
-                    <strong> Description: </strong>
-                    {request.description}
-                  </Text>
-                  <Text variant='body2'>
-                    <strong> Time request: </strong>
-                    {dayjs(request.createdAt).format('DD/MM/YYYY HH:mm:ss')}
-                  </Text>
-                  {request.rejectedReason && (
+                  <div style={{ height: '200px' }}>
                     <Text variant='body2'>
-                      <strong> Reason: </strong>
-                      {request.rejectedReason}
+                      <strong> Description: </strong>
+                      {request.description}
                     </Text>
-                  )}
-                </div>
-                <CardActions sx={{ justifyContent: 'space-evenly' }}>
-                  {request.status === 'PENDING' ? (
-                    <>
-                      <AcceptButton text='Accept' onClick={() => handleAccept(request.id)} />
-                      <RejectButton text='Reject' onClick={() => handleReject(request.id)} />
-                    </>
-                  ) : (
-                    <StatusText status={request.status} />
-                  )}
-                </CardActions>
-              </RequestCard>
-            ))
-          )}
+                    <Text variant='body2'>
+                      <strong> Time request: </strong>
+                      {dayjs(request.createdAt).format('DD/MM/YYYY HH:mm:ss')}
+                    </Text>
+                    {request.rejectedReason && (
+                      <Text variant='body2'>
+                        <strong> Reason: </strong>
+                        {request.rejectedReason}
+                      </Text>
+                    )}
+                  </div>
+                  <CardActions sx={{ justifyContent: 'space-evenly' }}>
+                    {request.status === 'PENDING' ? (
+                      <>
+                        <AcceptButton text='Accept' onClick={() => handleAccept(request.id)} />
+                        <RejectButton text='Reject' onClick={() => handleReject(request.id)} />
+                      </>
+                    ) : (
+                      <StatusText status={request.status} />
+                    )}
+                  </CardActions>
+                </RequestCard>
+              ))
+            )}
+          </Box>
+          <Pagination
+            count={count}
+            size='large'
+            page={page}
+            variant='outlined'
+            shape='rounded'
+            onChange={handleChange}
+          />
+          <DetailRequestModal
+            open={selectedRequest !== null}
+            handleClose={handleClosePopup}
+            selectedRequest={selectedRequest}
+          />
+          <RejectRequestModal open={isModalOpen} onClose={handleRejectModalClose} onSubmit={handleRejectModalSubmit} />
         </Box>
-        <Pagination count={count} size='large' page={page} variant='outlined' shape='rounded' onChange={handleChange} />
-        <DetailRequestModal
-          open={selectedRequest !== null}
-          handleClose={handleClosePopup}
-          selectedRequest={selectedRequest}
-        />
-        <RejectRequestModal open={isModalOpen} onClose={handleRejectModalClose} onSubmit={handleRejectModalSubmit} />
-      </Box>
+      ) : (
+        <div>Employee</div>
+      )}
     </>
   )
 }

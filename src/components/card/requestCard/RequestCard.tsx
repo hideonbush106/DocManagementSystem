@@ -11,7 +11,7 @@ const RequestCard = ({ children }: RequestCardProps) => {
       <Card sx={{ maxWidth: '14.5rem', margin: '0 20px 15px 0' }}>
         <CardContent
           sx={{
-            height: '18rem',
+            height: '16.5rem',
             overflow: 'visible',
             display: 'flex',
             flexDirection: 'column',

@@ -26,8 +26,10 @@ interface UserInfo {
 
 export type AuthContextType = {
   user: UserInfo | undefined
+  idToken: string | null
   login: () => Promise<void>
   logout: () => Promise<boolean>
+  refreshToken: () => Promise<void>
 }
 
 export const AuthContext = React.createContext<AuthContextType | null>(null)
@@ -40,6 +42,7 @@ const AuthProvider = ({ children }: Props) => {
   const [user, setUser] = React.useState<UserInfo | undefined>()
   const [firebaseUser, setFirebaseUser] = React.useState<User | null>(null)
   const [loading, setLoading] = React.useState(true)
+  const [idToken, setIdToken] = React.useState(localStorage.getItem('idToken'))
   const navigate = useNavigate()
 
   const logout = React.useCallback(async () => {
@@ -48,6 +51,7 @@ const AuthProvider = ({ children }: Props) => {
       localStorage.clear()
       setUser(undefined)
       setFirebaseUser(null)
+      setIdToken(null)
       return true
     } catch (error) {
       console.log(error)
@@ -61,6 +65,7 @@ const AuthProvider = ({ children }: Props) => {
       try {
         const token = await firebaseUser.getIdToken(true)
         localStorage.setItem('idToken', token)
+        setIdToken(token)
       } catch (error) {
         console.log(error)
       }
@@ -83,6 +88,11 @@ const AuthProvider = ({ children }: Props) => {
             if (status) message = 'Session expired. Please login again'
             break
           }
+          case 'Token expired': {
+            console.log('here')
+            await refreshToken()
+            break
+          }
           case 'Invalid token': {
             await logout()
             break
@@ -95,28 +105,30 @@ const AuthProvider = ({ children }: Props) => {
         notifyError(message)
       }
     },
-    [logout]
+    [logout, refreshToken]
   )
 
-  const getUserInfo = React.useCallback(async () => {
-    try {
-      const token = localStorage.getItem('idToken')
-      const { data } = await get('/users/own', {}, { Authentication: token, accept: 'application/json' })
-      return {
-        id: data.id,
-        code: data.code,
-        name: `${data.firstName} ${data.lastName}`,
-        email: data.email,
-        phone: data.phone,
-        photoUrl: data.photoURL,
-        role: data.role.name,
-        department: data.department.name
+  const getUserInfo = React.useCallback(
+    async (token: string | null) => {
+      try {
+        const { data } = await get('/users/own', {}, { Authentication: token, accept: 'application/json' })
+        return {
+          id: data.id,
+          code: data.code,
+          name: `${data.firstName} ${data.lastName}`,
+          email: data.email,
+          phone: data.phone,
+          photoUrl: data.photoURL,
+          role: data.role.name,
+          department: data.department.name
+        }
+      } catch (error) {
+        console.log(error)
+        handleError(error)
       }
-    } catch (error) {
-      console.log(error)
-      handleError(error)
-    }
-  }, [handleError])
+    },
+    [handleError]
+  )
 
   const login = React.useCallback(async () => {
     try {
@@ -124,10 +136,11 @@ const AuthProvider = ({ children }: Props) => {
       const token = await userCredential.user.getIdToken()
       console.log(token)
       localStorage.setItem('idToken', token)
+      setIdToken(token)
       setLoading(true)
       const login = await get('/users/login', {}, { Authentication: token, accept: 'application/json' })
       if (login) {
-        const userInfo = await getUserInfo()
+        const userInfo = await getUserInfo(token)
         setUser(userInfo)
         setFirebaseUser(userCredential.user)
         notifySuccess('Login successfully')
@@ -139,16 +152,18 @@ const AuthProvider = ({ children }: Props) => {
         if (error.code !== 'auth/popup-closed-by-user' && error.code !== 'auth/cancelled-popup-request')
           notifyError('Login failed')
       }
+      handleError(error)
     }
-  }, [getUserInfo])
+  }, [getUserInfo, handleError])
 
   React.useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged(async (user) => {
       if (user) {
-        const userInfo = await getUserInfo()
+        setFirebaseUser(user)
+        const token = localStorage.getItem('idToken')
+        const userInfo = await getUserInfo(token)
         if (userInfo) {
           setUser(userInfo)
-          setFirebaseUser(user)
         }
       }
       setLoading(false)
@@ -160,24 +175,12 @@ const AuthProvider = ({ children }: Props) => {
     if (!loading && !user) navigate('/')
   }, [loading, navigate, user])
 
-  // refresh access token before expire
-  React.useEffect(() => {
-    if (!loading && firebaseUser) {
-      let idTimeout: NodeJS.Timeout
-      firebaseUser.getIdTokenResult().then(({ expirationTime }) => {
-        const expireIn = Date.parse(expirationTime) - Date.now() - 5 * 60 * 1000 // 5 minutes before expire
-        idTimeout = setTimeout(async () => {
-          await refreshToken()
-        }, expireIn)
-      })
-      return () => clearInterval(idTimeout)
-    }
-  }, [firebaseUser, loading, refreshToken])
-
   const value: AuthContextType = {
     user: user,
+    idToken: idToken,
     login,
-    logout
+    logout,
+    refreshToken
   }
 
   return !loading ? <AuthContext.Provider value={value}>{children}</AuthContext.Provider> : <Loading />

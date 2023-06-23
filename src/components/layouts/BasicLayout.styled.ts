@@ -34,3 +34,13 @@ export const MainContainer = styled.div`
 export const Title = styled(Typography)`
   color: var(--black-color);
 `
+
+export const NotificationIconDiv = styled.div`
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: var(--white-color);
+`

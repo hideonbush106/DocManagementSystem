@@ -78,25 +78,32 @@ const ImportDocument = (props: ImportDocumentProps) => {
     }
   })
 
-  const departmentHandleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    getAllCategories(event.target.value).then((res) => {
-      setCategories(res.data)
-    })
-    getRoomsInDepartment(event.target.value).then((res) => {
-      setRooms(res.data)
-    })
+  const departmentHandleChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    setCategories([])
+    formik.setFieldValue('category.id', [])
+    setRooms([])
+    setLockers([])
+    setFolders([])
+    formik.setFieldValue('folder.id', [])
+    const categories = await getAllCategories(event.target.value)
+    setCategories(categories.data)
+    const rooms = await getRoomsInDepartment(event.target.value)
+    setRooms(rooms.data)
   }
 
-  const roomHandleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    getLockerInRoom(event.target.value).then((res) => {
-      setLockers(res.data)
-    })
+  const roomHandleChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    setLockers([])
+    setFolders([])
+    formik.setFieldValue('folder.id', [])
+    const lockers = await getLockerInRoom(event.target.value)
+    setLockers(lockers.data)
   }
 
-  const lockerHandleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    getFoldersInLocker(event.target.value).then((res) => {
-      setFolders(res.data)
-    })
+  const lockerHandleChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    setFolders([])
+    formik.setFieldValue('folder.id', [])
+    const folder = await getFoldersInLocker(event.target.value)
+    setFolders(folder.data)
   }
 
   const handleExport = () => {
@@ -111,9 +118,11 @@ const ImportDocument = (props: ImportDocumentProps) => {
   }
 
   useEffect(() => {
-    getAllDepartments().then((res) => {
-      setDepartments(res.data)
-    })
+    const fetchData = async () => {
+      const departments = await getAllDepartments()
+      setDepartments(departments.data)
+    }
+    fetchData()
   }, [getAllDepartments])
 
   return (

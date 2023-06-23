@@ -122,6 +122,7 @@ const AuthProvider = ({ children }: Props) => {
     try {
       const userCredential = await signInWithPopup(auth, provider)
       const token = await userCredential.user.getIdToken()
+      console.log(token)
       localStorage.setItem('idToken', token)
       setLoading(true)
       const login = await get('/users/login', {}, { Authentication: token, accept: 'application/json' })

@@ -90,6 +90,7 @@ const CreateDepartmentModal = (props: CreateDepartmenProps) => {
               name='name'
               variant='outlined'
               onChange={formik.handleChange}
+              placeholder='Enter department name'
               value={formik.values.name}
               error={Boolean(formik.errors.name)}
               helperText={formik.errors.name}

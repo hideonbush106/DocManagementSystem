@@ -1,34 +1,33 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { Apartment } from '@mui/icons-material'
-import { List, ListItemButton, ListItemIcon, ListItemText, Skeleton } from '@mui/material'
+import { CircularProgress, List, ListItemButton, ListItemIcon, ListItemText } from '@mui/material'
 import AddRoundedIcon from '@mui/icons-material/AddRounded'
 import React, { useEffect, useState } from 'react'
 import { Department, UpdateDepartment, CreateDepartment } from '~/global/interface'
 import useDepartmentApi from '~/hooks/api/useDepartmentApi'
-import { fakeArray } from '~/utils/fakeArray'
-import { RejectButton, UpdateButton } from '~/components/button/Button'
+import { DeleteButton, UpdateButton } from '~/components/button/Button'
 import { notifySuccess } from '~/global/toastify'
 import CreateDepartmentModal from '~/components/modal/advanced/CreateDepartment'
+import { Box } from '@mui/system'
 
 const DepartmentAdvanced = () => {
   const [departments, setDepartments] = useState<Department[]>([])
-  const { getAllDepartments, updateDepartment, createDepartment } = useDepartmentApi()
+  const { getAllDepartments, updateDepartment, createDepartment, deleteDepartment } = useDepartmentApi()
 
   const [, setOpen] = useState(false)
   const [loading, setLoading] = React.useState<boolean>(true)
   const [isModalOpen, setModalOpen] = useState(false)
 
   const fetchData = async () => {
-    if (loading) {
-      await getAllDepartments().then((result) => {
-        setDepartments(result.data)
-        setLoading(false)
-      })
-    }
+    await getAllDepartments().then((result) => {
+      setDepartments(result.data)
+      setLoading(false)
+    })
   }
 
   useEffect(() => {
     fetchData()
-  })
+  }, [])
 
   const handleUpdate = async (values: UpdateDepartment) => {
     try {
@@ -64,14 +63,40 @@ const DepartmentAdvanced = () => {
     }
   }
 
+  const handleDelete = async (id: string) => {
+    try {
+      await deleteDepartment(id) // Wait for the update to complete
+      setLoading(true)
+      setDepartments([]) // Clear the departments array
+      notifySuccess('Delete successfully')
+      setModalOpen(false)
+      await fetchData() // Fetch the updated data
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
   return (
     <>
       <CreateDepartmentModal open={isModalOpen} handleClose={() => setModalOpen(false)} onSubmit={handleCreate} />
-      <List sx={{ width: '100%', height: '80vh', bgcolor: 'var(--white-color)', padding: '1rem 0' }} component='div'>
+      <List
+        sx={{
+          width: '100%',
+          height: { xs: 'calc(100vh - 92px - 6rem)', md: 'calc(100vh - 42px - 6rem)' },
+          bgcolor: 'var(--white-color)',
+          padding: '1rem 0',
+          overflowY: 'scroll'
+        }}
+        component='div'
+      >
         {!loading ? (
           <>
             {departments.map((dept) => (
-              <ListItemButton key={dept.id} sx={{ paddingLeft: '5rem', paddingRight: '5rem' }} disableTouchRipple>
+              <ListItemButton
+                key={dept.id}
+                sx={{ paddingLeft: { sm: '5rem', xs: '1rem' }, paddingRight: { sm: '5rem', xs: '1rem' } }}
+                disableTouchRipple
+              >
                 <ListItemIcon sx={{ color: 'var(--black-color)' }}>
                   <Apartment />
                 </ListItemIcon>
@@ -79,12 +104,18 @@ const DepartmentAdvanced = () => {
                   primary={dept.name}
                   primaryTypographyProps={{ fontFamily: 'inherit', color: 'var(--black-color)' }}
                 />
-                <UpdateButton text={'Update'} prop={dept} onSubmit={handleUpdate} handleClose={handleClose} />
-                <RejectButton text={'Remove'} />
+                <UpdateButton
+                  text='Update'
+                  id={dept.id}
+                  name={dept.name}
+                  onSubmit={handleUpdate}
+                  handleClose={handleClose}
+                />
+                <DeleteButton text='Delete' id={dept.id} handleDelete={handleDelete} />
               </ListItemButton>
             ))}
             <ListItemButton
-              sx={{ paddingLeft: '5rem', paddingRight: '5rem', height: '53px' }}
+              sx={{ paddingLeft: { sm: '5rem', xs: '1rem' }, paddingRight: { sm: '5rem', xs: '1rem' }, height: '53px' }}
               onClick={handleModalOpen}
             >
               <ListItemIcon sx={{ color: 'var(--black-color)' }}>
@@ -97,7 +128,15 @@ const DepartmentAdvanced = () => {
             </ListItemButton>
           </>
         ) : (
-          fakeArray(6).map((_, index) => <Skeleton key={index} animation='wave' variant='rectangular' height='53px' />)
+          <>
+            <Box
+              sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}
+              width={'100%'}
+              height={'100%'}
+            >
+              <CircularProgress />
+            </Box>
+          </>
         )}
       </List>
     </>

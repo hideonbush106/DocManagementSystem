@@ -6,7 +6,8 @@ import { UpdateDepartment } from '~/global/interface'
 interface UpdateDepartmentProps {
   handleClose?: () => void
   onSubmit?: (values: UpdateDepartment) => void
-  prop?: { id: string; name: string }
+  id?: string
+  name?: string
 }
 
 const UpdateDepartmentModal = (props: UpdateDepartmentProps) => {
@@ -16,8 +17,8 @@ const UpdateDepartmentModal = (props: UpdateDepartmentProps) => {
 
   const formik = useFormik({
     initialValues: {
-      id: `${props.prop?.id}`,
-      name: `${props.prop?.name}`
+      id: `${props.id}`,
+      name: `${props.name}`
     },
     validationSchema: validationSchema,
     onSubmit: (values: UpdateDepartment) => {
@@ -67,7 +68,7 @@ const UpdateDepartmentModal = (props: UpdateDepartmentProps) => {
             variant='outlined'
             onChange={formik.handleChange}
             value={formik.values.name}
-            placeholder={props.prop?.name}
+            placeholder={props.name}
             error={Boolean(formik.errors.name)}
             helperText={formik.errors.name}
             fullWidth

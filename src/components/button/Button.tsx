@@ -10,12 +10,15 @@ import ImportDocument from '../modal/ImportDocument'
 import { useState } from 'react'
 import UpdateDepartmentModal from '../modal/advanced/UpdateDepartment'
 import { UpdateDepartment } from '~/global/interface'
+import DeleteDepartmentModal from '../modal/advanced/DeleteDepartment'
 interface ButtonProps {
   text: string
-  prop?: { id: string; name: string }
+  id?: string
+  name?: string
   handleClose?: () => void
   onSubmit?: (values: UpdateDepartment) => void
   onClick?: () => void
+  handleDelete?: (id: string) => void
 }
 
 export const ImportButton = ({ text }: ButtonProps) => {
@@ -138,8 +141,8 @@ export const RejectButton = ({ text, onClick }: ButtonProps) => {
   )
 }
 
-export const UpdateButton = ({ text, prop, onSubmit, handleClose }: ButtonProps) => {
-  //advanced button
+//advanced button
+export const UpdateButton = ({ text, id, name, onSubmit, handleClose }: ButtonProps) => {
   return (
     <ModalLayout
       variant='outlined'
@@ -153,12 +156,38 @@ export const UpdateButton = ({ text, prop, onSubmit, handleClose }: ButtonProps)
           transition: '0.3 ease in out'
         },
         padding: '5px 10px',
-        fontSize: '12px',
-        marginRight: '10px'
+        fontSize: '14px',
+        marginRight: '10px',
+        fontFamily: 'inherit'
       }}
       button={text}
     >
-      <UpdateDepartmentModal handleClose={handleClose} prop={prop} onSubmit={onSubmit} />
+      <UpdateDepartmentModal handleClose={handleClose} id={id} name={name} onSubmit={onSubmit} />
+    </ModalLayout>
+  )
+}
+
+export const DeleteButton = ({ text, id, handleDelete }: ButtonProps) => {
+  return (
+    <ModalLayout
+      variant='outlined'
+      startIcon={<CloseRoundedIcon />}
+      style={{
+        color: 'var(--red-color)',
+        border: '0.5px solid var(--red-color)',
+        '&:hover': {
+          backgroundColor: 'var(--red-light-color)',
+          borderColor: 'var(--red-color)',
+          transition: '0.3 ease in out'
+        },
+        padding: '5px 10px',
+        fontSize: '14px',
+        marginRight: '10px',
+        fontFamily: 'inherit'
+      }}
+      button={text}
+    >
+      <DeleteDepartmentModal id={id} handleDelete={handleDelete} />
     </ModalLayout>
   )
 }

@@ -1,27 +1,10 @@
-import { useState } from 'react'
-import ModalLayout from '~/components/modal/ModalLayout'
-import UpdateDocument from '~/components/modal/UpdateDocument'
-import ModalTest from '~/components/test/ModalTest'
+import { Viewer, Worker } from '@react-pdf-viewer/core'
+import '@react-pdf-viewer/core/lib/styles/index.css'
 
-const Test = () => {
-  //Muốn dùng close button thì làm theo component này
-
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [_open, setOpen] = useState(false)
-
-  const handleClose = () => {
-    setOpen(false)
-  }
+export default function Test() {
   return (
-    <>
-      <ModalLayout button='Test'>
-        <UpdateDocument handleClose={handleClose} />
-      </ModalLayout>
-      <ModalLayout button='Test2'>
-        <ModalTest handleClose={handleClose} />
-      </ModalLayout>
-    </>
+    <Worker workerUrl='https://unpkg.com/pdfjs-dist@3.4.120/build/pdf.worker.min.js'>
+      <Viewer fileUrl='assets/progit.pdf' />
+    </Worker>
   )
 }
-
-export default Test

@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import RequestCard from '~/components/card/requestCard/RequestCard'
 import { Avatar, Box, CardActions, Pagination, Skeleton, Typography, styled } from '@mui/material'
@@ -47,31 +48,31 @@ const BorrowRequest = () => {
   useUserApi()
   const { user } = useAuth()
   const role = user?.role
-  useEffect(() => {
-    const fetchBorrowRequests = async () => {
-      try {
-        let endpoint = '/borrow-requests'
+  const fetchBorrowRequests = async () => {
+    try {
+      let endpoint = '/borrow-requests'
 
-        if (role === 'EMPLOYEE') {
-          endpoint = '/borrow-requests/own'
-        }
-        const response = await callApi('get', `${endpoint}?page=${page}`)
-        // console.log(response.data)
-
-        const responseData = response.data.data
-        const totalPages = response.data.total
-
-        if (responseData && Array.isArray(responseData)) {
-          setBorrowRequests(responseData)
-          setTotalPages(Math.ceil(totalPages / PER_PAGE))
-        }
-      } catch (error) {
-        console.log(error)
+      if (role === 'EMPLOYEE') {
+        endpoint = '/borrow-requests/own'
       }
-    }
+      const response = await callApi('get', `${endpoint}?page=${page}`)
+      // console.log(response.data)
 
+      const responseData = response.data.data
+      const totalPages = response.data.total
+
+      if (responseData && Array.isArray(responseData)) {
+        setBorrowRequests(responseData)
+        setTotalPages(Math.ceil(totalPages / PER_PAGE))
+      }
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  useEffect(() => {
     fetchBorrowRequests()
-  }, [PER_PAGE, callApi, page, role])
+  }, [page])
 
   const count = totalPages
   const _DATA = usePagination(borrowRequests, PER_PAGE)
@@ -126,6 +127,8 @@ const BorrowRequest = () => {
       try {
         const response = await rejectBorrowRequest({ id: String(rejectID), rejectedReason: reason })
         console.log('Reject request successful:', response)
+
+        await fetchBorrowRequests()
 
         setBorrowRequests((prevRequests) =>
           prevRequests.map((request) => (request.id === rejectID ? { ...request, status: 'REJECTED' } : request))

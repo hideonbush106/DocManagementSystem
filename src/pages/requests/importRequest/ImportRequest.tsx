@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import RequestCard from '~/components/card/requestCard/RequestCard'
 import { Avatar, Box, CardActions, Pagination, Skeleton, Typography, styled } from '@mui/material'
@@ -37,7 +38,7 @@ const ImportRequest = () => {
   const PER_PAGE = 10
 
   const [page, setPage] = useState(1)
-  const [importRequests, setimportRequests] = useState<any[]>([])
+  const [importRequests, setImportRequests] = useState<any[]>([])
   const [totalPages, setTotalPages] = useState(1)
   const [selectedRequest, setSelectedRequest] = useState<any>(null)
   const [rejectID, setRejectID] = useState<number | null>(null)
@@ -47,29 +48,30 @@ const ImportRequest = () => {
   useUserApi()
   const { user } = useAuth()
   const role = user?.role
-  useEffect(() => {
-    const fetchimportRequests = async () => {
-      try {
-        let endpoint = '/import-requests'
 
-        if (role === 'EMPLOYEE') {
-          endpoint = '/import-requests/own'
-        }
-        const response = await callApi('get', `${endpoint}?page=${page}`)
-        const responseData = response.data.data
-        const totalPages = response.data.total
+  const fetchImportRequests = async () => {
+    try {
+      let endpoint = '/import-requests'
 
-        if (responseData && Array.isArray(responseData)) {
-          setimportRequests(responseData)
-          setTotalPages(Math.ceil(totalPages / PER_PAGE))
-        }
-      } catch (error) {
-        console.log(error)
+      if (role === 'EMPLOYEE') {
+        endpoint = '/import-requests/own'
       }
-    }
+      const response = await callApi('get', `${endpoint}?page=${page}`)
+      const responseData = response.data.data
+      const totalPages = response.data.total
 
-    fetchimportRequests()
-  }, [PER_PAGE, callApi, page, role])
+      if (responseData && Array.isArray(responseData)) {
+        setImportRequests(responseData)
+        setTotalPages(Math.ceil(totalPages / PER_PAGE))
+      }
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  useEffect(() => {
+    fetchImportRequests()
+  }, [page])
 
   const count = totalPages
   const _DATA = usePagination(importRequests, PER_PAGE)
@@ -99,7 +101,7 @@ const ImportRequest = () => {
       const response = await acceptImportRequest(ImportRequestId)
       console.log('Accept request successful:', response)
 
-      setimportRequests((prevRequests) =>
+      setImportRequests((prevRequests) =>
         prevRequests.map((request) => (request.id === ImportRequestId ? { ...request, status: 'APPROVED' } : request))
       )
     } catch (error) {
@@ -125,7 +127,9 @@ const ImportRequest = () => {
         const response = await rejectImportRequest({ id: String(rejectID), rejectedReason: reason })
         console.log('Reject request successful:', response)
 
-        setimportRequests((prevRequests) =>
+        await fetchImportRequests()
+
+        setImportRequests((prevRequests) =>
           prevRequests.map((request) => (request.id === rejectID ? { ...request, status: 'REJECTED' } : request))
         )
       } catch (error) {
@@ -177,10 +181,12 @@ const ImportRequest = () => {
                     />
                   </div>
                   <div style={{ height: '200px' }}>
-                    <Text variant='body2'>
-                      <strong> Description: </strong>
-                      {request.description}
-                    </Text>
+                    <div style={{ height: '50px', overflow: 'hidden' }}>
+                      <Text variant='body2'>
+                        <strong> Description: </strong>
+                        {request.description}
+                      </Text>
+                    </div>
                     <Text variant='body2'>
                       <strong> Time request: </strong>
                       {dayjs(request.createdAt).format('DD/MM/YYYY HH:mm:ss')}

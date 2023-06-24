@@ -7,7 +7,6 @@ const SummaryChart = () => {
         type='donut'
         width={'100%'}
         height={'100%'}
-        minHeight={'300px'}
         series={[46, 90]}
         options={{
           labels: ['Lending', 'Available'],

@@ -19,8 +19,9 @@ const ModalLayout = (props: ModalLayoutProps) => {
   const handleOpen = () => setOpen(true)
   const handleClose = () => setOpen(false)
   const theme = useTheme()
-  const mobile = useMediaQuery(theme.breakpoints.down('sm'))
-  const tablet = useMediaQuery(theme.breakpoints.down('md'))
+  const xs = useMediaQuery(theme.breakpoints.down('xs'))
+  const sm = useMediaQuery(theme.breakpoints.down('sm'))
+  const md = useMediaQuery(theme.breakpoints.down('md'))
   const style = {
     position: 'absolute',
     top: '50%',
@@ -40,7 +41,7 @@ const ModalLayout = (props: ModalLayoutProps) => {
   }
   return (
     <>
-      {mobile && tablet ? (
+      {xs || sm || md ? (
         <Fab sx={props.mobileStyle} size={props.size} color='primary' onClick={handleOpen}>
           {props.startIcon}
         </Fab>

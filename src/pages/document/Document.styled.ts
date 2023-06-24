@@ -11,7 +11,6 @@ export const NavWrapper = styled.div`
   justify-content: space-between;
   flex-wrap: wrap;
   align-items: center;
-
   width: 100%;
   @media (min-width: 0px) {
     flex-direction: column-reverse;
@@ -68,16 +67,19 @@ export const DocumentGrid = styled.div`
   width: 65%;
   @media (min-width: 0px) {
     width: 100%;
+    margin-left: 0;
   }
   @media (min-width: 600px) {
+    margin-left: 0;
     width: 100%;
   }
   @media (min-width: 900px) {
+    margin-left: 0;
     width: 65%;
   }
   @media (min-width: 1200px) {
+    margin-left: 2rem;
     width: 65%;
   }
   height: 70vh;
-  margin-left: 2rem;
 `

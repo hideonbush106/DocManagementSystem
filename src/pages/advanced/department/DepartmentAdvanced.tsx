@@ -31,11 +31,11 @@ const DepartmentAdvanced = () => {
   const handleUpdate = async (values: UpdateDepartment) => {
     try {
       await updateDepartment(values).then((result) => {
-        result
-          ? (setLoading(true),
-            setDepartments([]), // Clear the departments array
-            notifySuccess('Update successfully'))
-          : null
+        if (result) {
+          setLoading(true)
+          setDepartments([]) // Clear the departments array
+          notifySuccess('Update successfully')
+        }
       })
       await fetchData() // Fetch the updated data
     } catch (error) {
@@ -50,12 +50,12 @@ const DepartmentAdvanced = () => {
   const handleCreate = async (values: CreateDepartment) => {
     try {
       await createDepartment(values).then((result) => {
-        result
-          ? (setLoading(true),
-            setDepartments([]), // Clear the departments array
-            notifySuccess('Create successfully'),
-            setModalOpen(false))
-          : null
+        if (result) {
+          setLoading(true)
+          setDepartments([]) // Clear the departments array
+          notifySuccess('Create successfully')
+          setModalOpen(false)
+        }
       })
       await fetchData() // Fetch the updated data
     } catch (error) {

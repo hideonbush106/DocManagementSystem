@@ -14,7 +14,9 @@ import {
 } from '@mui/material'
 import React, { useEffect, useState } from 'react'
 import { DeleteButton, UpdateButton } from '~/components/button/Button'
-import { Department, Room } from '~/global/interface'
+import CreateRoomModal from '~/components/modal/advanced/room/CreateRoom'
+import { CreateRoom, Department, Room } from '~/global/interface'
+import { notifySuccess } from '~/global/toastify'
 import useDepartmentApi from '~/hooks/api/useDepartmentApi'
 import useRoomApi from '~/hooks/api/useRoomApi'
 
@@ -24,15 +26,21 @@ const RoomAdvanced = () => {
 
   const [selectedDepartment, setSelectedDepartment] = useState<Department>({ id: '', name: '' })
   const { getAllDepartments } = useDepartmentApi()
-  const { getRoomsInDepartment } = useRoomApi()
+  const { getRoomsInDepartment, createRoom /*, updateRoom, deleteRoom*/ } = useRoomApi()
   const [loading, setLoading] = React.useState<boolean>(true)
   const [loadingRoom, setLoadingRoom] = React.useState<boolean>(false)
+  const [isModalOpen, setModalOpen] = useState(false)
 
   const [open, setOpen] = React.useState(false)
   //handle options dropdown
   const handleOptions = () => {
     setOpen(!open)
   }
+  //handle modal open
+  const handleModalOpen = () => {
+    setModalOpen(true)
+  }
+
   //handle dropdown close after selecting
   const handleSelect = (dept: Department) => {
     setSelectedDepartment(dept)
@@ -65,8 +73,29 @@ const RoomAdvanced = () => {
     fetchRooms()
   }, [selectedDepartment])
 
+  const handleCreate = async (values: CreateRoom) => {
+    try {
+      await createRoom(values) // Wait for the update to complete
+      setLoadingRoom(true)
+      setRooms([]) // Clear the room array
+      notifySuccess('Create successfully')
+      setModalOpen(false)
+      await fetchRooms() // Fetch the updated data
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
   return (
     <>
+      {selectedDepartment.id && (
+        <CreateRoomModal
+          open={isModalOpen}
+          handleClose={() => setModalOpen(false)}
+          deptId={selectedDepartment.id}
+          onSubmit={handleCreate}
+        />
+      )}
       <List
         sx={{
           width: '100%',
@@ -160,7 +189,7 @@ const RoomAdvanced = () => {
                     paddingRight: { sm: '5rem', xs: '1rem' },
                     height: '53px'
                   }}
-                  // onClick={handleModalOpen}
+                  onClick={handleModalOpen}
                 >
                   <ListItemIcon sx={{ color: 'var(--black-color)' }}>
                     <AddRoundedIcon />

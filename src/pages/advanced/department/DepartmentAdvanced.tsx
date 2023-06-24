@@ -7,7 +7,7 @@ import { Department, UpdateDepartment, CreateDepartment } from '~/global/interfa
 import useDepartmentApi from '~/hooks/api/useDepartmentApi'
 import { DeleteButton, UpdateButton } from '~/components/button/Button'
 import { notifySuccess } from '~/global/toastify'
-import CreateDepartmentModal from '~/components/modal/advanced/CreateDepartment'
+import CreateDepartmentModal from '~/components/modal/advanced/department/CreateDepartment'
 import { Box } from '@mui/system'
 
 const DepartmentAdvanced = () => {

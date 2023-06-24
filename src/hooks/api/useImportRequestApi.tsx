@@ -7,7 +7,7 @@ const useImportRequestApi = () => {
   const rootEndpoint = 'import-requests'
 
   const getImportRequestsAll = React.useCallback(
-    async (status?: string, documentId?: string, take?: number, page?: number) => {
+    async (status: string, documentId?: string, take?: number, page?: number) => {
       const endpoint = `/${rootEndpoint}?status=${status}&documentId=${documentId}&take=${take}&page=${page}`
       try {
         const response = await callApi('get', endpoint)

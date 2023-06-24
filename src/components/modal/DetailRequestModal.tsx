@@ -12,11 +12,6 @@ const TitleText = styled.span`
 
 const Text = mstyled(Typography)`
   padding: 5px 0;
-  font-size: {
-    xs: '0.8rem',
-    md: '1rem',
-    lg: '1.2rem'    
-  }
 `
 interface RequestModalProps {
   open: boolean
@@ -50,7 +45,7 @@ const DetailRequestModal = ({ open, handleClose, selectedRequest }: RequestModal
     if (selectedRequest) {
       try {
         const response = await getDocumentBarcode(selectedRequest.document.id)
-        if (response && response.data.barcode) {
+        if (response?.data?.barcode) {
           setValueBarcode(response.data.barcode)
         }
       } catch (error) {
@@ -75,7 +70,8 @@ const DetailRequestModal = ({ open, handleClose, selectedRequest }: RequestModal
           left: '50%',
           transform: 'translate(-50%, -50%)',
           width: {
-            xs: '65vw',
+            xs: '100vw',
+            sm: '60vw',
             md: '45vw',
             lg: '32vw'
           },
@@ -94,9 +90,11 @@ const DetailRequestModal = ({ open, handleClose, selectedRequest }: RequestModal
             <Typography variant='h5' sx={{ fontWeight: '600', marginBottom: '20px' }}>
               Request Details
             </Typography>
-            <Text>
-              <TitleText>Description: </TitleText> {selectedRequest.description}
-            </Text>
+            <div style={{ maxHeight: '55px', textOverflow: 'ellipsis' }}>
+              <Text>
+                <TitleText>Description: </TitleText> {selectedRequest.description}
+              </Text>
+            </div>
             <Text>
               <TitleText>Created by: </TitleText>
               {`${selectedRequest.createdBy.firstName} ${selectedRequest.createdBy.lastName}`}
@@ -120,6 +118,12 @@ const DetailRequestModal = ({ open, handleClose, selectedRequest }: RequestModal
               <TitleText>Updated at: </TitleText>
               {dayjs(selectedRequest.updatedAt).format('DD/MM/YYYY HH:mm:ss')}
             </Text>
+            {selectedRequest.status === 'REJECTED' && (
+              <Text>
+                <TitleText>Reason: </TitleText>
+                {selectedRequest.rejectedReason}
+              </Text>
+            )}
             <Text>
               <TitleText>Status: </TitleText>
               <span style={{ color: getStatusColor(selectedRequest.status) }}>{selectedRequest.status}</span>
@@ -134,7 +138,7 @@ const DetailRequestModal = ({ open, handleClose, selectedRequest }: RequestModal
                       display: 'flex',
                       justifyContent: 'center',
                       width: {
-                        xs: '55vw',
+                        xs: 'auto',
                         md: '40vw',
                         lg: '28vw'
                       },
@@ -151,7 +155,8 @@ const DetailRequestModal = ({ open, handleClose, selectedRequest }: RequestModal
                 display: 'flex',
                 justifyContent: 'center',
                 width: {
-                  xs: '55vw',
+                  xs: 'auto',
+                  sm: '50vw',
                   md: '40vw',
                   lg: '28vw'
                 },

@@ -10,11 +10,12 @@ import ImportDocument from '../modal/ImportDocument'
 import { useState } from 'react'
 import UpdateDepartmentModal from '../modal/advanced/department/UpdateDepartment'
 import { UpdateDepartment } from '~/global/interface'
-import DeleteDepartmentModal from '../modal/advanced/department/DeleteDepartment'
+import DeleteModal from '../modal/advanced/DeleteAdvancedModal'
 interface ButtonProps {
   text: string
   id?: string
   name?: string
+  type?: string
   handleClose?: () => void
   onSubmit?: (values: UpdateDepartment) => void
   onClick?: () => void
@@ -167,7 +168,7 @@ export const UpdateButton = ({ text, id, name, onSubmit, handleClose }: ButtonPr
   )
 }
 
-export const DeleteButton = ({ text, id, handleDelete }: ButtonProps) => {
+export const DeleteButton = ({ text, id, handleDelete, type }: ButtonProps) => {
   return (
     <ModalLayout
       variant='outlined'
@@ -187,7 +188,7 @@ export const DeleteButton = ({ text, id, handleDelete }: ButtonProps) => {
       }}
       button={text}
     >
-      <DeleteDepartmentModal id={id} handleDelete={handleDelete} />
+      <DeleteModal id={id} handleDelete={handleDelete} type={type} />
     </ModalLayout>
   )
 }

@@ -1,11 +1,12 @@
 import { Box, Button, Typography } from '@mui/material'
 
-interface DeleteDepartmentProps {
+interface DeleteProps {
   id?: string
   handleDelete?: (id: string) => void
+  type?: string
 }
 
-const DeleteDepartmentModal = (props: DeleteDepartmentProps) => {
+const DeleteModal = (props: DeleteProps) => {
   const handleDelete = () => {
     props.handleDelete?.(props.id || '')
   }
@@ -62,7 +63,7 @@ const DeleteDepartmentModal = (props: DeleteDepartmentProps) => {
           }}
           variant='body2'
         >
-          This will delete this department permanently. You cannot undo this action.
+          This will delete this {props.type} permanently. You cannot undo this action.
         </Typography>
       </Box>
       <Box
@@ -91,4 +92,4 @@ const DeleteDepartmentModal = (props: DeleteDepartmentProps) => {
   )
 }
 
-export default DeleteDepartmentModal
+export default DeleteModal

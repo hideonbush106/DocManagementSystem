@@ -26,7 +26,7 @@ const RoomAdvanced = () => {
 
   const [selectedDepartment, setSelectedDepartment] = useState<Department>({ id: '', name: '' })
   const { getAllDepartments } = useDepartmentApi()
-  const { getRoomsInDepartment, createRoom /*, updateRoom, deleteRoom*/ } = useRoomApi()
+  const { getRoomsInDepartment, createRoom /*, updateRoom*/, deleteRoom } = useRoomApi()
   const [loading, setLoading] = React.useState<boolean>(true)
   const [loadingRoom, setLoadingRoom] = React.useState<boolean>(false)
   const [isModalOpen, setModalOpen] = useState(false)
@@ -79,6 +79,19 @@ const RoomAdvanced = () => {
       setLoadingRoom(true)
       setRooms([]) // Clear the room array
       notifySuccess('Create successfully')
+      setModalOpen(false)
+      await fetchRooms() // Fetch the updated data
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  const handleDelete = async (id: string) => {
+    try {
+      await deleteRoom(id) // Wait for the update to complete
+      setLoadingRoom(true)
+      setRooms([]) // Clear the room array
+      notifySuccess('Delete successfully')
       setModalOpen(false)
       await fetchRooms() // Fetch the updated data
     } catch (error) {
@@ -180,7 +193,7 @@ const RoomAdvanced = () => {
                       // onSubmit={handleUpdate}
                       // handleClose={handleClose}
                     />
-                    <DeleteButton text='Delete' id={room.id} />
+                    <DeleteButton text='Delete' id={room.id} handleDelete={handleDelete} type='room' />
                   </ListItemButton>
                 ))}
                 <ListItemButton

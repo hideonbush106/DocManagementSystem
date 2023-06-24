@@ -111,7 +111,7 @@ const DepartmentAdvanced = () => {
                   onSubmit={handleUpdate}
                   handleClose={handleClose}
                 />
-                <DeleteButton text='Delete' id={dept.id} handleDelete={handleDelete} />
+                <DeleteButton text='Delete' id={dept.id} handleDelete={handleDelete} type='department' />
               </ListItemButton>
             ))}
             <ListItemButton

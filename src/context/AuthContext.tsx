@@ -131,7 +131,6 @@ const AuthProvider = ({ children }: Props) => {
         setUser(userInfo)
         setFirebaseUser(userCredential.user)
         notifySuccess('Login successfully')
-        localStorage.setItem('token', token)
       }
       setLoading(false)
     } catch (error) {

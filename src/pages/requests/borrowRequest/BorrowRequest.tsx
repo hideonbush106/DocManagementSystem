@@ -9,7 +9,6 @@ import DetailRequestModal from '~/components/modal/DetailRequestModal'
 import { StatusDiv } from '~/pages/requests/importRequest/ImportRequest.styled'
 import { AcceptButton, RejectButton } from '~/components/button/Button'
 import RejectRequestModal from '~/components/modal/RejectRequestModal'
-import useUserApi from '~/hooks/api/useUserApi'
 
 const Text = styled(Typography)`
   color: var(--black-color);
@@ -34,8 +33,6 @@ const BorrowRequest = () => {
   const [totalPages, setTotalPages] = useState(1)
   const [selectedRequest, setSelectedRequest] = useState<any | null>(null)
   const [isModalOpen, setIsModalOpen] = useState(false)
-  const [userProfiles, setUserProfiles] = useState<{ [key: string]: string | null }>({})
-  const { getUserProfile } = useUserApi()
   const callApi = useApi()
 
   useEffect(() => {
@@ -58,28 +55,6 @@ const BorrowRequest = () => {
 
     fetchBorrowRequests()
   }, [PER_PAGE, callApi])
-
-  useEffect(() => {
-    const fetchUserProfiles = async () => {
-      const userProfileData: { [key: string]: string | null } = {}
-      for (const request of borrowRequests) {
-        try {
-          const response = await getUserProfile(request.createdBy.id)
-          // console.log(response)
-          // console.log(response.data.photoURL)
-
-          userProfileData[request.createdBy.id] = response?.data?.photoURL || null
-          console.log(userProfileData)
-        } catch (error) {
-          console.log(error)
-          userProfileData[request.createdBy.id] = null
-        }
-      }
-      setUserProfiles(userProfileData)
-    }
-
-    fetchUserProfiles()
-  }, [getUserProfile, borrowRequests])
 
   const count = totalPages
   const _DATA = usePagination(borrowRequests, PER_PAGE)
@@ -144,7 +119,7 @@ const BorrowRequest = () => {
                       alignItems: 'center'
                     }}
                   >
-                    <Avatar sx={{ width: '45px', height: '45px' }} src={userProfiles[request.createdBy.id] || ''} />
+                    <Avatar sx={{ width: '45px', height: '45px' }} src={request.createdBy.photoURL} />
                     <div style={{ display: 'flex', flexDirection: 'column', marginLeft: '0.75rem' }}>
                       <Typography
                         sx={{ fontSize: '16px', fontWeight: '600', marginRight: '10px' }}

@@ -88,13 +88,16 @@ const AuthProvider = ({ children }: Props) => {
             if (status) message = 'Session expired. Please login again'
             break
           }
-          case 'Token expired': {
-            console.log('here')
-            await refreshToken()
-            break
-          }
           case 'Invalid token': {
             await logout()
+            break
+          }
+          case 'No token provided': {
+            await logout()
+            break
+          }
+          case 'Token expired': {
+            await refreshToken()
             break
           }
           default:
@@ -145,7 +148,6 @@ const AuthProvider = ({ children }: Props) => {
         setFirebaseUser(userCredential.user)
         notifySuccess('Login successfully')
       }
-      setLoading(false)
     } catch (error) {
       console.log(error)
       if (error instanceof FirebaseError) {
@@ -154,6 +156,7 @@ const AuthProvider = ({ children }: Props) => {
       }
       handleError(error)
     }
+    setLoading(false)
   }, [getUserInfo, handleError])
 
   React.useEffect(() => {

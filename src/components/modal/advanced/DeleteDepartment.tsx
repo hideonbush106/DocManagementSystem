@@ -33,6 +33,7 @@ const DeleteDepartmentModal = (props: DeleteDepartmentProps) => {
               xs: '1.5rem',
               sm: '2rem'
             },
+            fontFamily: 'inherit',
             mx: 1
           }}
           variant='h4'
@@ -56,7 +57,8 @@ const DeleteDepartmentModal = (props: DeleteDepartmentProps) => {
             fontSize: {
               xs: '1.1rem',
               sm: '1.3rem'
-            }
+            },
+            fontFamily: 'inherit'
           }}
           variant='body2'
         >

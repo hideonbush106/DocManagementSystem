@@ -51,7 +51,8 @@ const UpdateDepartmentModal = (props: UpdateDepartmentProps) => {
               xs: '1.5rem',
               sm: '2rem'
             },
-            mx: 1
+            mx: 1,
+            fontFamily: 'inherit'
           }}
           variant='h4'
         >
@@ -86,11 +87,17 @@ const UpdateDepartmentModal = (props: UpdateDepartmentProps) => {
             width: '100%'
           }}
         >
-          <Button sx={{ my: 1, mr: 1 }} variant='contained' color='primary' type='submit'>
+          <Button
+            sx={{ my: 1, mr: 1, fontFamily: 'inherit' }}
+            variant='contained'
+            color='primary'
+            type='submit'
+            disabled={Boolean(formik.errors.name)}
+          >
             Update
           </Button>
 
-          <Button sx={{ my: 1 }} onClick={props.handleClose} color={'error'}>
+          <Button sx={{ my: 1, fontFamily: 'inherit' }} onClick={props.handleClose} color={'error'}>
             Cancel
           </Button>
         </Box>

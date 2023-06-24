@@ -74,7 +74,8 @@ const CreateDepartmentModal = (props: CreateDepartmenProps) => {
                 xs: '1.5rem',
                 sm: '2rem'
               },
-              mx: 1
+              mx: 1,
+              fontFamily: 'inherit'
             }}
             variant='h4'
           >
@@ -109,11 +110,17 @@ const CreateDepartmentModal = (props: CreateDepartmenProps) => {
               width: '100%'
             }}
           >
-            <Button sx={{ my: 1, mr: 1 }} variant='contained' color='primary' type='submit'>
+            <Button
+              sx={{ my: 1, mr: 1, fontFamily: 'inherit' }}
+              variant='contained'
+              color='primary'
+              type='submit'
+              disabled={Boolean(formik.errors.name)}
+            >
               Create
             </Button>
 
-            <Button sx={{ my: 1 }} onClick={handleClose} color={'error'}>
+            <Button sx={{ my: 1, fontFamily: 'inherit' }} onClick={handleClose} color={'error'}>
               Cancel
             </Button>
           </Box>

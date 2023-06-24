@@ -1,5 +1,6 @@
 import { Modal, Box, TextField, Button, Typography, FormControl } from '@mui/material'
 import { useFormik } from 'formik'
+import { useEffect } from 'react'
 import * as yup from 'yup'
 import { CreateDepartment } from '~/global/interface'
 
@@ -22,14 +23,19 @@ const CreateDepartmentModal = (props: CreateDepartmenProps) => {
     onSubmit: (values: CreateDepartment) => {
       values.name = values.name.trim().replace(/\s\s+/g, ' ')
       props.onSubmit?.(values)
-      formik.resetForm()
     }
   })
 
   const handleClose = () => {
-    formik.resetForm() // Reset formik values when closing the modal
     props.handleClose()
   }
+
+  useEffect(() => {
+    if (props.open) {
+      formik.resetForm()
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [!props.open])
 
   return (
     <Modal open={props.open} onClose={handleClose}>

@@ -27,6 +27,8 @@ const UpdateDepartmentModal = (props: UpdateDepartmentProps) => {
     }
   })
 
+  const nameUnchanged = formik.values.name === props.name
+
   return (
     <>
       <Box
@@ -92,7 +94,7 @@ const UpdateDepartmentModal = (props: UpdateDepartmentProps) => {
             variant='contained'
             color='primary'
             type='submit'
-            disabled={Boolean(formik.errors.name)}
+            disabled={Boolean(formik.errors.name) || nameUnchanged}
           >
             Update
           </Button>

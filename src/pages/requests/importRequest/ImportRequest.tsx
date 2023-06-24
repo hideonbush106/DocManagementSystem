@@ -39,7 +39,7 @@ const ImportRequest = () => {
   const [page, setPage] = useState(1)
   const [importRequests, setimportRequests] = useState<any[]>([])
   const [totalPages, setTotalPages] = useState(1)
-  const [selectedRequest, setSelectedRequest] = useState<any | null>(null)
+  const [selectedRequest, setSelectedRequest] = useState<any>(null)
   const [rejectID, setRejectID] = useState<number | null>(null)
   const [isModalOpen, setIsModalOpen] = useState(false)
   const callApi = useApi()

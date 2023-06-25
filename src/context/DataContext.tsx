@@ -52,7 +52,8 @@ const DataProvider = ({ children }: Props) => {
       .catch((err) => {
         console.log(err)
       })
-  }, [getDocumentsTree])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   const value = { documentTree, documentMap, loading }
 

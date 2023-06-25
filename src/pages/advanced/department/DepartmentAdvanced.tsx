@@ -110,7 +110,7 @@ const DepartmentAdvanced = () => {
                   primaryTypographyProps={{ fontFamily: 'inherit', color: 'var(--black-color)' }}
                 />
                 <UpdateButton text='Update' id={dept.id} name={dept.name} onSubmit={handleUpdate} />
-                <DeleteButton text='Delete' id={dept.id} handleDelete={handleDelete} />
+                <DeleteButton text='Delete' id={dept.id} handleDelete={handleDelete} type='department' />
               </ListItemButton>
             ))}
             <ListItemButton

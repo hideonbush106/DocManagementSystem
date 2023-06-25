@@ -6,7 +6,7 @@ import React, { useEffect, useState } from 'react'
 import { Department, UpdateDepartment, CreateDepartment } from '~/global/interface'
 import useDepartmentApi from '~/hooks/api/useDepartmentApi'
 import { DeleteButton, UpdateButton } from '~/components/button/Button'
-import { notifySuccess } from '~/global/toastify'
+import { notifySuccess, notifyError } from '~/global/toastify'
 import CreateDepartmentModal from '~/components/modal/advanced/department/CreateDepartment'
 import { Box } from '@mui/system'
 
@@ -14,7 +14,6 @@ const DepartmentAdvanced = () => {
   const [departments, setDepartments] = useState<Department[]>([])
   const { getAllDepartments, updateDepartment, createDepartment, deleteDepartment } = useDepartmentApi()
 
-  const [, setOpen] = useState(false)
   const [loading, setLoading] = React.useState<boolean>(true)
   const [isModalOpen, setModalOpen] = useState(false)
 
@@ -31,19 +30,17 @@ const DepartmentAdvanced = () => {
 
   const handleUpdate = async (values: UpdateDepartment) => {
     try {
-      await updateDepartment(values) // Wait for the update to complete
-      setLoading(true)
-      setDepartments([]) // Clear the departments array
-      notifySuccess('Update successfully')
-      handleClose()
+      await updateDepartment(values).then((result) => {
+        if (result) {
+          setLoading(true)
+          setDepartments([]) // Clear the departments array
+          notifySuccess('Update successfully')
+        }
+      })
       await fetchData() // Fetch the updated data
     } catch (error) {
       console.log(error)
     }
-  }
-
-  const handleClose = () => {
-    setOpen(false)
   }
 
   const handleModalOpen = () => {
@@ -52,11 +49,14 @@ const DepartmentAdvanced = () => {
 
   const handleCreate = async (values: CreateDepartment) => {
     try {
-      await createDepartment(values) // Wait for the update to complete
-      setLoading(true)
-      setDepartments([]) // Clear the departments array
-      notifySuccess('Create successfully')
-      setModalOpen(false)
+      await createDepartment(values).then((result) => {
+        if (result) {
+          setLoading(true)
+          setDepartments([]) // Clear the departments array
+          notifySuccess('Create successfully')
+          setModalOpen(false)
+        }
+      })
       await fetchData() // Fetch the updated data
     } catch (error) {
       console.log(error)
@@ -65,11 +65,16 @@ const DepartmentAdvanced = () => {
 
   const handleDelete = async (id: string) => {
     try {
-      await deleteDepartment(id) // Wait for the update to complete
-      setLoading(true)
-      setDepartments([]) // Clear the departments array
-      notifySuccess('Delete successfully')
-      setModalOpen(false)
+      await deleteDepartment(id).then((result) => {
+        if (result) {
+          setLoading(true)
+          setDepartments([]) // Clear the departments array
+          notifySuccess('Delete successfully')
+        } else {
+          setLoading(true)
+          notifyError('Delete failed')
+        }
+      })
       await fetchData() // Fetch the updated data
     } catch (error) {
       console.log(error)
@@ -104,13 +109,7 @@ const DepartmentAdvanced = () => {
                   primary={dept.name}
                   primaryTypographyProps={{ fontFamily: 'inherit', color: 'var(--black-color)' }}
                 />
-                <UpdateButton
-                  text='Update'
-                  id={dept.id}
-                  name={dept.name}
-                  onSubmit={handleUpdate}
-                  handleClose={handleClose}
-                />
+                <UpdateButton text='Update' id={dept.id} name={dept.name} onSubmit={handleUpdate} />
                 <DeleteButton text='Delete' id={dept.id} handleDelete={handleDelete} />
               </ListItemButton>
             ))}

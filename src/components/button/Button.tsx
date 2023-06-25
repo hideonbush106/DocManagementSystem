@@ -15,7 +15,6 @@ interface ButtonProps {
   text: string
   id?: string
   name?: string
-  handleClose?: () => void
   onSubmit?: (values: UpdateDepartment) => void
   onClick?: () => void
   handleDelete?: (id: string) => void
@@ -44,6 +43,13 @@ export const ImportButton = ({ text }: ButtonProps) => {
       }}
       button={text}
       variant='contained'
+      size='medium'
+      mobileStyle={{
+        backgroundColor: 'var(--primary-color)',
+        '&:hover': {
+          backgroundColor: 'var(--primary-dark-color)'
+        }
+      }}
       startIcon={<AddRoundedIcon />}
     >
       <ImportDocument handleClose={handleClose} />
@@ -52,9 +58,15 @@ export const ImportButton = ({ text }: ButtonProps) => {
 }
 
 export const ReturnButton = ({ text }: ButtonProps) => {
+  const [_open, setOpen] = useState(false)
+
+  const handleClose = () => {
+    setOpen(false)
+  }
   return (
-    <Button
-      sx={{
+    <ModalLayout
+      overflow='scroll'
+      style={{
         backgroundColor: 'var(--green-color)',
         width: { sm: '165px', xs: '125px' },
         height: '45px',
@@ -66,11 +78,20 @@ export const ReturnButton = ({ text }: ButtonProps) => {
           backgroundColor: 'var(--green-dark-color)'
         }
       }}
+      button={text}
       variant='contained'
+      size='medium'
+      mobileStyle={{
+        backgroundColor: 'var(--green-color)',
+        '&:hover': {
+          backgroundColor: 'var(--green-dark-color)'
+        }
+      }}
+      //!! Temporary modal, fix later
       startIcon={<KeyboardReturnRoundedIcon />}
     >
-      {text}
-    </Button>
+      <ImportDocument handleClose={handleClose} />
+    </ModalLayout>
   )
 }
 
@@ -142,7 +163,7 @@ export const RejectButton = ({ text, onClick }: ButtonProps) => {
 }
 
 //advanced button
-export const UpdateButton = ({ text, id, name, onSubmit, handleClose }: ButtonProps) => {
+export const UpdateButton = ({ text, id, name, onSubmit }: ButtonProps) => {
   return (
     <ModalLayout
       variant='outlined'
@@ -162,7 +183,7 @@ export const UpdateButton = ({ text, id, name, onSubmit, handleClose }: ButtonPr
       }}
       button={text}
     >
-      <UpdateDepartmentModal handleClose={handleClose} id={id} name={name} onSubmit={onSubmit} />
+      <UpdateDepartmentModal id={id} name={name} onSubmit={onSubmit} />
     </ModalLayout>
   )
 }

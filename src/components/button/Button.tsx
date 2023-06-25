@@ -44,6 +44,13 @@ export const ImportButton = ({ text }: ButtonProps) => {
       }}
       button={text}
       variant='contained'
+      size='medium'
+      mobileStyle={{
+        backgroundColor: 'var(--primary-color)',
+        '&:hover': {
+          backgroundColor: 'var(--primary-dark-color)'
+        }
+      }}
       startIcon={<AddRoundedIcon />}
     >
       <ImportDocument handleClose={handleClose} />
@@ -52,9 +59,15 @@ export const ImportButton = ({ text }: ButtonProps) => {
 }
 
 export const ReturnButton = ({ text }: ButtonProps) => {
+  const [_open, setOpen] = useState(false)
+
+  const handleClose = () => {
+    setOpen(false)
+  }
   return (
-    <Button
-      sx={{
+    <ModalLayout
+      overflow='scroll'
+      style={{
         backgroundColor: 'var(--green-color)',
         width: { sm: '165px', xs: '125px' },
         height: '45px',
@@ -66,11 +79,20 @@ export const ReturnButton = ({ text }: ButtonProps) => {
           backgroundColor: 'var(--green-dark-color)'
         }
       }}
+      button={text}
       variant='contained'
+      size='medium'
+      mobileStyle={{
+        backgroundColor: 'var(--green-color)',
+        '&:hover': {
+          backgroundColor: 'var(--green-dark-color)'
+        }
+      }}
+      //!! Temporary modal, fix later
       startIcon={<KeyboardReturnRoundedIcon />}
     >
-      {text}
-    </Button>
+      <ImportDocument handleClose={handleClose} />
+    </ModalLayout>
   )
 }
 

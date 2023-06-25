@@ -2,13 +2,13 @@ import SearchField from '~/components/TextField/SearchField'
 import { ImportButton, ReturnButton } from '~/components/button/Button'
 import { ButtonWrapper, DocumentGrid, DocumentWrapper, NavWrapper, TreeWarpper } from './Document.styled'
 import TreeView from '@mui/lab/TreeView'
-import { Apartment, ChevronRight, ExpandMore, Folder, Work } from '@mui/icons-material'
+import { Apartment, ChevronRight, ExpandMore, Folder, NotificationsOutlined, Work } from '@mui/icons-material'
 import DocumentTreeItem from '~/components/treeItem/DocumentTreeItem'
 import { Outlet } from 'react-router-dom'
 import useData from '~/hooks/useData'
 import { fakeArray } from '~/utils/fakeArray'
 import DataProvider from '~/context/DataContext'
-import { Grid, Skeleton } from '@mui/material'
+import { Fab, Badge } from '@mui/material'
 
 const DocumentDisplay = () => {
   const { documentTree, loading } = useData()
@@ -24,6 +24,21 @@ const DocumentDisplay = () => {
         <ButtonWrapper>
           <ImportButton text='New Document' />
           <ReturnButton text='Return Document' />
+
+          <Fab
+            size='medium'
+            sx={{
+              backgroundColor: '#fbc02d',
+              '&:hover': {
+                backgroundColor: '#f9a825'
+              },
+              color: '#fff'
+            }}
+          >
+            <Badge badgeContent={4} color='error'>
+              <NotificationsOutlined sx={{ margin: 0.5 }} />
+            </Badge>
+          </Fab>
         </ButtonWrapper>
       </NavWrapper>
       <TreeWarpper>
@@ -48,15 +63,7 @@ const DocumentDisplay = () => {
         </TreeView>
       </TreeWarpper>
       <DocumentGrid>
-        {!loading ? (
-          <Outlet />
-        ) : (
-          fakeArray(6).map((_, index) => (
-            <Grid key={index} item md={4}>
-              <Skeleton animation='wave' variant='rounded' height='3rem' />
-            </Grid>
-          ))
-        )}
+        <Outlet />
       </DocumentGrid>
     </DocumentWrapper>
   )

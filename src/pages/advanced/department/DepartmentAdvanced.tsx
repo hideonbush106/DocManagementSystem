@@ -6,7 +6,7 @@ import React, { useEffect, useState } from 'react'
 import { Department, UpdateDepartment, CreateDepartment } from '~/global/interface'
 import useDepartmentApi from '~/hooks/api/useDepartmentApi'
 import { DeleteButton, UpdateButton } from '~/components/button/Button'
-import { notifySuccess } from '~/global/toastify'
+import { notifyError, notifySuccess } from '~/global/toastify'
 import CreateDepartmentModal from '~/components/modal/advanced/CreateDepartment'
 import { Box } from '@mui/system'
 
@@ -65,10 +65,16 @@ const DepartmentAdvanced = () => {
 
   const handleDelete = async (id: string) => {
     try {
-      await deleteDepartment(id) // Wait for the update to complete
-      setLoading(true)
-      setDepartments([]) // Clear the departments array
-      notifySuccess('Delete successfully')
+      await deleteDepartment(id).then((result) => {
+        if (result) {
+          setLoading(true)
+          setDepartments([]) // Clear the departments array
+          notifySuccess('Delete successfully')
+        } else {
+          setLoading(true)
+          notifyError('Delete failed')
+        }
+      })
       await fetchData() // Fetch the updated data
     } catch (error) {
       console.log(error)

@@ -15,7 +15,6 @@ interface ButtonProps {
   text: string
   id?: string
   name?: string
-  handleClose?: () => void
   onSubmit?: (values: UpdateDepartment) => void
   onClick?: () => void
   handleDelete?: (id: string) => void
@@ -164,7 +163,7 @@ export const RejectButton = ({ text, onClick }: ButtonProps) => {
 }
 
 //advanced button
-export const UpdateButton = ({ text, id, name, onSubmit, handleClose }: ButtonProps) => {
+export const UpdateButton = ({ text, id, name, onSubmit }: ButtonProps) => {
   return (
     <ModalLayout
       variant='outlined'
@@ -184,7 +183,7 @@ export const UpdateButton = ({ text, id, name, onSubmit, handleClose }: ButtonPr
       }}
       button={text}
     >
-      <UpdateDepartmentModal handleClose={handleClose} id={id} name={name} onSubmit={onSubmit} />
+      <UpdateDepartmentModal id={id} name={name} onSubmit={onSubmit} />
     </ModalLayout>
   )
 }

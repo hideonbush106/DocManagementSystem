@@ -9,17 +9,32 @@ import ModalLayout from '../modal/ModalLayout'
 import ImportDocument from '../modal/ImportDocument'
 import { useState } from 'react'
 import UpdateDepartmentModal from '../modal/advanced/department/UpdateDepartment'
-import { UpdateDepartment } from '~/global/interface'
+import { UpdateDepartment, UpdateRoom } from '~/global/interface'
 import DeleteModal from '../modal/advanced/DeleteAdvancedModal'
+import UpdateRoomModal from '../modal/advanced/room/UpdateRoom'
+
 interface ButtonProps {
   text: string
-  id?: string
-  name?: string
-  type?: string
-  handleClose?: () => void
-  onSubmit?: (values: UpdateDepartment) => void
   onClick?: () => void
-  handleDelete?: (id: string) => void
+}
+
+interface UpdateButtonProps extends ButtonProps {
+  id: string
+  name: string
+  onSubmit: (values: UpdateDepartment) => void
+}
+
+interface UpdateRoomButtonProps extends ButtonProps {
+  id: string
+  name: string
+  capacity: number
+  onSubmit: (values: UpdateRoom) => void
+}
+
+interface DeleteButtonProps extends ButtonProps {
+  id: string
+  type: string
+  handleDelete: (id: string) => void
 }
 
 export const ImportButton = ({ text }: ButtonProps) => {
@@ -164,8 +179,8 @@ export const RejectButton = ({ text, onClick }: ButtonProps) => {
   )
 }
 
-//advanced button
-export const UpdateButton = ({ text, id, name, onSubmit }: ButtonProps) => {
+//department update button
+export const UpdateButton = ({ text, id, name, onSubmit }: UpdateButtonProps) => {
   return (
     <ModalLayout
       variant='outlined'
@@ -190,7 +205,33 @@ export const UpdateButton = ({ text, id, name, onSubmit }: ButtonProps) => {
   )
 }
 
-export const DeleteButton = ({ text, id, handleDelete, type }: ButtonProps) => {
+//room update button
+export const UpdateRoomButton = ({ text, id, name, capacity, onSubmit }: UpdateRoomButtonProps) => {
+  return (
+    <ModalLayout
+      variant='outlined'
+      startIcon={<EditRoundedIcon />}
+      style={{
+        color: 'var(--primary-color)',
+        border: '0.5px solid var(--primary-color)',
+        '&:hover': {
+          backgroundColor: 'var(--background-dark-color)',
+          borderColor: 'var(--primary-color)',
+          transition: '0.3 ease in out'
+        },
+        padding: '5px 10px',
+        fontSize: '14px',
+        marginRight: '10px',
+        fontFamily: 'inherit'
+      }}
+      button={text}
+    >
+      <UpdateRoomModal id={id} name={name} capacity={capacity} onSubmit={onSubmit} />
+    </ModalLayout>
+  )
+}
+
+export const DeleteButton = ({ text, id, handleDelete, type }: DeleteButtonProps) => {
   return (
     <ModalLayout
       variant='outlined'

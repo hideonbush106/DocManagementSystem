@@ -72,7 +72,7 @@ const DepartmentAdvanced = () => {
           notifySuccess('Delete successfully')
         } else {
           setLoading(true)
-          notifyError('Delete failed')
+          notifyError('Department could not be deleted.')
         }
       })
       await fetchData() // Fetch the updated data

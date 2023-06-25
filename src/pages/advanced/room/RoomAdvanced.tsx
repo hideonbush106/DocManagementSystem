@@ -1,7 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { Apartment, ExpandLess, ExpandMore, MeetingRoom } from '@mui/icons-material'
 import AddRoundedIcon from '@mui/icons-material/AddRounded'
-
 import {
   Box,
   CircularProgress,
@@ -13,9 +12,9 @@ import {
   ListItemText
 } from '@mui/material'
 import React, { useEffect, useState } from 'react'
-import { DeleteButton, UpdateButton } from '~/components/button/Button'
+import { DeleteButton, UpdateRoomButton } from '~/components/button/Button'
 import CreateRoomModal from '~/components/modal/advanced/room/CreateRoom'
-import { CreateRoom, Department, Room } from '~/global/interface'
+import { CreateRoom, Department, Room, UpdateRoom } from '~/global/interface'
 import { notifySuccess } from '~/global/toastify'
 import useDepartmentApi from '~/hooks/api/useDepartmentApi'
 import useRoomApi from '~/hooks/api/useRoomApi'
@@ -26,7 +25,7 @@ const RoomAdvanced = () => {
 
   const [selectedDepartment, setSelectedDepartment] = useState<Department>({ id: '', name: '' })
   const { getAllDepartments } = useDepartmentApi()
-  const { getRoomsInDepartment, createRoom /*, updateRoom*/, deleteRoom } = useRoomApi()
+  const { getRoomsInDepartment, createRoom, updateRoom, deleteRoom } = useRoomApi()
   const [loading, setLoading] = React.useState<boolean>(true)
   const [loadingRoom, setLoadingRoom] = React.useState<boolean>(false)
   const [isModalOpen, setModalOpen] = useState(false)
@@ -75,11 +74,14 @@ const RoomAdvanced = () => {
 
   const handleCreate = async (values: CreateRoom) => {
     try {
-      await createRoom(values) // Wait for the update to complete
-      setLoadingRoom(true)
-      setRooms([]) // Clear the room array
-      notifySuccess('Create successfully')
-      setModalOpen(false)
+      await createRoom(values).then((result) => {
+        if (result) {
+          setLoadingRoom(true)
+          setRooms([]) // Clear the room array
+          notifySuccess('Create successfully')
+          setModalOpen(false)
+        }
+      })
       await fetchRooms() // Fetch the updated data
     } catch (error) {
       console.log(error)
@@ -88,11 +90,31 @@ const RoomAdvanced = () => {
 
   const handleDelete = async (id: string) => {
     try {
-      await deleteRoom(id) // Wait for the update to complete
-      setLoadingRoom(true)
-      setRooms([]) // Clear the room array
-      notifySuccess('Delete successfully')
-      setModalOpen(false)
+      await deleteRoom(id).then((result) => {
+        if (result) {
+          setLoadingRoom(true)
+          setRooms([]) // Clear the room array
+          notifySuccess('Delete successfully')
+          // setModalOpen(false)
+        } else {
+          setLoadingRoom(true)
+        }
+      })
+      await fetchRooms() // Fetch the updated data
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  const handleUpdate = async (values: UpdateRoom) => {
+    try {
+      await updateRoom(values).then((result) => {
+        if (result) {
+          setLoadingRoom(true)
+          setRooms([]) // Clear the room array
+          notifySuccess('Update successfully')
+        }
+      })
       await fetchRooms() // Fetch the updated data
     } catch (error) {
       console.log(error)
@@ -185,12 +207,12 @@ const RoomAdvanced = () => {
                       primary={room.name}
                       primaryTypographyProps={{ fontFamily: 'inherit', color: 'var(--black-color)' }}
                     />
-                    <UpdateButton
+                    <UpdateRoomButton
                       text='Update'
                       id={room.id}
                       name={room.name}
-                      // onSubmit={handleUpdate}
-                      // handleClose={handleClose}
+                      capacity={room.capacity}
+                      onSubmit={handleUpdate}
                     />
                     <DeleteButton text='Delete' id={room.id} handleDelete={handleDelete} type='room' />
                   </ListItemButton>

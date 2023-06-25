@@ -1,5 +1,6 @@
 import { Modal, Box, TextField, Button, Typography, FormControl } from '@mui/material'
 import { useFormik } from 'formik'
+import { useEffect } from 'react'
 import * as yup from 'yup'
 import { CreateRoom } from '~/global/interface'
 
@@ -33,14 +34,19 @@ const CreateRoomModal = (props: CreateRoomProps) => {
     onSubmit: (values: CreateRoom) => {
       values.name = values.name.trim().replace(/\s\s+/g, ' ')
       props.onSubmit?.(values)
-      formik.resetForm()
     }
   })
 
   const handleClose = () => {
-    formik.resetForm() // Reset formik values when closing the modal
     props.handleClose()
   }
+
+  useEffect(() => {
+    if (props.open) {
+      formik.resetForm()
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [!props.open])
 
   return (
     <Modal open={props.open} onClose={handleClose}>
@@ -100,9 +106,10 @@ const CreateRoomModal = (props: CreateRoomProps) => {
                 my: 1
               }}
               name='name'
+              label='Room name'
               variant='outlined'
               onChange={formik.handleChange}
-              placeholder='Enter department name'
+              placeholder='Enter room name'
               value={formik.values.name}
               error={formik.errors.name ? true : false}
               helperText={formik.errors.name}
@@ -113,6 +120,7 @@ const CreateRoomModal = (props: CreateRoomProps) => {
                 my: 1
               }}
               name='capacity'
+              label='Capacity'
               type='number'
               variant='outlined'
               onChange={formik.handleChange}

@@ -147,7 +147,6 @@ const RoomAdvanced = () => {
               onClick={handleOptions}
               sx={{
                 padding: { sm: '0 5rem', xs: '0 1rem' },
-                // paddingRight: { sm: '5rem', xs: '1rem' },
                 height: '52.5px'
               }}
             >
@@ -172,8 +171,7 @@ const RoomAdvanced = () => {
                     <ListItemButton
                       key={dept.id}
                       sx={{
-                        paddingLeft: { sm: '5rem', xs: '1rem' },
-                        paddingRight: { sm: '5rem', xs: '1rem' },
+                        padding: { sm: '0 5rem', xs: '0 1rem' },
                         height: '52.5px'
                       }}
                       onClick={dept.id === selectedDepartment.id ? undefined : () => handleSelect(dept)}

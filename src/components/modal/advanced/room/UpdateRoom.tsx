@@ -66,7 +66,7 @@ const UpdateRoomModal = (props: UpdateRoomProps) => {
           }}
           variant='h4'
         >
-          Update department
+          Update room
         </Typography>
       </Box>
       <form action='POST' onSubmit={formik.handleSubmit}>

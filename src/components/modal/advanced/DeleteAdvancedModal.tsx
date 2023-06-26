@@ -1,14 +1,14 @@
 import { Box, Button, Typography } from '@mui/material'
 
 interface DeleteProps {
-  id?: string
-  handleDelete?: (id: string) => void
-  type?: string
+  id: string
+  handleDelete: (id: string) => void
+  type: string
 }
 
 const DeleteModal = (props: DeleteProps) => {
   const handleDelete = () => {
-    props.handleDelete?.(props.id || '')
+    props.handleDelete?.(props.id ?? '')
   }
   return (
     <>

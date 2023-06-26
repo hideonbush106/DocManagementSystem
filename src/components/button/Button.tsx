@@ -215,6 +215,11 @@ export const UpdateButton = ({ text, id, name, onSubmit }: UpdateButtonProps) =>
 
 //room update button
 export const UpdateRoomButton = ({ text, id, name, capacity, onSubmit }: UpdateRoomButtonProps) => {
+  const [_open, setOpen] = useState(false)
+
+  const handleClose = () => {
+    setOpen(false)
+  }
   return (
     <ModalLayout
       variant='outlined'
@@ -242,7 +247,7 @@ export const UpdateRoomButton = ({ text, id, name, capacity, onSubmit }: UpdateR
       }}
       button={text}
     >
-      <UpdateRoomModal id={id} name={name} capacity={capacity} onSubmit={onSubmit} />
+      <UpdateRoomModal id={id} name={name} capacity={capacity} onSubmit={onSubmit} handleClose={handleClose} />
     </ModalLayout>
   )
 }

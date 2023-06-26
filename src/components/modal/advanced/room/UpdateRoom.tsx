@@ -4,11 +4,11 @@ import * as yup from 'yup'
 import { UpdateRoom } from '~/global/interface'
 
 interface UpdateRoomProps {
-  handleClose?: () => void
-  onSubmit?: (values: UpdateRoom) => void
-  id?: string
-  name?: string
-  capacity?: number
+  handleClose: () => void
+  onSubmit: (values: UpdateRoom) => void
+  id: string
+  name: string
+  capacity: number
 }
 
 const UpdateRoomModal = (props: UpdateRoomProps) => {
@@ -26,7 +26,7 @@ const UpdateRoomModal = (props: UpdateRoomProps) => {
     initialValues: {
       id: `${props.id}`,
       name: `${props.name}`,
-      capacity: props.capacity || NaN
+      capacity: props.capacity ?? NaN
     },
     validationSchema: validationSchema,
     onSubmit: (values: UpdateRoom) => {

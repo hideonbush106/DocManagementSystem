@@ -24,12 +24,16 @@ const useApi = () => {
             if (status) message = 'Session expired. Please login again'
             break
           }
-          case 'Token expired': {
-            await refreshToken()
-            break
-          }
           case 'Invalid token': {
             await logout()
+            break
+          }
+          case 'No token provided': {
+            await logout()
+            break
+          }
+          case 'Token expired': {
+            await refreshToken()
             break
           }
           case 'Not permitted': {

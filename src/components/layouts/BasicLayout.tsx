@@ -1,35 +1,54 @@
 import { ReactNode, useRef } from 'react'
-import NotificationsNoneOutlinedIcon from '@mui/icons-material/NotificationsNoneOutlined'
-import NotificationsActiveOutlinedIcon from '@mui/icons-material/NotificationsActiveOutlined'
-import { MainContainer, Wrapper, NotificationIconDiv } from './BasicLayout.styled'
-import Sidebar from '~/components/sidebar/Sidebar'
-import { Title } from '~/pages/dashboard/Dashboard.styled'
 
-interface LayoutProps {
+// MUI
+import { Badge, Fab, Grid, Typography } from '@mui/material'
+import { NotificationsOutlined } from '@mui/icons-material'
+
+// Components
+import Sidebar from '~/components/sidebar/Sidebar'
+
+// Styles
+import { MainContainer, Wrapper } from './BasicLayout.styled'
+
+type Props = {
   children: ReactNode
   title?: string
 }
 
-const BasicLayout = ({ children, title }: LayoutProps) => {
+const BasicLayout = ({ children, title }: Props) => {
   const mainContainerRef = useRef<HTMLDivElement>(null)
-  const isnotification = true
+  const isnotification = false
 
   return (
     <Wrapper>
       <Sidebar mainContainerRef={mainContainerRef} />
       <MainContainer ref={mainContainerRef}>
-        {title && (
-          <Title variant='h5' sx={{ fontWeight: 600 }}>
-            {title}
-          </Title>
-        )}
-        <NotificationIconDiv>
-          {!isnotification ? (
-            <NotificationsNoneOutlinedIcon sx={{ fontSize: '25px' }} />
-          ) : (
-            <NotificationsActiveOutlinedIcon sx={{ fontSize: '25px' }} />
-          )}
-        </NotificationIconDiv>
+        <Grid container justifyContent='space-between' alignItems='center'>
+          <Grid item>
+            {title && (
+              <Typography variant='h5' sx={{ fontWeight: 600, color: 'var(--black-color)' }}>
+                {title}
+              </Typography>
+            )}
+          </Grid>
+          <Grid item>
+            <Fab
+              size='medium'
+              sx={{
+                backgroundColor: '#fff',
+                color: '#000'
+              }}
+            >
+              {!isnotification ? (
+                <NotificationsOutlined sx={{ margin: 0.5 }} />
+              ) : (
+                <Badge badgeContent color='error'>
+                  <NotificationsOutlined sx={{ margin: 0.5 }} />
+                </Badge>
+              )}
+            </Fab>
+          </Grid>
+        </Grid>
         {children}
       </MainContainer>
     </Wrapper>

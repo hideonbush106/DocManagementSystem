@@ -10,6 +10,8 @@ import {
   ButtonWrapper
 } from './HeaderBar.styled'
 import { ImportButton, ReturnButton } from '../button/Button'
+import { Notifications } from '@mui/icons-material'
+import { IconButton } from '@mui/material'
 const HeaderBar = () => {
   return (
     <HeaderWrapper container spacing={{ sm: 3, xs: 0 }} style={{ margin: 0 }}>
@@ -47,9 +49,9 @@ const HeaderBar = () => {
       <ButtonWrapper xs={12} sm={7} lg={5} xl={4}>
         <ImportButton text='Import Document'></ImportButton>
         <ReturnButton text='Return Document'></ReturnButton>
-        <IconDiv white style={{ cursor: 'pointer' }}>
-          <img src='/assets/bell-ringing.svg' alt='' />
-        </IconDiv>
+        <IconButton color='primary' size='large'>
+          <Notifications />
+        </IconButton>
       </ButtonWrapper>
     </HeaderWrapper>
   )

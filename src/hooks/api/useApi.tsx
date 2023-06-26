@@ -37,7 +37,7 @@ const useApi = () => {
             break
           }
           default:
-            throw error
+            message = errorDetails
         }
       }
       if (message) {

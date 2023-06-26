@@ -145,51 +145,52 @@ const RoomAdvanced = () => {
           <>
             <ListItemButton
               onClick={handleOptions}
-              selected={open}
               sx={{
-                paddingLeft: { sm: '5rem', xs: '1rem' },
-                paddingRight: { sm: '5rem', xs: '1rem' },
+                padding: { sm: '0 5rem', xs: '0 1rem' },
+                // paddingRight: { sm: '5rem', xs: '1rem' },
                 height: '52.5px'
               }}
             >
-              <ListItemIcon sx={{ color: 'var(--black-color)' }}>
-                <Apartment />
-              </ListItemIcon>
+              {open ? null : (
+                <ListItemIcon sx={{ color: 'var(--black-color)', minWidth: { sm: '56px', xs: '40px' } }}>
+                  <Apartment />
+                </ListItemIcon>
+              )}
+
               <ListItemText
-                primary={selectedDepartment.name}
+                sx={{ paddingLeft: open ? { sm: '56px' } : '0' }}
+                primary={open ? 'Select department' : selectedDepartment.name}
                 primaryTypographyProps={{ fontFamily: 'inherit', color: 'var(--black-color)' }}
               />
               {open ? <ExpandLess /> : <ExpandMore />}
             </ListItemButton>
-            <Divider sx={{ margin: '0 4rem' }} />
+            <Divider sx={{ margin: { sm: '0 4rem', xs: '0 1rem' } }} />
             <Collapse in={open} timeout='auto' unmountOnExit>
               <List component='div' disablePadding>
-                {departments.map((room) => {
-                  if (room === selectedDepartment) {
-                    return null
-                  }
-                  return (
-                    <React.Fragment key={room.id}>
-                      <ListItemButton
-                        sx={{
-                          paddingLeft: { sm: '5rem', xs: '1rem' },
-                          paddingRight: { sm: '5rem', xs: '1rem' },
-                          height: '52.5px'
-                        }}
-                        onClick={() => handleSelect(room)}
-                      >
-                        <ListItemIcon sx={{ color: 'var(--black-color)' }}>
-                          <Apartment />
-                        </ListItemIcon>
-                        <ListItemText
-                          primary={room.name}
-                          primaryTypographyProps={{ fontFamily: 'inherit', color: 'var(--black-color)' }}
-                        />
-                      </ListItemButton>
-                      <Divider sx={{ margin: '0 4rem' }} />
-                    </React.Fragment>
-                  )
-                })}
+                {departments.map((dept) => (
+                  <>
+                    <ListItemButton
+                      key={dept.id}
+                      sx={{
+                        paddingLeft: { sm: '5rem', xs: '1rem' },
+                        paddingRight: { sm: '5rem', xs: '1rem' },
+                        height: '52.5px'
+                      }}
+                      onClick={dept.id === selectedDepartment.id ? undefined : () => handleSelect(dept)}
+                      disableTouchRipple={dept.id === selectedDepartment.id}
+                      selected={dept.id === selectedDepartment.id}
+                    >
+                      <ListItemIcon sx={{ color: 'var(--black-color)', minWidth: { sm: '56px', xs: '40px' } }}>
+                        <Apartment />
+                      </ListItemIcon>
+                      <ListItemText
+                        primary={dept.name}
+                        primaryTypographyProps={{ fontFamily: 'inherit', color: 'var(--black-color)' }}
+                      />
+                    </ListItemButton>
+                    <Divider sx={{ margin: { sm: '0 4rem', xs: '0 1rem' } }} />
+                  </>
+                ))}
               </List>
             </Collapse>
             {!loadingRoom ? (
@@ -200,7 +201,7 @@ const RoomAdvanced = () => {
                     sx={{ paddingLeft: { sm: '8rem', xs: '1rem' }, paddingRight: { sm: '5rem', xs: '1rem' } }}
                     disableTouchRipple
                   >
-                    <ListItemIcon sx={{ color: 'var(--black-color)' }}>
+                    <ListItemIcon sx={{ color: 'var(--black-color)', minWidth: { sm: '56px', xs: '40px' } }}>
                       <MeetingRoom />
                     </ListItemIcon>
                     <ListItemText

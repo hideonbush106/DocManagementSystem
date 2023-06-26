@@ -198,6 +198,14 @@ export const UpdateButton = ({ text, id, name, onSubmit }: UpdateButtonProps) =>
         marginRight: '10px',
         fontFamily: 'inherit'
       }}
+      size='small'
+      mobileStyle={{
+        backgroundColor: 'var(--primary-color)',
+        '&:hover': {
+          backgroundColor: 'var(--primary-dark-color)'
+        },
+        marginRight: '10px'
+      }}
       button={text}
     >
       <UpdateDepartmentModal id={id} name={name} onSubmit={onSubmit} />
@@ -224,6 +232,14 @@ export const UpdateRoomButton = ({ text, id, name, capacity, onSubmit }: UpdateR
         marginRight: '10px',
         fontFamily: 'inherit'
       }}
+      size='small'
+      mobileStyle={{
+        backgroundColor: 'var(--primary-color)',
+        '&:hover': {
+          backgroundColor: 'var(--primary-dark-color)'
+        },
+        marginRight: '10px'
+      }}
       button={text}
     >
       <UpdateRoomModal id={id} name={name} capacity={capacity} onSubmit={onSubmit} />
@@ -248,6 +264,13 @@ export const DeleteButton = ({ text, id, handleDelete, type }: DeleteButtonProps
         fontSize: '14px',
         marginRight: '10px',
         fontFamily: 'inherit'
+      }}
+      size='small'
+      mobileStyle={{
+        backgroundColor: 'var(--red-color)',
+        '&:hover': {
+          backgroundColor: 'var(--red-dark-color)'
+        }
       }}
       button={text}
     >

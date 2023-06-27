@@ -62,7 +62,7 @@ const useImportRequestApi = () => {
     async (importRequestId: string) => {
       const endpoint = `/${rootEndpoint}/accept/${importRequestId}`
       try {
-        const response = await callApi('put', endpoint)
+        const response = await callApi('post', endpoint)
         return response
       } catch (error) {
         console.log(error)
@@ -75,7 +75,7 @@ const useImportRequestApi = () => {
     async (data: Reject) => {
       const endpoint = `/${rootEndpoint}/reject`
       try {
-        const response = await callApi('put', endpoint, {}, {}, data)
+        const response = await callApi('post', endpoint, {}, {}, data)
         return response
       } catch (error) {
         console.log(error)
@@ -88,7 +88,7 @@ const useImportRequestApi = () => {
     async (importRequestId: string) => {
       const endpoint = `/${rootEndpoint}/cancel/${importRequestId}`
       try {
-        const response = await callApi('put', endpoint)
+        const response = await callApi('post', endpoint)
         return response
       } catch (error) {
         console.log(error)

@@ -8,7 +8,6 @@ import { Outlet } from 'react-router-dom'
 import useData from '~/hooks/useData'
 import { fakeArray } from '~/utils/fakeArray'
 import DataProvider from '~/context/DataContext'
-import { Grid, Skeleton } from '@mui/material'
 
 const DocumentDisplay = () => {
   const { documentTree, loading } = useData()
@@ -48,15 +47,7 @@ const DocumentDisplay = () => {
         </TreeView>
       </TreeWarpper>
       <DocumentGrid>
-        {!loading ? (
-          <Outlet />
-        ) : (
-          fakeArray(6).map((_, index) => (
-            <Grid key={index} item md={4}>
-              <Skeleton animation='wave' variant='rounded' height='3rem' />
-            </Grid>
-          ))
-        )}
+        <Outlet />
       </DocumentGrid>
     </DocumentWrapper>
   )

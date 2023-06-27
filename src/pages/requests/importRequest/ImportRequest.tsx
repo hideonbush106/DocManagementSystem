@@ -1,7 +1,8 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import RequestCard from '~/components/card/requestCard/RequestCard'
-import { Avatar, Box, CardActions, Pagination, Skeleton, Typography, styled } from '@mui/material'
+import { Avatar, Box, CardActions, Pagination, Typography, styled } from '@mui/material'
+import CircularProgress from '@mui/material/CircularProgress'
 import React, { useEffect, useState } from 'react'
 import usePagination from '~/hooks/usePagination'
 import useApi from '~/hooks/api/useApi'
@@ -144,10 +145,10 @@ const ImportRequest = () => {
         <Box display='flex' flexDirection='column' justifyContent='space-between' minHeight='81vh' marginTop='20px'>
           <Box display='flex' flexWrap='wrap'>
             {importRequests.length === 0 ? (
-              <Box sx={{ width: 300 }}>
-                <Skeleton />
-                <Skeleton animation='wave' />
-                <Skeleton animation={false} />
+              <Box
+                sx={{ width: '100%', height: '80vh', display: 'flex', justifyContent: 'center', alignItems: 'center' }}
+              >
+                <CircularProgress />
               </Box>
             ) : (
               _DATA.currentData().map((request) => (

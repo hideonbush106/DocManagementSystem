@@ -13,7 +13,7 @@ import RejectRequestModal from '~/components/modal/RejectRequestModal'
 import useImportRequestApi from '~/hooks/api/useImportRequestApi'
 import useUserApi from '~/hooks/api/useUserApi'
 import useAuth from '~/hooks/useAuth'
-import * as dayjs from 'dayjs'
+import dayjs from 'dayjs'
 
 const Text = styled(Typography)`
   color: var(--black-color);

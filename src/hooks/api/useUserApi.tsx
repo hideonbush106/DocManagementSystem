@@ -3,7 +3,7 @@ import useApi from './useApi'
 
 const useUserApi = () => {
   const callApi = useApi()
-  const rootEndpoint = 'user'
+  const rootEndpoint = 'users'
 
   const getUserLogin = React.useCallback(
     async (token: string) => {
@@ -29,7 +29,20 @@ const useUserApi = () => {
     }
   }, [callApi])
 
-  return { getUserLogin, getUserOwn }
+  const getUserProfile = React.useCallback(
+    async (userId: string) => {
+      const endpoint = `/${rootEndpoint}/profile/${userId}`
+      try {
+        const response = await callApi('get', endpoint)
+        return response
+      } catch (error) {
+        console.log(error)
+      }
+    },
+    [callApi]
+  )
+
+  return { getUserLogin, getUserOwn, getUserProfile }
 }
 
 export default useUserApi

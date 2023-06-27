@@ -5,20 +5,18 @@ import GoogleButton from 'react-google-button'
 import { theme } from '~/global/theme'
 import useAuth from '~/hooks/useAuth'
 import { useNavigate } from 'react-router'
-import Loading from '~/components/loading/Loading'
 
 const Login = () => {
-  const { user, loading, login } = useAuth()
+  const { login, user } = useAuth()
   const navigate = useNavigate()
 
   React.useEffect(() => {
-    if (!loading && user) {
+    if (user) {
       navigate('/dashboard')
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user, loading])
+  }, [navigate, user])
 
-  return !loading && !user ? (
+  return !user ? (
     <OuterContainer>
       <LoginImg>
         <img src='/assets/login.svg' alt='' srcSet='' />
@@ -29,7 +27,7 @@ const Login = () => {
             sx={{
               width: '100%',
               fontSize: {
-                xs: '5rem',
+                xs: '3rem',
                 sm: '4rem',
                 md: '3rem',
                 lg: '4rem'
@@ -49,14 +47,14 @@ const Login = () => {
             sx={{
               width: '100%',
               fontSize: {
-                xs: '2rem',
+                xs: '1.5rem',
                 sm: '2.5rem',
                 md: '1.25rem',
                 lg: '2rem'
               },
               fontWeight: 500,
               color: '#8B8C8D',
-              marginBottom: '4rem',
+              marginBottom: '2rem',
               textAlign: {
                 xs: 'center',
                 md: 'left'
@@ -74,7 +72,7 @@ const Login = () => {
       </Footer>
     </OuterContainer>
   ) : (
-    <Loading />
+    <></>
   )
 }
 

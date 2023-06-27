@@ -46,12 +46,15 @@ const useDocumentApi = () => {
   )
   //Todo: fix this
   const uploadDocumentPdf = React.useCallback(
-    async (documentId: string, data: CreateDocument, token: string) => {
+    async (documentId: string, file: File[]) => {
       const endpoint = `/${rootEndpoint}/upload/${documentId}`
-      const headers = { Authentication: token, 'Content-Type': 'multipart/form-data' }
-
+      const formData = new FormData()
+      formData.append('file', file[0], file[0].name)
+      const header = {
+        'Content-Type': 'multipart/form-data'
+      }
       try {
-        const response = await callApi('post', endpoint, headers, {}, data)
+        const response = await callApi('post', endpoint, header, {}, formData)
         return response
       } catch (error) {
         console.log(error)
@@ -86,7 +89,30 @@ const useDocumentApi = () => {
     [callApi]
   )
 
-  return { getDocumentsInFolder, getDocument, getDocumentBarcode, createDocument, uploadDocumentPdf, confirmDocument }
+  const getPendingDocuments = React.useCallback(
+    async (take: number, page: number, keyword?: string, folderId?: string) => {
+      let endpoint = `/${rootEndpoint}/pending?take=${take}&page=${page + 1}`
+      if (keyword) endpoint += `&keyword=${keyword}`
+      if (folderId) endpoint += `&folderId=${folderId}`
+      try {
+        const response = await callApi('get', endpoint)
+        return response
+      } catch (error) {
+        console.log(error)
+      }
+    },
+    [callApi]
+  )
+
+  return {
+    getDocumentsInFolder,
+    getDocument,
+    getDocumentBarcode,
+    createDocument,
+    uploadDocumentPdf,
+    confirmDocument,
+    getPendingDocuments
+  }
 }
 
 export default useDocumentApi

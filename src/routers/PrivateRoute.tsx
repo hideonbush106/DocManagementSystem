@@ -1,8 +1,6 @@
 import React from 'react'
-import { useNavigate } from 'react-router'
-import Layout from '~/components/layouts/Layout'
-import Loading from '~/components/loading/Loading'
 import useAuth from '~/hooks/useAuth'
+import BasicLayout from '~/components/layouts/BasicLayout'
 import { privateRoutes } from './routes'
 
 interface Props {
@@ -10,25 +8,23 @@ interface Props {
 }
 
 const PrivateRoute = ({ Component }: Props) => {
-  const { user, loading } = useAuth()
-  const navigate = useNavigate()
-  React.useEffect(() => {
-    if (!loading && !user) {
-      navigate('/')
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user, loading])
-
+  const { user } = useAuth()
   const route = privateRoutes.find((r) => r.component === Component)
   const title = route ? route.title : ''
+  const layout = route ? route.layout : ''
 
-  return !loading && user ? (
-    <Layout title={title}>
-      <Component />
-    </Layout>
-  ) : (
-    <Loading />
-  )
+  let render: React.ReactNode = <></>
+  switch (layout) {
+    default: {
+      render = (
+        <BasicLayout title={title}>
+          <Component />
+        </BasicLayout>
+      )
+    }
+  }
+
+  return user ? render : <></>
 }
 
 export default PrivateRoute

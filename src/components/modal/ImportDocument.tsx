@@ -1,46 +1,129 @@
 import { CreateNewFolderOutlined } from '@mui/icons-material'
 import { Box, Button, FormControl, MenuItem, TextField, Typography } from '@mui/material'
-import React, { ChangeEvent, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import FileUpload from 'react-material-file-upload'
+import { useFormik } from 'formik'
+import useDepartmentApi from '~/hooks/api/useDepartmentApi'
+import { Categories, CreateDocument, Department, Folder, Locker, Room } from '~/global/interface'
+import useCategoryApi from '~/hooks/api/useCategoryApi'
+import useRoomApi from '~/hooks/api/useRoomApi'
+import useLockerApi from '~/hooks/api/useLockerApi'
+import useFolderApi from '~/hooks/api/useFolderApi'
+import * as yup from 'yup'
+import useDocumentApi from '~/hooks/api/useDocumentApi'
+import Barcode from 'react-barcode'
+import { notifySuccess } from '~/global/toastify'
 
 interface ImportDocumentProps {
   handleClose: () => void
 }
 
-interface FormData {
-  name: string
-  description: string
-  numOfPages: number
-  folder: {
-    id: string
-  }
-  category: {
-    id: string
-  }
-}
-
 const ImportDocument = (props: ImportDocumentProps) => {
   const [files, setFiles] = useState<File[]>([])
-  const [formData, setFormData] = useState<FormData>({
-    name: '',
-    description: '',
-    numOfPages: 1,
-    folder: {
-      id: ''
+  const [departments, setDepartments] = useState<Department[]>([])
+  const [categories, setCategories] = useState<Categories[]>([])
+  const [rooms, setRooms] = useState<Room[]>([])
+  const [lockers, setLockers] = useState<Locker[]>([])
+  const [folders, setFolders] = useState<Folder[]>([])
+  const [barcode, setBarcode] = useState<string>('')
+  const { createDocument, uploadDocumentPdf } = useDocumentApi()
+  const { getAllDepartments } = useDepartmentApi()
+  const { getAllCategories } = useCategoryApi()
+  const { getRoomsInDepartment } = useRoomApi()
+  const { getLockerInRoom } = useLockerApi()
+  const { getFoldersInLocker } = useFolderApi()
+
+  const componentRef = useRef<HTMLDivElement>(null)
+
+  const validationSchema = yup.object({
+    name: yup.string().required('Document name is required').trim(),
+    description: yup.string().required('Description is required').trim(),
+    numOfPages: yup
+      .number()
+      .integer('Number of pages must be an integer')
+      .min(1, 'Number of pages must be greater than 0')
+      .max(500000, 'Number of pages must be less than 500000')
+      .required('Number of pages is required'),
+    folder: yup.object({
+      id: yup.string().required('Folder is required')
+    }),
+    category: yup.object({
+      id: yup.string().required('Category is required')
+    })
+  })
+
+  const formik = useFormik({
+    initialValues: {
+      name: '',
+      description: '',
+      numOfPages: 1,
+      folder: {
+        id: ''
+      },
+      category: {
+        id: ''
+      }
     },
-    category: {
-      id: ''
+    validationSchema: validationSchema,
+    onSubmit: (values: CreateDocument) => {
+      values.name = values.name.trim().replace(/\s\s+/g, ' ')
+      values.description = values.description.trim().replace(/\s\s+/g, ' ')
+      createDocument(values).then((res) => {
+        setBarcode(res.data.barcode)
+        if (files.length > 0) {
+          uploadDocumentPdf(res.data.id, files)
+        }
+        notifySuccess('Import document successfully')
+      })
     }
   })
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
-    console.log(formData)
+  const departmentHandleChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    setCategories([])
+    formik.setFieldValue('category.id', [])
+    setRooms([])
+    setLockers([])
+    setFolders([])
+    formik.setFieldValue('folder.id', [])
+    const categories = await getAllCategories(event.target.value)
+    setCategories(categories.data)
+    const rooms = await getRoomsInDepartment(event.target.value)
+    setRooms(rooms.data)
   }
 
-  const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value })
+  const roomHandleChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    setLockers([])
+    setFolders([])
+    formik.setFieldValue('folder.id', [])
+    const lockers = await getLockerInRoom(event.target.value)
+    setLockers(lockers.data)
   }
+
+  const lockerHandleChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    setFolders([])
+    formik.setFieldValue('folder.id', [])
+    const folder = await getFoldersInLocker(event.target.value)
+    setFolders(folder.data)
+  }
+
+  const handleExport = () => {
+    const printWindow = window.open('')
+    if (componentRef.current && printWindow) {
+      const componentHTML = componentRef.current.innerHTML
+      printWindow.document.open()
+      printWindow.document.write(`${componentHTML}`)
+      printWindow.document.close()
+      printWindow.print()
+    }
+  }
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const departments = await getAllDepartments()
+      setDepartments(departments.data)
+    }
+    fetchData()
+  }, [getAllDepartments])
 
   return (
     <>
@@ -74,7 +157,7 @@ const ImportDocument = (props: ImportDocumentProps) => {
           Import Document
         </Typography>
       </Box>
-      <form onSubmit={handleSubmit} action='POST'>
+      <form onSubmit={formik.handleSubmit} action='POST'>
         <FormControl sx={{ width: '100%', px: 5 }}>
           <Typography
             sx={{
@@ -90,31 +173,42 @@ const ImportDocument = (props: ImportDocumentProps) => {
           >
             Document Information
           </Typography>
-          <TextField required sx={{ my: 1 }} label='File name' name='name' variant='standard' fullWidth />
           <TextField
+            sx={{ my: 1 }}
+            value={formik.values.name}
+            label='Document name'
+            name='name'
+            variant='standard'
+            fullWidth
+            onChange={formik.handleChange}
             required
+          />
+          <TextField
             sx={{ my: 1 }}
             label='Number of pages'
+            value={formik.values.numOfPages}
             type='number'
             name='numOfPages'
             variant='standard'
             fullWidth
-            onChange={handleChange}
+            onChange={formik.handleChange}
+            required
           />
           <TextField
-            required
             sx={{ my: 1 }}
             label='Description'
+            value={formik.values.description}
             name='description'
             variant='standard'
             fullWidth
-            onChange={handleChange}
+            onChange={formik.handleChange}
             multiline
             maxRows={4}
+            required
           />
           <Box display={'flex'} sx={{ width: '100%', justifyContent: 'space-between', flexWrap: 'wrap' }}>
             <TextField
-              onChange={handleChange}
+              onChange={departmentHandleChange}
               sx={{
                 my: 1,
                 width: {
@@ -125,14 +219,17 @@ const ImportDocument = (props: ImportDocumentProps) => {
               select
               label='Department'
               variant='standard'
+              required
             >
-              {/** Todo: call dept API */}
-              <MenuItem value='ABC'>ABC</MenuItem>
-              <MenuItem value='ABC'>ABC</MenuItem>
-              <MenuItem value='ABC'>ABC</MenuItem>
+              {departments.map((dept) => (
+                <MenuItem key={dept.id} value={dept.id}>
+                  {dept.name}
+                </MenuItem>
+              ))}
             </TextField>
             <TextField
-              onChange={handleChange}
+              value={formik.values.category.id}
+              onChange={formik.handleChange}
               sx={{
                 my: 1,
                 width: {
@@ -143,10 +240,15 @@ const ImportDocument = (props: ImportDocumentProps) => {
               select
               label='Category Type'
               variant='standard'
+              name='category.id'
+              required
+              disabled={categories.length === 0}
             >
-              <MenuItem value='ABC'>ABC</MenuItem>
-              <MenuItem value='ABC'>ABC</MenuItem>
-              <MenuItem value='ABC'>ABC</MenuItem>
+              {categories.map((cate) => (
+                <MenuItem key={cate.id} value={cate.id}>
+                  {cate.name}
+                </MenuItem>
+              ))}
             </TextField>
           </Box>
           <Typography
@@ -165,6 +267,7 @@ const ImportDocument = (props: ImportDocumentProps) => {
           </Typography>
           <Box display={'flex'} sx={{ width: '100%', justifyContent: 'space-between', flexWrap: 'wrap' }}>
             <TextField
+              onChange={roomHandleChange}
               sx={{
                 my: 1,
                 width: {
@@ -175,12 +278,17 @@ const ImportDocument = (props: ImportDocumentProps) => {
               select
               label='Room'
               variant='standard'
+              required
+              disabled={rooms.length === 0}
             >
-              <MenuItem value='ABC'>ABC</MenuItem>
-              <MenuItem value='ABC'>ABC</MenuItem>
-              <MenuItem value='ABC'>ABC</MenuItem>
+              {rooms.map((room) => (
+                <MenuItem key={room.id} value={room.id}>
+                  {room.name}
+                </MenuItem>
+              ))}
             </TextField>
             <TextField
+              onChange={lockerHandleChange}
               sx={{
                 my: 1,
                 width: {
@@ -191,12 +299,19 @@ const ImportDocument = (props: ImportDocumentProps) => {
               select
               label='Locker'
               variant='standard'
+              required
+              disabled={lockers.length === 0}
             >
-              <MenuItem value='ABC'>ABC</MenuItem>
-              <MenuItem value='ABC'>ABC</MenuItem>
-              <MenuItem value='ABC'>ABC</MenuItem>
+              {lockers.map((locker) => (
+                <MenuItem key={locker.id} value={locker.id}>
+                  {locker.name}
+                </MenuItem>
+              ))}
             </TextField>
             <TextField
+              value={formik.values.folder.id}
+              onChange={formik.handleChange}
+              name='folder.id'
               sx={{
                 my: 1,
                 width: {
@@ -207,10 +322,14 @@ const ImportDocument = (props: ImportDocumentProps) => {
               select
               label='Folder'
               variant='standard'
+              required
+              disabled={folders.length === 0}
             >
-              <MenuItem value='ABC'>ABC</MenuItem>
-              <MenuItem value='ABC'>ABC</MenuItem>
-              <MenuItem value='ABC'>ABC</MenuItem>
+              {folders.map((folder) => (
+                <MenuItem key={folder.id} value={folder.id}>
+                  {folder.name}
+                </MenuItem>
+              ))}
             </TextField>
           </Box>
           <Box sx={{ display: 'flex', justifyContent: 'center', my: 1 }}>
@@ -224,9 +343,16 @@ const ImportDocument = (props: ImportDocumentProps) => {
               }}
               value={files}
               onChange={setFiles}
+              maxFiles={1}
+              accept='application/pdf'
               title={`Drag 'n' drop some files here, or click to select files`}
             />
           </Box>
+          {barcode ? (
+            <Box ref={componentRef} id='barcode' display={'flex'} sx={{ justifyContent: 'center', width: '100%' }}>
+              <Barcode format='CODE128' value={barcode} />
+            </Box>
+          ) : null}
         </FormControl>
 
         <Box
@@ -242,11 +368,18 @@ const ImportDocument = (props: ImportDocumentProps) => {
             boxShadow: 'rgba(100, 100, 111, 0.2) 0px 7px 29px 0px'
           }}
         >
-          <Button sx={{ my: 1, mr: 1 }} variant='contained' color='primary' type='submit'>
-            Submit
-          </Button>
-          <Button sx={{ my: 1 }} color='error' onClick={props.handleClose}>
-            Cancel
+          {barcode ? (
+            <Button sx={{ my: 1, mr: 1 }} variant='contained' color='primary' onClick={handleExport}>
+              Export
+            </Button>
+          ) : (
+            <Button sx={{ my: 1, mr: 1 }} variant='contained' color='primary' type='submit'>
+              Submit
+            </Button>
+          )}
+
+          <Button sx={{ my: 1 }} color='error' variant='outlined' onClick={props.handleClose}>
+            {barcode ? 'Close' : 'Cancel'}
           </Button>
         </Box>
       </form>

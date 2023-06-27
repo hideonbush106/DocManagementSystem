@@ -45,6 +45,7 @@ const ImportRequest = () => {
   const [rejectID, setRejectID] = useState<number | null>(null)
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [selectedStatus, setSelectedStatus] = useState<string>('')
+  const [isFetching, setIsFetching] = useState(true)
   const callApi = useApi()
   const { acceptImportRequest, rejectImportRequest } = useImportRequestApi()
   useUserApi()
@@ -74,6 +75,8 @@ const ImportRequest = () => {
       }
     } catch (error) {
       console.log(error)
+    } finally {
+      setIsFetching(false)
     }
   }
 

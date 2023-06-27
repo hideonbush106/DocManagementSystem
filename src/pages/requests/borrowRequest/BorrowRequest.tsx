@@ -142,7 +142,7 @@ const BorrowRequest = () => {
   return (
     <>
       {role === 'STAFF' ? (
-        <Box display='flex' flexDirection='column' justifyContent='space-between' minHeight='81vh'>
+        <Box display='flex' flexDirection='column' justifyContent='space-between' minHeight='81vh' marginTop='20px'>
           <Box display='flex' flexWrap='wrap'>
             {borrowRequests.length === 0 ? (
               <Box sx={{ width: 300 }}>

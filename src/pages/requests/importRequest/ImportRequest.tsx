@@ -181,7 +181,7 @@ const ImportRequest = () => {
                     />
                   </div>
                   <div style={{ height: '200px' }}>
-                    <div style={{ height: '50px', overflow: 'hidden' }}>
+                    <div style={{ maxHeight: '50px', overflow: 'hidden' }}>
                       <Text variant='body2'>
                         <strong> Description: </strong>
                         {request.description}

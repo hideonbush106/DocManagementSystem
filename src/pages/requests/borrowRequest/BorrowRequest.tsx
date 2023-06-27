@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import RequestCard from '~/components/card/requestCard/RequestCard'
 import { Avatar, Box, CardActions, Pagination, Skeleton, Typography, styled } from '@mui/material'
@@ -37,7 +38,7 @@ const BorrowRequest = () => {
   const PER_PAGE = 10
 
   const [page, setPage] = useState(1)
-  const [borrowRequests, setborrowRequests] = useState<any[]>([])
+  const [borrowRequests, setBorrowRequests] = useState<any[]>([])
   const [totalPages, setTotalPages] = useState(1)
   const [selectedRequest, setSelectedRequest] = useState<any>(null)
   const [rejectID, setRejectID] = useState<number | null>(null)
@@ -47,31 +48,31 @@ const BorrowRequest = () => {
   useUserApi()
   const { user } = useAuth()
   const role = user?.role
-  useEffect(() => {
-    const fetchBorrowRequests = async () => {
-      try {
-        let endpoint = '/borrow-requests'
+  const fetchBorrowRequests = async () => {
+    try {
+      let endpoint = '/borrow-requests'
 
-        if (role === 'EMPLOYEE') {
-          endpoint = '/borrow-requests/own'
-        }
-        const response = await callApi('get', `${endpoint}?page=${page}`)
-        // console.log(response.data)
-
-        const responseData = response.data.data
-        const totalPages = response.data.total
-
-        if (responseData && Array.isArray(responseData)) {
-          setborrowRequests(responseData)
-          setTotalPages(Math.ceil(totalPages / PER_PAGE))
-        }
-      } catch (error) {
-        console.log(error)
+      if (role === 'EMPLOYEE') {
+        endpoint = '/borrow-requests/own'
       }
-    }
+      const response = await callApi('get', `${endpoint}?page=${page}`)
+      // console.log(response.data)
 
+      const responseData = response.data.data
+      const totalPages = response.data.total
+
+      if (responseData && Array.isArray(responseData)) {
+        setBorrowRequests(responseData)
+        setTotalPages(Math.ceil(totalPages / PER_PAGE))
+      }
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  useEffect(() => {
     fetchBorrowRequests()
-  }, [PER_PAGE, callApi, page, role])
+  }, [page])
 
   const count = totalPages
   const _DATA = usePagination(borrowRequests, PER_PAGE)
@@ -101,7 +102,7 @@ const BorrowRequest = () => {
       const response = await acceptBorrowRequest(borrowRequestId)
       console.log('Accept request successful:', response)
 
-      setborrowRequests((prevRequests) =>
+      setBorrowRequests((prevRequests) =>
         prevRequests.map((request) => (request.id === borrowRequestId ? { ...request, status: 'APPROVED' } : request))
       )
     } catch (error) {
@@ -127,7 +128,9 @@ const BorrowRequest = () => {
         const response = await rejectBorrowRequest({ id: String(rejectID), rejectedReason: reason })
         console.log('Reject request successful:', response)
 
-        setborrowRequests((prevRequests) =>
+        await fetchBorrowRequests()
+
+        setBorrowRequests((prevRequests) =>
           prevRequests.map((request) => (request.id === rejectID ? { ...request, status: 'REJECTED' } : request))
         )
       } catch (error) {
@@ -163,7 +166,7 @@ const BorrowRequest = () => {
                         alignItems: 'center'
                       }}
                     >
-                      <Avatar sx={{ width: '45px', height: '45px' }} />
+                      <Avatar sx={{ width: '45px', height: '45px' }} src={request.createdBy.photoURL} />
                       <div style={{ display: 'flex', flexDirection: 'column', marginLeft: '0.75rem' }}>
                         <Typography
                           sx={{ fontSize: '16px', fontWeight: '600', marginRight: '10px' }}

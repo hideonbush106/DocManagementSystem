@@ -96,7 +96,7 @@ const RoomAdvanced = () => {
           setLoadingRoom(true)
         }
       })
-      await fetchRooms() // Fetch the updated data
+      await fetchRooms()
     } catch (error) {
       console.log(error)
     }
@@ -107,11 +107,11 @@ const RoomAdvanced = () => {
       await updateRoom(values).then((result) => {
         if (result) {
           setLoadingRoom(true)
-          setRooms([]) // Clear the room array
+          setRooms([]) 
           notifySuccess('Update successfully')
         }
       })
-      await fetchRooms() // Fetch the updated data
+      await fetchRooms()
     } catch (error) {
       console.log(error)
     }

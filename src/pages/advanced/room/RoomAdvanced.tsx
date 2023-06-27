@@ -1,15 +1,15 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { Apartment, ExpandLess, ExpandMore, MeetingRoom } from '@mui/icons-material'
+import { MeetingRoom } from '@mui/icons-material'
 import AddRoundedIcon from '@mui/icons-material/AddRounded'
 import {
+  Autocomplete,
   Box,
   CircularProgress,
-  Collapse,
-  Divider,
   List,
   ListItemButton,
   ListItemIcon,
-  ListItemText
+  ListItemText,
+  TextField
 } from '@mui/material'
 import React, { useEffect, useState } from 'react'
 import { DeleteButton, UpdateRoomButton } from '~/components/button/Button'
@@ -30,21 +30,17 @@ const RoomAdvanced = () => {
   const [loadingRoom, setLoadingRoom] = React.useState<boolean>(false)
   const [isModalOpen, setModalOpen] = useState(false)
 
-  const [open, setOpen] = React.useState(false)
-  //handle options dropdown
-  const handleOptions = () => {
-    setOpen(!open)
-  }
   //handle modal open
   const handleModalOpen = () => {
     setModalOpen(true)
   }
 
-  //handle dropdown close after selecting
-  const handleSelect = (dept: Department) => {
-    setSelectedDepartment(dept)
-    setLoadingRoom(true)
-    setOpen(!open)
+  const handleAutocompleteChange = (_event: unknown, value: string | null) => {
+    const selectedDept = departments.find((dept) => dept.name === value)
+    if (selectedDept) {
+      setSelectedDepartment(selectedDept)
+      setLoadingRoom(true)
+    }
   }
 
   const fetchDepartment = async () => {
@@ -137,60 +133,22 @@ const RoomAdvanced = () => {
           height: { xs: 'calc(100vh - 92px - 6rem)', md: 'calc(100vh - 42px - 6rem)' },
           bgcolor: 'var(--white-color)',
           padding: '1rem 0',
-          overflowY: 'scroll'
+          overflowY: 'auto'
         }}
         component='div'
       >
         {!loading ? (
           <>
-            <ListItemButton
-              onClick={handleOptions}
-              sx={{
-                padding: { sm: '0 5rem', xs: '0 1rem' },
-                height: '52.5px'
-              }}
-            >
-              {open ? null : (
-                <ListItemIcon sx={{ color: 'var(--black-color)', minWidth: { sm: '56px', xs: '40px' } }}>
-                  <Apartment />
-                </ListItemIcon>
-              )}
-
-              <ListItemText
-                sx={{ paddingLeft: open ? { sm: '56px' } : '0' }}
-                primary={open ? 'Select department' : selectedDepartment.name}
-                primaryTypographyProps={{ fontFamily: 'inherit', color: 'var(--black-color)' }}
-              />
-              {open ? <ExpandLess /> : <ExpandMore />}
-            </ListItemButton>
-            <Divider sx={{ margin: { sm: '0 4rem', xs: '0 1rem' } }} />
-            <Collapse in={open} timeout='auto' unmountOnExit>
-              <List component='div' disablePadding>
-                {departments.map((dept) => (
-                  <>
-                    <ListItemButton
-                      key={dept.id}
-                      sx={{
-                        padding: { sm: '0 5rem', xs: '0 1rem' },
-                        height: '52.5px'
-                      }}
-                      onClick={dept.id === selectedDepartment.id ? undefined : () => handleSelect(dept)}
-                      disableTouchRipple={dept.id === selectedDepartment.id}
-                      selected={dept.id === selectedDepartment.id}
-                    >
-                      <ListItemIcon sx={{ color: 'var(--black-color)', minWidth: { sm: '56px', xs: '40px' } }}>
-                        <Apartment />
-                      </ListItemIcon>
-                      <ListItemText
-                        primary={dept.name}
-                        primaryTypographyProps={{ fontFamily: 'inherit', color: 'var(--black-color)' }}
-                      />
-                    </ListItemButton>
-                    <Divider sx={{ margin: { sm: '0 4rem', xs: '0 1rem' } }} />
-                  </>
-                ))}
-              </List>
-            </Collapse>
+            <Autocomplete
+              id='department option'
+              size='medium'
+              autoComplete
+              options={departments.map((dept) => dept.name)}
+              value={selectedDepartment.name}
+              onChange={handleAutocompleteChange}
+              sx={{ width: '100%', padding: { sm: '0 4rem', xs: '0 1rem' } }}
+              renderInput={(params) => <TextField label='Department' {...params} placeholder='Select department' />}
+            />
             {!loadingRoom ? (
               <>
                 {rooms.map((room) => (

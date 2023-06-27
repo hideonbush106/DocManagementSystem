@@ -96,13 +96,13 @@ const ImportRequest = () => {
     setSelectedRequest(null)
   }
 
-  const handleAccept = async (ImportRequestId: string) => {
+  const handleAccept = async (importRequestId: string) => {
     try {
-      const response = await acceptImportRequest(ImportRequestId)
+      const response = await acceptImportRequest(importRequestId)
       console.log('Accept request successful:', response)
 
       setImportRequests((prevRequests) =>
-        prevRequests.map((request) => (request.id === ImportRequestId ? { ...request, status: 'APPROVED' } : request))
+        prevRequests.map((request) => (request.id === importRequestId ? { ...request, status: 'APPROVED' } : request))
       )
     } catch (error) {
       console.log('Accept request failed:', error)

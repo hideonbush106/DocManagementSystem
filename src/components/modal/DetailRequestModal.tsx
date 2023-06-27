@@ -42,9 +42,10 @@ const DetailRequestModal = ({ open, handleClose, selectedRequest }: RequestModal
   }
 
   const getValueBarcode = useCallback(async () => {
-    if (selectedRequest) {
+    if (selectedRequest && selectedRequest.document.status !== 'REQUESTING') {
       try {
         const response = await getDocumentBarcode(selectedRequest.document.id)
+
         if (response?.data?.barcode) {
           setValueBarcode(response.data.barcode)
         }

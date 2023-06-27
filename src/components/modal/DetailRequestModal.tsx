@@ -163,7 +163,7 @@ const DetailRequestModal = ({ open, handleClose, selectedRequest }: RequestModal
                 margin: '20px 0 0'
               }}
             >
-              {selectedRequest.document.storageUrl && (
+              {(selectedRequest.status === 'PENDING' || selectedRequest.status === 'APPROVED') && (
                 <Button variant='contained' onClick={handleViewPdf}>
                   View PDF
                 </Button>

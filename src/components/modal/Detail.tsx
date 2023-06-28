@@ -5,11 +5,19 @@ import Barcode from 'react-barcode'
 import useDocumentApi from '~/hooks/api/useDocumentApi'
 import dayjs from 'dayjs'
 import styled from 'styled-components'
+import { ArrowForward } from '@mui/icons-material'
 
 const TitleText = styled.span`
   font-weight: 600;
 `
-interface DetailProps {
+const Text = styled(Typography)`
+  font-size: 0.8rem;
+  @media (min-width: 600px) {
+    font-size: 1rem;
+  }
+`
+
+interface DetailsInterface {
   id: string
   name: string
   description: string
@@ -34,17 +42,17 @@ interface DetailProps {
   }
 }
 
-interface id {
+interface DetailProps {
   id: string
 }
 
-const Detail = (props: id) => {
+const Detail = (props: DetailProps) => {
   const [open, setOpen] = React.useState(false)
   const handleOpen = () => setOpen(true)
   const handleClose = () => setOpen(false)
 
   const { getDocument, getDocumentBarcode } = useDocumentApi()
-  const [document, setDocument] = React.useState<DetailProps>()
+  const [document, setDocument] = React.useState<DetailsInterface>()
   const [barcode, setBarcode] = React.useState<string>('')
   const [loading, setLoading] = React.useState<boolean>(true)
 
@@ -63,20 +71,20 @@ const Detail = (props: id) => {
   }, [])
 
   const style = {
-    fontFamily: 'Poppins',
+    fontFamily: 'var(--font-family)',
     position: 'absolute',
     top: '50%',
     left: '50%',
     transform: 'translate(-50%, -50%)',
-    width: 'min(100%, 650px)',
+    width: 'min(100%, 600px)',
     bgcolor: 'background.paper',
     borderRadius: '5px',
     boxShadow: 24,
-    py: 6,
-    px: 6,
+    py: { xs: 3, sm: 6 },
+    px: { xs: 3, sm: 6 },
     color: 'var(--black-color)',
-    '& .MuiTypography-root': {
-      mb: 2,
+    '.MuiTypography-root': {
+      mb: { xs: 1, sm: 2 },
       fontFamily: 'inherit'
     }
   }
@@ -93,45 +101,54 @@ const Detail = (props: id) => {
               <Typography variant='h5' sx={{ fontWeight: '600' }}>
                 {document?.name}
               </Typography>
-              <Typography variant='body1'>
+              <Text variant='body1'>
                 <TitleText>Description: </TitleText> {document?.description}{' '}
-              </Typography>
-              <Typography variant='body1'>
+              </Text>
+              <Text variant='body1'>
                 <TitleText>Department: </TitleText>
                 {document?.folder.locker.room.department.name}{' '}
-              </Typography>
-              <Typography variant='body1'>
+              </Text>
+              <Text variant='body1'>
                 <TitleText>Category: </TitleText>
                 {document?.category.name}
-              </Typography>
-              <Box style={{ display: 'flex' }}>
-                <Typography variant='body1' mr={3} fontWeight={'bold'}>
-                  Location:
-                </Typography>
-                <Box>
-                  <Typography variant='body1'>
-                    <TitleText>Room: </TitleText>
-                    {document?.folder.locker.room.name}
-                  </Typography>
-                  <Typography variant='body1'>
-                    <TitleText>Locker: </TitleText>
-                    {document?.folder.locker.name}
-                  </Typography>
-                  <Typography variant='body1'>
-                    <TitleText>Folder: </TitleText>
-                    {document?.folder.name}
-                  </Typography>
-                </Box>
+              </Text>
+              <Box
+                style={{ display: 'flex', justifyContent: 'space-between' }}
+                flexDirection={{ sm: 'row', xs: 'column' }}
+              >
+                <Text variant='body1'>
+                  <TitleText>Room: </TitleText>
+                  {document?.folder.locker.room.name}
+                </Text>
+                <Text variant='body1'>
+                  <TitleText>Locker: </TitleText>
+                  {document?.folder.locker.name}
+                </Text>
+                <Text variant='body1'>
+                  <TitleText>Folder: </TitleText>
+                  {document?.folder.name}
+                </Text>
               </Box>
-              <Typography variant='body1'>
+              <Text variant='body1'>
                 <TitleText>Created at: </TitleText> {dayjs(document?.createdAt).format('DD/MM/YYYY HH:mm:ss')}
-              </Typography>
-              <Typography variant='body1'>
+              </Text>
+              <Text variant='body1'>
                 <TitleText>Status: </TitleText>{' '}
                 <span style={{ color: 'var(--green-color)', fontWeight: 600 }}> {document?.status}</span>
-              </Typography>
-              <Box style={{ display: 'flex', justifyContent: 'center' }}>
-                <Barcode value={barcode} />
+              </Text>
+              <Box style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                <Barcode value={barcode} height={100} />
+                <Box
+                  style={{ width: '90%', height: '35px', display: 'flex', justifyContent: 'space-between' }}
+                  marginTop={{ sm: '1rem' }}
+                >
+                  <Button size='small' variant='contained'>
+                    View PDF
+                  </Button>
+                  <Button size='small' variant='outlined' endIcon={<ArrowForward />}>
+                    Export
+                  </Button>
+                </Box>
               </Box>
             </>
           ) : (

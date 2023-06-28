@@ -16,6 +16,7 @@ const FilterRequest: React.FC<StatusSelectProps> = ({ selectedStatus, onChange, 
         <MenuItem value='PENDING'>Pending</MenuItem>
         <MenuItem value='APPROVED'>Approved</MenuItem>
         <MenuItem value='REJECTED'>Rejected</MenuItem>
+        <MenuItem value='CANCELED'>Canceled</MenuItem>
         <MenuItem value='DONE'>Done</MenuItem>
       </Select>
       {selectedStatus && (

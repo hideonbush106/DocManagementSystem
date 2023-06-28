@@ -1,35 +1,53 @@
 import React from 'react'
-import TreeItem from '@mui/lab/TreeItem'
+import PropTypes from 'prop-types'
 import { SvgIconComponent } from '@mui/icons-material'
 import useData from '~/hooks/useData'
-import { Skeleton } from '@mui/material'
+import { Box, Skeleton, Typography } from '@mui/material'
+import { TreeItemStyledRoot } from './DocumentTreeItem.styled'
 
 interface Props {
   nodeId: string
-  label: string
+  labelInfo?: string
+  labelText: string
   children?: JSX.Element | React.ReactNode
-  icon: SvgIconComponent
+  labelIcon: SvgIconComponent
+  isFull?: boolean
 }
 
 const DocumentTreeItem = (props: Props) => {
+  const { nodeId, labelIcon: LabelIcon, labelInfo, labelText, children, isFull } = props
   const { loading } = useData()
 
   return (
-    <TreeItem
-      nodeId={props.nodeId}
+    <TreeItemStyledRoot
+      nodeId={nodeId}
       label={
         !loading ? (
-          <div style={{ display: 'flex', alignItems: 'center', padding: '0.5rem 0' }}>
-            {React.createElement(props.icon)} <p style={{ marginLeft: '0.25rem' }}>{props.label}</p>
-          </div>
+          <Box sx={{ display: 'flex', alignItems: 'center', p: 0.5, pr: 0 }}>
+            <Box component={LabelIcon} color='inherit' sx={{ mr: 1 }} />
+            <Typography variant='body2' sx={{ fontWeight: 'inherit', flexGrow: 1 }}>
+              {labelText}
+            </Typography>
+            <Typography variant='caption' color={isFull ? 'error' : 'inherit'}>
+              {labelInfo}
+            </Typography>
+          </Box>
         ) : (
           <Skeleton animation='wave' variant='text' width='12rem' height='3rem' />
         )
       }
     >
-      {props.children}
-    </TreeItem>
+      {children}
+    </TreeItemStyledRoot>
   )
+}
+
+DocumentTreeItem.propTypes = {
+  labelIcon: PropTypes.elementType.isRequired,
+  labelInfo: PropTypes.string,
+  labelText: PropTypes.string.isRequired,
+  nodeId: PropTypes.string.isRequired,
+  children: PropTypes.node
 }
 
 export default DocumentTreeItem

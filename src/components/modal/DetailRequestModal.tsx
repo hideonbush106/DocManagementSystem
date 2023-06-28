@@ -128,7 +128,7 @@ const DetailRequestModal = ({ open, handleClose, selectedRequest }: RequestModal
               <TitleText>Status: </TitleText>
               <span style={{ color: getStatusColor(selectedRequest.status) }}>{selectedRequest.status}</span>
             </Text>
-            {selectedRequest.status === 'APPROVED' && (
+            {selectedRequest.status === 'DONE' && (
               <>
                 {loading ? (
                   <LoadingButton

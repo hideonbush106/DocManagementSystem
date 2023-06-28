@@ -41,7 +41,7 @@ const StatusText = ({ status }: { status: string }) => {
   if (status === 'APPROVED') {
     return <StatusDiv accepted>Accepted</StatusDiv>
   }
-  return null
+  return <StatusDiv done>Done</StatusDiv>
 }
 
 const ImportRequest = () => {

@@ -42,6 +42,9 @@ const StatusText = ({ status }: { status: string }) => {
   if (status === 'DONE') {
     return <StatusDiv done>Done</StatusDiv>
   }
+  if (status === 'CANCELED') {
+    return <StatusDiv canceled>Canceled</StatusDiv>
+  }
   return null
 }
 const BorrowRequestStaff = () => {

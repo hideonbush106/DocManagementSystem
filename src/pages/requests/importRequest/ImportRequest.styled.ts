@@ -4,6 +4,7 @@ interface StatusDivProps {
   accepted?: boolean
   rejected?: boolean
   done?: boolean
+  canceled?: boolean
 }
 
 export const StatusDiv = styled.div<StatusDivProps>`
@@ -29,5 +30,10 @@ export const StatusDiv = styled.div<StatusDivProps>`
     done &&
     `
     background-color: var(--primary-dark-color);
+  `}
+  ${({ canceled }) =>
+    canceled &&
+    `
+    background-color: var(--black-light-color);
   `}
 `

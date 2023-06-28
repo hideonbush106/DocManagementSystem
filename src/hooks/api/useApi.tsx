@@ -15,21 +15,25 @@ const useApi = () => {
         const errorDetails = error.response?.data.details
         switch (errorDetails) {
           case 'Access denied': {
-            const status = await logout()
-            if (status) message = 'Account is not allowed to access the system'
+            await logout()
+            message = 'Account is not allowed to access the system'
             break
           }
           case 'Session expired': {
-            const status = await logout()
-            if (status) message = 'Session expired. Please login again'
-            break
-          }
-          case 'Token expired': {
-            await refreshToken()
+            await logout()
+            message = 'Session expired. Please login again'
             break
           }
           case 'Invalid token': {
             await logout()
+            break
+          }
+          case 'No token provided': {
+            await logout()
+            break
+          }
+          case 'Token expired': {
+            await refreshToken()
             break
           }
           case 'Not permitted': {
@@ -37,7 +41,7 @@ const useApi = () => {
             break
           }
           default:
-            throw error
+            message = errorDetails
         }
       }
       if (message) {

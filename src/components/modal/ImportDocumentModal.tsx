@@ -184,8 +184,6 @@ const ImportDocumentModal = (props: ImportDocumentModalProps) => {
             variant='standard'
             fullWidth
             onChange={formik.handleChange}
-            error={Boolean(formik.errors.name)}
-            helperText={formik.errors.name}
             required
           />
           <TextField
@@ -197,8 +195,6 @@ const ImportDocumentModal = (props: ImportDocumentModalProps) => {
             variant='standard'
             fullWidth
             onChange={formik.handleChange}
-            error={Boolean(formik.errors.numOfPages)}
-            helperText={formik.errors.numOfPages}
             required
           />
           <TextField
@@ -211,8 +207,6 @@ const ImportDocumentModal = (props: ImportDocumentModalProps) => {
             onChange={formik.handleChange}
             multiline
             maxRows={4}
-            error={Boolean(formik.errors.description)}
-            helperText={formik.errors.description}
             required
           />
           <Box display={'flex'} sx={{ width: '100%', justifyContent: 'space-between', flexWrap: 'wrap' }}>

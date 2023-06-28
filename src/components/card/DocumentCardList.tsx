@@ -1,7 +1,7 @@
 import { Grid } from '@mui/material'
 import { Link } from 'react-router-dom'
 import DocumentCard from './DocumentCard'
-import { Apartment, SvgIconComponent, Work, Lock, Folder, DescriptionOutlined } from '@mui/icons-material'
+import { Apartment, SvgIconComponent, Folder, DescriptionOutlined, MeetingRoom, ViewModule } from '@mui/icons-material'
 import FileCard from './FileCard'
 
 type Props = {
@@ -21,11 +21,11 @@ const DocumentCardList = (props: Props) => {
       break
     }
     case 'room': {
-      icon = { Component: Work }
+      icon = { Component: MeetingRoom }
       break
     }
     case 'locker': {
-      icon = { Component: Lock }
+      icon = { Component: ViewModule }
       break
     }
     case 'folder': {
@@ -40,7 +40,7 @@ const DocumentCardList = (props: Props) => {
   return (
     <Grid container spacing={3} sx={{ marginTop: '0.5rem' }}>
       {items.map((item) => (
-        <Grid key={item.id} item xs={12} md={6} lg={4}>
+        <Grid key={item.id} item xs={12} sm={4} md={6} lg={4}>
           {type === 'file' ? (
             <FileCard icon={icon} name={item.name} />
           ) : (

@@ -151,7 +151,8 @@ export const RejectButton = ({ text, onClick }: ButtonProps) => {
 }
 
 //advanced button
-export const UpdateButton = (/* { text, id, name, onSubmit }: ButtonProps */) => {
+export const UpdateButton = ({ text, id, name, onSubmit }: ButtonProps) => {
+  console.log(text, id, name, onSubmit?.name)
   return (
     <></>
     // <ModalLayout
@@ -177,7 +178,8 @@ export const UpdateButton = (/* { text, id, name, onSubmit }: ButtonProps */) =>
   )
 }
 
-export const DeleteButton = (/* { text, id, handleDelete }: ButtonProps */) => {
+export const DeleteButton = ({ text, id, handleDelete }: ButtonProps) => {
+  console.log(text, id, handleDelete?.name)
   return (
     <></>
     // <ModalLayout

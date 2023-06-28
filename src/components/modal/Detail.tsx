@@ -5,16 +5,20 @@ import Barcode from 'react-barcode'
 import useDocumentApi from '~/hooks/api/useDocumentApi'
 import dayjs from 'dayjs'
 import styled from 'styled-components'
-import { ArrowForward } from '@mui/icons-material'
+import { ArrowForward, Description } from '@mui/icons-material'
 
 const TitleText = styled.span`
   font-weight: 600;
+  font-family: var(--font-family);
 `
 const Text = styled(Typography)`
-  font-size: 0.8rem;
+  font-size: 14px;
+  margin-bottom: 8px;
   @media (min-width: 600px) {
     font-size: 1rem;
+    margin-bottom: 16px;
   }
+  font-family: var(--font-family);
 `
 
 interface DetailsInterface {
@@ -57,13 +61,15 @@ const Detail = (props: DetailProps) => {
   const [loading, setLoading] = React.useState<boolean>(true)
 
   const fetchData = async (id: string) => {
-    await getDocument(id).then((result) => {
-      setDocument(result.data)
-    })
-    await getDocumentBarcode(id).then((result) => {
-      setBarcode(result.data.barcode)
+    try {
+      const document = await getDocument(id)
+      setDocument(document.data)
+      const barcode = await getDocumentBarcode(id)
+      setBarcode(barcode.data.barcode)
       setLoading(false)
-    })
+    } catch (error) {
+      console.log(error)
+    }
   }
 
   useEffect(() => {
@@ -77,16 +83,12 @@ const Detail = (props: DetailProps) => {
     left: '50%',
     transform: 'translate(-50%, -50%)',
     width: 'min(100%, 600px)',
-    bgcolor: 'background.paper',
+    bgcolor: 'var(--white-color)',
     borderRadius: '5px',
     boxShadow: 24,
     py: { xs: 3, sm: 6 },
     px: { xs: 3, sm: 6 },
-    color: 'var(--black-color)',
-    '.MuiTypography-root': {
-      mb: { xs: 1, sm: 2 },
-      fontFamily: 'inherit'
-    }
+    color: 'var(--black-color)'
   }
 
   return (
@@ -98,15 +100,32 @@ const Detail = (props: DetailProps) => {
         <Box sx={style}>
           {!loading ? (
             <>
-              <Typography variant='h5' sx={{ fontWeight: '600' }}>
-                {document?.name}
-              </Typography>
+              <Box
+                display={'inline-flex'}
+                alignItems={'center'}
+                sx={{
+                  width: '100%',
+                  mb: 2,
+                  ml: -1
+                }}
+              >
+                <Description sx={{ color: 'var(--black-color)', mr: 1 }} fontSize='large' />
+                <Typography variant='h4' sx={{ fontSize: { sm: '2rem', xs: '1.5rem' }, fontWeight: '600' }}>
+                  Document Detail
+                </Typography>
+              </Box>
               <Text variant='body1'>
-                <TitleText>Description: </TitleText> {document?.description}{' '}
+                <TitleText>File name: </TitleText> {document?.name}
+              </Text>
+              <Text variant='body1'>
+                <TitleText>Description: </TitleText> {document?.description}
+              </Text>
+              <Text variant='body1'>
+                <TitleText>Number of pages: </TitleText> {document?.numOfPages}
               </Text>
               <Text variant='body1'>
                 <TitleText>Department: </TitleText>
-                {document?.folder.locker.room.department.name}{' '}
+                {document?.folder.locker.room.department.name}
               </Text>
               <Text variant='body1'>
                 <TitleText>Category: </TitleText>

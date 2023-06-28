@@ -9,9 +9,7 @@ import useApi from '~/hooks/api/useApi'
 import InfoIcon from '@mui/icons-material/Info'
 import DetailRequestModal from '~/components/modal/DetailRequestModal'
 import { StatusDiv } from '~/pages/requests/importRequest/ImportRequest.styled'
-import { AcceptButton, RejectButton } from '~/components/button/Button'
-import RejectRequestModal from '~/components/modal/RejectRequestModal'
-import useImportRequestApi from '~/hooks/api/useImportRequestApi'
+import { RejectButton } from '~/components/button/Button'
 import useUserApi from '~/hooks/api/useUserApi'
 import dayjs from 'dayjs'
 
@@ -34,18 +32,18 @@ const StatusText = ({ status }: { status: string }) => {
   return <StatusDiv done>Done</StatusDiv>
 }
 
-const getStatusColor = (status: string) => {
-  switch (status) {
-    case 'PENDING':
-      return 'var(--primary-color)'
-    case 'REJECTED':
-      return 'var(--red-color)'
-    case 'APPROVED':
-      return 'var(--green-color)'
-    default:
-      return 'inherit'
-  }
-}
+// const getStatusColor = (status: string) => {
+//   switch (status) {
+//     case 'PENDING':
+//       return 'var(--primary-color)'
+//     case 'REJECTED':
+//       return 'var(--red-color)'
+//     case 'APPROVED':
+//       return 'var(--green-color)'
+//     default:
+//       return 'inherit'
+//   }
+// }
 const ImportRequestEmployee = () => {
   const PER_PAGE = 10
 
@@ -53,8 +51,7 @@ const ImportRequestEmployee = () => {
   const [importRequests, setImportRequests] = useState<any[]>([])
   const [totalPages, setTotalPages] = useState(1)
   const [selectedRequest, setSelectedRequest] = useState<any>(null)
-  const [rejectID, setRejectID] = useState<number | null>(null)
-  const [isModalOpen, setIsModalOpen] = useState(false)
+  //   const [isModalOpen, setIsModalOpen] = useState(false)
   const [isFetching, setIsFetching] = useState(true)
   const callApi = useApi()
   useUserApi()
@@ -108,6 +105,7 @@ const ImportRequestEmployee = () => {
   const handleCancel = async (id: number) => {
     try {
       const response = await callApi('get', `/import-requests/${id}`)
+      console.log(response)
     } catch (error) {
       console.error(error)
     }
@@ -120,7 +118,7 @@ const ImportRequestEmployee = () => {
           <CircularProgress />
         </Box>
       ) : (
-        <Box display='flex' flexDirection='column' justifyContent='space-between' minHeight='80vh' marginTop='20px'>
+        <Box display='flex' flexDirection='column' justifyContent='space-between' minHeight='75vh' marginTop='20px'>
           <Box display='flex' flexWrap='wrap'>
             {importRequests.length === 0 ? (
               <Typography>There is no requests</Typography>

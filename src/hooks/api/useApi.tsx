@@ -15,13 +15,13 @@ const useApi = () => {
         const errorDetails = error.response?.data.details
         switch (errorDetails) {
           case 'Access denied': {
-            const status = await logout()
-            if (status) message = 'Account is not allowed to access the system'
+            await logout()
+            message = 'Account is not allowed to access the system'
             break
           }
           case 'Session expired': {
-            const status = await logout()
-            if (status) message = 'Session expired. Please login again'
+            await logout()
+            message = 'Session expired. Please login again'
             break
           }
           case 'Invalid token': {

@@ -87,12 +87,12 @@ const AuthProvider = ({ children }: Props) => {
     try {
       await signOut(auth)
       await get('/users/logout', {}, { Authentication: idToken, accept: 'application/json' })
-      setIdToken(null)
-      setUser(undefined)
     } catch (error) {
       console.log(error)
       notifyError('Fail to logout')
     }
+    setIdToken(null)
+    setUser(undefined)
     setLoading(false)
   }
 

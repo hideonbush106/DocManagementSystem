@@ -1,10 +1,8 @@
 import { styled as mstyled, Modal, Box, Typography, Button } from '@mui/material'
-import LoadingButton from '@mui/lab/LoadingButton'
 import dayjs from 'dayjs'
-import { useCallback, useEffect, useState } from 'react'
-import Barcode from 'react-barcode'
+import { useState } from 'react'
 import styled from 'styled-components'
-import useDocumentApi from '~/hooks/api/useDocumentApi'
+import Detail from './Detail'
 
 const TitleText = styled.span`
   font-weight: 600;
@@ -21,9 +19,8 @@ interface RequestModalProps {
 }
 
 const DetailRequestModal = ({ open, handleClose, selectedRequest }: RequestModalProps) => {
-  const [valueBarcode, setValueBarcode] = useState('')
-  const { getDocumentBarcode } = useDocumentApi()
-  const [loading, setLoading] = useState(true)
+  const [isModalOpen, setIsModalOpen] = useState(false)
+  const [documentId, setDocumentId] = useState('')
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -34,31 +31,14 @@ const DetailRequestModal = ({ open, handleClose, selectedRequest }: RequestModal
       case 'APPROVED':
         return 'var(--green-color)'
       default:
-        return 'inherit'
+        return 'var(--primary-dark-color)'
     }
   }
-  const handleViewPdf = () => {
-    window.open(selectedRequest.document.storageUrl)
+
+  const handleDetailButton = (id: string) => {
+    setIsModalOpen(true)
+    setDocumentId(id)
   }
-
-  const getValueBarcode = useCallback(async () => {
-    if (selectedRequest) {
-      try {
-        const response = await getDocumentBarcode(selectedRequest.document.id)
-        if (response?.data?.barcode) {
-          setValueBarcode(response.data.barcode)
-        }
-      } catch (error) {
-        console.log(error)
-      } finally {
-        setLoading(false)
-      }
-    }
-  }, [getDocumentBarcode, selectedRequest])
-
-  useEffect(() => {
-    getValueBarcode()
-  }, [getValueBarcode, selectedRequest, loading])
 
   return (
     <Modal open={open} onClose={handleClose} closeAfterTransition>
@@ -126,30 +106,10 @@ const DetailRequestModal = ({ open, handleClose, selectedRequest }: RequestModal
             )}
             <Text>
               <TitleText>Status: </TitleText>
-              <span style={{ color: getStatusColor(selectedRequest.status) }}>{selectedRequest.status}</span>
+              <span style={{ color: getStatusColor(selectedRequest.status), fontWeight: 600 }}>
+                {selectedRequest.status}
+              </span>
             </Text>
-            {selectedRequest.status === 'DONE' && (
-              <>
-                {loading ? (
-                  <LoadingButton
-                    variant='text'
-                    loading={loading}
-                    sx={{
-                      display: 'flex',
-                      justifyContent: 'center',
-                      width: {
-                        xs: 'auto',
-                        md: '40vw',
-                        lg: '28vw'
-                      },
-                      height: 'fit-content'
-                    }}
-                  />
-                ) : (
-                  <Barcode value={valueBarcode} />
-                )}
-              </>
-            )}
             <Box
               sx={{
                 display: 'flex',
@@ -163,12 +123,17 @@ const DetailRequestModal = ({ open, handleClose, selectedRequest }: RequestModal
                 margin: '20px 0 0'
               }}
             >
-              {selectedRequest.document.storageUrl && (
-                <Button variant='contained' onClick={handleViewPdf}>
-                  View PDF
+              {selectedRequest.status !== 'REJECTED' && (
+                <Button
+                  variant='contained'
+                  onClick={() => handleDetailButton(selectedRequest.document.id)}
+                  sx={{ fontFamily: 'inherit' }}
+                >
+                  Document Detail
                 </Button>
               )}
             </Box>
+            <Detail id={documentId} open={isModalOpen} onClose={() => setIsModalOpen(false)} />
           </div>
         )}
       </Box>

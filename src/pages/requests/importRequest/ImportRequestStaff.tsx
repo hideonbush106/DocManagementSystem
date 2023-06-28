@@ -28,6 +28,9 @@ const StatusText = ({ status }: { status: string }) => {
       </>
     )
   }
+  if (status === 'CANCELED') {
+    return <StatusDiv cancelled>Cancelled</StatusDiv>
+  }
   if (status === 'APPROVED') {
     return <StatusDiv accepted>Accepted</StatusDiv>
   }

@@ -12,6 +12,7 @@ import { StatusDiv } from '~/pages/requests/importRequest/ImportRequest.styled'
 import { RejectButton } from '~/components/button/Button'
 import useUserApi from '~/hooks/api/useUserApi'
 import dayjs from 'dayjs'
+import useImportRequestApi from '~/hooks/api/useImportRequestApi'
 
 const Text = styled(Typography)`
   color: var(--black-color);
@@ -28,6 +29,9 @@ const StatusText = ({ status }: { status: string }) => {
   }
   if (status === 'APPROVED') {
     return <StatusDiv accepted>Accepted</StatusDiv>
+  }
+  if (status === 'CANCELED') {
+    return <StatusDiv cancelled>Cancelled</StatusDiv>
   }
   return <StatusDiv done>Done</StatusDiv>
 }
@@ -51,9 +55,9 @@ const ImportRequestEmployee = () => {
   const [importRequests, setImportRequests] = useState<any[]>([])
   const [totalPages, setTotalPages] = useState(1)
   const [selectedRequest, setSelectedRequest] = useState<any>(null)
-  //   const [isModalOpen, setIsModalOpen] = useState(false)
   const [isFetching, setIsFetching] = useState(true)
   const callApi = useApi()
+  const { cancelImportRequest } = useImportRequestApi()
   useUserApi()
 
   const fetchImportRequests = async () => {
@@ -102,10 +106,14 @@ const ImportRequestEmployee = () => {
     setSelectedRequest(null)
   }
 
-  const handleCancel = async (id: number) => {
+  const handleCancel = async (id: string) => {
     try {
-      const response = await callApi('get', `/import-requests/${id}`)
+      const response = await cancelImportRequest(id)
       console.log(response)
+
+      setImportRequests((prevRequests) =>
+        prevRequests.map((request) => (request.id === id ? { ...request, status: 'CANCELED' } : request))
+      )
     } catch (error) {
       console.error(error)
     }

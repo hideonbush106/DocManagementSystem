@@ -170,7 +170,7 @@ const BorrowRequest = () => {
   return (
     <>
       {role === 'STAFF' ? (
-        <Box display='flex' flexDirection='column' justifyContent='space-between' minHeight='81vh'>
+        <Box display='flex' flexDirection='column' justifyContent='space-between' minHeight='81vh' marginTop='5px'>
           <div>
             <FilterRequest
               selectedStatus={selectedStatus}

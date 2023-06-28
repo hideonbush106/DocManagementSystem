@@ -169,7 +169,7 @@ const ImportRequest = () => {
   return (
     <>
       {role === 'STAFF' ? (
-        <Box display='flex' flexDirection='column' justifyContent='space-between' minHeight='81vh' marginTop='20px'>
+        <Box display='flex' flexDirection='column' justifyContent='space-between' minHeight='81vh' marginTop='5px'>
           <div>
             <FilterRequest
               selectedStatus={selectedStatus}

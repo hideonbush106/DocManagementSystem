@@ -15,6 +15,9 @@ const DocumentDisplay = () => {
   const calculateSize = (folder: FolderTree) => {
     return folder.documents.reduce((sum: number, document: File) => sum + document.numOfPages, 0)
   }
+  const isFull = (current: number, capacity: number) => {
+    return current / capacity >= 0.8
+  }
 
   return (
     <DocumentWrapper>
@@ -30,30 +33,36 @@ const DocumentDisplay = () => {
         </ButtonWrapper>
       </NavWrapper>
       <TreeWrapper>
-        <TreeView defaultCollapseIcon={<ExpandMore />} defaultExpandIcon={<ChevronRight />}>
+        <TreeView sx={{ width: '100%' }} defaultCollapseIcon={<ExpandMore />} defaultExpandIcon={<ChevronRight />}>
           {!loading
             ? documentTree?.map((dept, index) => (
-                <DocumentTreeItem key={index} nodeId={dept.id} label={dept.name} icon={Apartment}>
+                <DocumentTreeItem key={index} nodeId={dept.id} labelText={dept.name} labelIcon={Apartment}>
                   {dept.rooms.map((room, index) => (
                     <DocumentTreeItem
                       key={index}
                       nodeId={room.id}
-                      label={`${room.name} (${room.lockers.length}/${room.capacity})`}
-                      icon={MeetingRoom}
+                      labelText={`${room.name}`}
+                      labelInfo={`${room.lockers.length}/${room.capacity}`}
+                      labelIcon={MeetingRoom}
+                      isFull={isFull(room.lockers.length, room.capacity)}
                     >
                       {room.lockers.map((locker, index) => (
                         <DocumentTreeItem
                           key={index}
                           nodeId={locker.id}
-                          label={`${locker.name} (${locker.folders.length}/${locker.capacity})`}
-                          icon={ViewModule}
+                          labelText={`${locker.name}`}
+                          labelInfo={`${locker.folders.length}/${locker.capacity}`}
+                          labelIcon={ViewModule}
+                          isFull={isFull(locker.folders.length, locker.capacity)}
                         >
                           {locker.folders.map((folder, index) => (
                             <DocumentTreeItem
                               key={index}
                               nodeId={folder.id}
-                              label={`${folder.name} (${calculateSize(folder)}/${folder.capacity})`}
-                              icon={Folder}
+                              labelText={`${folder.name}`}
+                              labelInfo={`${calculateSize(folder)}/${folder.capacity}`}
+                              labelIcon={Folder}
+                              isFull={isFull(calculateSize(folder), folder.capacity)}
                             />
                           ))}
                         </DocumentTreeItem>
@@ -62,7 +71,9 @@ const DocumentDisplay = () => {
                   ))}
                 </DocumentTreeItem>
               ))
-            : fakeArray(4).map((_, index) => <DocumentTreeItem key={index} nodeId={''} label={''} icon={Folder} />)}
+            : fakeArray(4).map((_, index) => (
+                <DocumentTreeItem key={index} nodeId={''} labelText={''} labelIcon={Folder} />
+              ))}
         </TreeView>
       </TreeWrapper>
       <DocumentGrid>

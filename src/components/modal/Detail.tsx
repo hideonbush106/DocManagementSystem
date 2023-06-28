@@ -48,12 +48,14 @@ interface DetailsInterface {
 
 interface DetailProps {
   id: string
+  open: boolean
+  onClose: () => void
 }
 
 const Detail = (props: DetailProps) => {
-  const [open, setOpen] = React.useState(false)
-  const handleOpen = () => setOpen(true)
-  const handleClose = () => setOpen(false)
+  // const [open, setOpen] = React.useState(false)
+  // const handleOpen = () => setOpen(true)
+  // const handleClose = () => setOpen(false)
 
   const { getDocument, getDocumentBarcode } = useDocumentApi()
   const [document, setDocument] = React.useState<DetailsInterface>()
@@ -93,10 +95,7 @@ const Detail = (props: DetailProps) => {
 
   return (
     <>
-      <Button variant='contained' color='primary' onClick={handleOpen}>
-        Detail
-      </Button>
-      <Modal open={open} onClose={handleClose}>
+      <Modal open={props.open} onClose={props.onClose}>
         <Box sx={style}>
           {!loading ? (
             <>

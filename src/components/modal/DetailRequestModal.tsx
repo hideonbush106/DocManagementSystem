@@ -2,6 +2,7 @@ import { styled as mstyled, Modal, Box, Typography, Button } from '@mui/material
 import dayjs from 'dayjs'
 import { useState } from 'react'
 import styled from 'styled-components'
+import Detail from './Detail'
 
 const TitleText = styled.span`
   font-weight: 600;
@@ -19,6 +20,7 @@ interface RequestModalProps {
 
 const DetailRequestModal = ({ open, handleClose, selectedRequest }: RequestModalProps) => {
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const [documentId, setDocumentId] = useState('')
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -33,8 +35,9 @@ const DetailRequestModal = ({ open, handleClose, selectedRequest }: RequestModal
     }
   }
 
-  const handleDetailButton = () => {
+  const handleDetailButton = (id: string) => {
     setIsModalOpen(true)
+    setDocumentId(id)
   }
 
   return (
@@ -121,11 +124,16 @@ const DetailRequestModal = ({ open, handleClose, selectedRequest }: RequestModal
               }}
             >
               {selectedRequest.status !== 'REJECTED' && (
-                <Button variant='contained' onClick={handleDetailButton} sx={{ fontFamily: 'inherit' }}>
+                <Button
+                  variant='contained'
+                  onClick={() => handleDetailButton(selectedRequest.document.id)}
+                  sx={{ fontFamily: 'inherit' }}
+                >
                   Document Detail
                 </Button>
               )}
             </Box>
+            <Detail id={documentId} open={isModalOpen} onClose={() => setIsModalOpen(false)} />
           </div>
         )}
       </Box>

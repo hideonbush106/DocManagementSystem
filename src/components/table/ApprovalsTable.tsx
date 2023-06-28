@@ -2,9 +2,9 @@ import { DataGrid, GridColDef, GridRenderCellParams } from '@mui/x-data-grid'
 import ActionsCell from './ActionCell'
 import PropTypes, { Validator } from 'prop-types'
 import { Link } from 'react-router-dom'
-import CheckRoundedIcon from '@mui/icons-material/CheckRounded'
-import ModalLayout from '../modal/ModalLayout'
-import CodeScanner from '../modal/scanner/CodeScanner'
+// import CheckRoundedIcon from '@mui/icons-material/CheckRounded'
+// import ModalLayout from '../modal/ModalLayout'
+// import CodeScanner from '../modal/scanner/CodeScanner'
 import { useState, useEffect } from 'react'
 import useDocumentApi from '~/hooks/api/useDocumentApi'
 interface ApprovalsTableProps {
@@ -19,7 +19,7 @@ interface PaginationModel {
 const ApprovalsTable: React.FC<ApprovalsTableProps> = ({ view }) => {
   let columns: GridColDef[] = []
   const { getPendingDocuments } = useDocumentApi()
-  const [_open, setOpen] = useState(false)
+  // const [_open, setOpen] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
   const [data, setData] = useState([])
   const [rowCountState, setRowCountState] = useState<number>(0)
@@ -48,9 +48,9 @@ const ApprovalsTable: React.FC<ApprovalsTableProps> = ({ view }) => {
     fetchData()
   }, [])
 
-  const handleClose = () => {
-    setOpen(false)
-  }
+  // const handleClose = () => {
+  //   setOpen(false)
+  // }
 
   let rowHeight = 50
   if (view === 'dashboard') {
@@ -172,7 +172,7 @@ const ApprovalsTable: React.FC<ApprovalsTableProps> = ({ view }) => {
             >
               Confirm
             </Button> */}
-            <ModalLayout
+            {/* <ModalLayout
               size='small'
               style={{ padding: '7px 10px', fontWeight: 600, fontSize: 12 }}
               variant='outlined'
@@ -180,7 +180,7 @@ const ApprovalsTable: React.FC<ApprovalsTableProps> = ({ view }) => {
               endIcon={<CheckRoundedIcon />}
             >
               <CodeScanner handleClose={handleClose} />
-            </ModalLayout>
+            </ModalLayout> */}
           </Link>
         )
       },

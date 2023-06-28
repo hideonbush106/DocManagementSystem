@@ -103,7 +103,9 @@ const DetailRequestModal = ({ open, handleClose, selectedRequest }: RequestModal
             )}
             <Text>
               <TitleText>Status: </TitleText>
-              <span style={{ color: getStatusColor(selectedRequest.status) }}>{selectedRequest.status}</span>
+              <span style={{ color: getStatusColor(selectedRequest.status), fontWeight: 600 }}>
+                {selectedRequest.status}
+              </span>
             </Text>
             <Box
               sx={{

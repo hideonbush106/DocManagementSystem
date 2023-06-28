@@ -42,7 +42,8 @@ export const ButtonWrapper = styled.div`
   }
 `
 
-export const TreeWarpper = styled.div`
+export const TreeWrapper = styled.div`
+  display: flex;
   background: white;
   width: 30%;
   border-radius: 5px;

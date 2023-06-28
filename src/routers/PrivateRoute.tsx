@@ -1,6 +1,6 @@
 import React from 'react'
 import useAuth from '~/hooks/useAuth'
-import Layout from '~/components/layouts/Layout'
+import BasicLayout from '~/components/layouts/BasicLayout'
 import { privateRoutes } from './routes'
 
 interface Props {
@@ -11,14 +11,20 @@ const PrivateRoute = ({ Component }: Props) => {
   const { user } = useAuth()
   const route = privateRoutes.find((r) => r.component === Component)
   const title = route ? route.title : ''
+  const layout = route ? route.layout : ''
 
-  return (
-    user && (
-      <Layout title={title}>
-        <Component />
-      </Layout>
-    )
-  )
+  let render: React.ReactNode = <></>
+  switch (layout) {
+    default: {
+      render = (
+        <BasicLayout title={title}>
+          <Component />
+        </BasicLayout>
+      )
+    }
+  }
+
+  return user ? render : <></>
 }
 
 export default PrivateRoute

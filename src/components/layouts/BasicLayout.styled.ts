@@ -14,7 +14,7 @@ export const Wrapper = styled.section`
 
 export const MainContainer = styled.div`
   background-color: var(--background-color);
-  padding: 20px;
+  padding: 25px;
   overflow: auto;
 
   //in mobile view, margin-top: 50px to avoid overlapping with the navbar

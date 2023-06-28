@@ -2,11 +2,13 @@ import * as React from 'react'
 import Box from '@mui/material/Box'
 import Tabs from '@mui/material/Tabs'
 import Tab, { TabProps } from '@mui/material/Tab'
+import { SvgIconComponent } from '@mui/icons-material'
 // import Notification from '../notification/Notification'
 
 interface LinkTabProps extends TabProps {
   label?: string
   to?: string
+  iconprop?: SvgIconComponent
 }
 
 function LinkTab(props: LinkTabProps) {
@@ -16,13 +18,16 @@ function LinkTab(props: LinkTabProps) {
       onClick={(event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
         event.preventDefault()
       }}
+      icon={props.iconprop ? React.createElement(props.iconprop) : ''}
+      iconPosition='start'
       sx={{
         fontWeight: 'bold',
         backgroundColor: 'var(--background-dark-color)',
         borderRadius: '10px 10px 0 0',
-        padding: '0 15px',
-        margin: '10px 0',
-        letterSpacing: '1px'
+        padding: '0 20px',
+        margin: '10px 0 0',
+        lineHeight: 1,
+        fontFamily: 'inherit'
       }}
       {...props}
     />
@@ -30,7 +35,7 @@ function LinkTab(props: LinkTabProps) {
 }
 
 interface NavTabsProps {
-  tabs: { label: string; component: React.ReactNode }[]
+  tabs: { label: string; component: React.ReactNode; icon?: SvgIconComponent }[]
 }
 
 const NavTabs = ({ tabs }: NavTabsProps) => {
@@ -57,16 +62,16 @@ const NavTabs = ({ tabs }: NavTabsProps) => {
           aria-label='nav tabs'
           sx={{
             '.MuiTab-root': {
-              minHeight: '30px'
+              minHeight: '45px'
             },
             '.MuiTab-root.Mui-selected': {
               backgroundColor: 'var(--white-color)'
             },
-            margin: '10px 0 20px'
+            margin: '10px 0 0'
           }}
         >
           {tabs.map((tab, index) => (
-            <LinkTab key={index} label={tab.label} />
+            <LinkTab key={index} label={tab.label} iconprop={tab.icon} />
           ))}
         </Tabs>
         {renderTabContent()}

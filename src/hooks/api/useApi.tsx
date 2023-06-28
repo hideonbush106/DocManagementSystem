@@ -5,7 +5,7 @@ import { notifyError } from '~/global/toastify'
 import React from 'react'
 
 const useApi = () => {
-  const { logout } = useAuth()
+  const { idToken, logout, refreshToken } = useAuth()
 
   const handleError = React.useCallback(
     async (error: unknown) => {
@@ -28,19 +28,27 @@ const useApi = () => {
             await logout()
             break
           }
+          case 'No token provided': {
+            await logout()
+            break
+          }
+          case 'Token expired': {
+            await refreshToken()
+            break
+          }
           case 'Not permitted': {
             message = 'Account is not allowed to access the resource'
             break
           }
           default:
-            throw error
+            message = errorDetails
         }
       }
       if (message) {
         notifyError(message)
       }
     },
-    [logout]
+    [logout, refreshToken]
   )
   /**
    * Function Documentation: `callApi`
@@ -64,8 +72,7 @@ const useApi = () => {
       params: object = {},
       body: object = {}
     ) => {
-      const accessToken = localStorage.getItem('idToken')
-      const headersDefault = { accept: 'application/json', Authentication: accessToken }
+      const headersDefault = { accept: 'application/json', Authentication: idToken }
       Object.assign(headersDefault, headers)
       let response: AxiosResponse
       try {
@@ -92,7 +99,7 @@ const useApi = () => {
         handleError(error)
       }
     },
-    [handleError]
+    [handleError, idToken]
   )
 
   return callApi

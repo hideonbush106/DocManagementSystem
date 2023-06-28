@@ -7,8 +7,7 @@ import { CreateRoom } from '~/global/interface'
 interface CreateRoomProps {
   open: boolean
   handleClose: () => void
-  onSubmit?: (values: CreateRoom) => void
-  deptId: string
+  onSubmit: (values: CreateRoom) => void
 }
 
 const CreateRoomModal = (props: CreateRoomProps) => {
@@ -27,7 +26,7 @@ const CreateRoomModal = (props: CreateRoomProps) => {
       name: '',
       capacity: 10,
       department: {
-        id: props.deptId
+        id: ''
       }
     },
     validationSchema: validationSchema,
@@ -42,7 +41,7 @@ const CreateRoomModal = (props: CreateRoomProps) => {
   }
 
   useEffect(() => {
-    if (props.open) {
+    if (!props.open) {
       formik.resetForm()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -134,9 +133,6 @@ const CreateRoomModal = (props: CreateRoomProps) => {
           <Box
             sx={{
               p: 4,
-              position: 'sticky',
-              bottom: -1,
-              zIndex: 1,
               background: 'white',
               display: 'flex',
               justifyContent: 'end',

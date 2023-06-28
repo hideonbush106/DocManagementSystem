@@ -33,6 +33,7 @@ interface UpdateRoomButtonProps extends ButtonProps {
 
 interface DeleteButtonProps extends ButtonProps {
   id: string
+  name: string
   type: string
   handleDelete: (id: string) => void
 }
@@ -252,7 +253,7 @@ export const UpdateRoomButton = ({ text, id, name, capacity, onSubmit }: UpdateR
   )
 }
 
-export const DeleteButton = ({ text, id, handleDelete, type }: DeleteButtonProps) => {
+export const DeleteButton = ({ text, id, name, handleDelete, type }: DeleteButtonProps) => {
   return (
     <ModalLayout
       variant='outlined'
@@ -279,7 +280,7 @@ export const DeleteButton = ({ text, id, handleDelete, type }: DeleteButtonProps
       }}
       button={text}
     >
-      <DeleteModal id={id} handleDelete={handleDelete} type={type} />
+      <DeleteModal id={id} name={name} handleDelete={handleDelete} type={type} />
     </ModalLayout>
   )
 }

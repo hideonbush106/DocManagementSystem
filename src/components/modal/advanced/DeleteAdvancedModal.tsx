@@ -2,8 +2,9 @@ import { Box, Button, Typography } from '@mui/material'
 
 interface DeleteProps {
   id: string
-  handleDelete: (id: string) => void
+  name: string
   type: string
+  handleDelete: (id: string) => void
 }
 
 const DeleteModal = (props: DeleteProps) => {
@@ -39,7 +40,7 @@ const DeleteModal = (props: DeleteProps) => {
           }}
           variant='h4'
         >
-          Are you sure?
+          Delete {props.type.toLocaleLowerCase()}
         </Typography>
       </Box>
       <Box
@@ -63,15 +64,13 @@ const DeleteModal = (props: DeleteProps) => {
           }}
           variant='body2'
         >
-          This will delete this {props.type} permanently. You cannot undo this action.
+          Are you sure you want to delete this {props.type.toLocaleLowerCase()}
+          <span style={{ fontWeight: '600' }}> {props.name} </span>?
         </Typography>
       </Box>
       <Box
         sx={{
           p: 4,
-          position: 'sticky',
-          bottom: -1,
-          zIndex: 1,
           background: 'white',
           display: 'flex',
           justifyContent: 'end',

@@ -30,33 +30,44 @@ const RoomAdvanced = () => {
   const [loadingRoom, setLoadingRoom] = React.useState<boolean>(false)
   const [isModalOpen, setModalOpen] = useState(false)
 
+  //option for autocomplete
+  const options = {
+    options: departments.map((option) => option.name)
+  }
   //handle modal open
   const handleModalOpen = () => {
     setModalOpen(true)
   }
 
-  const handleAutocompleteChange = (_event: unknown, value: string | null) => {
-    const selectedDept = departments.find((dept) => dept.name === value)
-    if (selectedDept) {
-      setSelectedDepartment(selectedDept)
-      setLoadingRoom(true)
+  const handleAutocompleteChange = (_event: React.SyntheticEvent<Element, Event>, value: string | null) => {
+    if (value !== null) {
+      const selectedDept = departments.find((dept) => dept.name === value)
+      if (selectedDept) {
+        setSelectedDepartment(selectedDept)
+        setLoadingRoom(true)
+      }
+    }
+  }
+  const fetchDepartment = async () => {
+    try {
+      const result = await getAllDepartments()
+      setDepartments(result.data)
+      setSelectedDepartment(result.data[0])
+    } catch (error) {
+      console.log('error')
     }
   }
 
-  const fetchDepartment = async () => {
-    await getAllDepartments().then((result) => {
-      setDepartments(result.data)
-      setSelectedDepartment(result.data[0])
-    })
-  }
-
   const fetchRooms = async () => {
-    if (selectedDepartment.id) {
-      await getRoomsInDepartment(selectedDepartment.id).then((result) => {
+    try {
+      if (selectedDepartment.id) {
+        const result = await getRoomsInDepartment(selectedDepartment.id)
         setRooms(result.data)
         setLoading(false)
         setLoadingRoom(false)
-      })
+      }
+    } catch (error) {
+      console.log('error')
     }
   }
 
@@ -69,63 +80,44 @@ const RoomAdvanced = () => {
   }, [selectedDepartment])
 
   const handleCreate = async (values: CreateRoom) => {
-    try {
-      await createRoom(values).then((result) => {
-        if (result) {
-          setLoadingRoom(true)
-          setRooms([]) // Clear the room array
-          notifySuccess('Create successfully')
-          setModalOpen(false)
-        }
-      })
-      await fetchRooms() // Fetch the updated data
-    } catch (error) {
-      console.log(error)
+    values.department.id = selectedDepartment.id
+    const result = await createRoom(values)
+    if (result) {
+      setLoadingRoom(true)
+      setRooms([]) // Clear the room array
+      notifySuccess('Create successfully')
+      setModalOpen(false)
     }
+    await fetchRooms() // Fetch the updated data
   }
 
   const handleDelete = async (id: string) => {
-    try {
-      await deleteRoom(id).then((result) => {
-        if (result) {
-          setLoadingRoom(true)
-          setRooms([]) // Clear the room array
-          notifySuccess('Delete successfully')
-          // setModalOpen(false)
-        } else {
-          setLoadingRoom(true)
-        }
-      })
-      await fetchRooms()
-    } catch (error) {
-      console.log(error)
+    const result = await deleteRoom(id)
+    if (result) {
+      setLoadingRoom(true)
+      setRooms([]) // Clear the room array
+      notifySuccess('Delete successfully')
+      // setModalOpen(false)
+    } else {
+      setLoadingRoom(true)
     }
+    await fetchRooms()
   }
 
   const handleUpdate = async (values: UpdateRoom) => {
-    try {
-      await updateRoom(values).then((result) => {
-        if (result) {
-          setLoadingRoom(true)
-          setRooms([]) 
-          notifySuccess('Update successfully')
-        }
-      })
-      await fetchRooms()
-    } catch (error) {
-      console.log(error)
+    const result = await updateRoom(values)
+    if (result) {
+      setLoadingRoom(true)
+      setRooms([])
+      notifySuccess('Update successfully')
     }
+    await fetchRooms()
   }
 
   return (
     <>
       {selectedDepartment.id && (
-        <CreateRoomModal
-          open={isModalOpen}
-          handleClose={() => setModalOpen(false)}
-          deptId={selectedDepartment.id}
-          onSubmit={handleCreate}
-        />
+        <CreateRoomModal open={isModalOpen} handleClose={() => setModalOpen(false)} onSubmit={handleCreate} />
       )}
       <List
         sx={{
@@ -140,14 +132,16 @@ const RoomAdvanced = () => {
         {!loading ? (
           <>
             <Autocomplete
+              {...options}
               id='department option'
               size='medium'
               autoComplete
-              options={departments.map((dept) => dept.name)}
               value={selectedDepartment.name}
               onChange={handleAutocompleteChange}
-              sx={{ width: '100%', padding: { sm: '0 4rem', xs: '0 1rem' } }}
-              renderInput={(params) => <TextField label='Department' {...params} placeholder='Select department' />}
+              sx={{ width: '100%', padding: { sm: '0 4rem', xs: '0 1rem' }, my: '1rem' }}
+              renderInput={(params) => (
+                <TextField label='Department' {...params} placeholder='Select department' variant='standard' />
+              )}
             />
             {!loadingRoom ? (
               <>
@@ -171,7 +165,7 @@ const RoomAdvanced = () => {
                       capacity={room.capacity}
                       onSubmit={handleUpdate}
                     />
-                    <DeleteButton text='Delete' id={room.id} handleDelete={handleDelete} type='room' />
+                    <DeleteButton text='Delete' id={room.id} name={room.name} type='room' handleDelete={handleDelete} />
                   </ListItemButton>
                 ))}
                 <ListItemButton

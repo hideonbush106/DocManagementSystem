@@ -37,6 +37,7 @@ const DetailRequestModal = ({ open, handleClose, selectedRequest }: RequestModal
         return 'inherit'
     }
   }
+
   const handleViewPdf = () => {
     window.open(selectedRequest.document.storageUrl)
   }

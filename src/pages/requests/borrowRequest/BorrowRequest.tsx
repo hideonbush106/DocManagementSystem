@@ -1,7 +1,17 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import RequestCard from '~/components/card/requestCard/RequestCard'
-import { Avatar, Box, CardActions, Pagination, Skeleton, Typography, styled } from '@mui/material'
+import {
+  Avatar,
+  Box,
+  CardActions,
+  CircularProgress,
+  Pagination,
+  SelectChangeEvent,
+  Skeleton,
+  Typography,
+  styled
+} from '@mui/material'
 import React, { useEffect, useState } from 'react'
 import usePagination from '~/hooks/usePagination'
 import useApi from '~/hooks/api/useApi'
@@ -14,6 +24,7 @@ import useBorrowRequestApi from '~/hooks/api/useBorrowRequestApi'
 import useUserApi from '~/hooks/api/useUserApi'
 import dayjs from 'dayjs'
 import useAuth from '~/hooks/useAuth'
+import FilterRequest from '~/components/filter/FilterRequest'
 
 const Text = styled(Typography)`
   color: var(--black-color);
@@ -43,11 +54,14 @@ const BorrowRequest = () => {
   const [selectedRequest, setSelectedRequest] = useState<any>(null)
   const [rejectID, setRejectID] = useState<number | null>(null)
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const [selectedStatus, setSelectedStatus] = useState<string>('')
+  const [isFetching, setIsFetching] = useState(true)
   const callApi = useApi()
   const { acceptBorrowRequest, rejectBorrowRequest } = useBorrowRequestApi()
   useUserApi()
   const { user } = useAuth()
   const role = user?.role
+
   const fetchBorrowRequests = async () => {
     try {
       let endpoint = '/borrow-requests'
@@ -55,9 +69,13 @@ const BorrowRequest = () => {
       if (role === 'EMPLOYEE') {
         endpoint = '/borrow-requests/own'
       }
-      const response = await callApi('get', `${endpoint}?page=${page}`)
-      // console.log(response.data)
 
+      if (selectedStatus !== '') {
+        endpoint += `?status=${selectedStatus}`
+      } else {
+        endpoint += `?page=${page}`
+      }
+      const response = await callApi('get', endpoint)
       const responseData = response.data.data
       const totalPages = response.data.total
 
@@ -67,12 +85,14 @@ const BorrowRequest = () => {
       }
     } catch (error) {
       console.log(error)
+    } finally {
+      setIsFetching(false)
     }
   }
 
   useEffect(() => {
     fetchBorrowRequests()
-  }, [page])
+  }, [page, selectedStatus])
 
   const count = totalPages
   const _DATA = usePagination(borrowRequests, PER_PAGE)
@@ -139,78 +159,101 @@ const BorrowRequest = () => {
     }
   }
 
+  const handleStatusChange = (event: SelectChangeEvent<string>) => {
+    setSelectedStatus(event.target.value)
+  }
+
+  const handleClearFilter = () => {
+    setSelectedStatus('')
+  }
+
   return (
     <>
       {role === 'STAFF' ? (
-        <Box display='flex' flexDirection='column' justifyContent='space-between' minHeight='81vh' marginTop='20px'>
-          <Box display='flex' flexWrap='wrap'>
-            {borrowRequests.length === 0 ? (
-              <Box sx={{ width: 300 }}>
-                <Skeleton />
-                <Skeleton animation='wave' />
-                <Skeleton animation={false} />
+        <Box display='flex' flexDirection='column' justifyContent='space-between' minHeight='81vh'>
+          <div>
+            <FilterRequest
+              selectedStatus={selectedStatus}
+              onChange={handleStatusChange}
+              onClearFilter={handleClearFilter}
+            />
+            {isFetching ? (
+              <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }} width='100%' height='60vh'>
+                <CircularProgress />
               </Box>
+            ) : borrowRequests.length === 0 ? (
+              <Typography variant='body1'>No matching requests found.</Typography>
             ) : (
-              _DATA.currentData().map((request) => (
-                <RequestCard key={request.id}>
-                  <div
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'space-between'
-                    }}
-                  >
-                    <div
-                      style={{
-                        display: 'flex',
-                        alignItems: 'center'
-                      }}
-                    >
-                      <Avatar sx={{ width: '45px', height: '45px' }} src={request.createdBy.photoURL} />
-                      <div style={{ display: 'flex', flexDirection: 'column', marginLeft: '0.75rem' }}>
-                        <Typography
-                          sx={{ fontSize: '16px', fontWeight: '600', marginRight: '10px' }}
-                        >{`${request.createdBy.firstName} ${request.createdBy.lastName}`}</Typography>
-                        <Typography sx={{ color: '#a5aab5', letterSpacing: '0', fontSize: '16px' }}>
-                          {request.code}
-                        </Typography>
+              <Box display='flex' flexWrap='wrap'>
+                {borrowRequests.length === 0 ? (
+                  <Box sx={{ width: 300 }}>
+                    <Skeleton />
+                    <Skeleton animation='wave' />
+                    <Skeleton animation={false} />
+                  </Box>
+                ) : (
+                  _DATA.currentData().map((request) => (
+                    <RequestCard key={request.id}>
+                      <div
+                        style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'space-between'
+                        }}
+                      >
+                        <div
+                          style={{
+                            display: 'flex',
+                            alignItems: 'center'
+                          }}
+                        >
+                          <Avatar sx={{ width: '45px', height: '45px' }} src={request.createdBy.photoURL} />
+                          <div style={{ display: 'flex', flexDirection: 'column', marginLeft: '0.75rem' }}>
+                            <Typography
+                              sx={{ fontSize: '16px', fontWeight: '600', marginRight: '10px' }}
+                            >{`${request.createdBy.firstName} ${request.createdBy.lastName}`}</Typography>
+                            <Typography sx={{ color: '#a5aab5', letterSpacing: '0', fontSize: '16px' }}>
+                              {request.code}
+                            </Typography>
+                          </div>
+                        </div>
+                        <InfoIcon
+                          sx={{ color: 'var(--black-light-color)' }}
+                          onClick={() => handleInfoIconClick(request.id)}
+                        />
                       </div>
-                    </div>
-                    <InfoIcon
-                      sx={{ color: 'var(--black-light-color)' }}
-                      onClick={() => handleInfoIconClick(request.id)}
-                    />
-                  </div>
-                  <div style={{ height: '200px' }}>
-                    <Text variant='body2'>
-                      <strong> Description: </strong>
-                      {request.description}
-                    </Text>
-                    <Text variant='body2'>
-                      <strong> Time request: </strong>
-                      {dayjs(request.createdAt).format('DD/MM/YYYY HH:mm:ss')}
-                    </Text>
-                    {request.rejectedReason && (
-                      <Text variant='body2'>
-                        <strong> Reason: </strong>
-                        {request.rejectedReason}
-                      </Text>
-                    )}
-                  </div>
-                  <CardActions sx={{ justifyContent: 'space-evenly' }}>
-                    {request.status === 'PENDING' ? (
-                      <>
-                        <AcceptButton text='Accept' onClick={() => handleAccept(request.id)} />
-                        <RejectButton text='Reject' onClick={() => handleReject(request.id)} />
-                      </>
-                    ) : (
-                      <StatusText status={request.status} />
-                    )}
-                  </CardActions>
-                </RequestCard>
-              ))
+                      <div style={{ height: '200px' }}>
+                        <Text variant='body2'>
+                          <strong> Description: </strong>
+                          {request.description}
+                        </Text>
+                        <Text variant='body2'>
+                          <strong> Time request: </strong>
+                          {dayjs(request.createdAt).format('DD/MM/YYYY HH:mm:ss')}
+                        </Text>
+                        {request.rejectedReason && (
+                          <Text variant='body2'>
+                            <strong> Reason: </strong>
+                            {request.rejectedReason}
+                          </Text>
+                        )}
+                      </div>
+                      <CardActions sx={{ justifyContent: 'space-evenly' }}>
+                        {request.status === 'PENDING' ? (
+                          <>
+                            <AcceptButton text='Accept' onClick={() => handleAccept(request.id)} />
+                            <RejectButton text='Reject' onClick={() => handleReject(request.id)} />
+                          </>
+                        ) : (
+                          <StatusText status={request.status} />
+                        )}
+                      </CardActions>
+                    </RequestCard>
+                  ))
+                )}
+              </Box>
             )}
-          </Box>
+          </div>
           <Pagination
             count={count}
             size='large'

@@ -1,7 +1,16 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import RequestCard from '~/components/card/requestCard/RequestCard'
-import { Avatar, Box, CardActions, Pagination, SelectChangeEvent, Skeleton, Typography, styled } from '@mui/material'
+import {
+  Avatar,
+  Box,
+  CardActions,
+  CircularProgress,
+  Pagination,
+  SelectChangeEvent,
+  Typography,
+  styled
+} from '@mui/material'
 import React, { useEffect, useState } from 'react'
 import usePagination from '~/hooks/usePagination'
 import useApi from '~/hooks/api/useApi'
@@ -153,21 +162,29 @@ const ImportRequest = () => {
     setSelectedStatus(event.target.value)
   }
 
+  const handleClearFilter = () => {
+    setSelectedStatus('')
+  }
+
   return (
     <>
       {role === 'STAFF' ? (
         <Box display='flex' flexDirection='column' justifyContent='space-between' minHeight='81vh' marginTop='20px'>
           <div>
-            <FilterRequest selectedStatus={selectedStatus} onChange={handleStatusChange} />
-            <Box display='flex' flexWrap='wrap'>
-              {importRequests.length === 0 ? (
-                <Box sx={{ width: 300 }}>
-                  <Skeleton />
-                  <Skeleton animation='wave' />
-                  <Skeleton animation={false} />
-                </Box>
-              ) : (
-                _DATA.currentData().map((request) => (
+            <FilterRequest
+              selectedStatus={selectedStatus}
+              onChange={handleStatusChange}
+              onClearFilter={handleClearFilter}
+            />
+            {isFetching ? (
+              <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }} width='100%' height='60vh'>
+                <CircularProgress />
+              </Box>
+            ) : importRequests.length === 0 ? (
+              <Typography variant='body1'>No matching requests found.</Typography>
+            ) : (
+              <Box display='flex' flexWrap='wrap'>
+                {_DATA.currentData().map((request) => (
                   <RequestCard key={request.id}>
                     <div
                       style={{
@@ -226,9 +243,9 @@ const ImportRequest = () => {
                       )}
                     </CardActions>
                   </RequestCard>
-                ))
-              )}
-            </Box>
+                ))}
+              </Box>
+            )}
           </div>
           <Pagination
             count={count}

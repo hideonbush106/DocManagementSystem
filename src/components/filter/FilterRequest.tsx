@@ -1,14 +1,16 @@
 import React from 'react'
-import { FormControl, InputLabel, MenuItem, Select, SelectChangeEvent } from '@mui/material'
+import { FormControl, IconButton, InputLabel, MenuItem, Select, SelectChangeEvent } from '@mui/material'
+import ClearIcon from '@mui/icons-material/Clear'
 
 interface StatusSelectProps {
   selectedStatus: string
   onChange: (event: SelectChangeEvent<string>) => void
+  onClearFilter: () => void
 }
 
-const StatusSelect: React.FC<StatusSelectProps> = ({ selectedStatus, onChange }) => {
+const FilterRequest: React.FC<StatusSelectProps> = ({ selectedStatus, onChange, onClearFilter }) => {
   return (
-    <FormControl variant='standard' sx={{ minWidth: 120, marginBottom: '1rem' }}>
+    <FormControl variant='standard' sx={{ minWidth: 150, marginBottom: '1rem' }}>
       <InputLabel id='status-select-label'>Status</InputLabel>
       <Select labelId='status-select-label' id='status-select' value={selectedStatus} onChange={onChange}>
         <MenuItem value='PENDING'>Pending</MenuItem>
@@ -16,8 +18,17 @@ const StatusSelect: React.FC<StatusSelectProps> = ({ selectedStatus, onChange })
         <MenuItem value='REJECTED'>Rejected</MenuItem>
         <MenuItem value='DONE'>Done</MenuItem>
       </Select>
+      {selectedStatus && (
+        <IconButton
+          onClick={onClearFilter}
+          size='small'
+          sx={{ position: 'absolute', top: '70%', right: '15px', transform: 'translateY(-50%)' }}
+        >
+          <ClearIcon />
+        </IconButton>
+      )}
     </FormControl>
   )
 }
 
-export default StatusSelect
+export default FilterRequest

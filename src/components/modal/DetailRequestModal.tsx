@@ -19,9 +19,7 @@ interface RequestModalProps {
 }
 
 const DetailRequestModal = ({ open, handleClose, selectedRequest }: RequestModalProps) => {
-  const [isModalOpen, setIsModalOpen] = useState(false)
-  const [documentId, setDocumentId] = useState('')
-
+  const [detail, setDetail] = useState(false)
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'PENDING':
@@ -35,9 +33,8 @@ const DetailRequestModal = ({ open, handleClose, selectedRequest }: RequestModal
     }
   }
 
-  const handleDetailButton = (id: string) => {
-    setIsModalOpen(true)
-    setDocumentId(id)
+  const handleDetailClose = () => {
+    setDetail(false)
   }
 
   return (
@@ -124,16 +121,12 @@ const DetailRequestModal = ({ open, handleClose, selectedRequest }: RequestModal
               }}
             >
               {selectedRequest.status !== 'REJECTED' && (
-                <Button
-                  variant='contained'
-                  onClick={() => handleDetailButton(selectedRequest.document.id)}
-                  sx={{ fontFamily: 'inherit' }}
-                >
+                <Button variant='contained' onClick={() => setDetail(true)} sx={{ fontFamily: 'inherit' }}>
                   Document Detail
                 </Button>
               )}
             </Box>
-            <Detail id={documentId} open={isModalOpen} onClose={() => setIsModalOpen(false)} />
+            <Detail id={selectedRequest.document.id} open={detail} onClose={handleDetailClose} />
           </div>
         )}
       </Box>

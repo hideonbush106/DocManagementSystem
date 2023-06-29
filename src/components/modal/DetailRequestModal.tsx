@@ -128,12 +128,23 @@ const DetailRequestModal = ({ open, handleClose, selectedRequest }: RequestModal
                   }}
                 >
                   {selectedRequest.status !== 'REJECTED' && selectedRequest.status !== 'CANCELED' && (
-                    <Button variant='contained' onClick={() => setDetail(true)} sx={{ fontFamily: 'inherit' }}>
+                    <Button
+                      variant='contained'
+                      onClick={() => {
+                        if (selectedRequest.document) setDetail(true)
+                      }}
+                      sx={{ fontFamily: 'inherit' }}
+                    >
                       Document Detail
                     </Button>
                   )}
                 </Box>
-                <Detail id={selectedRequest.document.id} open={detail} onClose={handleDetailClose} />
+                <Detail
+                  document={selectedRequest.document}
+                  barcode={selectedRequest.barcode}
+                  open={detail}
+                  onClose={handleDetailClose}
+                />
               </div>
             )}
           </Box>
@@ -222,7 +233,7 @@ const DetailRequestModal = ({ open, handleClose, selectedRequest }: RequestModal
                     margin: '20px 0 0'
                   }}
                 >
-                  {selectedRequest.barcode && <QRCodeSVG value={selectedRequest.barcode} />}
+                  {selectedRequest.qrcode && <QRCodeSVG value={selectedRequest.qrcode} />}
                 </Box>
                 <Box
                   sx={{
@@ -238,12 +249,23 @@ const DetailRequestModal = ({ open, handleClose, selectedRequest }: RequestModal
                   }}
                 >
                   {selectedRequest.status !== 'REJECTED' && selectedRequest.status !== 'CANCELED' && (
-                    <Button variant='contained' onClick={() => setDetail(true)} sx={{ fontFamily: 'inherit' }}>
+                    <Button
+                      variant='contained'
+                      onClick={() => {
+                        if (selectedRequest.document) setDetail(true)
+                      }}
+                      sx={{ fontFamily: 'inherit' }}
+                    >
                       Document Detail
                     </Button>
                   )}
                 </Box>
-                <Detail id={selectedRequest.document.id} open={detail} onClose={handleDetailClose} />
+                <Detail
+                  document={selectedRequest.document}
+                  barcode={selectedRequest.barcode}
+                  open={detail}
+                  onClose={handleDetailClose}
+                />
               </div>
             )}
           </Box>

@@ -82,6 +82,8 @@ const Detail = (props: DetailProps) => {
       setDocument(undefined)
       const document = await getDocument(id)
       setDocument(document.data)
+      console.log(document.data.status)
+
       if ([DocumentStatus.PENDING, DocumentStatus.AVAILABLE, DocumentStatus.BORROWED].includes(document.data.status)) {
         const barcode = await getDocumentBarcode(id)
         if (barcode.data.barcode) {

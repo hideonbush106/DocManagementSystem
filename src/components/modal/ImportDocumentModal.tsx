@@ -13,12 +13,15 @@ import * as yup from 'yup'
 import useDocumentApi from '~/hooks/api/useDocumentApi'
 import Barcode from 'react-barcode'
 import { notifySuccess } from '~/global/toastify'
+import ModalLayout from './ModalLayout'
 
-interface ImportDocumentProps {
+interface ImportDocumentModalProps {
+  open: boolean
   handleClose: () => void
 }
 
-const ImportDocument = (props: ImportDocumentProps) => {
+const ImportDocumentModal = (props: ImportDocumentModalProps) => {
+  const { open, handleClose } = props
   const [files, setFiles] = useState<File[]>([])
   const [departments, setDepartments] = useState<Department[]>([])
   const [categories, setCategories] = useState<Categories[]>([])
@@ -126,7 +129,7 @@ const ImportDocument = (props: ImportDocumentProps) => {
   }, [getAllDepartments])
 
   return (
-    <>
+    <ModalLayout open={open} handleClose={handleClose}>
       <Box
         display={'inline-flex'}
         sx={{
@@ -383,8 +386,8 @@ const ImportDocument = (props: ImportDocumentProps) => {
           </Button>
         </Box>
       </form>
-    </>
+    </ModalLayout>
   )
 }
 
-export default ImportDocument
+export default ImportDocumentModal

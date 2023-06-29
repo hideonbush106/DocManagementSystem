@@ -15,6 +15,8 @@ const OptionList: React.FC<SidebarProps> = ({ prop }) => {
   const Role = user?.role.toLocaleUpperCase() === 'STAFF' ? OptionsStaff : OptionsEmp
   const [btn, setButton] = useState<number | null>(null) //dashboard is default option
 
+  const department = user?.role.toLocaleUpperCase() === 'STAFF' ? 'Staff' : user?.department
+
   const handleClick = (id: number) => {
     setButton(id)
     if (prop.current) {
@@ -39,7 +41,7 @@ const OptionList: React.FC<SidebarProps> = ({ prop }) => {
         <Typography align='center' sx={{ width: '100%', fontWeight: 600 }}>
           {user?.name}
         </Typography>
-        <Typography color={'var(--gray-color)'}>{user?.role}</Typography>
+        <Typography color={'var(--gray-color)'}>{department}</Typography>
       </Avatar>
       {Role.map((option) => (
         <Link

@@ -18,6 +18,12 @@ import CircularProgress from '@mui/material/CircularProgress'
 const Text = styled(Typography)`
   color: var(--black-color);
   margin: 0.5rem 0;
+  max-height: 50px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
 `
 
 const StatusText = ({ status }: { status: string }) => {

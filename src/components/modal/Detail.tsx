@@ -20,13 +20,13 @@ const Text = styled(Typography)`
 `
 
 interface DetailProps {
-  document: DocumentDetail | undefined
+  document?: DocumentDetail
   barcode: string
   open: boolean
   onClose: () => void
 }
 
-const Detail = (props: DetailProps) => {
+const Detail = ({ document, barcode, open, onClose }: DetailProps) => {
   const getStatusColor = (status: string | undefined) => {
     if (status) {
       switch (status) {
@@ -61,7 +61,7 @@ const Detail = (props: DetailProps) => {
 
   return (
     <>
-      <Modal open={props.open} onClose={props.onClose}>
+      <Modal open={open} onClose={onClose}>
         <Box sx={style}>
           <Box
             display={'inline-flex'}
@@ -78,47 +78,45 @@ const Detail = (props: DetailProps) => {
             </Typography>
           </Box>
           <Text variant='body1'>
-            <TitleText>File name: </TitleText> {props.document?.name}
+            <TitleText>File name: </TitleText> {document?.name}
           </Text>
           <Text variant='body1'>
-            <TitleText>Description: </TitleText> {props.document?.description}
+            <TitleText>Description: </TitleText> {document?.description}
           </Text>
           <Text variant='body1'>
-            <TitleText>Number of pages: </TitleText> {props.document?.numOfPage}
+            <TitleText>Number of pages: </TitleText> {document?.numOfPage}
           </Text>
           <Text variant='body1'>
             <TitleText>Department: </TitleText>
-            {props.document?.folder.locker.room.department.name}
+            {document?.folder.locker.room.department.name}
           </Text>
           <Text variant='body1'>
             <TitleText>Category: </TitleText>
-            {props.document?.category.name}
+            {document?.category.name}
           </Text>
           <Box style={{ display: 'flex', justifyContent: 'space-between' }} flexDirection={{ sm: 'row', xs: 'column' }}>
             <Text variant='body1'>
               <TitleText>Room: </TitleText>
-              {props.document?.folder.locker.room.name}
+              {document?.folder.locker.room.name}
             </Text>
             <Text variant='body1'>
               <TitleText>Locker: </TitleText>
-              {props.document?.folder.locker.name}
+              {document?.folder.locker.name}
             </Text>
             <Text variant='body1'>
               <TitleText>Folder: </TitleText>
-              {props.document?.folder.name}
+              {document?.folder.name}
             </Text>
           </Box>
           <Text variant='body1'>
-            <TitleText>Created at: </TitleText> {dayjs(props.document?.createdAt).format('DD/MM/YYYY HH:mm:ss')}
+            <TitleText>Created at: </TitleText> {dayjs(document?.createdAt).format('DD/MM/YYYY HH:mm:ss')}
           </Text>
           <Text variant='body1'>
             <TitleText>Status: </TitleText>{' '}
-            <span style={{ color: getStatusColor(props.document?.status), fontWeight: 600 }}>
-              {props.document?.status}
-            </span>
+            <span style={{ color: getStatusColor(document?.status), fontWeight: 600 }}>{document?.status}</span>
           </Text>
           <Box style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-            {props.barcode ? <Barcode value={props.barcode} /> : null}
+            {barcode ? <Barcode value={barcode} /> : null}
             <Box
               style={{ width: '90%', height: '35px', display: 'flex', justifyContent: 'space-between' }}
               marginTop={{ sm: '1rem' }}

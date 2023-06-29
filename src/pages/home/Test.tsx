@@ -26,7 +26,7 @@ const Test = () => {
   const [barcode, setBarcode] = React.useState<string>('')
   const id = '0c08f2e8-b147-4612-ac7e-64f95b16e833'
   // const id2 = 'b7b30a94-1844-4507-b921-fafecf0a548d'
-  
+
   const fetchData = async (id: string) => {
     try {
       setBarcode('')
@@ -57,7 +57,13 @@ const Test = () => {
       <ModalLayout button='Test2'>
         <ModalTest handleClose={handleClose} />
       </ModalLayout> */}
-      <Button onClick={() => setDetail(true)}>Detail</Button>
+      <Button
+        onClick={() => {
+          if (document) setDetail(true)
+        }}
+      >
+        Detail
+      </Button>
       <Detail document={document} barcode={barcode} open={detail} onClose={handleDetailClose} />
     </>
   )

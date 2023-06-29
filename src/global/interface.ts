@@ -162,3 +162,28 @@ export interface Reject {
   id: string
   rejectedReason: string
 }
+
+export interface DocumentDetail {
+  id: string
+  name: string
+  description: string
+  status: string
+  numOfPage: number
+  createdAt: Date
+  updatedAt: Date
+  folder: {
+    name: string
+    locker: {
+      name: string
+      room: {
+        name: string
+        department: {
+          name: string
+        }
+      }
+    }
+  }
+  category: {
+    name: string
+  }
+}

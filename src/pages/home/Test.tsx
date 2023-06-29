@@ -26,7 +26,7 @@ const Test = () => {
         <ModalTest handleClose={handleClose} />
       </ModalLayout> */}
       <Button onClick={() => setDetail(true)}>Detail</Button>
-      <Detail id='0c08f2e8-b147-4612-ac7e-64f95b16e833' open={detail} onClose={handleDetailClose} />
+      <Detail id='b7b30a94-1844-4507-b921-fafecf0a548d' open={detail} onClose={handleDetailClose} />
     </>
   )
 }

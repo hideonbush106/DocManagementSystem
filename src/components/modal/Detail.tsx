@@ -84,7 +84,7 @@ const Detail = ({ document, barcode, open, onClose }: DetailProps) => {
             <TitleText>Description: </TitleText> {document?.description}
           </Text>
           <Text variant='body1'>
-            <TitleText>Number of pages: </TitleText> {document?.numOfPage}
+            <TitleText>Number of pages: </TitleText> {document?.numOfPages}
           </Text>
           <Text variant='body1'>
             <TitleText>Department: </TitleText>

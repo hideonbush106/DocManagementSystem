@@ -17,6 +17,12 @@ import useImportRequestApi from '~/hooks/api/useImportRequestApi'
 const Text = styled(Typography)`
   color: var(--black-color);
   margin: 0.5rem 0;
+  max-height: 50px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
 `
 
 const StatusText = ({ status }: { status: string }) => {
@@ -64,8 +70,6 @@ const ImportRequestEmployee = () => {
     try {
       const endpoint = '/import-requests/own'
       const response = await callApi('get', `${endpoint}?page=${page}`)
-      console.log(response)
-
       const responseData = response.data.data
       const totalPages = response.data.total
 
@@ -110,7 +114,6 @@ const ImportRequestEmployee = () => {
     try {
       const response = await cancelImportRequest(id)
       console.log(response)
-
       setImportRequests((prevRequests) =>
         prevRequests.map((request) => (request.id === id ? { ...request, status: 'CANCELED' } : request))
       )
@@ -162,12 +165,10 @@ const ImportRequestEmployee = () => {
                     />
                   </div>
                   <div style={{ height: '200px' }}>
-                    <div style={{ maxHeight: '50px', overflow: 'hidden' }}>
-                      <Text variant='body2'>
-                        <strong> Description: </strong>
-                        {request.description}
-                      </Text>
-                    </div>
+                    <Text variant='body2'>
+                      <strong> Description: </strong>
+                      {request.description}
+                    </Text>
                     <Text variant='body2'>
                       <strong> Time request: </strong>
                       {dayjs(request.createdAt).format('DD/MM/YYYY HH:mm:ss')}
@@ -187,9 +188,7 @@ const ImportRequestEmployee = () => {
                   </Text> */}
                   <CardActions sx={{ justifyContent: 'space-evenly' }}>
                     {request.status === 'PENDING' ? (
-                      <>
-                        <RejectButton text='Cancel Request' onClick={() => handleCancel(request.id)} />
-                      </>
+                      <RejectButton text='Cancel Request' onClick={() => handleCancel(request.id)} />
                     ) : (
                       <StatusText status={request.status} />
                     )}

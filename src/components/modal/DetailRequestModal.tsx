@@ -33,6 +33,8 @@ const DetailRequestModal = ({ open, handleClose, selectedRequest }: RequestModal
         return 'var(--red-color)'
       case 'APPROVED':
         return 'var(--green-color)'
+      case 'CANCELED':
+        return 'var(--black-light-color)'
       default:
         return 'var(--primary-dark-color)'
     }
@@ -74,11 +76,9 @@ const DetailRequestModal = ({ open, handleClose, selectedRequest }: RequestModal
                 <Typography variant='h5' sx={{ fontWeight: '600', marginBottom: '20px' }}>
                   Request Details
                 </Typography>
-                <div style={{ maxHeight: '55px', textOverflow: 'ellipsis' }}>
-                  <Text>
-                    <TitleText>Description: </TitleText> {selectedRequest.description}
-                  </Text>
-                </div>
+                <Text>
+                  <TitleText>Description: </TitleText> {selectedRequest.description}
+                </Text>
                 <Text>
                   <TitleText>Created by: </TitleText>
                   {`${selectedRequest.createdBy.firstName} ${selectedRequest.createdBy.lastName}`}
@@ -168,11 +168,9 @@ const DetailRequestModal = ({ open, handleClose, selectedRequest }: RequestModal
                 <Typography variant='h5' sx={{ fontWeight: '600', marginBottom: '20px' }}>
                   Request Details
                 </Typography>
-                <div style={{ maxHeight: '55px', textOverflow: 'ellipsis' }}>
-                  <Text>
-                    <TitleText>Description: </TitleText> {selectedRequest.description}
-                  </Text>
-                </div>
+                <Text>
+                  <TitleText>Description: </TitleText> {selectedRequest.description}
+                </Text>
                 <Text>
                   <TitleText>Created at: </TitleText>
                   {dayjs(selectedRequest.createdAt).format('DD/MM/YYYY HH:mm:ss')}

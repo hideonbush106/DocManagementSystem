@@ -5,7 +5,7 @@ import AddRoundedIcon from '@mui/icons-material/AddRounded'
 import React, { useEffect, useState } from 'react'
 import { Department, UpdateDepartment, CreateDepartment } from '~/global/interface'
 import useDepartmentApi from '~/hooks/api/useDepartmentApi'
-import { DeleteButton, UpdateButton } from '~/components/button/Button'
+// import { DeleteButton, UpdateButton } from '~/components/button/Button'
 import { notifySuccess, notifyError } from '~/global/toastify'
 import CreateDepartmentModal from '~/components/modal/advanced/department/CreateDepartment'
 import { Box } from '@mui/system'
@@ -109,14 +109,14 @@ const DepartmentAdvanced = () => {
                   primary={dept.name}
                   primaryTypographyProps={{ fontFamily: 'inherit', color: 'var(--black-color)' }}
                 />
-                <UpdateButton text='Update' id={dept.id} name={dept.name} onSubmit={handleUpdate} />
+                {/* <UpdateButton text='Update' id={dept.id} name={dept.name} onSubmit={handleUpdate} />
                 <DeleteButton
                   text='Delete'
                   id={dept.id}
                   name={dept.name}
                   type='Department'
                   handleDelete={handleDelete}
-                />
+                /> */}
               </ListItemButton>
             ))}
             <ListItemButton

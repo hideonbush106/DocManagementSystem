@@ -2,35 +2,32 @@ import { Modal, Box, TextField, Button, Typography, FormControl } from '@mui/mat
 import { useFormik } from 'formik'
 import { useEffect } from 'react'
 import * as yup from 'yup'
-import { CreateRoom } from '~/global/interface'
+import { CreateRoom, CreateLocker, CreateFolder } from '~/global/interface'
 
-interface CreateRoomProps {
+interface CreateProps<T> {
   open: boolean
+  type: string
   handleClose: () => void
-  onSubmit: (values: CreateRoom) => void
+  onSubmit: (values: T) => void
+  initialValues: T
+  max: number
 }
 
-const CreateRoomModal = (props: CreateRoomProps) => {
+const CreateAdvancedModal = <T extends CreateRoom | CreateLocker | CreateFolder>(props: CreateProps<T>) => {
   const validationSchema = yup.object({
-    name: yup.string().trim().required('Room name is required'),
+    name: yup.string().trim().required(`${props.type} name is required`),
     capacity: yup
       .number()
       .integer('Capacity must be an integer')
       .min(1, 'Capacity must be greater than 0')
-      .max(20, 'Capacity must be less than 20')
+      .max(props.max, `Capacity must be less than ${props.max}`)
       .required('Capacity is required')
   })
 
   const formik = useFormik({
-    initialValues: {
-      name: '',
-      capacity: 10,
-      department: {
-        id: ''
-      }
-    },
+    initialValues: props.initialValues,
     validationSchema: validationSchema,
-    onSubmit: (values: CreateRoom) => {
+    onSubmit: (values) => {
       values.name = values.name.trim().replace(/\s\s+/g, ' ')
       props.onSubmit?.(values)
     }
@@ -95,7 +92,7 @@ const CreateRoomModal = (props: CreateRoomProps) => {
             }}
             variant='h4'
           >
-            New room
+            New {props.type.toLocaleLowerCase()}
           </Typography>
         </Box>
         <form action='POST' onSubmit={formik.handleSubmit}>
@@ -105,13 +102,13 @@ const CreateRoomModal = (props: CreateRoomProps) => {
                 my: 1
               }}
               name='name'
-              label='Room name'
+              label={`${props.type} name`}
               variant='outlined'
               onChange={formik.handleChange}
-              placeholder='Enter room name'
+              placeholder={`Enter ${props.type.toLocaleLowerCase()} name`}
               value={formik.values.name}
               error={formik.errors.name ? true : false}
-              helperText={formik.errors.name}
+              helperText={formik.errors.name?.toString()}
               fullWidth
             />
             <TextField
@@ -126,13 +123,16 @@ const CreateRoomModal = (props: CreateRoomProps) => {
               placeholder='Enter capacity'
               value={formik.values.capacity}
               error={formik.errors.capacity ? true : false}
-              helperText={formik.errors.capacity}
+              helperText={formik.errors.capacity?.toString()}
               fullWidth
             />
           </FormControl>
           <Box
             sx={{
               p: 4,
+              position: 'sticky',
+              bottom: -1,
+              zIndex: 1,
               background: 'white',
               display: 'flex',
               justifyContent: 'end',
@@ -159,4 +159,4 @@ const CreateRoomModal = (props: CreateRoomProps) => {
   )
 }
 
-export default CreateRoomModal
+export default CreateAdvancedModal

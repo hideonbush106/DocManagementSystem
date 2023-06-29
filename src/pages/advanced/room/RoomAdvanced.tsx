@@ -13,7 +13,7 @@ import {
 } from '@mui/material'
 import React, { useEffect, useState } from 'react'
 import { DeleteButton } from '~/components/button/advanced/DeleteButton'
-import CreateRoomModal from '~/components/modal/advanced/room/CreateRoom'
+import CreateAdvancedModal from '~/components/modal/advanced/CreateAdvancedModal'
 import { CreateRoom, Department, Room, UpdateRoom } from '~/global/interface'
 import { notifySuccess } from '~/global/toastify'
 import useDepartmentApi from '~/hooks/api/useDepartmentApi'
@@ -116,7 +116,14 @@ const RoomAdvanced = () => {
   return (
     <>
       {selectedDepartment.id && (
-        <CreateRoomModal open={isModalOpen} handleClose={() => setModalOpen(false)} onSubmit={handleCreate} />
+        <CreateAdvancedModal<CreateRoom>
+          open={isModalOpen}
+          type='Room'
+          handleClose={() => setModalOpen(false)}
+          onSubmit={handleCreate}
+          initialValues={{ name: '', capacity: 10, department: { id: selectedDepartment.id } }}
+          max={100}
+        />
       )}
       <List
         sx={{

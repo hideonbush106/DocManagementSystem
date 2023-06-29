@@ -13,6 +13,7 @@ import {
 } from '@mui/material'
 import React, { useEffect, useState } from 'react'
 import { DeleteButton } from '~/components/button/advanced/DeleteButton'
+import { UpdateButton } from '~/components/button/advanced/UpdateButton'
 import CreateAdvancedModal from '~/components/modal/advanced/CreateAdvancedModal'
 import { CreateRoom, Department, Room, UpdateRoom } from '~/global/interface'
 import { notifySuccess } from '~/global/toastify'
@@ -129,6 +130,8 @@ const RoomAdvanced = () => {
         sx={{
           width: '100%',
           height: { xs: 'calc(100vh - 210px)', md: 'calc(100vh - 160px)' },
+          borderRadius: '5  px',
+          borderTopLeftRadius: '0px',
           bgcolor: 'var(--white-color)',
           padding: '1rem 0',
           overflowY: 'auto'
@@ -164,15 +167,21 @@ const RoomAdvanced = () => {
                     <ListItemText
                       primary={room.name}
                       primaryTypographyProps={{ fontFamily: 'inherit', color: 'var(--black-color)' }}
+                      style={{
+                        width: 'min(100%,20px)',
+                        overflow: 'hidden'
+                      }}
                     />
-                    {/* <UpdateRoomButton
-                      text='Update'
-                      id={room.id}
-                      name={room.name}
-                      capacity={room.capacity}
+                    <UpdateButton<UpdateRoom>
+                      type='Room'
                       onSubmit={handleUpdate}
+                      initialValues={{
+                        id: room.id,
+                        name: room.name,
+                        capacity: room.capacity
+                      }}
+                      max={100}
                     />
-                    */}
                     <DeleteButton id={room.id} name={room.name} type='room' handleDelete={handleDelete} />
                   </ListItemButton>
                 ))}

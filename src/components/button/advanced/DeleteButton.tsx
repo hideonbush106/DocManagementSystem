@@ -25,7 +25,12 @@ export const DeleteButton = ({ id, name, type, handleDelete }: ButtonProps) => {
       {xs || sm || md ? (
         <Fab
           size={'small'}
-          style={{ color: 'var(--white-color)', backgroundColor: 'var(--red-color)' }}
+          style={{
+            minWidth: '40px',
+            color: 'var(--white-color)',
+            backgroundColor: 'var(--red-color)',
+            margin: '0 5px'
+          }}
           onClick={handleOpen}
         >
           <CloseRoundedIcon />
@@ -35,7 +40,7 @@ export const DeleteButton = ({ id, name, type, handleDelete }: ButtonProps) => {
           variant='outlined'
           startIcon={<CloseRoundedIcon />}
           sx={{
-            width: '100px',
+            minWidth: '100px',
             color: 'var(--red-color)',
             border: '0.5px solid var(--red-color)',
             '&:hover': {
@@ -45,7 +50,8 @@ export const DeleteButton = ({ id, name, type, handleDelete }: ButtonProps) => {
             padding: '5px 10px',
             fontSize: '14px',
             marginRight: '10px',
-            fontFamily: 'inherit'
+            fontFamily: 'inherit',
+            margin: '0 5px'
           }}
           onClick={handleOpen}
         >

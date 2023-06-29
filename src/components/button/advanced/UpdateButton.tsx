@@ -2,16 +2,23 @@ import { Button, Fab, useMediaQuery, useTheme } from '@mui/material'
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded'
 import React from 'react'
 import ModalLayout from '~/components/modal/ModalLayout'
-import DeleteAdvancedModal from '~/components/modal/advanced/DeleteAdvancedModal'
+import { Edit } from '@mui/icons-material'
+import { UpdateFolder, UpdateLocker, UpdateRoom } from '~/global/interface'
+import UpdateAdvancedModal from '~/components/modal/advanced/UpdateAdvancedModal'
 
-interface ButtonProps {
-  id: string
-  name: string
+interface ButtonProps<T> {
   type: string
-  handleDelete: (id: string) => void
+  onSubmit: (values: T) => void
+  initialValues: T
+  max: number
 }
 
-export const UpdateButton = ({ id, name, type, handleDelete }: ButtonProps) => {
+export const UpdateButton = <T extends UpdateRoom | UpdateLocker | UpdateFolder>({
+  type,
+  onSubmit,
+  initialValues,
+  max
+}: ButtonProps<T>) => {
   const [open, setOpen] = React.useState(false)
   const handleOpen = () => setOpen(true)
   const handleClose = () => setOpen(false)
@@ -25,35 +32,47 @@ export const UpdateButton = ({ id, name, type, handleDelete }: ButtonProps) => {
       {xs || sm || md ? (
         <Fab
           size={'small'}
-          style={{ color: 'var(--white-color)', backgroundColor: 'var(--red-color)' }}
+          style={{
+            minWidth: '40px',
+            color: 'var(--white-color)',
+            backgroundColor: 'var(--primary-color)',
+            margin: '0 5px'
+          }}
           onClick={handleOpen}
         >
-          <CloseRoundedIcon />
+          <Edit />
         </Fab>
       ) : (
         <Button
           variant='outlined'
-          startIcon={<CloseRoundedIcon />}
+          startIcon={<Edit />}
           sx={{
-            width: '100px',
-            color: 'var(--red-color)',
-            border: '0.5px solid var(--red-color)',
+            minWidth: '100px',
+            color: 'var(--primary-color)',
+            border: '0.5px solid var(--primary-color)',
             '&:hover': {
-              backgroundColor: 'var(--red-light-color)',
-              borderColor: 'var(--red-color)'
+              backgroundColor: 'var(--background-dark-color)',
+              borderColor: 'var(--primary-color)'
             },
             padding: '5px 10px',
             fontSize: '14px',
             marginRight: '10px',
-            fontFamily: 'inherit'
+            fontFamily: 'inherit',
+            margin: '0 5px'
           }}
           onClick={handleOpen}
         >
-          Delete
+          Update
         </Button>
       )}
       <ModalLayout open={open} handleClose={handleClose}>
-        <DeleteAdvancedModal id={id} name={name} type={type} handleDelete={handleDelete} />
+        <UpdateAdvancedModal
+          type={type}
+          onSubmit={onSubmit}
+          initialValues={initialValues}
+          max={max}
+          handleClose={handleClose}
+        />
       </ModalLayout>
     </>
   )

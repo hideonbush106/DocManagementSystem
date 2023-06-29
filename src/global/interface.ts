@@ -168,7 +168,7 @@ export interface DocumentDetail {
   name: string
   description: string
   status: string
-  numOfPage: number
+  numOfPages: number
   createdAt: Date
   updatedAt: Date
   folder: {

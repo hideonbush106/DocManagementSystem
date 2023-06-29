@@ -11,7 +11,7 @@ const TitleText = styled.span`
 `
 const Text = styled(Typography)`
   font-size: 14px;
-  margin-bottom: 8px;
+  margin-bottom: 4px;
   font-family: var(--font-family);
   @media (min-width: 400px) {
     font-size: 1rem;
@@ -84,7 +84,7 @@ const Detail = ({ document, barcode, open, onClose }: DetailProps) => {
             <TitleText>Description: </TitleText> {document?.description}
           </Text>
           <Text variant='body1'>
-            <TitleText>Number of pages: </TitleText> {document?.numOfPage}
+            <TitleText>Number of pages: </TitleText> {document?.numOfPages}
           </Text>
           <Text variant='body1'>
             <TitleText>Department: </TitleText>
@@ -119,7 +119,7 @@ const Detail = ({ document, barcode, open, onClose }: DetailProps) => {
             {barcode ? <Barcode value={barcode} /> : null}
             <Box
               style={{ width: '90%', height: '35px', display: 'flex', justifyContent: 'space-between' }}
-              marginTop={{ sm: '1rem' }}
+              marginTop='1rem'
             >
               <Button size='small' variant='contained' sx={{ lineHeight: 1, fontFamily: 'var(--family-font)' }}>
                 View PDF

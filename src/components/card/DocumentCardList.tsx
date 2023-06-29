@@ -1,7 +1,7 @@
 import { Grid } from '@mui/material'
 import { Link } from 'react-router-dom'
 import DocumentCard from './DocumentCard'
-import { Apartment, SvgIconComponent, Work, Lock, Folder, DescriptionOutlined } from '@mui/icons-material'
+import { Apartment, SvgIconComponent, Folder, DescriptionOutlined, MeetingRoom, ViewModule } from '@mui/icons-material'
 import FileCard from './FileCard'
 
 type Props = {
@@ -21,11 +21,11 @@ const DocumentCardList = (props: Props) => {
       break
     }
     case 'room': {
-      icon = { Component: Work }
+      icon = { Component: MeetingRoom }
       break
     }
     case 'locker': {
-      icon = { Component: Lock }
+      icon = { Component: ViewModule }
       break
     }
     case 'folder': {

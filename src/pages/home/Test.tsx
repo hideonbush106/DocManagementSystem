@@ -8,12 +8,13 @@ import { DocumentStatus } from '~/global/enum'
 import { DocumentDetail } from '~/global/interface'
 import useDocumentApi from '~/hooks/api/useDocumentApi'
 
-const Test = () => {
-  const [, setOpen] = useState(false)
 
-  const handleClose = () => {
-    setOpen(false)
-  }
+const Test = () => {
+  // const [, setOpen] = useState(false)
+
+  // const handleClose = () => {
+  //   setOpen(false)
+  // }
 
   const [detail, setDetail] = useState(false)
   const handleDetailClose = () => {
@@ -50,12 +51,12 @@ const Test = () => {
 
   return (
     <>
-      <ModalLayout button='Test'>
+      {/* <ModalLayout button='Test'>
         <UpdateDocument handleClose={handleClose} />
       </ModalLayout>
       <ModalLayout button='Test2'>
         <ModalTest handleClose={handleClose} />
-      </ModalLayout>
+      </ModalLayout> */}
       <Button onClick={() => setDetail(true)}>Detail</Button>
       <Detail document={document} barcode={barcode} open={detail} onClose={handleDetailClose} />
     </>

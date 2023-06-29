@@ -3,6 +3,7 @@ import styled from 'styled-components'
 interface StatusDivProps {
   accepted?: boolean
   rejected?: boolean
+  done?: boolean
 }
 
 export const StatusDiv = styled.div<StatusDivProps>`
@@ -23,5 +24,10 @@ export const StatusDiv = styled.div<StatusDivProps>`
     rejected &&
     `
     background-color: var(--red-color);
+  `}
+  ${({ done }) =>
+    done &&
+    `
+    background-color: var(--primary-dark-color);
   `}
 `

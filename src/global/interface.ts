@@ -30,13 +30,13 @@ export interface File {
   description: string
   status: string
   storageUrl?: string
-  numOfPage: number
+  numOfPages: number
   createdAt: Date
   updatedAt: Date
 }
 
 export interface FolderTree extends Folder {
-  files: File[]
+  documents: File[]
 }
 
 export interface LockerTree extends Locker {

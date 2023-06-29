@@ -3,40 +3,12 @@ import { Button } from '@mui/material'
 import AddRoundedIcon from '@mui/icons-material/AddRounded'
 import KeyboardReturnRoundedIcon from '@mui/icons-material/KeyboardReturnRounded'
 import DoneRoundedIcon from '@mui/icons-material/DoneRounded'
-// import EditRoundedIcon from '@mui/icons-material/EditRounded'
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded'
-import ModalLayout from '../modal/ModalLayout'
-import ImportDocument from '../modal/ImportDocument'
-import { useState } from 'react'
-import UpdateDepartmentModal from '../modal/advanced/department/UpdateDepartment'
-import { UpdateDepartment, UpdateRoom } from '~/global/interface'
-import DeleteModal from '../modal/advanced/DeleteAdvancedModal'
-import UpdateRoomModal from '../modal/advanced/room/UpdateRoom'
-
+import ImportDocumentModal from '../modal/ImportDocumentModal'
 
 interface ButtonProps {
   text: string
   onClick?: () => void
-}
-
-interface UpdateButtonProps extends ButtonProps {
-  id: string
-  name: string
-  onSubmit: (values: UpdateDepartment) => void
-}
-
-interface UpdateRoomButtonProps extends ButtonProps {
-  id: string
-  name: string
-  capacity: number
-  onSubmit: (values: UpdateRoom) => void
-}
-
-interface DeleteButtonProps extends ButtonProps {
-  id: string
-  name: string
-  type: string
-  handleDelete: (id: string) => void
 }
 
 export const ImportButton = ({ text }: ButtonProps) => {
@@ -173,106 +145,106 @@ export const RejectButton = ({ text, onClick }: ButtonProps) => {
 }
 
 //department update button
-export const UpdateButton = ({ text, id, name, onSubmit }: UpdateButtonProps) => {
-  return (
-    <ModalLayout
-      variant='outlined'
-      startIcon={<EditRoundedIcon />}
-      style={{
-        color: 'var(--primary-color)',
-        border: '0.5px solid var(--primary-color)',
-        '&:hover': {
-          backgroundColor: 'var(--background-dark-color)',
-          borderColor: 'var(--primary-color)',
-          transition: '0.3 ease in out'
-        },
-        padding: '5px 10px',
-        fontSize: '14px',
-        marginRight: '10px',
-        fontFamily: 'inherit'
-      }}
-      size='small'
-      mobileStyle={{
-        backgroundColor: 'var(--primary-color)',
-        '&:hover': {
-          backgroundColor: 'var(--primary-dark-color)'
-        },
-        marginRight: '10px'
-      }}
-      button={text}
-    >
-      <UpdateDepartmentModal id={id} name={name} onSubmit={onSubmit} />
-    </ModalLayout>
-  )
-}
+// export const UpdateButton = ({ text, id, name, onSubmit }: UpdateButtonProps) => {
+//   return (
+//     <ModalLayout
+//       variant='outlined'
+//       startIcon={<EditRoundedIcon />}
+//       style={{
+//         color: 'var(--primary-color)',
+//         border: '0.5px solid var(--primary-color)',
+//         '&:hover': {
+//           backgroundColor: 'var(--background-dark-color)',
+//           borderColor: 'var(--primary-color)',
+//           transition: '0.3 ease in out'
+//         },
+//         padding: '5px 10px',
+//         fontSize: '14px',
+//         marginRight: '10px',
+//         fontFamily: 'inherit'
+//       }}
+//       size='small'
+//       mobileStyle={{
+//         backgroundColor: 'var(--primary-color)',
+//         '&:hover': {
+//           backgroundColor: 'var(--primary-dark-color)'
+//         },
+//         marginRight: '10px'
+//       }}
+//       button={text}
+//     >
+//       <UpdateDepartmentModal id={id} name={name} onSubmit={onSubmit} />
+//     </ModalLayout>
+//   )
+// }
 
-//room update button
-export const UpdateRoomButton = ({ text, id, name, capacity, onSubmit }: UpdateRoomButtonProps) => {
-  const [_open, setOpen] = useState(false)
+// //room update button
+// export const UpdateRoomButton = ({ text, id, name, capacity, onSubmit }: UpdateRoomButtonProps) => {
+//   const [_open, setOpen] = useState(false)
 
-  const handleClose = () => {
-    setOpen(false)
-  }
-  return (
-    <ModalLayout
-      variant='outlined'
-      startIcon={<EditRoundedIcon />}
-      style={{
-        color: 'var(--primary-color)',
-        border: '0.5px solid var(--primary-color)',
-        '&:hover': {
-          backgroundColor: 'var(--background-dark-color)',
-          borderColor: 'var(--primary-color)',
-          transition: '0.3 ease in out'
-        },
-        padding: '5px 10px',
-        fontSize: '14px',
-        marginRight: '10px',
-        fontFamily: 'inherit'
-      }}
-      size='small'
-      mobileStyle={{
-        backgroundColor: 'var(--primary-color)',
-        '&:hover': {
-          backgroundColor: 'var(--primary-dark-color)'
-        },
-        marginRight: '10px'
-      }}
-      button={text}
-    >
-      <UpdateRoomModal id={id} name={name} capacity={capacity} onSubmit={onSubmit} handleClose={handleClose} />
-    </ModalLayout>
-  )
-}
+//   const handleClose = () => {
+//     setOpen(false)
+//   }
+//   return (
+//     <ModalLayout
+//       variant='outlined'
+//       startIcon={<EditRoundedIcon />}
+//       style={{
+//         color: 'var(--primary-color)',
+//         border: '0.5px solid var(--primary-color)',
+//         '&:hover': {
+//           backgroundColor: 'var(--background-dark-color)',
+//           borderColor: 'var(--primary-color)',
+//           transition: '0.3 ease in out'
+//         },
+//         padding: '5px 10px',
+//         fontSize: '14px',
+//         marginRight: '10px',
+//         fontFamily: 'inherit'
+//       }}
+//       size='small'
+//       mobileStyle={{
+//         backgroundColor: 'var(--primary-color)',
+//         '&:hover': {
+//           backgroundColor: 'var(--primary-dark-color)'
+//         },
+//         marginRight: '10px'
+//       }}
+//       button={text}
+//     >
+//       <UpdateRoomModal id={id} name={name} capacity={capacity} onSubmit={onSubmit} handleClose={handleClose} />
+//     </ModalLayout>
+//   )
+// }
 
-export const DeleteButton = ({ text, id, name, handleDelete, type }: DeleteButtonProps) => {
-  return (
-    <ModalLayout
-      variant='outlined'
-      startIcon={<CloseRoundedIcon />}
-      style={{
-        color: 'var(--red-color)',
-        border: '0.5px solid var(--red-color)',
-        '&:hover': {
-          backgroundColor: 'var(--red-light-color)',
-          borderColor: 'var(--red-color)',
-          transition: '0.3 ease in out'
-        },
-        padding: '5px 10px',
-        fontSize: '14px',
-        marginRight: '10px',
-        fontFamily: 'inherit'
-      }}
-      size='small'
-      mobileStyle={{
-        backgroundColor: 'var(--red-color)',
-        '&:hover': {
-          backgroundColor: 'var(--red-dark-color)'
-        }
-      }}
-      button={text}
-    >
-      <DeleteModal id={id} name={name} handleDelete={handleDelete} type={type} />
-    </ModalLayout>
-  )
-}
+// export const DeleteButton = ({ text, id, name, handleDelete, type }: DeleteButtonProps) => {
+//   return (
+//     <ModalLayout
+//       variant='outlined'
+//       startIcon={<CloseRoundedIcon />}
+//       style={{
+//         color: 'var(--red-color)',
+//         border: '0.5px solid var(--red-color)',
+//         '&:hover': {
+//           backgroundColor: 'var(--red-light-color)',
+//           borderColor: 'var(--red-color)',
+//           transition: '0.3 ease in out'
+//         },
+//         padding: '5px 10px',
+//         fontSize: '14px',
+//         marginRight: '10px',
+//         fontFamily: 'inherit'
+//       }}
+//       size='small'
+//       mobileStyle={{
+//         backgroundColor: 'var(--red-color)',
+//         '&:hover': {
+//           backgroundColor: 'var(--red-dark-color)'
+//         }
+//       }}
+//       button={text}
+//     >
+//       <DeleteModal id={id} name={name} handleDelete={handleDelete} type={type} />
+//     </ModalLayout>
+//   )
+// }

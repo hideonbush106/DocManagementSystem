@@ -30,7 +30,7 @@ const ModalLayout = (props: ModalLayoutProps) => {
   return (
     <>
       <Modal open={open} onClose={handleClose}>
-        <Box sx={style} component={'div'} style={{ overflowY: 'scroll' }}>
+        <Box sx={style} component={'div'} style={{ overflowY: 'auto' }}>
           {React.Children.map(props.children, (child) =>
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             React.cloneElement(child as React.ReactElement<any>, { handleClose })

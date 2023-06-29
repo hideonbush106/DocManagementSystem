@@ -12,7 +12,7 @@ import {
   TextField
 } from '@mui/material'
 import React, { useEffect, useState } from 'react'
-import { DeleteButton, UpdateRoomButton } from '~/components/button/Button'
+import { DeleteButton } from '~/components/button/advanced/DeleteButton'
 import CreateRoomModal from '~/components/modal/advanced/room/CreateRoom'
 import { CreateRoom, Department, Room, UpdateRoom } from '~/global/interface'
 import { notifySuccess } from '~/global/toastify'
@@ -97,7 +97,6 @@ const RoomAdvanced = () => {
       setLoadingRoom(true)
       setRooms([]) // Clear the room array
       notifySuccess('Delete successfully')
-      // setModalOpen(false)
     } else {
       setLoadingRoom(true)
     }
@@ -122,7 +121,7 @@ const RoomAdvanced = () => {
       <List
         sx={{
           width: '100%',
-          height: { xs: 'calc(100vh - 92px - 6rem)', md: 'calc(100vh - 42px - 6rem)' },
+          height: { xs: 'calc(100vh - 210px)', md: 'calc(100vh - 160px)' },
           bgcolor: 'var(--white-color)',
           padding: '1rem 0',
           overflowY: 'auto'
@@ -154,18 +153,20 @@ const RoomAdvanced = () => {
                     <ListItemIcon sx={{ color: 'var(--black-color)', minWidth: { sm: '56px', xs: '40px' } }}>
                       <MeetingRoom />
                     </ListItemIcon>
+
                     <ListItemText
                       primary={room.name}
                       primaryTypographyProps={{ fontFamily: 'inherit', color: 'var(--black-color)' }}
                     />
-                    <UpdateRoomButton
+                    {/* <UpdateRoomButton
                       text='Update'
                       id={room.id}
                       name={room.name}
                       capacity={room.capacity}
                       onSubmit={handleUpdate}
                     />
-                    <DeleteButton text='Delete' id={room.id} name={room.name} type='room' handleDelete={handleDelete} />
+                    */}
+                    <DeleteButton id={room.id} name={room.name} type='room' handleDelete={handleDelete} />
                   </ListItemButton>
                 ))}
                 <ListItemButton

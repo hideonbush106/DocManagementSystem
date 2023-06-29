@@ -25,7 +25,6 @@ function LinkTab(props: LinkTabProps) {
         backgroundColor: 'var(--background-dark-color)',
         borderRadius: '10px 10px 0 0',
         padding: '0 20px',
-        margin: '10px 0 0',
         lineHeight: 1,
         fontFamily: 'inherit'
       }}

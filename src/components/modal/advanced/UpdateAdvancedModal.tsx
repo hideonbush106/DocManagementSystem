@@ -1,7 +1,8 @@
+/* eslint-disable no-prototype-builtins */
 import { Box, Button, FormControl, TextField, Typography } from '@mui/material'
 import { useFormik } from 'formik'
 import * as yup from 'yup'
-import { UpdateFolder, UpdateLocker, UpdateRoom } from '~/global/interface'
+import { UpdateDepartment, UpdateFolder, UpdateLocker, UpdateRoom } from '~/global/interface'
 
 interface UpdateProps<T> {
   type: string
@@ -11,15 +12,19 @@ interface UpdateProps<T> {
   handleClose: () => void
 }
 
-const UpdateAdvancedModal = <T extends UpdateRoom | UpdateLocker | UpdateFolder>(props: UpdateProps<T>) => {
+const UpdateAdvancedModal = <T extends UpdateDepartment | UpdateRoom | UpdateLocker | UpdateFolder>(
+  props: UpdateProps<T>
+) => {
   const validationSchema = yup.object({
     name: yup.string().trim().required(`${props.type} name is required`),
-    capacity: yup
-      .number()
-      .integer('Capacity must be an integer')
-      .min(1, 'Capacity must be greater than 0')
-      .max(props.max, `Capacity must be less than ${props.max}`)
-      .required('Capacity is required')
+    ...(props.initialValues.hasOwnProperty('capacity') && {
+      capacity: yup
+        .number()
+        .integer('Capacity must be an integer')
+        .min(1, 'Capacity must be greater than 0')
+        .max(props.max, `Capacity must be less than ${props.max}`)
+        .required('Capacity is required')
+    })
   })
 
   const formik = useFormik({
@@ -32,7 +37,8 @@ const UpdateAdvancedModal = <T extends UpdateRoom | UpdateLocker | UpdateFolder>
   })
 
   const unchanged =
-    formik.values.name === props.initialValues.name && formik.values.capacity === props.initialValues.capacity
+    formik.values.name === props.initialValues.name &&
+    (props.initialValues.hasOwnProperty('capacity') ? formik.values.capacity === props.initialValues.capacity : true)
 
   return (
     <>
@@ -80,21 +86,23 @@ const UpdateAdvancedModal = <T extends UpdateRoom | UpdateLocker | UpdateFolder>
             helperText={formik.errors.name?.toString()}
             fullWidth
           />
-          <TextField
-            sx={{
-              my: 1
-            }}
-            name='capacity'
-            label='Capacity'
-            type='number'
-            variant='outlined'
-            onChange={formik.handleChange}
-            placeholder={props.initialValues.capacity?.toString()}
-            value={formik.values.capacity}
-            error={formik.errors.capacity ? true : false}
-            helperText={formik.errors.capacity?.toString()}
-            fullWidth
-          />
+          {props.initialValues.hasOwnProperty('capacity') && (
+            <TextField
+              sx={{
+                my: 1
+              }}
+              name='capacity'
+              label='Capacity'
+              type='number'
+              variant='outlined'
+              onChange={formik.handleChange}
+              placeholder={props.initialValues.capacity?.toString()}
+              value={formik.values.capacity}
+              error={formik.errors.capacity ? true : false}
+              helperText={formik.errors.capacity?.toString()}
+              fullWidth
+            />
+          )}
         </FormControl>
         <Box
           sx={{
@@ -113,7 +121,7 @@ const UpdateAdvancedModal = <T extends UpdateRoom | UpdateLocker | UpdateFolder>
             variant='contained'
             color='primary'
             type='submit'
-            disabled={Boolean(formik.errors.name || formik.errors.capacity) || unchanged}
+            disabled={formik.isValidating || !formik.isValid || unchanged}
           >
             Update
           </Button>

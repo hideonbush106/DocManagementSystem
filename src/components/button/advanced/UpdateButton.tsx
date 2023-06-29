@@ -1,9 +1,8 @@
 import { Button, Fab, useMediaQuery, useTheme } from '@mui/material'
-import CloseRoundedIcon from '@mui/icons-material/CloseRounded'
 import React from 'react'
 import ModalLayout from '~/components/modal/ModalLayout'
 import { Edit } from '@mui/icons-material'
-import { UpdateFolder, UpdateLocker, UpdateRoom } from '~/global/interface'
+import { UpdateDepartment, UpdateFolder, UpdateLocker, UpdateRoom } from '~/global/interface'
 import UpdateAdvancedModal from '~/components/modal/advanced/UpdateAdvancedModal'
 
 interface ButtonProps<T> {
@@ -13,7 +12,7 @@ interface ButtonProps<T> {
   max: number
 }
 
-export const UpdateButton = <T extends UpdateRoom | UpdateLocker | UpdateFolder>({
+export const UpdateButton = <T extends UpdateDepartment | UpdateRoom | UpdateLocker | UpdateFolder>({
   type,
   onSubmit,
   initialValues,

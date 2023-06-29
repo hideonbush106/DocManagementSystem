@@ -1,8 +1,9 @@
+/* eslint-disable no-prototype-builtins */
 import { Modal, Box, TextField, Button, Typography, FormControl } from '@mui/material'
 import { useFormik } from 'formik'
 import { useEffect } from 'react'
 import * as yup from 'yup'
-import { CreateRoom, CreateLocker, CreateFolder } from '~/global/interface'
+import { CreateRoom, CreateLocker, CreateFolder, CreateDepartment } from '~/global/interface'
 
 interface CreateProps<T> {
   open: boolean
@@ -13,15 +14,19 @@ interface CreateProps<T> {
   max: number
 }
 
-const CreateAdvancedModal = <T extends CreateRoom | CreateLocker | CreateFolder>(props: CreateProps<T>) => {
+const CreateAdvancedModal = <T extends CreateDepartment | CreateRoom | CreateLocker | CreateFolder>(
+  props: CreateProps<T>
+) => {
   const validationSchema = yup.object({
     name: yup.string().trim().required(`${props.type} name is required`),
-    capacity: yup
-      .number()
-      .integer('Capacity must be an integer')
-      .min(1, 'Capacity must be greater than 0')
-      .max(props.max, `Capacity must be less than ${props.max}`)
-      .required('Capacity is required')
+    ...(props.initialValues.hasOwnProperty('capacity') && {
+      capacity: yup
+        .number()
+        .integer('Capacity must be an integer')
+        .min(1, 'Capacity must be greater than 0')
+        .max(props.max, `Capacity must be less than ${props.max}`)
+        .required('Capacity is required')
+    })
   })
 
   const formik = useFormik({
@@ -72,8 +77,6 @@ const CreateAdvancedModal = <T extends CreateRoom | CreateLocker | CreateFolder>
               xs: 1.5,
               sm: 3
             },
-            position: 'sticky',
-            top: 0,
             background: 'white',
             zIndex: 1,
             width: '100%'
@@ -111,28 +114,30 @@ const CreateAdvancedModal = <T extends CreateRoom | CreateLocker | CreateFolder>
               helperText={formik.errors.name?.toString()}
               fullWidth
             />
-            <TextField
-              sx={{
-                my: 1
-              }}
-              name='capacity'
-              label='Capacity'
-              type='number'
-              variant='outlined'
-              onChange={formik.handleChange}
-              placeholder='Enter capacity'
-              value={formik.values.capacity}
-              error={formik.errors.capacity ? true : false}
-              helperText={formik.errors.capacity?.toString()}
-              fullWidth
-            />
+            {props.initialValues.hasOwnProperty('capacity') && (
+              <TextField
+                sx={{
+                  my: 1
+                }}
+                name='capacity'
+                label='Capacity'
+                type='number'
+                variant='outlined'
+                onChange={formik.handleChange}
+                placeholder='Enter capacity'
+                value={formik.values.capacity}
+                error={Boolean(formik.errors.capacity)}
+                helperText={formik.errors.capacity?.toString()}
+                fullWidth
+              />
+            )}
           </FormControl>
           <Box
             sx={{
-              p: 4,
-              position: 'sticky',
-              bottom: -1,
-              zIndex: 1,
+              p: {
+                xs: 1.5,
+                sm: 4
+              },
               background: 'white',
               display: 'flex',
               justifyContent: 'end',
@@ -144,7 +149,7 @@ const CreateAdvancedModal = <T extends CreateRoom | CreateLocker | CreateFolder>
               variant='contained'
               color='primary'
               type='submit'
-              disabled={Boolean(formik.errors.name || formik.errors.capacity)}
+              disabled={formik.isValidating || !formik.isValid}
             >
               Create
             </Button>

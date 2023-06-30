@@ -1,11 +1,9 @@
-/* eslint-disable react-hooks/exhaustive-deps */
-import { Box, Button, CircularProgress, Modal, Typography } from '@mui/material'
-import React, { useEffect } from 'react'
+import { Box, Button, Modal, Typography } from '@mui/material'
 import Barcode from 'react-barcode'
-import useDocumentApi from '~/hooks/api/useDocumentApi'
 import dayjs from 'dayjs'
 import styled from 'styled-components'
 import { ArrowForward, Description } from '@mui/icons-material'
+import { DocumentDetail } from '~/global/interface'
 
 const TitleText = styled.span`
   font-weight: 600;
@@ -14,69 +12,37 @@ const TitleText = styled.span`
 const Text = styled(Typography)`
   font-size: 14px;
   margin-bottom: 8px;
-  @media (min-width: 600px) {
+  font-family: var(--font-family);
+  @media (min-width: 400px) {
     font-size: 1rem;
     margin-bottom: 16px;
   }
-  font-family: var(--font-family);
 `
 
-interface DetailsInterface {
-  id: string
-  name: string
-  description: string
-  status: string
-  numOfPages: number
-  createdAt: Date
-  updatedAt: Date
-  folder: {
-    name: string
-    locker: {
-      name: string
-      room: {
-        name: string
-        department: {
-          name: string
-        }
-      }
-    }
-  }
-  category: {
-    name: string
-  }
-}
-
 interface DetailProps {
-  id: string
+  document?: DocumentDetail
+  barcode: string
   open: boolean
   onClose: () => void
 }
 
-const Detail = (props: DetailProps) => {
-  // const [open, setOpen] = React.useState(false)
-  // const handleOpen = () => setOpen(true)
-  // const handleClose = () => setOpen(false)
-
-  const { getDocument, getDocumentBarcode } = useDocumentApi()
-  const [document, setDocument] = React.useState<DetailsInterface>()
-  const [barcode, setBarcode] = React.useState<string>('')
-  const [loading, setLoading] = React.useState<boolean>(true)
-
-  const fetchData = async (id: string) => {
-    try {
-      const document = await getDocument(id)
-      setDocument(document.data)
-      const barcode = await getDocumentBarcode(id)
-      setBarcode(barcode.data.barcode)
-      setLoading(false)
-    } catch (error) {
-      console.log(error)
+const Detail = ({ document, barcode, open, onClose }: DetailProps) => {
+  const getStatusColor = (status: string | undefined) => {
+    if (status) {
+      switch (status) {
+        case 'REQUESTING':
+          return 'var(--orange-color)'
+        case 'PENDING':
+          return 'var(--primary-color)'
+        case 'AVAILABLE':
+          return 'var(--green-color)'
+        case 'BORROWED':
+          return 'var(--red-color)'
+        default:
+          return 'var(--black-color)'
+      }
     }
   }
-
-  useEffect(() => {
-    fetchData(props.id)
-  }, [])
 
   const style = {
     fontFamily: 'var(--font-family)',
@@ -95,91 +61,79 @@ const Detail = (props: DetailProps) => {
 
   return (
     <>
-      <Modal open={props.open} onClose={props.onClose}>
+      <Modal open={open} onClose={onClose}>
         <Box sx={style}>
-          {!loading ? (
-            <>
-              <Box
-                display={'inline-flex'}
-                alignItems={'center'}
-                sx={{
-                  width: '100%',
-                  mb: 2,
-                  ml: -1
-                }}
+          <Box
+            display={'inline-flex'}
+            alignItems={'center'}
+            sx={{
+              width: '100%',
+              mb: { sm: 4, xs: 2 },
+              ml: -1
+            }}
+          >
+            <Description sx={{ color: 'var(--black-color)', mr: 1 }} fontSize='large' />
+            <Typography variant='h4' sx={{ fontSize: { sm: '2rem', xs: '1.5rem' }, fontWeight: '600' }}>
+              Document Detail
+            </Typography>
+          </Box>
+          <Text variant='body1'>
+            <TitleText>File name: </TitleText> {document?.name}
+          </Text>
+          <Text variant='body1'>
+            <TitleText>Description: </TitleText> {document?.description}
+          </Text>
+          <Text variant='body1'>
+            <TitleText>Number of pages: </TitleText> {document?.numOfPage}
+          </Text>
+          <Text variant='body1'>
+            <TitleText>Department: </TitleText>
+            {document?.folder.locker.room.department.name}
+          </Text>
+          <Text variant='body1'>
+            <TitleText>Category: </TitleText>
+            {document?.category.name}
+          </Text>
+          <Box style={{ display: 'flex', justifyContent: 'space-between' }} flexDirection={{ sm: 'row', xs: 'column' }}>
+            <Text variant='body1'>
+              <TitleText>Room: </TitleText>
+              {document?.folder.locker.room.name}
+            </Text>
+            <Text variant='body1'>
+              <TitleText>Locker: </TitleText>
+              {document?.folder.locker.name}
+            </Text>
+            <Text variant='body1'>
+              <TitleText>Folder: </TitleText>
+              {document?.folder.name}
+            </Text>
+          </Box>
+          <Text variant='body1'>
+            <TitleText>Created at: </TitleText> {dayjs(document?.createdAt).format('DD/MM/YYYY HH:mm:ss')}
+          </Text>
+          <Text variant='body1'>
+            <TitleText>Status: </TitleText>{' '}
+            <span style={{ color: getStatusColor(document?.status), fontWeight: 600 }}>{document?.status}</span>
+          </Text>
+          <Box style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+            {barcode ? <Barcode value={barcode} /> : null}
+            <Box
+              style={{ width: '90%', height: '35px', display: 'flex', justifyContent: 'space-between' }}
+              marginTop={{ sm: '1rem' }}
+            >
+              <Button size='small' variant='contained' sx={{ lineHeight: 1, fontFamily: 'var(--family-font)' }}>
+                View PDF
+              </Button>
+              <Button
+                size='small'
+                variant='outlined'
+                endIcon={<ArrowForward />}
+                sx={{ lineHeight: 1, fontFamily: 'var(--family-font)' }}
               >
-                <Description sx={{ color: 'var(--black-color)', mr: 1 }} fontSize='large' />
-                <Typography variant='h4' sx={{ fontSize: { sm: '2rem', xs: '1.5rem' }, fontWeight: '600' }}>
-                  Document Detail
-                </Typography>
-              </Box>
-              <Text variant='body1'>
-                <TitleText>File name: </TitleText> {document?.name}
-              </Text>
-              <Text variant='body1'>
-                <TitleText>Description: </TitleText> {document?.description}
-              </Text>
-              <Text variant='body1'>
-                <TitleText>Number of pages: </TitleText> {document?.numOfPages}
-              </Text>
-              <Text variant='body1'>
-                <TitleText>Department: </TitleText>
-                {document?.folder.locker.room.department.name}
-              </Text>
-              <Text variant='body1'>
-                <TitleText>Category: </TitleText>
-                {document?.category.name}
-              </Text>
-              <Box
-                style={{ display: 'flex', justifyContent: 'space-between' }}
-                flexDirection={{ sm: 'row', xs: 'column' }}
-              >
-                <Text variant='body1'>
-                  <TitleText>Room: </TitleText>
-                  {document?.folder.locker.room.name}
-                </Text>
-                <Text variant='body1'>
-                  <TitleText>Locker: </TitleText>
-                  {document?.folder.locker.name}
-                </Text>
-                <Text variant='body1'>
-                  <TitleText>Folder: </TitleText>
-                  {document?.folder.name}
-                </Text>
-              </Box>
-              <Text variant='body1'>
-                <TitleText>Created at: </TitleText> {dayjs(document?.createdAt).format('DD/MM/YYYY HH:mm:ss')}
-              </Text>
-              <Text variant='body1'>
-                <TitleText>Status: </TitleText>{' '}
-                <span style={{ color: 'var(--green-color)', fontWeight: 600 }}> {document?.status}</span>
-              </Text>
-              <Box style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                <Barcode value={barcode} height={100} />
-                <Box
-                  style={{ width: '90%', height: '35px', display: 'flex', justifyContent: 'space-between' }}
-                  marginTop={{ sm: '1rem' }}
-                >
-                  <Button size='small' variant='contained'>
-                    View PDF
-                  </Button>
-                  <Button size='small' variant='outlined' endIcon={<ArrowForward />}>
-                    Export
-                  </Button>
-                </Box>
-              </Box>
-            </>
-          ) : (
-            <>
-              <Box
-                sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}
-                width={'100%'}
-                height={'100%'}
-              >
-                <CircularProgress />
-              </Box>
-            </>
-          )}
+                Export
+              </Button>
+            </Box>
+          </Box>
         </Box>
       </Modal>
     </>

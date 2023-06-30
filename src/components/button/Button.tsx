@@ -7,6 +7,7 @@ import DoneRoundedIcon from '@mui/icons-material/DoneRounded'
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded'
 import ImportDocumentModal from '../modal/ImportDocumentModal'
 import { UpdateDepartment } from '~/global/interface'
+import CodeScanner from '../modal/scanner/CodeScanner'
 
 interface ButtonProps {
   text: string
@@ -124,6 +125,36 @@ export const AcceptButton = ({ text, onClick }: ButtonProps) => {
     >
       {text}
     </Button>
+  )
+}
+
+export const ConfirmButton = () => {
+  const [open, setOpen] = useState(false)
+  const handleClose = () => {
+    setOpen(false)
+  }
+  return (
+    <>
+      <Button
+        variant='outlined'
+        startIcon={<DoneRoundedIcon />}
+        sx={{
+          color: 'var(--primary-color)',
+          border: '0.5px solid var(--primary-color)',
+          '&:hover': {
+            backgroundColor: 'var(--primary-light-color)',
+            borderColor: 'var(--primary-color)',
+            transition: '0.3 ease in out'
+          },
+          padding: '5px 10px',
+          fontSize: '12px'
+        }}
+        onClick={() => setOpen(true)}
+      >
+        Confirm
+      </Button>
+      <CodeScanner open={open} handleClose={handleClose} />
+    </>
   )
 }
 

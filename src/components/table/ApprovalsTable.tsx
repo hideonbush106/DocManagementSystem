@@ -1,12 +1,12 @@
 import { DataGrid, GridColDef, GridRenderCellParams } from '@mui/x-data-grid'
 import ActionsCell from './ActionCell'
 import PropTypes, { Validator } from 'prop-types'
-import { Link } from 'react-router-dom'
 // import CheckRoundedIcon from '@mui/icons-material/CheckRounded'
 // import ModalLayout from '../modal/ModalLayout'
 // import CodeScanner from '../modal/scanner/CodeScanner'
 import { useState, useEffect } from 'react'
 import useDocumentApi from '~/hooks/api/useDocumentApi'
+import { ConfirmButton } from '../button/Button'
 interface ApprovalsTableProps {
   view: 'dashboard' | 'full'
 }
@@ -161,28 +161,7 @@ const ApprovalsTable: React.FC<ApprovalsTableProps> = ({ view }) => {
         filterable: false,
         headerAlign: 'center',
         align: 'center',
-        renderCell: () => (
-          <Link to={''}>
-            {/* <Button
-              endIcon={<CheckRoundedIcon />}
-              size='small'
-              style={{ padding: '7px 10px', fontWeight: 600, fontSize: 12 }}
-              variant='outlined'
-              onClick={() => console.log('Action clicked')}
-            >
-              Confirm
-            </Button> */}
-            {/* <ModalLayout
-              size='small'
-              style={{ padding: '7px 10px', fontWeight: 600, fontSize: 12 }}
-              variant='outlined'
-              button='confirm'
-              endIcon={<CheckRoundedIcon />}
-            >
-              <CodeScanner handleClose={handleClose} />
-            </ModalLayout> */}
-          </Link>
-        )
+        renderCell: () => <ConfirmButton />
       },
       {
         field: 'more-options',

@@ -5,6 +5,7 @@ import styled from 'styled-components'
 import Detail from './Detail'
 import useAuth from '~/hooks/useAuth'
 import { QRCodeSVG } from 'qrcode.react'
+import { RequestStatus } from '~/global/enum'
 
 const TitleText = styled.span`
   font-weight: 600;
@@ -27,14 +28,18 @@ const DetailRequestModal = ({ open, handleClose, selectedRequest }: RequestModal
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'PENDING':
+      case RequestStatus.PENDING:
         return 'var(--primary-color)'
-      case 'REJECTED':
+      case RequestStatus.REJECTED:
         return 'var(--red-color)'
-      case 'APPROVED':
+      case RequestStatus.APPROVED:
         return 'var(--green-color)'
-      case 'CANCELED':
+      case RequestStatus.CANCELED:
         return 'var(--black-light-color)'
+      case RequestStatus.EXPIRED:
+        return 'var(--orange-color)'
+      case RequestStatus.DONE:
+        return 'var(--primary-dark-color)'
       default:
         return 'var(--primary-dark-color)'
     }
@@ -257,7 +262,6 @@ const DetailRequestModal = ({ open, handleClose, selectedRequest }: RequestModal
                     </Button>
                   )}
                 </Box>
-                {console.log(selectedRequest.document.id)}
                 <Detail
                   document={selectedRequest.document}
                   barcode={selectedRequest.barcode}

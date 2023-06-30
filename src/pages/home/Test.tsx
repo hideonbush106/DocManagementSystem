@@ -1,13 +1,9 @@
 import { Button } from '@mui/material'
 import React, { useEffect, useState } from 'react'
 import Detail from '~/components/modal/Detail'
-import ModalLayout from '~/components/modal/ModalLayout'
-import UpdateDocument from '~/components/modal/UpdateDocument'
-import ModalTest from '~/components/test/ModalTest'
 import { DocumentStatus } from '~/global/enum'
 import { DocumentDetail } from '~/global/interface'
 import useDocumentApi from '~/hooks/api/useDocumentApi'
-
 
 const Test = () => {
   // const [, setOpen] = useState(false)

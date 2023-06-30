@@ -107,8 +107,8 @@ export const ViewButton = ({ text }: ButtonProps) => {
 export const AcceptButton = ({ text, onClick }: ButtonProps) => {
   return (
     <Button
-      startIcon={<DoneRoundedIcon />}
       variant='outlined'
+      startIcon={<DoneRoundedIcon />}
       sx={{
         color: 'var(--green-color)',
         border: '0.5px solid var(--green-color)',

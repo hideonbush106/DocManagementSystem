@@ -13,6 +13,7 @@ import { RejectButton } from '~/components/button/Button'
 import useUserApi from '~/hooks/api/useUserApi'
 import dayjs from 'dayjs'
 import useImportRequestApi from '~/hooks/api/useImportRequestApi'
+import { RequestStatus } from '~/global/enum'
 
 const Text = styled(Typography)`
   color: var(--black-color);
@@ -26,34 +27,24 @@ const Text = styled(Typography)`
 `
 
 const StatusText = ({ status }: { status: string }) => {
-  if (status === 'REJECTED') {
-    return (
-      <>
-        <StatusDiv rejected>Rejected</StatusDiv>
-      </>
-    )
+  if (status === RequestStatus.REJECTED) {
+    return <StatusDiv rejected>Rejected</StatusDiv>
   }
-  if (status === 'APPROVED') {
-    return <StatusDiv accepted>Accepted</StatusDiv>
+  if (status === RequestStatus.APPROVED) {
+    return <StatusDiv accepted>Approved</StatusDiv>
   }
-  if (status === 'CANCELED') {
-    return <StatusDiv cancelled>Cancelled</StatusDiv>
+  if (status === RequestStatus.CANCELED) {
+    return <StatusDiv canceled>Cancelled</StatusDiv>
   }
-  return <StatusDiv done>Done</StatusDiv>
+  if (status === RequestStatus.EXPIRED) {
+    return <StatusDiv expired>Expired</StatusDiv>
+  }
+  if (status === RequestStatus.DONE) {
+    return <StatusDiv done>Done</StatusDiv>
+  }
+  return null
 }
 
-// const getStatusColor = (status: string) => {
-//   switch (status) {
-//     case 'PENDING':
-//       return 'var(--primary-color)'
-//     case 'REJECTED':
-//       return 'var(--red-color)'
-//     case 'APPROVED':
-//       return 'var(--green-color)'
-//     default:
-//       return 'inherit'
-//   }
-// }
 const ImportRequestEmployee = () => {
   const PER_PAGE = 10
 
@@ -180,13 +171,7 @@ const ImportRequestEmployee = () => {
                       </Text>
                     )}
                   </div>
-                  {/* <Text variant='body2'>
-                    <strong>Status: </strong>
-                    <span style={{ color: getStatusColor(request.status), fontWeight: 500, fontSize: 14 }}>
-                      {request.status}
-                    </span>
-                  </Text> */}
-                  <CardActions sx={{ justifyContent: 'space-evenly' }}>
+                  <CardActions sx={{ justifyContent: 'space-evenly', padding: '0' }}>
                     {request.status === 'PENDING' ? (
                       <RejectButton text='Cancel Request' onClick={() => handleCancel(request.id)} />
                     ) : (

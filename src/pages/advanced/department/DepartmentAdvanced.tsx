@@ -1,14 +1,15 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { Apartment } from '@mui/icons-material'
-import { Button, CircularProgress, List, ListItemButton, ListItemIcon, ListItemText } from '@mui/material'
+import { CircularProgress, List, ListItemButton, ListItemIcon, ListItemText } from '@mui/material'
 import AddRoundedIcon from '@mui/icons-material/AddRounded'
 import React, { useEffect, useState } from 'react'
 import { Department, UpdateDepartment, CreateDepartment } from '~/global/interface'
 import useDepartmentApi from '~/hooks/api/useDepartmentApi'
-// import { DeleteButton, UpdateButton } from '~/components/button/Button'
-import { notifySuccess, notifyError } from '~/global/toastify'
-import CreateDepartmentModal from '~/components/modal/advanced/department/CreateDepartment'
+import { notifySuccess } from '~/global/toastify'
+import CreateDepartmentModal from '~/components/modal/advanced/department/CreateDepartmentModal'
 import { Box } from '@mui/system'
+import { DeleteButton } from '~/components/button/advanced/DeleteButton'
+import { UpdateDeptButton } from '~/components/button/advanced/UpdateButton'
 
 const DepartmentAdvanced = () => {
   const [departments, setDepartments] = useState<Department[]>([])
@@ -72,7 +73,6 @@ const DepartmentAdvanced = () => {
           notifySuccess('Delete successfully')
         } else {
           setLoading(true)
-          notifyError('Department could not be deleted.')
         }
       })
       await fetchData() // Fetch the updated data
@@ -109,8 +109,8 @@ const DepartmentAdvanced = () => {
                   primary={dept.name}
                   primaryTypographyProps={{ fontFamily: 'inherit', color: 'var(--black-color)' }}
                 />
-                <Button onClick={() => handleDelete}></Button>
-                <Button onClick={() => handleUpdate}></Button>
+                <UpdateDeptButton id={dept.id} name={dept.name} handleUpdate={handleUpdate} />
+                <DeleteButton id={dept.id} name={dept.name} type='department' handleDelete={handleDelete} />
               </ListItemButton>
             ))}
             <ListItemButton

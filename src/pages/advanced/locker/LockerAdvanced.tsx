@@ -14,9 +14,8 @@ import {
 import React, { useEffect, useState } from 'react'
 import { DeleteButton } from '~/components/button/advanced/DeleteButton'
 import { UpdateButton } from '~/components/button/advanced/UpdateButton'
-// import { DeleteButton, UpdateRoomButton } from '~/components/button/Button'
 import CreateAdvancedModal from '~/components/modal/advanced/CreateAdvancedModal'
-import { CreateLocker, Department, Room, UpdateLocker } from '~/global/interface'
+import { CreateLocker, Department, Locker, Room, UpdateLocker } from '~/global/interface'
 import { notifyError, notifySuccess } from '~/global/toastify'
 import useDepartmentApi from '~/hooks/api/useDepartmentApi'
 import useLockerApi from '~/hooks/api/useLockerApi'
@@ -25,7 +24,7 @@ import useRoomApi from '~/hooks/api/useRoomApi'
 const LockerAdvanced = () => {
   const [departments, setDepartments] = useState<Department[]>([])
   const [rooms, setRooms] = useState<Room[]>([])
-  const [lockers, setLockers] = useState<Room[]>([])
+  const [lockers, setLockers] = useState<Locker[]>([])
 
   const [selectedDepartment, setSelectedDepartment] = useState<Department>({ id: '', name: '' })
   const [selectedRoom, setSelectedRoom] = useState<Room>({ id: '', name: '', capacity: 0 })
@@ -34,7 +33,7 @@ const LockerAdvanced = () => {
   const { getLockerInRoom, createLocker, deleteLocker, updateLocker } = useLockerApi()
   const [loading, setLoading] = React.useState<boolean>(true)
   const [loadingRoom, setLoadingRoom] = React.useState<boolean>(true)
-  const [loadingLocker, setLoadingLocker] = React.useState<boolean>(false)
+  const [loadingLocker, setLoadingLocker] = React.useState<boolean>(true)
   const [isModalOpen, setModalOpen] = useState(false)
 
   //option for autocomplete
@@ -149,7 +148,7 @@ const LockerAdvanced = () => {
 
   return (
     <>
-      {selectedDepartment.id && selectedRoom && (
+      {selectedDepartment && selectedRoom && (
         <CreateAdvancedModal<CreateLocker>
           open={isModalOpen}
           type='Locker'
@@ -214,19 +213,6 @@ const LockerAdvanced = () => {
                           primary={locker.name}
                           primaryTypographyProps={{ fontFamily: 'inherit', color: 'var(--black-color)' }}
                         />
-                        {/* <UpdateRoomButton
-                          text='Update'
-                          id={locker.id}
-                          name={locker.name}
-                          capacity={locker.capacity}
-                          onSubmit={() => console.log('Submit')}
-                        />
-                        <DeleteButton
-                          text='Delete'
-                          id={locker.id}
-                          handleDelete={() => console.log('Delete')}
-                          type='locker'
-                        /> */}
                         <UpdateButton<UpdateLocker>
                           type='Locker'
                           onSubmit={handleUpdate}

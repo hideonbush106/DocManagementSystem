@@ -212,7 +212,7 @@ const ImportRequestStaff = () => {
                       </Text>
                     )}
                   </div>
-                  <CardActions sx={{ justifyContent: 'space-evenly' }}>
+                  <CardActions sx={{ justifyContent: 'space-evenly', padding: '0' }}>
                     {request.status === 'PENDING' ? (
                       <>
                         <AcceptButton text='Approve' onClick={() => handleAccept(request.id)} />

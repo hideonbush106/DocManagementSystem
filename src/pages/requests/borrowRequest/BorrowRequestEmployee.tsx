@@ -13,6 +13,7 @@ import useBorrowRequestApi from '~/hooks/api/useBorrowRequestApi'
 import useUserApi from '~/hooks/api/useUserApi'
 import dayjs from 'dayjs'
 import CircularProgress from '@mui/material/CircularProgress'
+import { RequestStatus } from '~/global/enum'
 
 const Text = styled(Typography)`
   color: var(--black-color);
@@ -26,21 +27,20 @@ const Text = styled(Typography)`
 `
 
 const StatusText = ({ status }: { status: string }) => {
-  if (status === 'REJECTED') {
-    return (
-      <>
-        <StatusDiv rejected>Rejected</StatusDiv>
-      </>
-    )
+  if (status === RequestStatus.REJECTED) {
+    return <StatusDiv rejected>Rejected</StatusDiv>
   }
-  if (status === 'APPROVED') {
-    return <StatusDiv accepted>Accepted</StatusDiv>
+  if (status === RequestStatus.APPROVED) {
+    return <StatusDiv accepted>Approved</StatusDiv>
   }
-  if (status === 'DONE') {
+  if (status === RequestStatus.DONE) {
     return <StatusDiv done>Done</StatusDiv>
   }
-  if (status === 'CANCELED') {
+  if (status === RequestStatus.CANCELED) {
     return <StatusDiv canceled>Canceled</StatusDiv>
+  }
+  if (status === RequestStatus.EXPIRED) {
+    return <StatusDiv expired>Expired</StatusDiv>
   }
   return null
 }

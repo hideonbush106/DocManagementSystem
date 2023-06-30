@@ -7,8 +7,12 @@ const useImportRequestApi = () => {
   const rootEndpoint = 'import-requests'
 
   const getImportRequestsAll = React.useCallback(
-    async (status: string, documentId?: string, take?: number, page?: number) => {
-      const endpoint = `/${rootEndpoint}?status=${status}&documentId=${documentId}&take=${take}&page=${page}`
+    async (status?: string, documentId?: string, take?: number, page?: number) => {
+      let endpoint = `/${rootEndpoint}`
+      if (page) endpoint += `?page=${page}`
+      if (status) endpoint += `&status=${status}`
+      if (documentId) endpoint += `&documentId=${documentId}`
+      if (take) endpoint += `&take=${take}`
       try {
         const response = await callApi('get', endpoint)
         return response
@@ -33,8 +37,12 @@ const useImportRequestApi = () => {
   )
 
   const getImportRequestsOwn = React.useCallback(
-    async (status: string, documentId?: string, take?: number, page?: number) => {
-      const endpoint = `/${rootEndpoint}/own?status=${status}&documentId=${documentId}&take=${take}&page=${page}`
+    async (status?: string, documentId?: string, take?: number, page?: number) => {
+      let endpoint = `/${rootEndpoint}`
+      if (page) endpoint += `?page=${page}`
+      if (status) endpoint += `&status=${status}`
+      if (documentId) endpoint += `&documentId=${documentId}`
+      if (take) endpoint += `&take=${take}`
       try {
         const response = await callApi('get', endpoint)
         return response

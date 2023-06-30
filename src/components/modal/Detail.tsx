@@ -2,7 +2,7 @@ import { Box, Button, Modal, Typography } from '@mui/material'
 import Barcode from 'react-barcode'
 import dayjs from 'dayjs'
 import styled from 'styled-components'
-import { ArrowForward, Description, Preview } from '@mui/icons-material'
+import { ArrowForward, Description } from '@mui/icons-material'
 import { DocumentDetail } from '~/global/interface'
 
 const TitleText = styled.span`

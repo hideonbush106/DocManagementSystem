@@ -5,7 +5,6 @@ import KeyboardReturnRoundedIcon from '@mui/icons-material/KeyboardReturnRounded
 import DoneRoundedIcon from '@mui/icons-material/DoneRounded'
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded'
 import ImportDocumentModal from '../modal/ImportDocumentModal'
-import { UpdateDepartment } from '~/global/interface'
 import CodeScanner from '../modal/scanner/CodeScanner'
 
 interface ButtonProps {

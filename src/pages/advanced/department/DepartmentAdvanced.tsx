@@ -87,10 +87,12 @@ const DepartmentAdvanced = () => {
       <List
         sx={{
           width: '100%',
-          height: { xs: 'calc(100vh - 92px - 6rem)', md: 'calc(100vh - 42px - 6rem)' },
+          height: { xs: 'calc(100vh - 210px)', md: 'calc(100vh - 160px)' },
+          borderRadius: '5px',
+          borderTopLeftRadius: '0px',
           bgcolor: 'var(--white-color)',
           padding: '1rem 0',
-          overflowY: 'scroll'
+          overflowY: 'auto'
         }}
         component='div'
       >

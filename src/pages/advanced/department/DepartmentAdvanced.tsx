@@ -1,13 +1,13 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { Apartment } from '@mui/icons-material'
-import { CircularProgress, List, ListItemButton, ListItemIcon, ListItemText } from '@mui/material'
+import { Button, CircularProgress, List, ListItemButton, ListItemIcon, ListItemText } from '@mui/material'
 import AddRoundedIcon from '@mui/icons-material/AddRounded'
 import React, { useEffect, useState } from 'react'
 import { Department, UpdateDepartment, CreateDepartment } from '~/global/interface'
 import useDepartmentApi from '~/hooks/api/useDepartmentApi'
-import { DeleteButton, UpdateButton } from '~/components/button/Button'
-import { notifyError, notifySuccess } from '~/global/toastify'
-import CreateDepartmentModal from '~/components/modal/advanced/CreateDepartment'
+// import { DeleteButton, UpdateButton } from '~/components/button/Button'
+import { notifySuccess, notifyError } from '~/global/toastify'
+import CreateDepartmentModal from '~/components/modal/advanced/department/CreateDepartment'
 import { Box } from '@mui/system'
 
 const DepartmentAdvanced = () => {
@@ -72,7 +72,7 @@ const DepartmentAdvanced = () => {
           notifySuccess('Delete successfully')
         } else {
           setLoading(true)
-          notifyError('Delete failed')
+          notifyError('Department could not be deleted.')
         }
       })
       await fetchData() // Fetch the updated data
@@ -109,8 +109,8 @@ const DepartmentAdvanced = () => {
                   primary={dept.name}
                   primaryTypographyProps={{ fontFamily: 'inherit', color: 'var(--black-color)' }}
                 />
-                <UpdateButton text='Update' id={dept.id} name={dept.name} onSubmit={handleUpdate} />
-                <DeleteButton text='Delete' id={dept.id} handleDelete={handleDelete} />
+                <Button onClick={() => handleDelete}></Button>
+                <Button onClick={() => handleUpdate}></Button>
               </ListItemButton>
             ))}
             <ListItemButton

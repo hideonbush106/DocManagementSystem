@@ -68,6 +68,7 @@ const UpdateDepartmentModal = (props: UpdateDepartmentProps) => {
               my: 1
             }}
             name='name'
+            label='Department name'
             variant='outlined'
             onChange={formik.handleChange}
             value={formik.values.name}

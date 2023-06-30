@@ -3,7 +3,7 @@ import { Modal, Box, TextField, Button, Typography, FormControl } from '@mui/mat
 import { useFormik } from 'formik'
 import { useEffect } from 'react'
 import * as yup from 'yup'
-import { CreateRoom, CreateLocker, CreateFolder, CreateDepartment } from '~/global/interface'
+import { CreateRoom, CreateLocker, CreateFolder } from '~/global/interface'
 
 interface CreateProps<T> {
   open: boolean
@@ -14,19 +14,15 @@ interface CreateProps<T> {
   max: number
 }
 
-const CreateAdvancedModal = <T extends CreateDepartment | CreateRoom | CreateLocker | CreateFolder>(
-  props: CreateProps<T>
-) => {
+const CreateAdvancedModal = <T extends CreateRoom | CreateLocker | CreateFolder>(props: CreateProps<T>) => {
   const validationSchema = yup.object({
     name: yup.string().trim().required(`${props.type} name is required`),
-    ...(props.initialValues.hasOwnProperty('capacity') && {
-      capacity: yup
-        .number()
-        .integer('Capacity must be an integer')
-        .min(1, 'Capacity must be greater than 0')
-        .max(props.max, `Capacity must be less than ${props.max}`)
-        .required('Capacity is required')
-    })
+    capacity: yup
+      .number()
+      .integer('Capacity must be an integer')
+      .min(1, 'Capacity must be greater than 0')
+      .max(props.max, `Capacity must be less than ${props.max}`)
+      .required('Capacity is required')
   })
 
   const formik = useFormik({
@@ -114,23 +110,21 @@ const CreateAdvancedModal = <T extends CreateDepartment | CreateRoom | CreateLoc
               helperText={formik.errors.name?.toString()}
               fullWidth
             />
-            {props.initialValues.hasOwnProperty('capacity') && (
-              <TextField
-                sx={{
-                  my: 1
-                }}
-                name='capacity'
-                label='Capacity'
-                type='number'
-                variant='outlined'
-                onChange={formik.handleChange}
-                placeholder='Enter capacity'
-                value={formik.values.capacity}
-                error={Boolean(formik.errors.capacity)}
-                helperText={formik.errors.capacity?.toString()}
-                fullWidth
-              />
-            )}
+            <TextField
+              sx={{
+                my: 1
+              }}
+              name='capacity'
+              label='Capacity'
+              type='number'
+              variant='outlined'
+              onChange={formik.handleChange}
+              placeholder='Enter capacity'
+              value={formik.values.capacity}
+              error={Boolean(formik.errors.capacity)}
+              helperText={formik.errors.capacity?.toString()}
+              fullWidth
+            />
           </FormControl>
           <Box
             sx={{

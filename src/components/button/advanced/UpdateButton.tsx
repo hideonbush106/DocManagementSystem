@@ -2,7 +2,7 @@ import { Button, Fab, useMediaQuery, useTheme } from '@mui/material'
 import React from 'react'
 import ModalLayout from '~/components/modal/ModalLayout'
 import { Edit } from '@mui/icons-material'
-import { UpdateFolder, UpdateLocker, UpdateRoom } from '~/global/interface'
+import { UpdateCategory, UpdateFolder, UpdateLocker, UpdateRoom } from '~/global/interface'
 import UpdateAdvancedModal from '~/components/modal/advanced/UpdateAdvancedModal'
 
 interface ButtonProps<T> {
@@ -12,7 +12,7 @@ interface ButtonProps<T> {
   max: number
 }
 
-export const UpdateButton = <T extends UpdateRoom | UpdateLocker | UpdateFolder>({
+export const UpdateButton = <T extends UpdateRoom | UpdateLocker | UpdateFolder | UpdateCategory>({
   type,
   onSubmit,
   initialValues,
@@ -71,6 +71,7 @@ export const UpdateButton = <T extends UpdateRoom | UpdateLocker | UpdateFolder>
           initialValues={initialValues}
           max={max}
           handleClose={handleClose}
+          disableCapacity={type === 'Category'}
         />
       </ModalLayout>
     </>

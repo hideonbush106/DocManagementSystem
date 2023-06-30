@@ -14,7 +14,6 @@ import {
 } from '@mui/material'
 import React, { useEffect, useState } from 'react'
 import usePagination from '~/hooks/usePagination'
-import useApi from '~/hooks/api/useApi'
 import InfoIcon from '@mui/icons-material/Info'
 import DetailRequestModal from '~/components/modal/DetailRequestModal'
 import { StatusDiv } from '~/pages/requests/importRequest/ImportRequest.styled'
@@ -63,19 +62,11 @@ const BorrowRequestStaff = () => {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [selectedStatus, setSelectedStatus] = useState<string>('')
   const [isFetching, setIsFetching] = useState(true)
-  const callApi = useApi()
-  const { acceptBorrowRequest, rejectBorrowRequest } = useBorrowRequestApi()
+  const { getBorrowRequests, getBorrowRequestsAll, acceptBorrowRequest, rejectBorrowRequest } = useBorrowRequestApi()
 
   const fetchBorrowRequests = async () => {
     try {
-      let endpoint = '/borrow-requests'
-
-      if (selectedStatus !== '') {
-        endpoint += `?status=${selectedStatus}`
-      } else {
-        endpoint += `?page=${page}`
-      }
-      const response = await callApi('get', endpoint)
+      const response = await getBorrowRequestsAll(selectedStatus || undefined, undefined, undefined, page)
       const responseData = response.data.data
       const totalPages = response.data.total
 
@@ -101,9 +92,9 @@ const BorrowRequestStaff = () => {
     _DATA.jump(pageNumber)
     console.log(e)
   }
-  const handleInfoIconClick = async (id: number) => {
+  const handleInfoIconClick = async (id: string) => {
     try {
-      const response = await callApi('get', `/borrow-requests/${id}`)
+      const response = await getBorrowRequests(id)
       const requestDetails = response.data
       setSelectedRequest(requestDetails)
     } catch (error) {

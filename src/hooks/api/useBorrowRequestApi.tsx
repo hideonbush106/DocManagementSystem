@@ -20,8 +20,12 @@ const useBorrowRequestApi = () => {
   )
   // ? API undone
   const getBorrowRequestsAll = React.useCallback(
-    async (status: string, documentId?: string, take?: number, page?: number) => {
-      const endpoint = `/${rootEndpoint}?status=${status}&documentId=${documentId}&take=${take}&page=${page}`
+    async (status?: string, documentId?: string, take?: number, page?: number) => {
+      let endpoint = `/${rootEndpoint}`
+      if (page) endpoint += `?page=${page}`
+      if (status) endpoint += `&status=${status}`
+      if (documentId) endpoint += `&documentId=${documentId}`
+      if (take) endpoint += `&take=${take}`
       try {
         const response = await callApi('get', endpoint)
         return response
@@ -46,16 +50,22 @@ const useBorrowRequestApi = () => {
   )
 
   //For employee
-  // ? API undone
-  const getOwnBorrowRequests = React.useCallback(async () => {
-    const endpoint = `/${rootEndpoint}/own`
-    try {
-      const response = await callApi('get', endpoint)
-      return response
-    } catch (error) {
-      console.log(error)
-    }
-  }, [callApi])
+  const getOwnBorrowRequests = React.useCallback(
+    async (status?: string, documentId?: string, take?: number, page?: number) => {
+      let endpoint = `/${rootEndpoint}`
+      if (page) endpoint += `?page=${page}`
+      if (status) endpoint += `&status=${status}`
+      if (documentId) endpoint += `&documentId=${documentId}`
+      if (take) endpoint += `&take=${take}`
+      try {
+        const response = await callApi('get', endpoint)
+        return response
+      } catch (error) {
+        console.log(error)
+      }
+    },
+    [callApi]
+  )
 
   const acceptBorrowRequest = React.useCallback(
     async (borrowRequestId: string) => {

@@ -5,6 +5,7 @@ import styled from 'styled-components'
 import Detail from './Detail'
 import useAuth from '~/hooks/useAuth'
 import { QRCodeSVG } from 'qrcode.react'
+import { RequestStatus } from '~/global/enum'
 
 const TitleText = styled.span`
   font-weight: 600;
@@ -27,12 +28,18 @@ const DetailRequestModal = ({ open, handleClose, selectedRequest }: RequestModal
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'PENDING':
+      case RequestStatus.PENDING:
         return 'var(--primary-color)'
-      case 'REJECTED':
+      case RequestStatus.REJECTED:
         return 'var(--red-color)'
-      case 'APPROVED':
+      case RequestStatus.APPROVED:
         return 'var(--green-color)'
+      case RequestStatus.CANCELED:
+        return 'var(--black-light-color)'
+      case RequestStatus.EXPIRED:
+        return 'var(--orange-color)'
+      case RequestStatus.DONE:
+        return 'var(--primary-dark-color)'
       default:
         return 'var(--primary-dark-color)'
     }
@@ -128,12 +135,23 @@ const DetailRequestModal = ({ open, handleClose, selectedRequest }: RequestModal
                   }}
                 >
                   {selectedRequest.status !== 'REJECTED' && selectedRequest.status !== 'CANCELED' && (
-                    <Button variant='contained' onClick={() => setDetail(true)} sx={{ fontFamily: 'inherit' }}>
+                    <Button
+                      variant='contained'
+                      onClick={() => {
+                        if (selectedRequest.document) setDetail(true)
+                      }}
+                      sx={{ fontFamily: 'inherit' }}
+                    >
                       Document Detail
                     </Button>
                   )}
                 </Box>
-                <Detail id={selectedRequest.document.id} open={detail} onClose={handleDetailClose} />
+                <Detail
+                  document={selectedRequest.document}
+                  barcode={selectedRequest.barcode}
+                  open={detail}
+                  onClose={handleDetailClose}
+                />
               </div>
             )}
           </Box>
@@ -238,12 +256,23 @@ const DetailRequestModal = ({ open, handleClose, selectedRequest }: RequestModal
                   }}
                 >
                   {selectedRequest.status !== 'REJECTED' && selectedRequest.status !== 'CANCELED' && (
-                    <Button variant='contained' onClick={() => setDetail(true)} sx={{ fontFamily: 'inherit' }}>
+                    <Button
+                      variant='contained'
+                      onClick={() => {
+                        if (selectedRequest.document) setDetail(true)
+                      }}
+                      sx={{ fontFamily: 'inherit' }}
+                    >
                       Document Detail
                     </Button>
                   )}
                 </Box>
-                <Detail id={selectedRequest.document.id} open={detail} onClose={handleDetailClose} />
+                <Detail
+                  document={selectedRequest.document}
+                  barcode={selectedRequest.barcode}
+                  open={detail}
+                  onClose={handleDetailClose}
+                />
               </div>
             )}
           </Box>

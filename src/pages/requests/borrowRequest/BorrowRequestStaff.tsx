@@ -23,27 +23,33 @@ import RejectRequestModal from '~/components/modal/RejectRequestModal'
 import useBorrowRequestApi from '~/hooks/api/useBorrowRequestApi'
 import dayjs from 'dayjs'
 import FilterRequest from '~/components/filter/FilterRequest'
+import { RequestStatus } from '~/global/enum'
 
 const Text = styled(Typography)`
   color: var(--black-color);
   margin: 0.5rem 0;
+  max-height: 50px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
 `
 const StatusText = ({ status }: { status: string }) => {
-  if (status === 'REJECTED') {
-    return (
-      <>
-        <StatusDiv rejected>Rejected</StatusDiv>
-      </>
-    )
+  if (status === RequestStatus.REJECTED) {
+    return <StatusDiv rejected>Rejected</StatusDiv>
   }
-  if (status === 'APPROVED') {
-    return <StatusDiv accepted>Accepted</StatusDiv>
+  if (status === RequestStatus.APPROVED) {
+    return <StatusDiv accepted>Approved</StatusDiv>
   }
-  if (status === 'DONE') {
+  if (status === RequestStatus.DONE) {
     return <StatusDiv done>Done</StatusDiv>
   }
-  if (status === 'CANCELED') {
+  if (status === RequestStatus.CANCELED) {
     return <StatusDiv canceled>Canceled</StatusDiv>
+  }
+  if (status === RequestStatus.EXPIRED) {
+    return <StatusDiv expired>Expired</StatusDiv>
   }
   return null
 }
@@ -223,7 +229,7 @@ const BorrowRequestStaff = () => {
                     <CardActions sx={{ justifyContent: 'space-evenly' }}>
                       {request.status === 'PENDING' ? (
                         <>
-                          <AcceptButton text='Accept' onClick={() => handleAccept(request.id)} />
+                          <AcceptButton text='Approve' onClick={() => handleAccept(request.id)} />
                           <RejectButton text='Reject' onClick={() => handleReject(request.id)} />
                         </>
                       ) : (

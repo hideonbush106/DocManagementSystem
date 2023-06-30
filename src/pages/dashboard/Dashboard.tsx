@@ -1,4 +1,3 @@
-import HeaderBar from '~/components/headerBar/HeaderBar'
 import {
   RequestContainer,
   DashboardWrapper,
@@ -31,7 +30,6 @@ const Subtitle = styled(Typography)({
 const Dashboard = () => {
   return (
     <>
-      <HeaderBar />
       <DashboardWrapper container spacing={{ sm: 2, xs: 0 }} margin={0}>
         <DocumentContainer xs={12} lg={8}>
           <Wrapper>

@@ -30,13 +30,13 @@ export interface File {
   description: string
   status: string
   storageUrl?: string
-  numOfPage: number
+  numOfPages: number
   createdAt: Date
   updatedAt: Date
 }
 
 export interface FolderTree extends Folder {
-  files: File[]
+  documents: File[]
 }
 
 export interface LockerTree extends Locker {
@@ -161,4 +161,29 @@ export interface ImportRequest {
 export interface Reject {
   id: string
   rejectedReason: string
+}
+
+export interface DocumentDetail {
+  id: string
+  name: string
+  description: string
+  status: string
+  numOfPages: number
+  createdAt: Date
+  updatedAt: Date
+  folder: {
+    name: string
+    locker: {
+      name: string
+      room: {
+        name: string
+        department: {
+          name: string
+        }
+      }
+    }
+  }
+  category: {
+    name: string
+  }
 }

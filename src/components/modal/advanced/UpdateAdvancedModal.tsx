@@ -1,41 +1,40 @@
+/* eslint-disable no-prototype-builtins */
 import { Box, Button, FormControl, TextField, Typography } from '@mui/material'
 import { useFormik } from 'formik'
 import * as yup from 'yup'
-import { UpdateRoom } from '~/global/interface'
+import { UpdateFolder, UpdateLocker, UpdateRoom } from '~/global/interface'
 
-interface UpdateRoomProps {
-  handleClose?: () => void
-  onSubmit?: (values: UpdateRoom) => void
-  id?: string
-  name?: string
-  capacity?: number
+interface UpdateProps<T> {
+  type: string
+  onSubmit: (values: T) => void
+  initialValues: T
+  max: number
+  handleClose: () => void
 }
 
-const UpdateRoomModal = (props: UpdateRoomProps) => {
+const UpdateAdvancedModal = <T extends UpdateRoom | UpdateLocker | UpdateFolder>(props: UpdateProps<T>) => {
   const validationSchema = yup.object({
-    name: yup.string().trim().required('Room name is required'),
+    name: yup.string().trim().required(`${props.type} name is required`),
     capacity: yup
       .number()
       .integer('Capacity must be an integer')
       .min(1, 'Capacity must be greater than 0')
-      .max(20, 'Capacity must be less than 20')
+      .max(props.max, `Capacity must be less than ${props.max}`)
       .required('Capacity is required')
   })
 
   const formik = useFormik({
-    initialValues: {
-      id: `${props.id}`,
-      name: `${props.name}`,
-      capacity: props.capacity || NaN
-    },
+    initialValues: props.initialValues,
     validationSchema: validationSchema,
-    onSubmit: (values: UpdateRoom) => {
+    onSubmit: (values) => {
       values.name = values.name.trim().replace(/\s\s+/g, ' ')
       props.onSubmit?.(values)
     }
   })
 
-  const unchanged = formik.values.name === props.name && formik.values.capacity === props.capacity
+  const unchanged =
+    formik.values.name === props.initialValues.name &&
+    (props.initialValues.hasOwnProperty('capacity') ? formik.values.capacity === props.initialValues.capacity : true)
 
   return (
     <>
@@ -46,8 +45,6 @@ const UpdateRoomModal = (props: UpdateRoomProps) => {
             xs: 1.5,
             sm: 3
           },
-          position: 'sticky',
-          top: 0,
           background: 'white',
           zIndex: 1,
           width: '100%'
@@ -66,7 +63,7 @@ const UpdateRoomModal = (props: UpdateRoomProps) => {
           }}
           variant='h4'
         >
-          Update department
+          Update {props.type.toLocaleLowerCase()}
         </Typography>
       </Box>
       <form action='POST' onSubmit={formik.handleSubmit}>
@@ -76,13 +73,13 @@ const UpdateRoomModal = (props: UpdateRoomProps) => {
               my: 1
             }}
             name='name'
-            label='Room name'
+            label={`${props.type} name`}
             variant='outlined'
             onChange={formik.handleChange}
-            placeholder={props.name}
+            placeholder={props.initialValues.name}
             value={formik.values.name}
             error={formik.errors.name ? true : false}
-            helperText={formik.errors.name}
+            helperText={formik.errors.name?.toString()}
             fullWidth
           />
           <TextField
@@ -94,19 +91,19 @@ const UpdateRoomModal = (props: UpdateRoomProps) => {
             type='number'
             variant='outlined'
             onChange={formik.handleChange}
-            placeholder={props.capacity?.toString()}
+            placeholder={props.initialValues.capacity?.toString()}
             value={formik.values.capacity}
             error={formik.errors.capacity ? true : false}
-            helperText={formik.errors.capacity}
+            helperText={formik.errors.capacity?.toString()}
             fullWidth
           />
         </FormControl>
         <Box
           sx={{
-            p: 4,
-            position: 'sticky',
-            bottom: -1,
-            zIndex: 1,
+            p: {
+              xs: 1.5,
+              sm: 4
+            },
             background: 'white',
             display: 'flex',
             justifyContent: 'end',
@@ -118,7 +115,7 @@ const UpdateRoomModal = (props: UpdateRoomProps) => {
             variant='contained'
             color='primary'
             type='submit'
-            disabled={Boolean(formik.errors.name || formik.errors.capacity) || unchanged}
+            disabled={formik.isValidating || !formik.isValid || unchanged}
           >
             Update
           </Button>
@@ -132,4 +129,4 @@ const UpdateRoomModal = (props: UpdateRoomProps) => {
   )
 }
 
-export default UpdateRoomModal
+export default UpdateAdvancedModal

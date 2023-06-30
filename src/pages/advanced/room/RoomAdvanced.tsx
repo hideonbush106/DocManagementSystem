@@ -1,19 +1,20 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { Apartment, ExpandLess, ExpandMore, MeetingRoom } from '@mui/icons-material'
+import { MeetingRoom } from '@mui/icons-material'
 import AddRoundedIcon from '@mui/icons-material/AddRounded'
 import {
+  Autocomplete,
   Box,
   CircularProgress,
-  Collapse,
-  Divider,
   List,
   ListItemButton,
   ListItemIcon,
-  ListItemText
+  ListItemText,
+  TextField
 } from '@mui/material'
 import React, { useEffect, useState } from 'react'
-import { DeleteButton, UpdateRoomButton } from '~/components/button/Button'
-import CreateRoomModal from '~/components/modal/advanced/room/CreateRoom'
+import { DeleteButton } from '~/components/button/advanced/DeleteButton'
+import { UpdateButton } from '~/components/button/advanced/UpdateButton'
+import CreateAdvancedModal from '~/components/modal/advanced/CreateAdvancedModal'
 import { CreateRoom, Department, Room, UpdateRoom } from '~/global/interface'
 import { notifySuccess } from '~/global/toastify'
 import useDepartmentApi from '~/hooks/api/useDepartmentApi'
@@ -30,37 +31,44 @@ const RoomAdvanced = () => {
   const [loadingRoom, setLoadingRoom] = React.useState<boolean>(false)
   const [isModalOpen, setModalOpen] = useState(false)
 
-  const [open, setOpen] = React.useState(false)
-  //handle options dropdown
-  const handleOptions = () => {
-    setOpen(!open)
+  //option for autocomplete
+  const options = {
+    options: departments.map((option) => option.name)
   }
   //handle modal open
   const handleModalOpen = () => {
     setModalOpen(true)
   }
 
-  //handle dropdown close after selecting
-  const handleSelect = (dept: Department) => {
-    setSelectedDepartment(dept)
-    setLoadingRoom(true)
-    setOpen(!open)
+  const handleAutocompleteChange = (_event: React.SyntheticEvent<Element, Event>, value: string | null) => {
+    if (value !== null) {
+      const selectedDept = departments.find((dept) => dept.name === value)
+      if (selectedDept) {
+        setSelectedDepartment(selectedDept)
+        setLoadingRoom(true)
+      }
+    }
   }
-
   const fetchDepartment = async () => {
-    await getAllDepartments().then((result) => {
+    try {
+      const result = await getAllDepartments()
       setDepartments(result.data)
       setSelectedDepartment(result.data[0])
-    })
+    } catch (error) {
+      console.log('error')
+    }
   }
 
   const fetchRooms = async () => {
-    if (selectedDepartment.id) {
-      await getRoomsInDepartment(selectedDepartment.id).then((result) => {
+    try {
+      if (selectedDepartment.id) {
+        const result = await getRoomsInDepartment(selectedDepartment.id)
         setRooms(result.data)
         setLoading(false)
         setLoadingRoom(false)
-      })
+      }
+    } catch (error) {
+      console.log('error')
     }
   }
 
@@ -73,126 +81,77 @@ const RoomAdvanced = () => {
   }, [selectedDepartment])
 
   const handleCreate = async (values: CreateRoom) => {
-    try {
-      await createRoom(values).then((result) => {
-        if (result) {
-          setLoadingRoom(true)
-          setRooms([]) // Clear the room array
-          notifySuccess('Create successfully')
-          setModalOpen(false)
-        }
-      })
-      await fetchRooms() // Fetch the updated data
-    } catch (error) {
-      console.log(error)
+    values.department.id = selectedDepartment.id
+    const result = await createRoom(values)
+    if (result) {
+      setLoadingRoom(true)
+      setRooms([]) // Clear the room array
+      notifySuccess('Create successfully')
+      setModalOpen(false)
     }
+    await fetchRooms() // Fetch the updated data
   }
 
   const handleDelete = async (id: string) => {
-    try {
-      await deleteRoom(id).then((result) => {
-        if (result) {
-          setLoadingRoom(true)
-          setRooms([]) // Clear the room array
-          notifySuccess('Delete successfully')
-          // setModalOpen(false)
-        } else {
-          setLoadingRoom(true)
-        }
-      })
-      await fetchRooms() // Fetch the updated data
-    } catch (error) {
-      console.log(error)
+    const result = await deleteRoom(id)
+    if (result) {
+      setLoadingRoom(true)
+      setRooms([]) // Clear the room array
+      notifySuccess('Delete successfully')
+    } else {
+      setLoadingRoom(true)
     }
+    await fetchRooms()
   }
 
   const handleUpdate = async (values: UpdateRoom) => {
-    try {
-      await updateRoom(values).then((result) => {
-        if (result) {
-          setLoadingRoom(true)
-          setRooms([]) // Clear the room array
-          notifySuccess('Update successfully')
-        }
-      })
-      await fetchRooms() // Fetch the updated data
-    } catch (error) {
-      console.log(error)
+    const result = await updateRoom(values)
+    if (result) {
+      setLoadingRoom(true)
+      setRooms([])
+      notifySuccess('Update successfully')
     }
+    await fetchRooms()
   }
 
   return (
     <>
       {selectedDepartment.id && (
-        <CreateRoomModal
+        <CreateAdvancedModal<CreateRoom>
           open={isModalOpen}
+          type='Room'
           handleClose={() => setModalOpen(false)}
-          deptId={selectedDepartment.id}
           onSubmit={handleCreate}
+          initialValues={{ name: '', capacity: 10, department: { id: selectedDepartment.id } }}
+          max={100}
         />
       )}
       <List
         sx={{
           width: '100%',
-          height: { xs: 'calc(100vh - 92px - 6rem)', md: 'calc(100vh - 42px - 6rem)' },
+          height: { xs: 'calc(100vh - 210px)', md: 'calc(100vh - 160px)' },
+          borderRadius: '5  px',
+          borderTopLeftRadius: '0px',
           bgcolor: 'var(--white-color)',
           padding: '1rem 0',
-          overflowY: 'scroll'
+          overflowY: 'auto'
         }}
         component='div'
       >
         {!loading ? (
           <>
-            <ListItemButton
-              onClick={handleOptions}
-              sx={{
-                padding: { sm: '0 5rem', xs: '0 1rem' },
-                // paddingRight: { sm: '5rem', xs: '1rem' },
-                height: '52.5px'
-              }}
-            >
-              {open ? null : (
-                <ListItemIcon sx={{ color: 'var(--black-color)', minWidth: { sm: '56px', xs: '40px' } }}>
-                  <Apartment />
-                </ListItemIcon>
+            <Autocomplete
+              {...options}
+              id='department option'
+              size='medium'
+              autoComplete
+              value={selectedDepartment.name}
+              onChange={handleAutocompleteChange}
+              sx={{ width: '100%', padding: { sm: '0 4rem', xs: '0 1rem' }, my: '1rem' }}
+              renderInput={(params) => (
+                <TextField label='Department' {...params} placeholder='Select department' variant='standard' />
               )}
-
-              <ListItemText
-                sx={{ paddingLeft: open ? { sm: '56px' } : '0' }}
-                primary={open ? 'Select department' : selectedDepartment.name}
-                primaryTypographyProps={{ fontFamily: 'inherit', color: 'var(--black-color)' }}
-              />
-              {open ? <ExpandLess /> : <ExpandMore />}
-            </ListItemButton>
-            <Divider sx={{ margin: { sm: '0 4rem', xs: '0 1rem' } }} />
-            <Collapse in={open} timeout='auto' unmountOnExit>
-              <List component='div' disablePadding>
-                {departments.map((dept) => (
-                  <>
-                    <ListItemButton
-                      key={dept.id}
-                      sx={{
-                        paddingLeft: { sm: '5rem', xs: '1rem' },
-                        paddingRight: { sm: '5rem', xs: '1rem' },
-                        height: '52.5px'
-                      }}
-                      onClick={dept.id === selectedDepartment.id ? undefined : () => handleSelect(dept)}
-                      disableTouchRipple={dept.id === selectedDepartment.id}
-                      selected={dept.id === selectedDepartment.id}
-                    >
-                      <ListItemIcon sx={{ color: 'var(--black-color)', minWidth: { sm: '56px', xs: '40px' } }}>
-                        <Apartment />
-                      </ListItemIcon>
-                      <ListItemText
-                        primary={dept.name}
-                        primaryTypographyProps={{ fontFamily: 'inherit', color: 'var(--black-color)' }}
-                      />
-                    </ListItemButton>
-                    <Divider sx={{ margin: { sm: '0 4rem', xs: '0 1rem' } }} />
-                  </>
-                ))}
-              </List>
-            </Collapse>
+            />
             {!loadingRoom ? (
               <>
                 {rooms.map((room) => (
@@ -204,18 +163,26 @@ const RoomAdvanced = () => {
                     <ListItemIcon sx={{ color: 'var(--black-color)', minWidth: { sm: '56px', xs: '40px' } }}>
                       <MeetingRoom />
                     </ListItemIcon>
+
                     <ListItemText
                       primary={room.name}
                       primaryTypographyProps={{ fontFamily: 'inherit', color: 'var(--black-color)' }}
+                      style={{
+                        width: 'min(100%,20px)',
+                        overflow: 'hidden'
+                      }}
                     />
-                    <UpdateRoomButton
-                      text='Update'
-                      id={room.id}
-                      name={room.name}
-                      capacity={room.capacity}
+                    <UpdateButton<UpdateRoom>
+                      type='Room'
                       onSubmit={handleUpdate}
+                      initialValues={{
+                        id: room.id,
+                        name: room.name,
+                        capacity: room.capacity
+                      }}
+                      max={100}
                     />
-                    <DeleteButton text='Delete' id={room.id} handleDelete={handleDelete} type='room' />
+                    <DeleteButton id={room.id} name={room.name} type='room' handleDelete={handleDelete} />
                   </ListItemButton>
                 ))}
                 <ListItemButton

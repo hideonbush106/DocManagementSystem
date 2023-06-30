@@ -18,7 +18,7 @@ export const publicRoutes = [{ path: '/', component: Login }]
 export const privateRoutes = [
   { path: '/welcome', component: Welcome, title: 'Welcome' },
   { path: '/test', component: Test },
-  { path: '/dashboard', component: Dashboard, title: 'Dashboard' },
+  { path: '/dashboard', component: Dashboard, title: 'Dashboard', layout: 'main' },
   {
     path: '/document',
     component: Document,
@@ -37,6 +37,6 @@ export const privateRoutes = [
   },
   { path: '/request', component: Requests, title: 'Requests' },
   { path: '/pending-approval', component: PendingApprovals, title: 'Pending Approvals' },
-  { path: '/statistic', component: Statistic, title: 'Statistics' },
+  { path: '/statistic', component: Statistic, title: 'Statistics', layout: 'main' },
   { path: '/advanced', component: Advanced, title: 'Advanced' }
 ]

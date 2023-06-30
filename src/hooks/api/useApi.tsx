@@ -5,7 +5,7 @@ import { notifyError } from '~/global/toastify'
 import React from 'react'
 
 const useApi = () => {
-  const { logout } = useAuth()
+  const { idToken, logout, refreshToken } = useAuth()
 
   const handleError = React.useCallback(
     async (error: unknown) => {
@@ -15,17 +15,25 @@ const useApi = () => {
         const errorDetails = error.response?.data.details
         switch (errorDetails) {
           case 'Access denied': {
-            const status = await logout()
-            if (status) message = 'Account is not allowed to access the system'
+            await logout()
+            message = 'Account is not allowed to access the system'
             break
           }
           case 'Session expired': {
-            const status = await logout()
-            if (status) message = 'Session expired. Please login again'
+            await logout()
+            message = 'Session expired. Please login again'
             break
           }
           case 'Invalid token': {
             await logout()
+            break
+          }
+          case 'No token provided': {
+            await logout()
+            break
+          }
+          case 'Token expired': {
+            await refreshToken()
             break
           }
           case 'Not permitted': {
@@ -40,7 +48,7 @@ const useApi = () => {
         notifyError(message)
       }
     },
-    [logout]
+    [logout, refreshToken]
   )
   /**
    * Function Documentation: `callApi`
@@ -64,8 +72,7 @@ const useApi = () => {
       params: object = {},
       body: object = {}
     ) => {
-      const accessToken = localStorage.getItem('idToken')
-      const headersDefault = { accept: 'application/json', Authentication: accessToken }
+      const headersDefault = { accept: 'application/json', Authentication: idToken }
       Object.assign(headersDefault, headers)
       let response: AxiosResponse
       try {
@@ -92,7 +99,7 @@ const useApi = () => {
         handleError(error)
       }
     },
-    [handleError]
+    [handleError, idToken]
   )
 
   return callApi

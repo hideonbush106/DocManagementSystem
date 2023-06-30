@@ -1,10 +1,11 @@
 import { styled as mstyled, Modal, Box, Typography, Button } from '@mui/material'
-import LoadingButton from '@mui/lab/LoadingButton'
 import dayjs from 'dayjs'
-import { useCallback, useEffect, useState } from 'react'
-import Barcode from 'react-barcode'
+import { useState } from 'react'
 import styled from 'styled-components'
-import useDocumentApi from '~/hooks/api/useDocumentApi'
+import Detail from './Detail'
+import useAuth from '~/hooks/useAuth'
+import { QRCodeSVG } from 'qrcode.react'
+import { RequestStatus } from '~/global/enum'
 
 const TitleText = styled.span`
   font-weight: 600;
@@ -21,158 +22,263 @@ interface RequestModalProps {
 }
 
 const DetailRequestModal = ({ open, handleClose, selectedRequest }: RequestModalProps) => {
-  const [valueBarcode, setValueBarcode] = useState('')
-  const { getDocumentBarcode } = useDocumentApi()
-  const [loading, setLoading] = useState(true)
+  const [detail, setDetail] = useState(false)
+  const { user } = useAuth()
+  const role = user?.role
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'PENDING':
+      case RequestStatus.PENDING:
         return 'var(--primary-color)'
-      case 'REJECTED':
+      case RequestStatus.REJECTED:
         return 'var(--red-color)'
-      case 'APPROVED':
+      case RequestStatus.APPROVED:
         return 'var(--green-color)'
+      case RequestStatus.CANCELED:
+        return 'var(--black-light-color)'
+      case RequestStatus.EXPIRED:
+        return 'var(--orange-color)'
+      case RequestStatus.DONE:
+        return 'var(--primary-dark-color)'
       default:
-        return 'inherit'
+        return 'var(--primary-dark-color)'
     }
   }
-  const handleViewPdf = () => {
-    window.open(selectedRequest.document.storageUrl)
+
+  const handleDetailClose = () => {
+    setDetail(false)
   }
-
-  const getValueBarcode = useCallback(async () => {
-    if (selectedRequest) {
-      try {
-        const response = await getDocumentBarcode(selectedRequest.document.id)
-        if (response?.data?.barcode) {
-          setValueBarcode(response.data.barcode)
-        }
-      } catch (error) {
-        console.log(error)
-      } finally {
-        setLoading(false)
-      }
-    }
-  }, [getDocumentBarcode, selectedRequest])
-
-  useEffect(() => {
-    getValueBarcode()
-  }, [getValueBarcode, selectedRequest, loading])
 
   return (
-    <Modal open={open} onClose={handleClose} closeAfterTransition>
-      <Box
-        sx={{
-          borderRadius: '5px',
-          position: 'absolute',
-          top: '50%',
-          left: '50%',
-          transform: 'translate(-50%, -50%)',
-          width: {
-            xs: '100vw',
-            sm: '60vw',
-            md: '45vw',
-            lg: '32vw'
-          },
-          height: 'fit-content',
-          bgcolor: 'background.paper',
-          boxShadow: 24,
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'flex-start',
-          border: 'none',
-          padding: '30px'
-        }}
-      >
-        {selectedRequest && (
-          <div>
-            <Typography variant='h5' sx={{ fontWeight: '600', marginBottom: '20px' }}>
-              Request Details
-            </Typography>
-            <div style={{ maxHeight: '55px', textOverflow: 'ellipsis' }}>
-              <Text>
-                <TitleText>Description: </TitleText> {selectedRequest.description}
-              </Text>
-            </div>
-            <Text>
-              <TitleText>Created by: </TitleText>
-              {`${selectedRequest.createdBy.firstName} ${selectedRequest.createdBy.lastName}`}
-            </Text>
-            <Text>
-              <TitleText>Created at: </TitleText>
-              {dayjs(selectedRequest.createdAt).format('DD/MM/YYYY HH:mm:ss')}
-            </Text>
-            {selectedRequest.borrowDuration && (
-              <Text>
-                <TitleText>Borrow duration: </TitleText> {selectedRequest.borrowDuration}
-              </Text>
-            )}
-            {selectedRequest.status === 'PENDING' && (
-              <Text>
-                <TitleText>Expired at: </TitleText>
-                {dayjs(selectedRequest.expired_at).format('DD/MM/YYYY HH:mm:ss')}
-              </Text>
-            )}
-            <Text>
-              <TitleText>Updated at: </TitleText>
-              {dayjs(selectedRequest.updatedAt).format('DD/MM/YYYY HH:mm:ss')}
-            </Text>
-            {selectedRequest.status === 'REJECTED' && (
-              <Text>
-                <TitleText>Reason: </TitleText>
-                {selectedRequest.rejectedReason}
-              </Text>
-            )}
-            <Text>
-              <TitleText>Status: </TitleText>
-              <span style={{ color: getStatusColor(selectedRequest.status) }}>{selectedRequest.status}</span>
-            </Text>
-            {selectedRequest.status === 'APPROVED' && (
-              <>
-                {loading ? (
-                  <LoadingButton
-                    variant='text'
-                    loading={loading}
-                    sx={{
-                      display: 'flex',
-                      justifyContent: 'center',
-                      width: {
-                        xs: 'auto',
-                        md: '40vw',
-                        lg: '28vw'
-                      },
-                      height: 'fit-content'
-                    }}
-                  />
-                ) : (
-                  <Barcode value={valueBarcode} />
+    <>
+      {role === 'STAFF' ? (
+        <Modal open={open} onClose={handleClose} closeAfterTransition>
+          <Box
+            sx={{
+              borderRadius: '5px',
+              position: 'absolute',
+              top: '50%',
+              left: '50%',
+              transform: 'translate(-50%, -50%)',
+              width: {
+                xs: '100vw',
+                sm: '60vw',
+                md: '45vw',
+                lg: '32vw'
+              },
+              height: 'fit-content',
+              bgcolor: 'background.paper',
+              boxShadow: 24,
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'flex-start',
+              border: 'none',
+              padding: '30px'
+            }}
+          >
+            {selectedRequest && (
+              <div>
+                <Typography variant='h5' sx={{ fontWeight: '600', marginBottom: '20px' }}>
+                  Request Details
+                </Typography>
+                <div style={{ maxHeight: '55px', textOverflow: 'ellipsis' }}>
+                  <Text>
+                    <TitleText>Description: </TitleText> {selectedRequest.description}
+                  </Text>
+                </div>
+                <Text>
+                  <TitleText>Created by: </TitleText>
+                  {`${selectedRequest.createdBy.firstName} ${selectedRequest.createdBy.lastName}`}
+                </Text>
+                <Text>
+                  <TitleText>Created at: </TitleText>
+                  {dayjs(selectedRequest.createdAt).format('DD/MM/YYYY HH:mm:ss')}
+                </Text>
+                {selectedRequest.borrowDuration && (
+                  <Text>
+                    <TitleText>Borrow duration: </TitleText> {selectedRequest.borrowDuration}
+                  </Text>
                 )}
-              </>
+                {selectedRequest.status === 'PENDING' && (
+                  <Text>
+                    <TitleText>Expired at: </TitleText>
+                    {dayjs(selectedRequest.expired_at).format('DD/MM/YYYY HH:mm:ss')}
+                  </Text>
+                )}
+                <Text>
+                  <TitleText>Updated at: </TitleText>
+                  {dayjs(selectedRequest.updatedAt).format('DD/MM/YYYY HH:mm:ss')}
+                </Text>
+                {selectedRequest.status === 'REJECTED' && (
+                  <Text>
+                    <TitleText>Reason: </TitleText>
+                    {selectedRequest.rejectedReason}
+                  </Text>
+                )}
+                <Text>
+                  <TitleText>Status: </TitleText>
+                  <span style={{ color: getStatusColor(selectedRequest.status), fontWeight: 600 }}>
+                    {selectedRequest.status}
+                  </span>
+                </Text>
+                <Box
+                  sx={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    width: {
+                      xs: 'auto',
+                      sm: '50vw',
+                      md: '40vw',
+                      lg: '28vw'
+                    },
+                    margin: '20px 0 0'
+                  }}
+                >
+                  {selectedRequest.status !== 'REJECTED' && selectedRequest.status !== 'CANCELED' && (
+                    <Button
+                      variant='contained'
+                      onClick={() => {
+                        if (selectedRequest.document) setDetail(true)
+                      }}
+                      sx={{ fontFamily: 'inherit' }}
+                    >
+                      Document Detail
+                    </Button>
+                  )}
+                </Box>
+                <Detail
+                  document={selectedRequest.document}
+                  barcode={selectedRequest.barcode}
+                  open={detail}
+                  onClose={handleDetailClose}
+                />
+              </div>
             )}
-            <Box
-              sx={{
-                display: 'flex',
-                justifyContent: 'center',
-                width: {
-                  xs: 'auto',
-                  sm: '50vw',
-                  md: '40vw',
-                  lg: '28vw'
-                },
-                margin: '20px 0 0'
-              }}
-            >
-              {selectedRequest.document.storageUrl && (
-                <Button variant='contained' onClick={handleViewPdf}>
-                  View PDF
-                </Button>
-              )}
-            </Box>
-          </div>
-        )}
-      </Box>
-    </Modal>
+          </Box>
+        </Modal>
+      ) : (
+        <Modal open={open} onClose={handleClose} closeAfterTransition>
+          <Box
+            sx={{
+              borderRadius: '5px',
+              position: 'absolute',
+              top: '50%',
+              left: '50%',
+              transform: 'translate(-50%, -50%)',
+              width: {
+                xs: '100vw',
+                sm: '60vw',
+                md: '45vw',
+                lg: '32vw'
+              },
+              height: 'fit-content',
+              bgcolor: 'background.paper',
+              boxShadow: 24,
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'flex-start',
+              border: 'none',
+              padding: '30px'
+            }}
+          >
+            {selectedRequest && (
+              <div>
+                <Typography variant='h5' sx={{ fontWeight: '600', marginBottom: '20px' }}>
+                  Request Details
+                </Typography>
+                <div style={{ maxHeight: '55px', textOverflow: 'ellipsis' }}>
+                  <Text>
+                    <TitleText>Description: </TitleText> {selectedRequest.description}
+                  </Text>
+                </div>
+
+                <Text>
+                  <TitleText>Created at: </TitleText>
+                  {dayjs(selectedRequest.createdAt).format('DD/MM/YYYY HH:mm:ss')}
+                </Text>
+                {selectedRequest.borrowDuration && (
+                  <Text>
+                    <TitleText>Borrow duration: </TitleText> {selectedRequest.borrowDuration}
+                  </Text>
+                )}
+                {selectedRequest.status === 'PENDING' && (
+                  <Text>
+                    <TitleText>Expired at: </TitleText>
+                    {dayjs(selectedRequest.expired_at).format('DD/MM/YYYY HH:mm:ss')}
+                  </Text>
+                )}
+                <Text>
+                  <TitleText>Updated at: </TitleText>
+                  {dayjs(selectedRequest.updatedAt).format('DD/MM/YYYY HH:mm:ss')}
+                </Text>
+                <Text>
+                  <TitleText>Updated by: </TitleText>
+                  {`${selectedRequest.updatedBy.firstName} ${selectedRequest.updatedBy.lastName}`}
+                </Text>
+                {selectedRequest.status === 'REJECTED' && (
+                  <Text>
+                    <TitleText>Reason: </TitleText>
+                    {selectedRequest.rejectedReason}
+                  </Text>
+                )}
+                <Text>
+                  <TitleText>Status: </TitleText>
+                  <span style={{ color: getStatusColor(selectedRequest.status), fontWeight: 600 }}>
+                    {selectedRequest.status}
+                  </span>
+                </Text>
+                <Box
+                  sx={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    width: {
+                      xs: 'auto',
+                      sm: '50vw',
+                      md: '40vw',
+                      lg: '28vw'
+                    },
+                    margin: '20px 0 0'
+                  }}
+                >
+                  {selectedRequest.barcode && <QRCodeSVG value={selectedRequest.barcode} />}
+                </Box>
+                <Box
+                  sx={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    width: {
+                      xs: 'auto',
+                      sm: '50vw',
+                      md: '40vw',
+                      lg: '28vw'
+                    },
+                    margin: '20px 0 0'
+                  }}
+                >
+                  {selectedRequest.status !== 'REJECTED' && selectedRequest.status !== 'CANCELED' && (
+                    <Button
+                      variant='contained'
+                      onClick={() => {
+                        if (selectedRequest.document) setDetail(true)
+                      }}
+                      sx={{ fontFamily: 'inherit' }}
+                    >
+                      Document Detail
+                    </Button>
+                  )}
+                </Box>
+                <Detail
+                  document={selectedRequest.document}
+                  barcode={selectedRequest.barcode}
+                  open={detail}
+                  onClose={handleDetailClose}
+                />
+              </div>
+            )}
+          </Box>
+        </Modal>
+      )}
+    </>
   )
 }
 

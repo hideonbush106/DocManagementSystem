@@ -184,7 +184,7 @@ const ImportRequestStaff = () => {
                       </div>
                     </div>
                     <InfoIcon
-                      sx={{ color: 'var(--black-light-color)' }}
+                      sx={{ color: 'var(--black-light-color)', cursor: 'pointer' }}
                       onClick={() => handleInfoIconClick(request.id)}
                     />
                   </div>

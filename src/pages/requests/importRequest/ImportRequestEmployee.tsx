@@ -1,20 +1,26 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import RequestCard from '~/components/card/requestCard/RequestCard'
-import { Avatar, Box, CardActions, Pagination, Typography, styled } from '@mui/material'
-import CircularProgress from '@mui/material/CircularProgress'
+import {
+  Avatar,
+  Box,
+  CardActions,
+  CircularProgress,
+  Pagination,
+  SelectChangeEvent,
+  Typography,
+  styled
+} from '@mui/material'
 import React, { useEffect, useState } from 'react'
 import usePagination from '~/hooks/usePagination'
-import useApi from '~/hooks/api/useApi'
 import InfoIcon from '@mui/icons-material/Info'
 import DetailRequestModal from '~/components/modal/DetailRequestModal'
 import { StatusDiv } from '~/pages/requests/importRequest/ImportRequest.styled'
 import { RejectButton } from '~/components/button/Button'
-import useUserApi from '~/hooks/api/useUserApi'
-import dayjs from 'dayjs'
 import useImportRequestApi from '~/hooks/api/useImportRequestApi'
+import dayjs from 'dayjs'
+import FilterRequest from '~/components/filter/FilterRequest'
 import { RequestStatus } from '~/global/enum'
-
 const Text = styled(Typography)`
   color: var(--black-color);
   margin: 0.5rem 0;
@@ -25,7 +31,6 @@ const Text = styled(Typography)`
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
 `
-
 const StatusText = ({ status }: { status: string }) => {
   if (status === RequestStatus.REJECTED) {
     return <StatusDiv rejected>Rejected</StatusDiv>
@@ -33,72 +38,61 @@ const StatusText = ({ status }: { status: string }) => {
   if (status === RequestStatus.APPROVED) {
     return <StatusDiv accepted>Approved</StatusDiv>
   }
+  if (status === RequestStatus.DONE) {
+    return <StatusDiv done>Done</StatusDiv>
+  }
   if (status === RequestStatus.CANCELED) {
-    return <StatusDiv canceled>Cancelled</StatusDiv>
+    return <StatusDiv canceled>Canceled</StatusDiv>
   }
   if (status === RequestStatus.EXPIRED) {
     return <StatusDiv expired>Expired</StatusDiv>
   }
-  if (status === RequestStatus.DONE) {
-    return <StatusDiv done>Done</StatusDiv>
-  }
   return null
 }
-
 const ImportRequestEmployee = () => {
   const PER_PAGE = 10
-
   const [page, setPage] = useState(1)
   const [importRequests, setImportRequests] = useState<any[]>([])
   const [totalPages, setTotalPages] = useState(1)
   const [selectedRequest, setSelectedRequest] = useState<any>(null)
+  const [selectedStatus, setSelectedStatus] = useState<string>('')
   const [isFetching, setIsFetching] = useState(true)
-  const callApi = useApi()
-  const { cancelImportRequest } = useImportRequestApi()
-  useUserApi()
+  const { getImportRequestsOwn, getImportRequest, cancelImportRequest } = useImportRequestApi()
 
   const fetchImportRequests = async () => {
     try {
-      const endpoint = '/import-requests/own'
-      const response = await callApi('get', `${endpoint}?page=${page}`)
+      const response = await getImportRequestsOwn(selectedStatus || undefined, undefined, undefined, page)
       const responseData = response.data.data
       const totalPages = response.data.total
-
       if (responseData && Array.isArray(responseData)) {
         setImportRequests(responseData)
         setTotalPages(Math.ceil(totalPages / PER_PAGE))
-        setIsFetching(false)
       }
     } catch (error) {
       console.log(error)
+    } finally {
+      setIsFetching(false)
     }
   }
-
   useEffect(() => {
     fetchImportRequests()
-  }, [page])
-
+  }, [page, selectedStatus])
   const count = totalPages
   const _DATA = usePagination(importRequests, PER_PAGE)
-
   const handleChange = (e: React.ChangeEvent<unknown>, pageNumber: number) => {
     setPage(pageNumber)
     _DATA.jump(pageNumber)
     console.log(e)
   }
 
-  const handleInfoIconClick = async (id: number) => {
+  const handleInfoIconClick = async (id: string) => {
     try {
-      const response = await callApi('get', `/import-requests/${id}`)
+      const response = await getImportRequest(id)
       const requestDetails = response.data
       setSelectedRequest(requestDetails)
     } catch (error) {
       console.log(error)
     }
-  }
-
-  const handleClosePopup = () => {
-    setSelectedRequest(null)
   }
 
   const handleCancel = async (id: string) => {
@@ -113,19 +107,34 @@ const ImportRequestEmployee = () => {
     }
   }
 
+  const handleClosePopup = () => {
+    setSelectedRequest(null)
+  }
+  const handleStatusChange = (event: SelectChangeEvent<string>) => {
+    setSelectedStatus(event.target.value)
+  }
+
+  const handleClearFilter = () => {
+    setSelectedStatus('')
+  }
   return (
     <>
-      {isFetching ? (
-        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }} width='100%' height='60vh'>
-          <CircularProgress />
-        </Box>
-      ) : (
-        <Box display='flex' flexDirection='column' justifyContent='space-between' minHeight='75vh' marginTop='20px'>
-          <Box display='flex' flexWrap='wrap'>
-            {importRequests.length === 0 ? (
-              <Typography>There is no requests</Typography>
-            ) : (
-              _DATA.currentData().map((request) => (
+      <Box display='flex' flexDirection='column' justifyContent='space-between' minHeight='81vh' marginTop='10px'>
+        <div>
+          <FilterRequest
+            selectedStatus={selectedStatus}
+            onChange={handleStatusChange}
+            onClearFilter={handleClearFilter}
+          />
+          {isFetching ? (
+            <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }} width='100%' height='60vh'>
+              <CircularProgress />
+            </Box>
+          ) : importRequests.length === 0 ? (
+            <Typography variant='body1'>No matching requests found.</Typography>
+          ) : (
+            <Box display='flex' flexWrap='wrap'>
+              {_DATA.currentData().map((request) => (
                 <RequestCard key={request.id}>
                   <div
                     style={{
@@ -151,7 +160,7 @@ const ImportRequestEmployee = () => {
                       </div>
                     </div>
                     <InfoIcon
-                      sx={{ color: 'var(--black-light-color)' }}
+                      sx={{ color: 'var(--black-light-color)', cursor: 'pointer' }}
                       onClick={() => handleInfoIconClick(request.id)}
                     />
                   </div>
@@ -179,24 +188,17 @@ const ImportRequestEmployee = () => {
                     )}
                   </CardActions>
                 </RequestCard>
-              ))
-            )}
-          </Box>
-          <Pagination
-            count={count}
-            size='large'
-            page={page}
-            variant='outlined'
-            shape='rounded'
-            onChange={handleChange}
-          />
-          <DetailRequestModal
-            open={selectedRequest !== null}
-            handleClose={handleClosePopup}
-            selectedRequest={selectedRequest}
-          />
-        </Box>
-      )}
+              ))}
+            </Box>
+          )}
+        </div>
+        <Pagination count={count} size='large' page={page} variant='outlined' shape='rounded' onChange={handleChange} />
+        <DetailRequestModal
+          open={selectedRequest !== null}
+          handleClose={handleClosePopup}
+          selectedRequest={selectedRequest}
+        />
+      </Box>
     </>
   )
 }

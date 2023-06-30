@@ -95,6 +95,7 @@ const CreateDepartmentModal = (props: CreateDepartmenProps) => {
                 my: 1
               }}
               name='name'
+              label='Department name'
               variant='outlined'
               onChange={formik.handleChange}
               placeholder='Enter department name'

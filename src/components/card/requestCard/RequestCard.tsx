@@ -27,7 +27,7 @@ const RequestCard = ({ children }: RequestCardProps) => {
       >
         <CardContent
           sx={{
-            height: '16.5rem',
+            height: '17.5rem',
             overflow: 'visible',
             display: 'flex',
             flexDirection: 'column',

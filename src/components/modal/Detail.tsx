@@ -2,7 +2,7 @@ import { Box, Button, Modal, Typography } from '@mui/material'
 import Barcode from 'react-barcode'
 import dayjs from 'dayjs'
 import styled from 'styled-components'
-import { ArrowForward, Description } from '@mui/icons-material'
+import { ArrowForward, Description, Preview } from '@mui/icons-material'
 import { DocumentDetail } from '~/global/interface'
 
 const TitleText = styled.span`
@@ -11,7 +11,7 @@ const TitleText = styled.span`
 `
 const Text = styled(Typography)`
   font-size: 14px;
-  margin-bottom: 8px;
+  margin-bottom: 4px;
   font-family: var(--font-family);
   @media (min-width: 400px) {
     font-size: 1rem;
@@ -84,7 +84,7 @@ const Detail = ({ document, barcode, open, onClose }: DetailProps) => {
             <TitleText>Description: </TitleText> {document?.description}
           </Text>
           <Text variant='body1'>
-            <TitleText>Number of pages: </TitleText> {document?.numOfPage}
+            <TitleText>Number of pages: </TitleText> {document?.numOfPages}
           </Text>
           <Text variant='body1'>
             <TitleText>Department: </TitleText>
@@ -118,20 +118,31 @@ const Detail = ({ document, barcode, open, onClose }: DetailProps) => {
           <Box style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
             {barcode ? <Barcode value={barcode} /> : null}
             <Box
-              style={{ width: '90%', height: '35px', display: 'flex', justifyContent: 'space-between' }}
-              marginTop={{ sm: '1rem' }}
+              style={{
+                width: '90%',
+                height: '35px',
+                display: 'flex',
+                justifyContent: barcode ? 'space-between' : 'center'
+              }}
+              marginTop='1rem'
             >
-              <Button size='small' variant='contained' sx={{ lineHeight: 1, fontFamily: 'var(--family-font)' }}>
-                View PDF
-              </Button>
               <Button
                 size='small'
-                variant='outlined'
-                endIcon={<ArrowForward />}
-                sx={{ lineHeight: 1, fontFamily: 'var(--family-font)' }}
+                variant='contained'
+                sx={{ width: '95px', lineHeight: 1, fontFamily: 'var(--family-font)', boxShadow: 'none' }}
               >
-                Export
+                View PDF
               </Button>
+              {barcode ? (
+                <Button
+                  size='small'
+                  variant='outlined'
+                  endIcon={<ArrowForward />}
+                  sx={{ lineHeight: 1, fontFamily: 'var(--family-font)' }}
+                >
+                  Export
+                </Button>
+              ) : null}
             </Box>
           </Box>
         </Box>

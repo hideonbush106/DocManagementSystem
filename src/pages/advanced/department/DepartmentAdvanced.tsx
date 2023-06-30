@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { Apartment } from '@mui/icons-material'
-import { CircularProgress, List, ListItemButton, ListItemIcon, ListItemText } from '@mui/material'
+import { Button, CircularProgress, List, ListItemButton, ListItemIcon, ListItemText } from '@mui/material'
 import AddRoundedIcon from '@mui/icons-material/AddRounded'
 import React, { useEffect, useState } from 'react'
 import { Department, UpdateDepartment, CreateDepartment } from '~/global/interface'
@@ -109,14 +109,8 @@ const DepartmentAdvanced = () => {
                   primary={dept.name}
                   primaryTypographyProps={{ fontFamily: 'inherit', color: 'var(--black-color)' }}
                 />
-                {/* <UpdateButton text='Update' id={dept.id} name={dept.name} onSubmit={handleUpdate} />
-                <DeleteButton
-                  text='Delete'
-                  id={dept.id}
-                  name={dept.name}
-                  type='Department'
-                  handleDelete={handleDelete}
-                /> */}
+                <Button onClick={() => handleDelete}></Button>
+                <Button onClick={() => handleUpdate}></Button>
               </ListItemButton>
             ))}
             <ListItemButton

@@ -60,8 +60,8 @@ const DeleteAdvancedModal = (props: DeleteProps) => {
           }}
           variant='body2'
         >
-          Are you sure you want to delete this {props.type.toLocaleLowerCase()}
-          <span style={{ fontWeight: '600' }}> {props.name} </span>?
+          Are you sure you want to delete this <span>{props.type.toLocaleLowerCase()} </span>
+          <span style={{ fontWeight: '600', whiteSpace: 'nowrap' }}>{props.name}</span>?
         </Typography>
       </Box>
       <Box

@@ -6,6 +6,9 @@ import { notifySuccess } from '~/global/toastify'
 import ModalLayout from './ModalLayout'
 import { BorrowRequest } from '~/global/interface'
 import useBorrowRequestApi from '~/hooks/api/useBorrowRequestApi'
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
+import { DatePicker } from '@mui/x-date-pickers/DatePicker'
 
 interface BorrowDocumentModalProps {
   open: boolean
@@ -138,6 +141,9 @@ const BorrowDocumentModal = (props: BorrowDocumentModalProps) => {
               formik.touched.borrowDuration && formik.errors.borrowDuration ? formik.errors.borrowDuration : ''
             }
           />
+          <LocalizationProvider dateAdapter={AdapterDayjs}>
+            <DatePicker label='Start Date' onChange={(date) => formik.setFieldValue('startDate', date)} />
+          </LocalizationProvider>
         </FormControl>
 
         <Box

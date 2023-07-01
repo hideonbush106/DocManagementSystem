@@ -94,6 +94,9 @@ const DetailRequestModal = ({ open, handleClose, selectedRequest }: RequestModal
                   <TitleText>Created at: </TitleText>
                   {dayjs(selectedRequest.createdAt).format('DD/MM/YYYY HH:mm:ss')}
                 </Text>
+                <Text>
+                  <TitleText>Start date: </TitleText> {dayjs(selectedRequest.startDate).format('DD/MM/YYYY')}
+                </Text>
                 {selectedRequest.borrowDuration && (
                   <Text>
                     <TitleText>Borrow duration: </TitleText> {selectedRequest.borrowDuration}

@@ -7,6 +7,7 @@ import PropTypes, { Validator } from 'prop-types'
 import { useState, useEffect, useCallback } from 'react'
 import useDocumentApi from '~/hooks/api/useDocumentApi'
 import { ConfirmButton } from '../button/Button'
+import Scanner from '../modal/Scanner'
 interface ApprovalsTableProps {
   view: 'dashboard' | 'full'
 }
@@ -18,15 +19,39 @@ interface PaginationModel {
 
 const ApprovalsTable: React.FC<ApprovalsTableProps> = ({ view }) => {
   let columns: GridColDef[] = []
-  const { getPendingDocuments } = useDocumentApi()
-  // const [_open, setOpen] = useState(false)
+  const { getPendingDocuments, confirmDocument } = useDocumentApi()
+  const [open, setOpen] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
   const [data, setData] = useState([])
+  const [documentId, setDocumentId] = useState('')
   const [rowCountState, setRowCountState] = useState<number>(0)
   const [paginationModel, setPaginationModel] = useState<PaginationModel>({
     page: 0,
     pageSize: 10
   })
+
+  const handleClose = () => {
+    setOpen(false)
+  }
+
+  const handleScan = async (scanData: string | null) => {
+    setIsLoading(true)
+    if (scanData && scanData !== '') {
+      try {
+        const result = await confirmDocument({
+          id: documentId,
+          locationQRcode: scanData
+        })
+        console.log(result)
+        handleClose()
+        setIsLoading(false)
+      } catch (error) {
+        console.log(error)
+        handleClose()
+        setIsLoading(false)
+      }
+    }
+  }
 
   const fetchData = useCallback(async () => {
     if (isLoading) {
@@ -157,7 +182,15 @@ const ApprovalsTable: React.FC<ApprovalsTableProps> = ({ view }) => {
         filterable: false,
         headerAlign: 'center',
         align: 'center',
-        renderCell: (param: GridRenderCellParams) => <ConfirmButton text='Confirm' documentId={param.row.id} />
+        renderCell: (param: GridRenderCellParams) => (
+          <ConfirmButton
+            text='Confirm'
+            onClick={() => {
+              setOpen(true)
+              setDocumentId(param.row.id as string)
+            }}
+          />
+        )
       },
       {
         field: 'more-options',
@@ -185,6 +218,7 @@ const ApprovalsTable: React.FC<ApprovalsTableProps> = ({ view }) => {
         margin: '10px 0'
       }}
     >
+      <Scanner open={open} handleClose={handleClose} handleScan={handleScan} />
       <DataGrid
         columnHeaderHeight={rowHeight + 10}
         disableColumnMenu

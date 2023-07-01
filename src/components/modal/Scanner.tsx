@@ -5,35 +5,14 @@ import useDocumentApi from '~/hooks/api/useDocumentApi'
 
 interface CodeScannerProps {
   open: boolean
-  documentId: string
   handleClose: () => void
+  handleScan: (data: string | null) => void
 }
 
 const Scanner = (props: CodeScannerProps) => {
-  const { open, handleClose, documentId } = props
+  const { open, handleClose, handleScan } = props
   // const [startScan, setStartScan] = useState(false)
   // const [loadingScan, setLoadingScan] = useState(false)
-  const { confirmDocument } = useDocumentApi()
-  const handleScan = async (scanData: string | null) => {
-    // setLoadingScan(true)
-    if (scanData && scanData !== '') {
-      // setStartScan(false)
-      // setLoadingScan(false)
-      // setPrecScan(scanData);
-      try {
-        const result = await confirmDocument({
-          id: documentId,
-          locationQRcode: scanData
-        })
-        console.log(result)
-        handleClose()
-        window.location.reload()
-      } catch (error) {
-        console.log(error)
-        handleClose()
-      }
-    }
-  }
   const handleError = (err: string) => {
     console.error(err)
   }

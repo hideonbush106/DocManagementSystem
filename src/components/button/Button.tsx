@@ -12,10 +12,6 @@ interface ButtonProps {
   onClick?: () => void
 }
 
-interface ScannerProps extends ButtonProps {
-  documentId: string
-}
-
 export const ImportButton = ({ text }: ButtonProps) => {
   const [open, setOpen] = useState(false)
   const handleClose = () => {
@@ -126,17 +122,15 @@ export const AcceptButton = ({ text, onClick }: ButtonProps) => {
   )
 }
 
-export const ConfirmButton = (props: ScannerProps) => {
-  const [open, setOpen] = useState(false)
-  const { text, documentId } = props
-  const handleClose = () => {
-    setOpen(false)
-  }
+export const ConfirmButton = (props: ButtonProps) => {
+  const { text, onClick } = props
+
   return (
     <>
       <Button
         variant='outlined'
         startIcon={<DoneRoundedIcon />}
+        onClick={onClick}
         sx={{
           color: 'var(--primary-color)',
           border: '0.5px solid var(--primary-color)',
@@ -148,11 +142,9 @@ export const ConfirmButton = (props: ScannerProps) => {
           padding: '5px 10px',
           fontSize: '12px'
         }}
-        onClick={() => setOpen(true)}
       >
         {text}
       </Button>
-      <Scanner open={open} handleClose={handleClose} documentId={documentId} />
     </>
   )
 }

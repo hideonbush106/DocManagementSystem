@@ -1,28 +1,37 @@
 import QrReader from 'react-qr-reader'
 import ModalLayout from './ModalLayout'
-import { Box, Button, Grid, Paper, Typography } from '@mui/material'
-import { useState } from 'react'
+import { Box, Button, Grid, Typography } from '@mui/material'
+import useDocumentApi from '~/hooks/api/useDocumentApi'
 
 interface CodeScannerProps {
   open: boolean
+  documentId: string
   handleClose: () => void
 }
 
 const Scanner = (props: CodeScannerProps) => {
-  const { open, handleClose } = props
+  const { open, handleClose, documentId } = props
   // const [startScan, setStartScan] = useState(false)
   // const [loadingScan, setLoadingScan] = useState(false)
-  const [data, setData] = useState('')
-
+  const { confirmDocument } = useDocumentApi()
   const handleScan = async (scanData: string | null) => {
     // setLoadingScan(true)
-    console.log(`loaded data data`, scanData)
     if (scanData && scanData !== '') {
-      console.log(`loaded >>>`, scanData)
-      setData(scanData)
       // setStartScan(false)
       // setLoadingScan(false)
       // setPrecScan(scanData);
+      try {
+        const result = await confirmDocument({
+          id: documentId,
+          locationQRcode: scanData
+        })
+        console.log(result)
+        handleClose()
+        window.location.reload()
+      } catch (error) {
+        console.log(error)
+        handleClose()
+      }
     }
   }
   const handleError = (err: string) => {
@@ -31,58 +40,34 @@ const Scanner = (props: CodeScannerProps) => {
 
   return (
     <ModalLayout open={open} handleClose={handleClose}>
-      {!data ? (
-        <>
-          <Box
-            sx={{ display: 'flex', flexDirection: 'column', alignContent: 'center', justifyContent: 'center', p: 2.5 }}
-          >
-            <Typography
-              variant='h6'
-              align='center'
-              sx={{
-                mt: 2
-              }}
-            >
-              {`Please move your camera over document's barcode`}
-            </Typography>
-            <Grid container justifyContent='center' sx={{ width: '100%', my: 2 }}>
-              <Grid item xs={12} sm={8} md={8}>
-                <QrReader facingMode='environment' onScan={handleScan} onError={handleError} />
-              </Grid>
-            </Grid>
-          </Box>
-          <Box>
-            <Button
-              sx={{ m: 2, float: 'right' }}
-              variant='outlined'
-              color='error'
-              onClick={() => {
-                handleClose()
-                setData('')
-              }}
-            >
-              Cancel
-            </Button>
-          </Box>
-        </>
-      ) : (
-        <>
-          <Paper>
-            <Typography
-              variant='h6'
-              align='center'
-              sx={{
-                mt: 2
-              }}
-            >
-              {data}
-            </Typography>
-          </Paper>
-          <Button sx={{ mx: 1 }} variant='contained' onClick={() => setData('')}>
-            Reset
-          </Button>
-        </>
-      )}
+      <Box sx={{ display: 'flex', flexDirection: 'column', alignContent: 'center', justifyContent: 'center', p: 2.5 }}>
+        <Typography
+          variant='h6'
+          align='center'
+          sx={{
+            mt: 2
+          }}
+        >
+          {`Please move your camera over location's QR code`}
+        </Typography>
+        <Grid container justifyContent='center' sx={{ width: '100%', my: 2 }}>
+          <Grid item xs={12} sm={8} md={8}>
+            <QrReader style={{ width: 'inherit' }} facingMode='environment' onScan={handleScan} onError={handleError} />
+          </Grid>
+        </Grid>
+      </Box>
+      <Box>
+        <Button
+          sx={{ m: 2, float: 'right' }}
+          variant='outlined'
+          color='error'
+          onClick={() => {
+            handleClose()
+          }}
+        >
+          Cancel
+        </Button>
+      </Box>
     </ModalLayout>
   )
 }

@@ -4,7 +4,7 @@ import PropTypes, { Validator } from 'prop-types'
 // import CheckRoundedIcon from '@mui/icons-material/CheckRounded'
 // import ModalLayout from '../modal/ModalLayout'
 // import CodeScanner from '../modal/scanner/CodeScanner'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import useDocumentApi from '~/hooks/api/useDocumentApi'
 import { ConfirmButton } from '../button/Button'
 interface ApprovalsTableProps {
@@ -28,14 +28,14 @@ const ApprovalsTable: React.FC<ApprovalsTableProps> = ({ view }) => {
     pageSize: 10
   })
 
-  const fetchData = async () => {
+  const fetchData = useCallback(async () => {
     if (isLoading) {
       const result = await getPendingDocuments(paginationModel.pageSize, paginationModel.page)
       setData(result.data.data)
       setRowCountState((prevRowCountState) => (result.data.total !== undefined ? result.data.total : prevRowCountState))
       setIsLoading(false)
     }
-  }
+  }, [getPendingDocuments, isLoading, paginationModel.page, paginationModel.pageSize])
 
   const handlePaginationModelChange = (newPaginationModel: PaginationModel) => {
     setIsLoading(true)
@@ -46,11 +46,7 @@ const ApprovalsTable: React.FC<ApprovalsTableProps> = ({ view }) => {
 
   useEffect(() => {
     fetchData()
-  }, [])
-
-  // const handleClose = () => {
-  //   setOpen(false)
-  // }
+  }, [fetchData])
 
   let rowHeight = 50
   if (view === 'dashboard') {
@@ -161,7 +157,7 @@ const ApprovalsTable: React.FC<ApprovalsTableProps> = ({ view }) => {
         filterable: false,
         headerAlign: 'center',
         align: 'center',
-        renderCell: () => <ConfirmButton text='Confirm' />
+        renderCell: (values) => <ConfirmButton text='Confirm' documentId={values.row.id} />
       },
       {
         field: 'more-options',

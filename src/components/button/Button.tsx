@@ -12,6 +12,10 @@ interface ButtonProps {
   onClick?: () => void
 }
 
+interface ScannerProps extends ButtonProps {
+  documentId: string
+}
+
 export const ImportButton = ({ text }: ButtonProps) => {
   const [open, setOpen] = useState(false)
   const handleClose = () => {
@@ -122,9 +126,9 @@ export const AcceptButton = ({ text, onClick }: ButtonProps) => {
   )
 }
 
-export const ConfirmButton = (props: ButtonProps) => {
+export const ConfirmButton = (props: ScannerProps) => {
   const [open, setOpen] = useState(false)
-  const { text } = props
+  const { text, documentId } = props
   const handleClose = () => {
     setOpen(false)
   }
@@ -148,7 +152,7 @@ export const ConfirmButton = (props: ButtonProps) => {
       >
         {text}
       </Button>
-      <Scanner open={open} handleClose={handleClose} />
+      <Scanner open={open} handleClose={handleClose} documentId={documentId} />
     </>
   )
 }

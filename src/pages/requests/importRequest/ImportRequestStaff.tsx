@@ -22,6 +22,8 @@ import useImportRequestApi from '~/hooks/api/useImportRequestApi'
 import dayjs from 'dayjs'
 import FilterRequest from '~/components/filter/FilterRequest'
 import { RequestStatus } from '~/global/enum'
+import QrCodeScannerIcon from '@mui/icons-material/QrCodeScanner'
+
 const Text = styled(Typography)`
   color: var(--black-color);
   margin: 0.5rem 0;
@@ -60,6 +62,7 @@ const ImportRequestStaff = () => {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [selectedStatus, setSelectedStatus] = useState<string>('')
   const [isFetching, setIsFetching] = useState(true)
+  const [isScanModalOpen, setIsScanModalOpen] = useState(false)
   const { getImportRequestsAll, getImportRequest, acceptImportRequest, rejectImportRequest } = useImportRequestApi()
 
   const fetchImportRequests = async () => {
@@ -141,15 +144,42 @@ const ImportRequestStaff = () => {
     setSelectedStatus('')
   }
 
+  const handleQrIconClick = () => {
+    setIsScanModalOpen(true)
+  }
+
   return (
     <>
-      <Box display='flex' flexDirection='column' justifyContent='space-between' minHeight='81vh' marginTop='10px'>
+      <Box
+        display='flex'
+        flexDirection='column'
+        justifyContent='space-between'
+        minHeight='81vh'
+        marginTop='10px'
+        position='relative'
+      >
         <div>
-          <FilterRequest
-            selectedStatus={selectedStatus}
-            onChange={handleStatusChange}
-            onClearFilter={handleClearFilter}
-          />
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'flex-end',
+              position: 'absolute',
+              right: '15px',
+              top: '-65px'
+            }}
+          >
+            <FilterRequest
+              selectedStatus={selectedStatus}
+              onChange={handleStatusChange}
+              onClearFilter={handleClearFilter}
+            />
+            <QrCodeScannerIcon
+              sx={{ margin: '0 20px', color: 'var(--primary-dark-color)' }}
+              fontSize='large'
+              onClick={handleQrIconClick}
+            />
+          </div>
           {isFetching ? (
             <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }} width='100%' height='60vh'>
               <CircularProgress />

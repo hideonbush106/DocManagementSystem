@@ -130,7 +130,7 @@ const RoomAdvanced = () => {
         sx={{
           width: '100%',
           height: { xs: 'calc(100vh - 210px)', md: 'calc(100vh - 160px)' },
-          borderRadius: '5  px',
+          borderRadius: '5px',
           borderTopLeftRadius: '0px',
           bgcolor: 'var(--white-color)',
           padding: '1rem 0',

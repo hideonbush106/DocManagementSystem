@@ -7,7 +7,7 @@ import { CreateDepartment } from '~/global/interface'
 interface CreateDepartmenProps {
   open: boolean
   handleClose: () => void
-  onSubmit?: (values: CreateDepartment) => void
+  onSubmit: (values: CreateDepartment) => void
 }
 
 const CreateDepartmentModal = (props: CreateDepartmenProps) => {
@@ -17,10 +17,10 @@ const CreateDepartmentModal = (props: CreateDepartmenProps) => {
 
   const formik = useFormik({
     initialValues: {
-      name: ``
+      name: ''
     },
     validationSchema: validationSchema,
-    onSubmit: (values: CreateDepartment) => {
+    onSubmit: (values) => {
       values.name = values.name.trim().replace(/\s\s+/g, ' ')
       props.onSubmit?.(values)
     }
@@ -31,7 +31,7 @@ const CreateDepartmentModal = (props: CreateDepartmenProps) => {
   }
 
   useEffect(() => {
-    if (props.open) {
+    if (!props.open) {
       formik.resetForm()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -65,8 +65,6 @@ const CreateDepartmentModal = (props: CreateDepartmenProps) => {
               xs: 1.5,
               sm: 3
             },
-            position: 'sticky',
-            top: 0,
             background: 'white',
             zIndex: 1,
             width: '100%'
@@ -107,10 +105,10 @@ const CreateDepartmentModal = (props: CreateDepartmenProps) => {
           </FormControl>
           <Box
             sx={{
-              p: 4,
-              position: 'sticky',
-              bottom: -1,
-              zIndex: 1,
+              p: {
+                xs: 1.5,
+                sm: 4
+              },
               background: 'white',
               display: 'flex',
               justifyContent: 'end',
@@ -122,7 +120,7 @@ const CreateDepartmentModal = (props: CreateDepartmenProps) => {
               variant='contained'
               color='primary'
               type='submit'
-              disabled={Boolean(formik.errors.name)}
+              disabled={formik.isValidating || !formik.isValid}
             >
               Create
             </Button>

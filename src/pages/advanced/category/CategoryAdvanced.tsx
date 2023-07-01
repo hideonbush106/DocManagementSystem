@@ -205,7 +205,7 @@ const CategoryAdvanced = () => {
                     <AddRoundedIcon />
                   </ListItemIcon>
                   <ListItemText
-                    primary={'New room'}
+                    primary={'New category'}
                     primaryTypographyProps={{ fontFamily: 'inherit', color: 'var(--black-color)' }}
                   />
                 </ListItemButton>

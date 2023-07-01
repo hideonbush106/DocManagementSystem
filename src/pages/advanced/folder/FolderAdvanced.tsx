@@ -68,6 +68,10 @@ const FolderAdvanced = () => {
       if (selectedDept) {
         setSelectedDepartment(selectedDept)
         setLoadingRoom(true)
+        setLoadingLocker(true)
+        setLoadingFolder(true)
+        setSelectedRoom({ id: '', name: '', capacity: 0 })
+        setSelectedLocker({ id: '', name: '', capacity: 0 })
       }
     }
   }
@@ -78,6 +82,8 @@ const FolderAdvanced = () => {
       if (selectedRoom) {
         setSelectedRoom(selectedRoom)
         setLoadingLocker(true)
+        setLoadingFolder(true)
+        setSelectedLocker({ id: '', name: '', capacity: 0 })
       }
     }
   }
@@ -100,6 +106,7 @@ const FolderAdvanced = () => {
 
   const fetchRooms = async () => {
     if (selectedDepartment.id) {
+      setLoading(false)
       const result = await getRoomsInDepartment(selectedDepartment.id)
       setRooms(result.data)
       setSelectedRoom(result.data[0])
@@ -109,6 +116,7 @@ const FolderAdvanced = () => {
   const fetchLockers = async () => {
     if (selectedRoom !== undefined) {
       if (selectedRoom.id) {
+        setLoadingRoom(false)
         const result = await getLockerInRoom(selectedRoom.id)
         setLockers(result.data)
         setSelectedLocker(result.data[0])
@@ -121,11 +129,9 @@ const FolderAdvanced = () => {
   const fetchFolders = async () => {
     if (selectedLocker !== undefined) {
       if (selectedLocker.id) {
+        setLoadingLocker(false)
         const result = await getFoldersInLocker(selectedLocker.id)
         setFolders(result.data)
-        setLoading(false)
-        setLoadingRoom(false)
-        setLoadingLocker(false)
         setLoadingFolder(false)
       }
     } else {
@@ -179,8 +185,6 @@ const FolderAdvanced = () => {
       setLoadingFolder(true)
       setFolders([])
       notifySuccess('Update successfully')
-    } else {
-      setLoadingFolder(true)
     }
     await fetchFolders()
   }

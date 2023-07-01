@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { DataGrid, GridColDef, GridRenderCellParams } from '@mui/x-data-grid'
 import ActionsCell from './ActionCell'
 import PropTypes, { Validator } from 'prop-types'

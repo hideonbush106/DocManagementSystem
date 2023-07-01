@@ -1,6 +1,9 @@
-import DocumentCard from './DocumentCard'
+import React, { useState } from 'react'
 import { SvgIconComponent } from '@mui/icons-material'
+import DocumentCard from './DocumentCard'
 import ActionsCell from '../table/ActionCell'
+import BorrowDocumentModal from '../modal/BorrowDocumentModal'
+import useAuth from '~/hooks/useAuth'
 
 type Props = {
   icon: {
@@ -8,37 +11,68 @@ type Props = {
     color?: string
   }
   name: string
+  fileId: string
+  fileName: string
 }
 
-const actions = [
-  {
-    text: 'Details',
-    onClick: () => {
-      return
-    }
-  },
-  {
-    text: 'Edit',
-    onClick: () => {
-      return
-    }
-  },
-  {
-    text: 'Delete',
-    onClick: () => {
-      return
-    }
-  }
-]
+const FileCard: React.FC<Props> = (props: Props) => {
+  const { icon, name, fileId, fileName } = props
+  const [isBorrowModalOpen, setIsBorrowModalOpen] = useState(false)
+  const { user } = useAuth()
+  const role = user?.role
 
-const FileCard = (props: Props) => {
-  const { icon, name } = props
+  const actions = [
+    {
+      text: 'Details',
+      onClick: () => {
+        return
+      }
+    },
+    role === 'EMPLOYEE'
+      ? {
+          text: 'Borrow',
+          onClick: () => {
+            return handleOpenBorrowModal()
+          }
+        }
+      : null,
+    {
+      text: 'Edit',
+      onClick: () => {
+        return
+      }
+    },
+    {
+      text: 'Delete',
+      onClick: () => {
+        return
+      }
+    }
+  ].filter(Boolean)
+
+  const handleOpenBorrowModal = () => {
+    setIsBorrowModalOpen(true)
+    console.log(fileId)
+  }
+
+  const handleCloseBorrowModal = () => {
+    setIsBorrowModalOpen(false)
+  }
+
   return (
-    <DocumentCard icon={icon} name={name}>
-      <div style={{ marginLeft: 'auto', marginRight: '-18px' }}>
-        <ActionsCell menuItems={actions} />
-      </div>
-    </DocumentCard>
+    <>
+      <DocumentCard icon={icon} name={name}>
+        <div style={{ marginLeft: 'auto', marginRight: '-18px' }}>
+          <ActionsCell menuItems={actions} />
+        </div>
+      </DocumentCard>
+      <BorrowDocumentModal
+        open={isBorrowModalOpen}
+        handleClose={handleCloseBorrowModal}
+        fileId={fileId}
+        fileName={fileName}
+      />
+    </>
   )
 }
 

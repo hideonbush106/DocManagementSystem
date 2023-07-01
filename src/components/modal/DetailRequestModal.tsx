@@ -211,10 +211,12 @@ const DetailRequestModal = ({ open, handleClose, selectedRequest }: RequestModal
                   <TitleText>Updated at: </TitleText>
                   {dayjs(selectedRequest.updatedAt).format('DD/MM/YYYY HH:mm:ss')}
                 </Text>
-                <Text>
-                  <TitleText>Updated by: </TitleText>
-                  {`${selectedRequest.updatedBy.firstName} ${selectedRequest.updatedBy.lastName}`}
-                </Text>
+                {selectedRequest.updatedBy && (
+                  <Text>
+                    <TitleText>Updated by: </TitleText>
+                    {`${selectedRequest.updatedBy.firstName} ${selectedRequest.updatedBy.lastName}`}
+                  </Text>
+                )}
                 {selectedRequest.status === 'REJECTED' && (
                   <Text>
                     <TitleText>Reason: </TitleText>

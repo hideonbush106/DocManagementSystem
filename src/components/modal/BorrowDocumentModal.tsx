@@ -1,5 +1,5 @@
 import { CreateNewFolderOutlined } from '@mui/icons-material'
-import { Box, Button, FormControl, TextField, Typography } from '@mui/material'
+import { Box, Button, FormControl, Grid, TextField, Typography } from '@mui/material'
 import { useFormik } from 'formik'
 import * as yup from 'yup'
 import { notifySuccess } from '~/global/toastify'
@@ -50,6 +50,10 @@ const BorrowDocumentModal = (props: BorrowDocumentModalProps) => {
       }
     }
   })
+
+  const shouldDisableDate = (date: Date) => {
+    return date < new Date()
+  }
 
   return (
     <ModalLayout open={open} handleClose={handleClose}>
@@ -113,39 +117,51 @@ const BorrowDocumentModal = (props: BorrowDocumentModalProps) => {
           >
             File Name: {fileName}
           </Typography>
-          <TextField
-            sx={{ my: 1 }}
-            label='Description'
-            value={formik.values.description}
-            name='description'
-            variant='standard'
-            fullWidth
-            onChange={formik.handleChange}
-            multiline
-            maxRows={4}
-            required
-            error={formik.touched.description && formik.errors.description ? true : false}
-            helperText={formik.touched.description && formik.errors.description ? formik.errors.description : ''}
-          />
-          <TextField
-            sx={{ my: 1 }}
-            label='Borrow Duration (in days)'
-            value={formik.values.borrowDuration}
-            name='borrowDuration'
-            variant='standard'
-            fullWidth
-            onChange={formik.handleChange}
-            required
-            error={formik.touched.borrowDuration && formik.errors.borrowDuration ? true : false}
-            helperText={
-              formik.touched.borrowDuration && formik.errors.borrowDuration ? formik.errors.borrowDuration : ''
-            }
-          />
-          <LocalizationProvider dateAdapter={AdapterDayjs}>
-            <DatePicker label='Start Date' onChange={(date) => formik.setFieldValue('startDate', date)} />
-          </LocalizationProvider>
+          <Grid container spacing={2}>
+            <Grid item xs={12} sm={12}>
+              <TextField
+                sx={{ my: 1 }}
+                label='Description'
+                value={formik.values.description}
+                name='description'
+                variant='standard'
+                fullWidth
+                onChange={formik.handleChange}
+                multiline
+                maxRows={4}
+                required
+                error={formik.touched.description && formik.errors.description ? true : false}
+                helperText={formik.touched.description && formik.errors.description ? formik.errors.description : ''}
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                sx={{ my: 1 }}
+                label='Borrow Duration (in days)'
+                value={formik.values.borrowDuration}
+                name='borrowDuration'
+                variant='standard'
+                fullWidth
+                onChange={formik.handleChange}
+                required
+                error={formik.touched.borrowDuration && formik.errors.borrowDuration ? true : false}
+                helperText={
+                  formik.touched.borrowDuration && formik.errors.borrowDuration ? formik.errors.borrowDuration : ''
+                }
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <DatePicker
+                  label='Start Date'
+                  onChange={(date) => formik.setFieldValue('startDate', date)}
+                  format='DD/MM/YYYY'
+                  shouldDisableDate={shouldDisableDate}
+                />
+              </LocalizationProvider>
+            </Grid>
+          </Grid>
         </FormControl>
-
         <Box
           sx={{
             p: 1.5,

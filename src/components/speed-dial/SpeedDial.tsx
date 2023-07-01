@@ -51,7 +51,7 @@ const SpeedDialCustom = (props: Props) => {
         icon={<SpeedDialIcon />}
         onClick={onClick}
         open={open}
-        hidden={hidden}
+        style={{ display: hidden ? 'none' : 'flex' }}
       >
         {actions.map((action) => (
           <SpeedDialAction

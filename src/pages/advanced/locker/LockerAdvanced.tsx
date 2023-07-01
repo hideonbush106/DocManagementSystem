@@ -54,8 +54,10 @@ const LockerAdvanced = () => {
     if (value !== null) {
       const selectedDept = departments.find((dept) => dept.name === value)
       if (selectedDept) {
-        setSelectedDepartment(selectedDept)
+        setSelectedRoom({ id: '', name: '', capacity: 0 })
         setLoadingRoom(true)
+        setLoadingLocker(true)
+        setSelectedDepartment(selectedDept)
       }
     }
   }
@@ -78,6 +80,7 @@ const LockerAdvanced = () => {
 
   const fetchRooms = async () => {
     if (selectedDepartment.id) {
+      setLoading(false)
       const result = await getRoomsInDepartment(selectedDepartment.id)
       setRooms(result.data)
       setSelectedRoom(result.data[0])
@@ -87,10 +90,9 @@ const LockerAdvanced = () => {
   const fetchLockers = async () => {
     if (selectedRoom !== undefined) {
       if (selectedRoom.id) {
+        setLoadingRoom(false)
         const result = await getLockerInRoom(selectedRoom.id)
         setLockers(result.data)
-        setLoading(false)
-        setLoadingRoom(false)
         setLoadingLocker(false)
       }
     } else {
@@ -140,8 +142,6 @@ const LockerAdvanced = () => {
       setLoadingLocker(true)
       setLockers([])
       notifySuccess('Update successfully')
-    } else {
-      setLoadingLocker(true)
     }
     await fetchLockers()
   }

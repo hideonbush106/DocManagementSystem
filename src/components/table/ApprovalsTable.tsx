@@ -157,7 +157,7 @@ const ApprovalsTable: React.FC<ApprovalsTableProps> = ({ view }) => {
         filterable: false,
         headerAlign: 'center',
         align: 'center',
-        renderCell: (values) => <ConfirmButton text='Confirm' documentId={values.row.id} />
+        renderCell: (param: GridRenderCellParams) => <ConfirmButton text='Confirm' documentId={param.row.id} />
       },
       {
         field: 'more-options',

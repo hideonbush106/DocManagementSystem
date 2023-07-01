@@ -5,7 +5,7 @@ import KeyboardReturnRoundedIcon from '@mui/icons-material/KeyboardReturnRounded
 import DoneRoundedIcon from '@mui/icons-material/DoneRounded'
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded'
 import ImportDocumentModal from '../modal/ImportDocumentModal'
-import CodeScanner from '../modal/scanner/CodeScanner'
+import Scanner from '../modal/Scanner'
 
 interface ButtonProps {
   text: string
@@ -122,8 +122,9 @@ export const AcceptButton = ({ text, onClick }: ButtonProps) => {
   )
 }
 
-export const ConfirmButton = () => {
+export const ConfirmButton = (props: ButtonProps) => {
   const [open, setOpen] = useState(false)
+  const { text } = props
   const handleClose = () => {
     setOpen(false)
   }
@@ -145,9 +146,9 @@ export const ConfirmButton = () => {
         }}
         onClick={() => setOpen(true)}
       >
-        Confirm
+        {text}
       </Button>
-      <CodeScanner open={open} handleClose={handleClose} />
+      <Scanner open={open} handleClose={handleClose} />
     </>
   )
 }

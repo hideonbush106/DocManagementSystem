@@ -161,7 +161,7 @@ const ApprovalsTable: React.FC<ApprovalsTableProps> = ({ view }) => {
         filterable: false,
         headerAlign: 'center',
         align: 'center',
-        renderCell: () => <ConfirmButton />
+        renderCell: () => <ConfirmButton text='Confirm' />
       },
       {
         field: 'more-options',

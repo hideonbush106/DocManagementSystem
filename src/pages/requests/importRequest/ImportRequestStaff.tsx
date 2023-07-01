@@ -190,6 +190,10 @@ const ImportRequestStaff = () => {
                   </div>
                   <div style={{ height: '200px' }}>
                     <Text variant='body2'>
+                      <strong> File name: </strong>
+                      {request.document.name}
+                    </Text>
+                    <Text variant='body2'>
                       <strong> Description: </strong>
                       {request.description}
                     </Text>

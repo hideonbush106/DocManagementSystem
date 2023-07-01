@@ -5,7 +5,6 @@ import KeyboardReturnRoundedIcon from '@mui/icons-material/KeyboardReturnRounded
 import DoneRoundedIcon from '@mui/icons-material/DoneRounded'
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded'
 import ImportDocumentModal from '../modal/ImportDocumentModal'
-import Scanner from '../modal/Scanner'
 
 interface ButtonProps {
   text: string

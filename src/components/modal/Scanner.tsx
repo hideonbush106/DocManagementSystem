@@ -1,7 +1,6 @@
 import QrReader from 'react-qr-reader'
 import ModalLayout from './ModalLayout'
 import { Box, Button, Grid, Typography } from '@mui/material'
-import useDocumentApi from '~/hooks/api/useDocumentApi'
 
 interface CodeScannerProps {
   open: boolean

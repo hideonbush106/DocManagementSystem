@@ -4,11 +4,11 @@ import PropTypes, { Validator } from 'prop-types'
 // import CheckRoundedIcon from '@mui/icons-material/CheckRounded'
 // import ModalLayout from '../modal/ModalLayout'
 // import CodeScanner from '../modal/scanner/CodeScanner'
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import useDocumentApi from '~/hooks/api/useDocumentApi'
 import { ConfirmButton } from '../button/Button'
 import Scanner from '../modal/Scanner'
-import { toast } from 'react-toastify'
+import { notifySuccess } from '~/global/toastify'
 interface ApprovalsTableProps {
   view: 'dashboard' | 'full'
 }
@@ -30,13 +30,13 @@ const ApprovalsTable: React.FC<ApprovalsTableProps> = ({ view }) => {
     page: 0,
     pageSize: 10
   })
+  const [scanning, setScanning] = useState(true)
 
   const handleClose = () => {
     setOpen(false)
   }
 
   const handleScan = async (scanData: string | null) => {
-    // setIsLoading(true)
     if (scanData && scanData !== '') {
       try {
         const result = await confirmDocument({
@@ -44,12 +44,13 @@ const ApprovalsTable: React.FC<ApprovalsTableProps> = ({ view }) => {
           locationQRcode: scanData
         })
         console.log(result)
-        handleClose()
         setIsLoading(true)
-        toast.dismiss()
+        notifySuccess('Confirm document successfully')
       } catch (error) {
         console.log(error)
+      } finally {
         handleClose()
+        setScanning(false)
       }
     }
   }
@@ -188,6 +189,7 @@ const ApprovalsTable: React.FC<ApprovalsTableProps> = ({ view }) => {
             text='Confirm'
             onClick={() => {
               setOpen(true)
+              setScanning(true)
               setDocumentId(param.row.id as string)
             }}
           />
@@ -219,7 +221,7 @@ const ApprovalsTable: React.FC<ApprovalsTableProps> = ({ view }) => {
         margin: '10px 0'
       }}
     >
-      <Scanner open={open} handleClose={handleClose} handleScan={handleScan} />
+      <Scanner scanning={scanning} open={open} handleClose={handleClose} handleScan={handleScan} />
       <DataGrid
         columnHeaderHeight={rowHeight + 10}
         disableColumnMenu

@@ -5,6 +5,7 @@
   --green-dark-color: #2a8743;
   --green-light-color: #d9f5e1;
   --red-color: #ea4335;
+  --red-dark-color: #c23c30;
   --red-light-color: #ffcbcbcf;
   --background-color: #e8ecf2;
   --background-dark-color: #d1dcec;
@@ -16,6 +17,7 @@
   --purple-background-color: #b0a0ff;
   --green-background-color: #82d999;
   --white-color: #fff;
+  --orange-color: #ff9800;
 }
 
 *,

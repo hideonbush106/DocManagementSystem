@@ -5,7 +5,7 @@ import { UpdateDepartment } from '~/global/interface'
 
 interface UpdateDepartmentProps {
   handleClose?: () => void
-  onSubmit?: (values: UpdateDepartment) => void
+  handleUpdate?: (values: UpdateDepartment) => void
   id?: string
   name?: string
 }
@@ -23,7 +23,7 @@ const UpdateDepartmentModal = (props: UpdateDepartmentProps) => {
     validationSchema: validationSchema,
     onSubmit: (values: UpdateDepartment) => {
       values.name = values.name.trim().replace(/\s\s+/g, ' ')
-      props.onSubmit?.(values)
+      props.handleUpdate?.(values)
     }
   })
 
@@ -68,6 +68,7 @@ const UpdateDepartmentModal = (props: UpdateDepartmentProps) => {
               my: 1
             }}
             name='name'
+            label='Department name'
             variant='outlined'
             onChange={formik.handleChange}
             value={formik.values.name}
@@ -94,7 +95,7 @@ const UpdateDepartmentModal = (props: UpdateDepartmentProps) => {
             variant='contained'
             color='primary'
             type='submit'
-            disabled={Boolean(formik.errors.name) || nameUnchanged}
+            disabled={formik.isValidating || !formik.isValid || nameUnchanged}
           >
             Update
           </Button>

@@ -5,10 +5,11 @@ import AddRoundedIcon from '@mui/icons-material/AddRounded'
 import React, { useEffect, useState } from 'react'
 import { Department, UpdateDepartment, CreateDepartment } from '~/global/interface'
 import useDepartmentApi from '~/hooks/api/useDepartmentApi'
-import { DeleteButton, UpdateButton } from '~/components/button/Button'
-import { notifyError, notifySuccess } from '~/global/toastify'
-import CreateDepartmentModal from '~/components/modal/advanced/CreateDepartment'
+import { notifySuccess } from '~/global/toastify'
+import CreateDepartmentModal from '~/components/modal/advanced/department/CreateDepartmentModal'
 import { Box } from '@mui/system'
+import { DeleteButton } from '~/components/button/advanced/DeleteButton'
+import { UpdateDeptButton } from '~/components/button/advanced/UpdateButton'
 
 const DepartmentAdvanced = () => {
   const [departments, setDepartments] = useState<Department[]>([])
@@ -72,7 +73,6 @@ const DepartmentAdvanced = () => {
           notifySuccess('Delete successfully')
         } else {
           setLoading(true)
-          notifyError('Delete failed')
         }
       })
       await fetchData() // Fetch the updated data
@@ -87,10 +87,12 @@ const DepartmentAdvanced = () => {
       <List
         sx={{
           width: '100%',
-          height: { xs: 'calc(100vh - 92px - 6rem)', md: 'calc(100vh - 42px - 6rem)' },
+          height: { xs: 'calc(100vh - 210px)', md: 'calc(100vh - 160px)' },
+          borderRadius: '5px',
+          borderTopLeftRadius: '0px',
           bgcolor: 'var(--white-color)',
           padding: '1rem 0',
-          overflowY: 'scroll'
+          overflowY: 'auto'
         }}
         component='div'
       >
@@ -109,8 +111,8 @@ const DepartmentAdvanced = () => {
                   primary={dept.name}
                   primaryTypographyProps={{ fontFamily: 'inherit', color: 'var(--black-color)' }}
                 />
-                <UpdateButton text='Update' id={dept.id} name={dept.name} onSubmit={handleUpdate} />
-                <DeleteButton text='Delete' id={dept.id} handleDelete={handleDelete} />
+                <UpdateDeptButton id={dept.id} name={dept.name} handleUpdate={handleUpdate} />
+                <DeleteButton id={dept.id} name={dept.name} type='department' handleDelete={handleDelete} />
               </ListItemButton>
             ))}
             <ListItemButton

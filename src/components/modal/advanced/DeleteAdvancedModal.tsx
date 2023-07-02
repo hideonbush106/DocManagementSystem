@@ -1,13 +1,15 @@
 import { Box, Button, Typography } from '@mui/material'
 
-interface DeleteDepartmentProps {
-  id?: string
-  handleDelete?: (id: string) => void
+interface DeleteProps {
+  id: string
+  name: string
+  type: string
+  handleDelete: (id: string) => void
 }
 
-const DeleteDepartmentModal = (props: DeleteDepartmentProps) => {
+const DeleteAdvancedModal = (props: DeleteProps) => {
   const handleDelete = () => {
-    props.handleDelete?.(props.id || '')
+    props.handleDelete?.(props.id ?? '')
   }
   return (
     <>
@@ -18,10 +20,6 @@ const DeleteDepartmentModal = (props: DeleteDepartmentProps) => {
             xs: 1.5,
             sm: 3
           },
-          position: 'sticky',
-          top: 0,
-          background: 'white',
-          zIndex: 1,
           width: '100%'
         }}
       >
@@ -38,7 +36,7 @@ const DeleteDepartmentModal = (props: DeleteDepartmentProps) => {
           }}
           variant='h4'
         >
-          Are you sure?
+          Delete {props.type.toLocaleLowerCase()}
         </Typography>
       </Box>
       <Box
@@ -62,15 +60,16 @@ const DeleteDepartmentModal = (props: DeleteDepartmentProps) => {
           }}
           variant='body2'
         >
-          This will delete this department permanently. You cannot undo this action.
+          Are you sure you want to delete this <span>{props.type.toLocaleLowerCase()} </span>
+          <span style={{ fontWeight: '600', whiteSpace: 'nowrap' }}>{props.name}</span>?
         </Typography>
       </Box>
       <Box
         sx={{
-          p: 4,
-          position: 'sticky',
-          bottom: -1,
-          zIndex: 1,
+          p: {
+            xs: 1.5,
+            sm: 4
+          },
           background: 'white',
           display: 'flex',
           justifyContent: 'end',
@@ -78,7 +77,7 @@ const DeleteDepartmentModal = (props: DeleteDepartmentProps) => {
         }}
       >
         <Button
-          sx={{ my: 1, mr: 1 }}
+          sx={{ m: 1, mr: 1 }}
           variant='contained'
           color='error'
           onClick={handleDelete}
@@ -91,4 +90,4 @@ const DeleteDepartmentModal = (props: DeleteDepartmentProps) => {
   )
 }
 
-export default DeleteDepartmentModal
+export default DeleteAdvancedModal

@@ -36,7 +36,7 @@ const ApprovalsTable: React.FC<ApprovalsTableProps> = ({ view }) => {
   }
 
   const handleScan = async (scanData: string | null) => {
-    setIsLoading(true)
+    // setIsLoading(true)
     if (scanData && scanData !== '') {
       try {
         const result = await confirmDocument({
@@ -45,12 +45,11 @@ const ApprovalsTable: React.FC<ApprovalsTableProps> = ({ view }) => {
         })
         console.log(result)
         handleClose()
-        setIsLoading(false)
+        setIsLoading(true)
         toast.dismiss()
       } catch (error) {
         console.log(error)
         handleClose()
-        setIsLoading(false)
       }
     }
   }

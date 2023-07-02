@@ -45,7 +45,6 @@ const ApprovalsTable: React.FC<ApprovalsTableProps> = ({ view }) => {
         })
         console.log(result)
         setIsLoading(true)
-        notifySuccess('Confirm document successfully')
       } catch (error) {
         console.log(error)
       } finally {

@@ -8,7 +8,6 @@ import { useState, useEffect, useCallback } from 'react'
 import useDocumentApi from '~/hooks/api/useDocumentApi'
 import { ConfirmButton } from '../button/Button'
 import Scanner from '../modal/Scanner'
-import { notifySuccess } from '~/global/toastify'
 interface ApprovalsTableProps {
   view: 'dashboard' | 'full'
 }

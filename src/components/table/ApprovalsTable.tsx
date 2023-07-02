@@ -8,6 +8,7 @@ import { useState, useEffect, useCallback } from 'react'
 import useDocumentApi from '~/hooks/api/useDocumentApi'
 import { ConfirmButton } from '../button/Button'
 import Scanner from '../modal/Scanner'
+import { notifySuccess } from '~/global/toastify'
 interface ApprovalsTableProps {
   view: 'dashboard' | 'full'
 }
@@ -42,7 +43,9 @@ const ApprovalsTable: React.FC<ApprovalsTableProps> = ({ view }) => {
           id: documentId,
           locationQRcode: scanData
         })
-        console.log(result)
+        if (result) {
+          notifySuccess('Document confirmed successfully')
+        }
         setIsLoading(true)
       } catch (error) {
         console.log(error)

@@ -211,10 +211,12 @@ const DetailRequestModal = ({ open, handleClose, selectedRequest }: RequestModal
                   <TitleText>Updated at: </TitleText>
                   {dayjs(selectedRequest.updatedAt).format('DD/MM/YYYY HH:mm:ss')}
                 </Text>
-                <Text>
-                  <TitleText>Updated by: </TitleText>
-                  {`${selectedRequest.updatedBy.firstName} ${selectedRequest.updatedBy.lastName}`}
-                </Text>
+                {selectedRequest.updatedBy && (
+                  <Text>
+                    <TitleText>Updated by: </TitleText>
+                    {`${selectedRequest.updatedBy.firstName} ${selectedRequest.updatedBy.lastName}`}
+                  </Text>
+                )}
                 {selectedRequest.status === 'REJECTED' && (
                   <Text>
                     <TitleText>Reason: </TitleText>
@@ -240,7 +242,7 @@ const DetailRequestModal = ({ open, handleClose, selectedRequest }: RequestModal
                     margin: '20px 0 0'
                   }}
                 >
-                  {selectedRequest.barcode && <QRCodeSVG value={selectedRequest.barcode} />}
+                  {selectedRequest.qrcode && <QRCodeSVG value={selectedRequest.qrcode} />}
                 </Box>
                 <Box
                   sx={{

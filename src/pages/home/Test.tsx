@@ -1,8 +1,8 @@
 import '@react-pdf-viewer/core/lib/styles/index.css'
-import PdfView from '~/components/modal/pdfViewer/PdfView'
+import PdfViewer from '~/components/modal/PdfViewer'
 
 const Test = () => {
-  return <PdfView />
+  return <PdfViewer />
 }
 
 export default Test

@@ -1,9 +1,9 @@
 import { Box, Button, Modal, Typography } from '@mui/material'
-import Barcode from 'react-barcode'
 import dayjs from 'dayjs'
 import styled from 'styled-components'
 import { ArrowForward, Description } from '@mui/icons-material'
 import { DocumentDetail } from '~/global/interface'
+import { QRCodeSVG } from 'qrcode.react'
 
 const TitleText = styled.span`
   font-weight: 600;
@@ -112,11 +112,11 @@ const Detail = ({ document, barcode, open, onClose }: DetailProps) => {
             <TitleText>Created at: </TitleText> {dayjs(document?.createdAt).format('DD/MM/YYYY HH:mm:ss')}
           </Text>
           <Text variant='body1'>
-            <TitleText>Status: </TitleText>{' '}
+            <TitleText>Status: </TitleText>
             <span style={{ color: getStatusColor(document?.status), fontWeight: 600 }}>{document?.status}</span>
           </Text>
           <Box style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-            {barcode ? <Barcode value={barcode} /> : null}
+            {barcode && <QRCodeSVG value={barcode} />}
             <Box
               style={{
                 width: '90%',
@@ -133,7 +133,7 @@ const Detail = ({ document, barcode, open, onClose }: DetailProps) => {
               >
                 View PDF
               </Button>
-              {barcode ? (
+              {barcode && (
                 <Button
                   size='small'
                   variant='outlined'
@@ -142,7 +142,7 @@ const Detail = ({ document, barcode, open, onClose }: DetailProps) => {
                 >
                   Export
                 </Button>
-              ) : null}
+              )}
             </Box>
           </Box>
         </Box>

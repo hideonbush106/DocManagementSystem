@@ -17,8 +17,7 @@ import usePagination from '~/hooks/usePagination'
 import InfoIcon from '@mui/icons-material/Info'
 import DetailRequestModal from '~/components/modal/DetailRequestModal'
 import { StatusDiv } from '../importRequest/ImportRequest.styled'
-import { AcceptButton, RejectButton } from '~/components/button/Button'
-import RejectRequestModal from '~/components/modal/RejectRequestModal'
+import { RejectButton } from '~/components/button/Button'
 import useBorrowRequestApi from '~/hooks/api/useBorrowRequestApi'
 import dayjs from 'dayjs'
 import FilterRequest from '~/components/filter/FilterRequest'
@@ -33,6 +32,7 @@ const Text = styled(Typography)`
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
+  font-family: var(--family-font);
 `
 const StatusText = ({ status }: { status: string }) => {
   if (status === RequestStatus.REJECTED) {
@@ -58,15 +58,13 @@ const BorrowRequestStaff = () => {
   const [borrowRequests, setBorrowRequests] = useState<any[]>([])
   const [totalPages, setTotalPages] = useState(1)
   const [selectedRequest, setSelectedRequest] = useState<any>(null)
-  const [rejectID, setRejectID] = useState<number | null>(null)
-  const [isModalOpen, setIsModalOpen] = useState(false)
   const [selectedStatus, setSelectedStatus] = useState<string>('')
   const [isFetching, setIsFetching] = useState(true)
-  const { getBorrowRequests, getBorrowRequestsAll, acceptBorrowRequest, rejectBorrowRequest } = useBorrowRequestApi()
+  const { getOwnBorrowRequests, getBorrowRequests, cancelBorrowRequest } = useBorrowRequestApi()
 
   const fetchBorrowRequests = async () => {
     try {
-      const response = await getBorrowRequestsAll(selectedStatus || undefined, undefined, undefined, page)
+      const response = await getOwnBorrowRequests(selectedStatus || undefined, undefined, undefined, page)
       const responseData = response.data.data
       const totalPages = response.data.total
 
@@ -101,42 +99,20 @@ const BorrowRequestStaff = () => {
       console.log(error)
     }
   }
-  const handleClosePopup = () => {
-    setSelectedRequest(null)
-  }
-  const handleAccept = async (borrowRequestId: string) => {
+  const handleCancel = async (id: string) => {
     try {
-      const response = await acceptBorrowRequest(borrowRequestId)
-      console.log('Accept request successful:', response)
+      const response = await cancelBorrowRequest(id)
+      console.log(response)
       setBorrowRequests((prevRequests) =>
-        prevRequests.map((request) => (request.id === borrowRequestId ? { ...request, status: 'APPROVED' } : request))
+        prevRequests.map((request) => (request.id === id ? { ...request, status: 'CANCELED' } : request))
       )
     } catch (error) {
-      console.log('Accept request failed:', error)
+      console.error(error)
     }
   }
-  const handleReject = (id: number) => {
-    setRejectID(id)
-    setIsModalOpen(true)
-  }
-  const handleRejectModalClose = () => {
-    setIsModalOpen(false)
-  }
-  const handleRejectModalSubmit = async (reason: string) => {
-    console.log('Rejected:', reason)
-    setIsModalOpen(false)
-    if (rejectID) {
-      try {
-        const response = await rejectBorrowRequest({ id: String(rejectID), rejectedReason: reason })
-        console.log('Reject request successful:', response)
-        await fetchBorrowRequests()
-        setBorrowRequests((prevRequests) =>
-          prevRequests.map((request) => (request.id === rejectID ? { ...request, status: 'REJECTED' } : request))
-        )
-      } catch (error) {
-        console.log('Reject request failed:', error)
-      }
-    }
+
+  const handleClosePopup = () => {
+    setSelectedRequest(null)
   }
 
   const handleStatusChange = (event: SelectChangeEvent<string>) => {
@@ -224,8 +200,7 @@ const BorrowRequestStaff = () => {
                     <CardActions sx={{ justifyContent: 'space-evenly' }}>
                       {request.status === 'PENDING' ? (
                         <>
-                          <AcceptButton text='Approve' onClick={() => handleAccept(request.id)} />
-                          <RejectButton text='Reject' onClick={() => handleReject(request.id)} />
+                          <RejectButton text='Cancel Request' onClick={() => handleCancel(request.id)} />
                         </>
                       ) : (
                         <StatusText status={request.status} />
@@ -243,7 +218,6 @@ const BorrowRequestStaff = () => {
           handleClose={handleClosePopup}
           selectedRequest={selectedRequest}
         />
-        <RejectRequestModal open={isModalOpen} onClose={handleRejectModalClose} onSubmit={handleRejectModalSubmit} />
       </Box>
     </>
   )

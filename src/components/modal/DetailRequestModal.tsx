@@ -81,11 +81,9 @@ const DetailRequestModal = ({ open, handleClose, selectedRequest }: RequestModal
                 <Typography variant='h5' sx={{ fontWeight: '600', marginBottom: '20px' }}>
                   Request Details
                 </Typography>
-                <div style={{ maxHeight: '55px', textOverflow: 'ellipsis' }}>
-                  <Text>
-                    <TitleText>Description: </TitleText> {selectedRequest.description}
-                  </Text>
-                </div>
+                <Text>
+                  <TitleText>Description: </TitleText> {selectedRequest.description}
+                </Text>
                 <Text>
                   <TitleText>Created by: </TitleText>
                   {`${selectedRequest.createdBy.firstName} ${selectedRequest.createdBy.lastName}`}
@@ -186,12 +184,9 @@ const DetailRequestModal = ({ open, handleClose, selectedRequest }: RequestModal
                 <Typography variant='h5' sx={{ fontWeight: '600', marginBottom: '20px' }}>
                   Request Details
                 </Typography>
-                <div style={{ maxHeight: '55px', textOverflow: 'ellipsis' }}>
-                  <Text>
-                    <TitleText>Description: </TitleText> {selectedRequest.description}
-                  </Text>
-                </div>
-
+                <Text>
+                  <TitleText>Description: </TitleText> {selectedRequest.description}
+                </Text>
                 <Text>
                   <TitleText>Created at: </TitleText>
                   {dayjs(selectedRequest.createdAt).format('DD/MM/YYYY HH:mm:ss')}
@@ -211,10 +206,12 @@ const DetailRequestModal = ({ open, handleClose, selectedRequest }: RequestModal
                   <TitleText>Updated at: </TitleText>
                   {dayjs(selectedRequest.updatedAt).format('DD/MM/YYYY HH:mm:ss')}
                 </Text>
-                <Text>
-                  <TitleText>Updated by: </TitleText>
-                  {`${selectedRequest.updatedBy.firstName} ${selectedRequest.updatedBy.lastName}`}
-                </Text>
+                {selectedRequest.updatedBy && (
+                  <Text>
+                    <TitleText>Updated by: </TitleText>
+                    {`${selectedRequest.updatedBy.firstName} ${selectedRequest.updatedBy.lastName}`}
+                  </Text>
+                )}
                 {selectedRequest.status === 'REJECTED' && (
                   <Text>
                     <TitleText>Reason: </TitleText>
@@ -240,7 +237,7 @@ const DetailRequestModal = ({ open, handleClose, selectedRequest }: RequestModal
                     margin: '20px 0 0'
                   }}
                 >
-                  {selectedRequest.barcode && <QRCodeSVG value={selectedRequest.barcode} />}
+                  {selectedRequest.qrcode && <QRCodeSVG value={selectedRequest.qrcode} />}
                 </Box>
                 <Box
                   sx={{

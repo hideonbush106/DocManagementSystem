@@ -109,7 +109,7 @@ const Detail = ({ document, barcode, open, onClose }: DetailProps) => {
             </Text>
           </Box>
           <Text variant='body1'>
-            <TitleText>Created at: </TitleText> {dayjs(document?.createdAt).format('DD/MM/YYYY HH:mm:ss')}
+            <TitleText>Created at: </TitleText> {dayjs(document?.createdAt).format('MM/DD/YYYY HH:mm:ss')}
           </Text>
           <Text variant='body1'>
             <TitleText>Status: </TitleText>{' '}

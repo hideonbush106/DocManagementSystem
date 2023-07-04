@@ -200,7 +200,7 @@ const ImportRequestStaff = () => {
                     </Text>
                     <Text variant='body2'>
                       <strong> Time request: </strong>
-                      {dayjs(request.createdAt).format('DD/MM/YYYY HH:mm:ss')}
+                      {dayjs(request.createdAt).format('MM/DD/YYYY HH:mm:ss')}
                     </Text>
                     {request.rejectedReason && (
                       <Text variant='body2'>

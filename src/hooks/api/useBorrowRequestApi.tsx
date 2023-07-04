@@ -1,4 +1,4 @@
-import { BorrowRequest, Reject } from '~/global/interface'
+import { BorrowRequest, Reject, VerifiedRequset } from '~/global/interface'
 import useApi from './useApi'
 import React from 'react'
 
@@ -106,6 +106,18 @@ const useBorrowRequestApi = () => {
     [callApi]
   )
 
+  const verifyBorrowRequest = React.useCallback(
+    async (data: VerifiedRequset) => {
+      const endpoint = `/${rootEndpoint}/verify`
+      try {
+        const response = await callApi('post', endpoint, {}, {}, data)
+        return response
+      } catch (error) {
+        console.log(error)
+      }
+    },
+    [callApi]
+  )
   return {
     getBorrowRequests,
     getBorrowRequestsAll,
@@ -113,7 +125,8 @@ const useBorrowRequestApi = () => {
     getOwnBorrowRequests,
     acceptBorrowRequest,
     rejectBorrowRequest,
-    cancelBorrowRequest
+    cancelBorrowRequest,
+    verifyBorrowRequest
   }
 }
 

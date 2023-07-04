@@ -23,6 +23,8 @@ import dayjs from 'dayjs'
 import FilterRequest from '~/components/filter/FilterRequest'
 import { RequestStatus } from '~/global/enum'
 import QrCodeScannerIcon from '@mui/icons-material/QrCodeScanner'
+import Scanner from '~/components/modal/Scanner'
+import { notifySuccess } from '~/global/toastify'
 
 const Text = styled(Typography)`
   color: var(--black-color);
@@ -63,7 +65,26 @@ const ImportRequestStaff = () => {
   const [selectedStatus, setSelectedStatus] = useState<string>('')
   const [isFetching, setIsFetching] = useState(true)
   const [isScanModalOpen, setIsScanModalOpen] = useState(false)
-  const { getImportRequestsAll, getImportRequest, acceptImportRequest, rejectImportRequest } = useImportRequestApi()
+  const [scanning, setScanning] = useState(true)
+  const { getImportRequestsAll, getImportRequest, acceptImportRequest, rejectImportRequest, verifyImportRequest } =
+    useImportRequestApi()
+
+  const WrapperDiv = styled('div')(({ theme }) => ({
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'flex-end',
+
+    [theme.breakpoints.down('sm')]: {
+      justifyContent: 'flex-start',
+      position: 'static'
+    },
+
+    [theme.breakpoints.up('md')]: {
+      position: 'absolute',
+      right: '15px',
+      top: '-65px'
+    }
+  }))
 
   const fetchImportRequests = async () => {
     try {
@@ -102,6 +123,11 @@ const ImportRequestStaff = () => {
   const handleClosePopup = () => {
     setSelectedRequest(null)
   }
+
+  const handleScanModalClose = () => {
+    setIsScanModalOpen(false)
+  }
+
   const handleAccept = async (ImportRequestId: string) => {
     try {
       const response = await acceptImportRequest(ImportRequestId)
@@ -146,6 +172,30 @@ const ImportRequestStaff = () => {
 
   const handleQrIconClick = () => {
     setIsScanModalOpen(true)
+    setScanning(true)
+  }
+
+  const handleScan = async (scanData: string | null) => {
+    if (scanData && scanData !== '') {
+      try {
+        const result = await verifyImportRequest({
+          QRCode: scanData
+        })
+        if (result) {
+          notifySuccess('Document confirmed successfully')
+        }
+        setIsFetching(true)
+        await fetchImportRequests()
+        setImportRequests((prevRequests) =>
+          prevRequests.map((request) => (request.id === rejectID ? { ...request, status: 'DONE' } : request))
+        )
+      } catch (error) {
+        console.log(error)
+      } finally {
+        handleScanModalClose()
+        setScanning(false)
+      }
+    }
   }
 
   return (
@@ -159,16 +209,7 @@ const ImportRequestStaff = () => {
         position='relative'
       >
         <div>
-          <div
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'flex-end',
-              position: 'absolute',
-              right: '15px',
-              top: '-65px'
-            }}
-          >
+          <WrapperDiv>
             <FilterRequest
               selectedStatus={selectedStatus}
               onChange={handleStatusChange}
@@ -178,8 +219,9 @@ const ImportRequestStaff = () => {
               sx={{ margin: '0 20px', color: 'var(--primary-dark-color)' }}
               fontSize='large'
               onClick={handleQrIconClick}
+              cursor='pointer'
             />
-          </div>
+          </WrapperDiv>
           {isFetching ? (
             <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }} width='100%' height='60vh'>
               <CircularProgress />
@@ -261,6 +303,12 @@ const ImportRequestStaff = () => {
           selectedRequest={selectedRequest}
         />
         <RejectRequestModal open={isModalOpen} onClose={handleRejectModalClose} onSubmit={handleRejectModalSubmit} />
+        <Scanner
+          open={isScanModalOpen}
+          handleClose={handleScanModalClose}
+          scanning={scanning}
+          handleScan={handleScan}
+        />
       </Box>
     </>
   )

@@ -1,6 +1,6 @@
 import React from 'react'
 import useApi from './useApi'
-import { ImportRequest, Reject } from '~/global/interface'
+import { ImportRequest, Reject, VerifiedRequset } from '~/global/interface'
 
 const useImportRequestApi = () => {
   const callApi = useApi()
@@ -105,6 +105,19 @@ const useImportRequestApi = () => {
     [callApi]
   )
 
+  const verifyImportRequest = React.useCallback(
+    async (data: VerifiedRequset) => {
+      const endpoint = `/${rootEndpoint}/verify`
+      try {
+        const response = await callApi('post', endpoint, {}, {}, data)
+        return response
+      } catch (error) {
+        console.log(error)
+      }
+    },
+    [callApi]
+  )
+
   return {
     getImportRequestsAll,
     createImportRequest,
@@ -112,7 +125,8 @@ const useImportRequestApi = () => {
     getImportRequest,
     acceptImportRequest,
     rejectImportRequest,
-    cancelImportRequest
+    cancelImportRequest,
+    verifyImportRequest
   }
 }
 

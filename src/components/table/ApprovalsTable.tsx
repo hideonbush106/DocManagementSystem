@@ -6,6 +6,8 @@ import useDocumentApi from '~/hooks/api/useDocumentApi'
 import { ConfirmButton } from '../button/Button'
 import Scanner from '../modal/Scanner'
 import { notifySuccess } from '~/global/toastify'
+import dayjs from 'dayjs'
+
 interface ApprovalsTableProps {
   view: 'dashboard' | 'full'
 }
@@ -25,7 +27,7 @@ const ApprovalsTable: React.FC<ApprovalsTableProps> = ({ view }) => {
   const [rowCountState, setRowCountState] = useState<number>(0)
   const [paginationModel, setPaginationModel] = useState<PaginationModel>({
     page: 0,
-    pageSize: 10
+    pageSize: view === 'full' ? 10 : 5
   })
   const [scanning, setScanning] = useState(true)
 
@@ -83,17 +85,27 @@ const ApprovalsTable: React.FC<ApprovalsTableProps> = ({ view }) => {
         sortable: false,
         filterable: false,
         headerAlign: 'center',
-        align: 'center'
+        align: 'center',
+        renderCell: (params) =>
+          paginationModel.pageSize * paginationModel.page +
+          params.api.getRowIndexRelativeToVisibleRows(params.row.id) +
+          1
       },
-      { field: 'fileName', headerName: 'File Name', flex: 1 },
-      { field: 'createAt', headerName: 'Create at', flex: 2 },
+      { field: 'name', headerName: 'Name', flex: 1 },
+      {
+        field: 'createdAt',
+        headerName: 'Created at',
+        flex: 1,
+        headerAlign: 'center',
+        align: 'center',
+        valueFormatter: ({ value }) => dayjs(value).format('MM/DD/YYYY')
+      },
       {
         field: 'more-options',
         headerName: '',
         width: 20,
         sortable: false,
         filterable: false,
-
         align: 'left',
         renderCell: (params: GridRenderCellParams) => {
           const menuItems = [
@@ -173,7 +185,15 @@ const ApprovalsTable: React.FC<ApprovalsTableProps> = ({ view }) => {
         flex: 1,
         valueFormatter: ({ value }) => value.name
       },
-      { field: 'createdAt', headerName: 'Created at', flex: 1, minWidth: 140 },
+      {
+        field: 'createdAt',
+        headerName: 'Created at',
+        flex: 1,
+        minWidth: 140,
+        headerAlign: 'center',
+        align: 'center',
+        valueFormatter: ({ value }) => dayjs(value).format('MM/DD/YYYY')
+      },
       {
         field: 'action',
         headerName: 'Action',

@@ -186,7 +186,7 @@ const BorrowRequestStaff = () => {
           QRCode: scanData
         })
         if (result) {
-          notifySuccess('Document confirmed successfully')
+          notifySuccess('Borrow request confirmed successfully')
         }
         setIsFetching(true)
         await fetchBorrowRequests()

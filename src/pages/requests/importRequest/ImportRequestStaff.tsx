@@ -182,7 +182,7 @@ const ImportRequestStaff = () => {
           QRCode: scanData
         })
         if (result) {
-          notifySuccess('Document confirmed successfully')
+          notifySuccess('Import request confirmed successfully')
         }
         setIsFetching(true)
         await fetchImportRequests()

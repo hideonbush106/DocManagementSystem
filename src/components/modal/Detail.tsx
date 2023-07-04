@@ -4,6 +4,8 @@ import styled from 'styled-components'
 import { ArrowForward, Description } from '@mui/icons-material'
 import { DocumentDetail } from '~/global/interface'
 import { QRCodeSVG } from 'qrcode.react'
+import * as React from 'react'
+import { useReactToPrint } from 'react-to-print'
 
 const TitleText = styled.span`
   font-weight: 600;
@@ -19,6 +21,19 @@ const Text = styled(Typography)`
   }
 `
 
+const Print = styled(Box)`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  margin: 1rem 0;
+
+  @media print {
+    margin: 0;
+    height: 50vh;
+  }
+`
+
 interface DetailProps {
   document?: DocumentDetail
   barcode: string
@@ -27,6 +42,12 @@ interface DetailProps {
 }
 
 const Detail = ({ document, barcode, open, onClose }: DetailProps) => {
+  const qrCodeRef = React.useRef(null)
+  const handlePrint = useReactToPrint({
+    content: () => qrCodeRef.current,
+    documentTitle: 'Print QR Code'
+  })
+
   const getStatusColor = (status: string | undefined) => {
     if (status) {
       switch (status) {
@@ -116,7 +137,11 @@ const Detail = ({ document, barcode, open, onClose }: DetailProps) => {
             <span style={{ color: getStatusColor(document?.status), fontWeight: 600 }}>{document?.status}</span>
           </Text>
           <Box style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-            {barcode && <QRCodeSVG value={barcode} />}
+            {barcode && (
+              <Print ref={qrCodeRef}>
+                <QRCodeSVG value={barcode} />
+              </Print>
+            )}
             <Box
               style={{
                 width: '90%',
@@ -139,6 +164,7 @@ const Detail = ({ document, barcode, open, onClose }: DetailProps) => {
                   variant='outlined'
                   endIcon={<ArrowForward />}
                   sx={{ lineHeight: 1, fontFamily: 'var(--family-font)' }}
+                  onClick={handlePrint}
                 >
                   Export
                 </Button>

@@ -6,6 +6,10 @@ import useDocumentApi from '~/hooks/api/useDocumentApi'
 import { ConfirmButton } from '../button/Button'
 import Scanner from '../modal/Scanner'
 import { notifySuccess } from '~/global/toastify'
+import { DocumentDetail } from '~/global/interface'
+import { DocumentStatus } from '~/global/enum'
+import Detail from '../modal/Detail'
+import { Box, CircularProgress } from '@mui/material'
 interface ApprovalsTableProps {
   view: 'dashboard' | 'full'
 }
@@ -28,6 +32,41 @@ const ApprovalsTable: React.FC<ApprovalsTableProps> = ({ view }) => {
     pageSize: 10
   })
   const [scanning, setScanning] = useState(true)
+
+  const [detail, setDetail] = useState(false)
+  const [loadingData, setLoadingData] = useState(false)
+
+  const handleDetailOpen = async (id: string) => {
+    setLoadingData(true)
+    await fetchDetails(id)
+    setDetail(true)
+  }
+
+  const handleDetailClose = () => {
+    setDetail(false)
+  }
+
+  const { getDocument, getDocumentBarcode } = useDocumentApi()
+  const [document, setDocument] = useState<DocumentDetail>()
+  const [barcode, setBarcode] = useState<string>('')
+
+  const fetchDetails = async (id: string) => {
+    try {
+      setBarcode('')
+      setDocument(undefined)
+      const document = await getDocument(id)
+      setDocument(document.data)
+      if ([DocumentStatus.PENDING, DocumentStatus.AVAILABLE, DocumentStatus.BORROWED].includes(document.data.status)) {
+        const barcode = await getDocumentBarcode(id)
+        if (barcode.data.barcode) {
+          setBarcode(barcode.data.barcode)
+        }
+      }
+      setLoadingData(false)
+    } catch (error) {
+      console.log(error)
+    }
+  }
 
   const handleClose = () => {
     setOpen(false)
@@ -97,7 +136,12 @@ const ApprovalsTable: React.FC<ApprovalsTableProps> = ({ view }) => {
         align: 'left',
         renderCell: (params: GridRenderCellParams) => {
           const menuItems = [
-            { text: 'Detail', onClick: () => console.log('Detail clicked') },
+            {
+              text: 'Detail',
+              onClick: () => {
+                handleDetailOpen(params.row.id as string)
+              }
+            },
             { text: 'Confirm', onClick: () => console.log('Confirm clicked') }
           ]
           return <ActionsCell id={params.row.id as number} menuItems={menuItems} />
@@ -202,7 +246,12 @@ const ApprovalsTable: React.FC<ApprovalsTableProps> = ({ view }) => {
         align: 'left',
         renderCell: (params: GridRenderCellParams) => {
           const menuItems = [
-            { text: 'Detail', onClick: () => console.log('Detail clicked') },
+            {
+              text: 'Detail',
+              onClick: () => {
+                handleDetailOpen(params.row.id as string)
+              }
+            },
             { text: 'Delete', onClick: () => console.log('Delete clicked') }
           ]
           return <ActionsCell id={params.row.id as number} menuItems={menuItems} />
@@ -220,6 +269,29 @@ const ApprovalsTable: React.FC<ApprovalsTableProps> = ({ view }) => {
       }}
     >
       <Scanner scanning={scanning} open={open} handleClose={handleClose} handleScan={handleScan} />
+      {!loadingData ? (
+        <Detail document={document} barcode={barcode} open={detail} onClose={handleDetailClose} />
+      ) : (
+        <Box
+          sx={{
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            width: '100%',
+            height: '100%',
+            position: 'absolute',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            bgcolor: 'rgba(0, 0, 0, 0.5)',
+            maxHeight: '100vh',
+            zIndex: 9999
+          }}
+        >
+          <CircularProgress />
+        </Box>
+      )}
+
       <DataGrid
         columnHeaderHeight={rowHeight + 10}
         disableColumnMenu

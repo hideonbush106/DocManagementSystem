@@ -15,15 +15,12 @@ import React, { useEffect, useState } from 'react'
 import usePagination from '~/hooks/usePagination'
 import InfoIcon from '@mui/icons-material/Info'
 import DetailRequestModal from '~/components/modal/DetailRequestModal'
-import { StatusDiv } from './ImportRequest.styled'
-import { AcceptButton, RejectButton } from '~/components/button/Button'
-import RejectRequestModal from '~/components/modal/RejectRequestModal'
+import { StatusDiv } from '~/pages/requests/importRequest/ImportRequest.styled'
+import { RejectButton } from '~/components/button/Button'
 import useImportRequestApi from '~/hooks/api/useImportRequestApi'
 import dayjs from 'dayjs'
 import FilterRequest from '~/components/filter/FilterRequest'
 import { RequestStatus } from '~/global/enum'
-import QrCodeScannerIcon from '@mui/icons-material/QrCodeScanner'
-
 const Text = styled(Typography)`
   color: var(--black-color);
   margin: 0.5rem 0;
@@ -52,22 +49,19 @@ const StatusText = ({ status }: { status: string }) => {
   }
   return null
 }
-const ImportRequestStaff = () => {
+const ImportRequestEmployee = () => {
   const PER_PAGE = 10
   const [page, setPage] = useState(1)
   const [importRequests, setImportRequests] = useState<any[]>([])
   const [totalPages, setTotalPages] = useState(1)
   const [selectedRequest, setSelectedRequest] = useState<any>(null)
-  const [rejectID, setRejectID] = useState<number | null>(null)
-  const [isModalOpen, setIsModalOpen] = useState(false)
   const [selectedStatus, setSelectedStatus] = useState<string>('')
   const [isFetching, setIsFetching] = useState(true)
-  const [isScanModalOpen, setIsScanModalOpen] = useState(false)
-  const { getImportRequestsAll, getImportRequest, acceptImportRequest, rejectImportRequest } = useImportRequestApi()
+  const { getImportRequestsOwn, getImportRequest, cancelImportRequest } = useImportRequestApi()
 
   const fetchImportRequests = async () => {
     try {
-      const response = await getImportRequestsAll(selectedStatus || undefined, undefined, undefined, page)
+      const response = await getImportRequestsOwn(selectedStatus || undefined, undefined, undefined, page)
       const responseData = response.data.data
       const totalPages = response.data.total
       if (responseData && Array.isArray(responseData)) {
@@ -90,6 +84,7 @@ const ImportRequestStaff = () => {
     _DATA.jump(pageNumber)
     console.log(e)
   }
+
   const handleInfoIconClick = async (id: string) => {
     try {
       const response = await getImportRequest(id)
@@ -99,42 +94,21 @@ const ImportRequestStaff = () => {
       console.log(error)
     }
   }
-  const handleClosePopup = () => {
-    setSelectedRequest(null)
-  }
-  const handleAccept = async (ImportRequestId: string) => {
+
+  const handleCancel = async (id: string) => {
     try {
-      const response = await acceptImportRequest(ImportRequestId)
-      console.log('Accept request successful:', response)
+      const response = await cancelImportRequest(id)
+      console.log(response)
       setImportRequests((prevRequests) =>
-        prevRequests.map((request) => (request.id === ImportRequestId ? { ...request, status: 'APPROVED' } : request))
+        prevRequests.map((request) => (request.id === id ? { ...request, status: 'CANCELED' } : request))
       )
     } catch (error) {
-      console.log('Accept request failed:', error)
+      console.error(error)
     }
   }
-  const handleReject = (id: number) => {
-    setRejectID(id)
-    setIsModalOpen(true)
-  }
-  const handleRejectModalClose = () => {
-    setIsModalOpen(false)
-  }
-  const handleRejectModalSubmit = async (reason: string) => {
-    console.log('Rejected:', reason)
-    setIsModalOpen(false)
-    if (rejectID) {
-      try {
-        const response = await rejectImportRequest({ id: String(rejectID), rejectedReason: reason })
-        console.log('Reject request successful:', response)
-        await fetchImportRequests()
-        setImportRequests((prevRequests) =>
-          prevRequests.map((request) => (request.id === rejectID ? { ...request, status: 'REJECTED' } : request))
-        )
-      } catch (error) {
-        console.log('Reject request failed:', error)
-      }
-    }
+
+  const handleClosePopup = () => {
+    setSelectedRequest(null)
   }
   const handleStatusChange = (event: SelectChangeEvent<string>) => {
     setSelectedStatus(event.target.value)
@@ -143,43 +117,15 @@ const ImportRequestStaff = () => {
   const handleClearFilter = () => {
     setSelectedStatus('')
   }
-
-  const handleQrIconClick = () => {
-    setIsScanModalOpen(true)
-  }
-
   return (
     <>
-      <Box
-        display='flex'
-        flexDirection='column'
-        justifyContent='space-between'
-        minHeight='81vh'
-        marginTop='10px'
-        position='relative'
-      >
+      <Box display='flex' flexDirection='column' justifyContent='space-between' minHeight='81vh' marginTop='10px'>
         <div>
-          <div
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'flex-end',
-              position: 'absolute',
-              right: '15px',
-              top: '-65px'
-            }}
-          >
-            <FilterRequest
-              selectedStatus={selectedStatus}
-              onChange={handleStatusChange}
-              onClearFilter={handleClearFilter}
-            />
-            <QrCodeScannerIcon
-              sx={{ margin: '0 20px', color: 'var(--primary-dark-color)' }}
-              fontSize='large'
-              onClick={handleQrIconClick}
-            />
-          </div>
+          <FilterRequest
+            selectedStatus={selectedStatus}
+            onChange={handleStatusChange}
+            onClearFilter={handleClearFilter}
+          />
           {isFetching ? (
             <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }} width='100%' height='60vh'>
               <CircularProgress />
@@ -241,10 +187,7 @@ const ImportRequestStaff = () => {
                   </div>
                   <CardActions sx={{ justifyContent: 'space-evenly', padding: '0' }}>
                     {request.status === 'PENDING' ? (
-                      <>
-                        <AcceptButton text='Approve' onClick={() => handleAccept(request.id)} />
-                        <RejectButton text='Reject' onClick={() => handleReject(request.id)} />
-                      </>
+                      <RejectButton text='Cancel Request' onClick={() => handleCancel(request.id)} />
                     ) : (
                       <StatusText status={request.status} />
                     )}
@@ -260,9 +203,9 @@ const ImportRequestStaff = () => {
           handleClose={handleClosePopup}
           selectedRequest={selectedRequest}
         />
-        <RejectRequestModal open={isModalOpen} onClose={handleRejectModalClose} onSubmit={handleRejectModalSubmit} />
       </Box>
     </>
   )
 }
-export default ImportRequestStaff
+
+export default ImportRequestEmployee

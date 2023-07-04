@@ -121,6 +121,33 @@ export const AcceptButton = ({ text, onClick }: ButtonProps) => {
   )
 }
 
+export const ConfirmButton = (props: ButtonProps) => {
+  const { text, onClick } = props
+
+  return (
+    <>
+      <Button
+        variant='outlined'
+        startIcon={<DoneRoundedIcon />}
+        onClick={onClick}
+        sx={{
+          color: 'var(--primary-color)',
+          border: '0.5px solid var(--primary-color)',
+          '&:hover': {
+            backgroundColor: 'var(--primary-light-color)',
+            borderColor: 'var(--primary-color)',
+            transition: '0.3 ease in out'
+          },
+          padding: '5px 10px',
+          fontSize: '12px'
+        }}
+      >
+        {text}
+      </Button>
+    </>
+  )
+}
+
 export const RejectButton = ({ text, onClick }: ButtonProps) => {
   return (
     <Button

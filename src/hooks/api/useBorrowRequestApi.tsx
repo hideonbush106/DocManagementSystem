@@ -52,7 +52,7 @@ const useBorrowRequestApi = () => {
   //For employee
   const getOwnBorrowRequests = React.useCallback(
     async (status?: string, documentId?: string, take?: number, page?: number) => {
-      let endpoint = `/${rootEndpoint}`
+      let endpoint = `/${rootEndpoint}/own`
       if (page) endpoint += `?page=${page}`
       if (status) endpoint += `&status=${status}`
       if (documentId) endpoint += `&documentId=${documentId}`

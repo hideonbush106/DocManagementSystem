@@ -90,10 +90,10 @@ const DetailRequestModal = ({ open, handleClose, selectedRequest }: RequestModal
                 </Text>
                 <Text>
                   <TitleText>Created at: </TitleText>
-                  {dayjs(selectedRequest.createdAt).format('DD/MM/YYYY HH:mm:ss')}
+                  {dayjs(selectedRequest.createdAt).format('MM/DD/YYYY HH:mm:ss')}
                 </Text>
                 <Text>
-                  <TitleText>Start date: </TitleText> {dayjs(selectedRequest.startDate).format('DD/MM/YYYY')}
+                  <TitleText>Start date: </TitleText> {dayjs(selectedRequest.startDate).format('MM/DD/YYYY')}
                 </Text>
                 {selectedRequest.borrowDuration && (
                   <Text>
@@ -103,12 +103,12 @@ const DetailRequestModal = ({ open, handleClose, selectedRequest }: RequestModal
                 {selectedRequest.status === 'PENDING' && (
                   <Text>
                     <TitleText>Expired at: </TitleText>
-                    {dayjs(selectedRequest.expired_at).format('DD/MM/YYYY HH:mm:ss')}
+                    {dayjs(selectedRequest.expired_at).format('MM/DD/YYYY HH:mm:ss')}
                   </Text>
                 )}
                 <Text>
                   <TitleText>Updated at: </TitleText>
-                  {dayjs(selectedRequest.updatedAt).format('DD/MM/YYYY HH:mm:ss')}
+                  {dayjs(selectedRequest.updatedAt).format('MM/DD/YYYY HH:mm:ss')}
                 </Text>
                 {selectedRequest.status === 'REJECTED' && (
                   <Text>
@@ -192,7 +192,7 @@ const DetailRequestModal = ({ open, handleClose, selectedRequest }: RequestModal
                 </Text>
                 <Text>
                   <TitleText>Created at: </TitleText>
-                  {dayjs(selectedRequest.createdAt).format('DD/MM/YYYY HH:mm:ss')}
+                  {dayjs(selectedRequest.createdAt).format('MM/DD/YYYY HH:mm:ss')}
                 </Text>
                 {selectedRequest.borrowDuration && (
                   <Text>
@@ -202,12 +202,12 @@ const DetailRequestModal = ({ open, handleClose, selectedRequest }: RequestModal
                 {selectedRequest.status === 'PENDING' && (
                   <Text>
                     <TitleText>Expired at: </TitleText>
-                    {dayjs(selectedRequest.expired_at).format('DD/MM/YYYY HH:mm:ss')}
+                    {dayjs(selectedRequest.expired_at).format('MM/DD/YYYY HH:mm:ss')}
                   </Text>
                 )}
                 <Text>
                   <TitleText>Updated at: </TitleText>
-                  {dayjs(selectedRequest.updatedAt).format('DD/MM/YYYY HH:mm:ss')}
+                  {dayjs(selectedRequest.updatedAt).format('MM/DD/YYYY HH:mm:ss')}
                 </Text>
                 {selectedRequest.updatedBy && (
                   <Text>

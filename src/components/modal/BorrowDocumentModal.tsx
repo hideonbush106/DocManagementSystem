@@ -165,7 +165,7 @@ const BorrowDocumentModal = (props: BorrowDocumentModalProps) => {
                     label='Start Date'
                     // value={formik.values.startDate}
                     onChange={(date) => formik.setFieldValue('startDate', date)}
-                    format='DD/MM/YYYY'
+                    format='MM/DD/YYYY'
                     shouldDisableDate={shouldDisableDate}
                     onError={(error) => {
                       if (error) {

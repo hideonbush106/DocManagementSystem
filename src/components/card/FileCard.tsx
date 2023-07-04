@@ -35,13 +35,12 @@ const FileCard: React.FC<Props> = (props: Props) => {
             return handleOpenBorrowModal()
           }
         }
-      : null,
-    {
-      text: 'Edit',
-      onClick: () => {
-        return
-      }
-    },
+      : {
+          text: 'Edit',
+          onClick: () => {
+            return
+          }
+        },
     {
       text: 'Delete',
       onClick: () => {

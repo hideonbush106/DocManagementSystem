@@ -32,10 +32,14 @@ const BorrowDocumentModal = (props: BorrowDocumentModalProps) => {
     startDate: yup
       .date()
       .required('Start date is required')
-      .test('is-not-today', 'Start date is required', function (value) {
-        const today = new Date().setHours(0, 0, 0, 0)
-        const selectedDate = new Date(value).setHours(0, 0, 0, 0)
-        return selectedDate !== today
+      .test('is-valid-date', 'Invalid start date', function (value) {
+        const today = dayjs().startOf('day')
+        const selectedDate = dayjs(value).startOf('day')
+        const isBeforeTodayOrWeekend =
+          selectedDate.isBefore(today) || selectedDate.day() === 0 || selectedDate.day() === 6
+        const isToday = selectedDate.isSame(today)
+
+        return !isBeforeTodayOrWeekend && !isToday
       })
   })
 

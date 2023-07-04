@@ -9,6 +9,7 @@ import useBorrowRequestApi from '~/hooks/api/useBorrowRequestApi'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
 import { DatePicker } from '@mui/x-date-pickers/DatePicker'
+import dayjs from 'dayjs'
 
 interface BorrowDocumentModalProps {
   open: boolean
@@ -61,7 +62,13 @@ const BorrowDocumentModal = (props: BorrowDocumentModalProps) => {
   })
 
   const shouldDisableDate = (date: Date) => {
-    return date < new Date()
+    const today = dayjs().startOf('day')
+    const selectedDate = dayjs(date).startOf('day')
+    if (selectedDate.isBefore(today)) {
+      return true
+    }
+    const dayOfWeek = selectedDate.day()
+    return dayOfWeek === 0 || dayOfWeek === 6
   }
 
   return (

@@ -1,5 +1,5 @@
-import { CreateNewFolderOutlined } from '@mui/icons-material'
-import { Box, Button, FormControl, Grid, TextField, Typography } from '@mui/material'
+import EventIcon from '@mui/icons-material/Event'
+import { Box, Button, FormControl, FormHelperText, Grid, TextField, Typography } from '@mui/material'
 import { useFormik } from 'formik'
 import * as yup from 'yup'
 import { notifySuccess } from '~/global/toastify'
@@ -24,9 +24,18 @@ const BorrowDocumentModal = (props: BorrowDocumentModalProps) => {
     description: yup.string().required('Description is required').trim(),
     borrowDuration: yup
       .number()
+      .integer('Borrow duration must be an integer')
       .required('Borrow duration is required')
       .min(1, 'Borrow duration must be at least 1 day')
-      .max(30, 'Borrow duration must be at most 30 days')
+      .max(30, 'Borrow duration must be at most 30 days'),
+    startDate: yup
+      .date()
+      .required('Start date is required')
+      .test('is-not-today', 'Start date is required', function (value) {
+        const today = new Date().setHours(0, 0, 0, 0)
+        const selectedDate = new Date(value).setHours(0, 0, 0, 0)
+        return selectedDate !== today
+      })
   })
 
   const formik = useFormik({
@@ -72,7 +81,7 @@ const BorrowDocumentModal = (props: BorrowDocumentModalProps) => {
           boxShadow: 'rgba(100, 100, 111, 0.2) 0px 7px 29px 0px'
         }}
       >
-        <CreateNewFolderOutlined fontSize='large' sx={{ color: 'var(--black-color)', mx: 1 }} />
+        <EventIcon fontSize='large' sx={{ color: 'var(--black-color)', mx: 1 }} />
         <Typography
           sx={{
             fontWeight: 600,
@@ -135,6 +144,31 @@ const BorrowDocumentModal = (props: BorrowDocumentModalProps) => {
               />
             </Grid>
             <Grid item xs={12} sm={6}>
+              <FormControl
+                fullWidth
+                error={formik.touched.startDate && formik.errors.startDate ? true : false}
+                sx={{ my: 1 }}
+              >
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                  <DatePicker
+                    label='Start Date'
+                    // value={formik.values.startDate}
+                    onChange={(date) => formik.setFieldValue('startDate', date)}
+                    format='DD/MM/YYYY'
+                    shouldDisableDate={shouldDisableDate}
+                    onError={(error) => {
+                      if (error) {
+                        formik.setFieldError('startDate', 'Invalid start date')
+                      }
+                    }}
+                  />
+                </LocalizationProvider>
+                {formik.touched.startDate && formik.errors.startDate && (
+                  <FormHelperText>{formik.errors.startDate as string}</FormHelperText>
+                )}
+              </FormControl>
+            </Grid>
+            <Grid item xs={12} sm={6}>
               <TextField
                 sx={{ my: 1 }}
                 label='Borrow Duration (in days)'
@@ -149,16 +183,6 @@ const BorrowDocumentModal = (props: BorrowDocumentModalProps) => {
                   formik.touched.borrowDuration && formik.errors.borrowDuration ? formik.errors.borrowDuration : ''
                 }
               />
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <LocalizationProvider dateAdapter={AdapterDayjs}>
-                <DatePicker
-                  label='Start Date'
-                  onChange={(date) => formik.setFieldValue('startDate', date)}
-                  format='DD/MM/YYYY'
-                  shouldDisableDate={shouldDisableDate}
-                />
-              </LocalizationProvider>
             </Grid>
           </Grid>
         </FormControl>

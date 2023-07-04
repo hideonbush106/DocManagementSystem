@@ -11,7 +11,7 @@ import useLockerApi from '~/hooks/api/useLockerApi'
 import useFolderApi from '~/hooks/api/useFolderApi'
 import * as yup from 'yup'
 import useDocumentApi from '~/hooks/api/useDocumentApi'
-import Barcode from 'react-barcode'
+import { QRCodeSVG } from 'qrcode.react'
 import { notifySuccess } from '~/global/toastify'
 import ModalLayout from './ModalLayout'
 
@@ -28,7 +28,7 @@ const ImportDocumentModal = (props: ImportDocumentModalProps) => {
   const [rooms, setRooms] = useState<Room[]>([])
   const [lockers, setLockers] = useState<Locker[]>([])
   const [folders, setFolders] = useState<Folder[]>([])
-  const [barcode, setBarcode] = useState<string>('')
+  const [qrCode, setQrCode] = useState<string>('')
   const { createDocument, uploadDocumentPdf } = useDocumentApi()
   const { getAllDepartments } = useDepartmentApi()
   const { getAllCategories } = useCategoryApi()
@@ -72,7 +72,7 @@ const ImportDocumentModal = (props: ImportDocumentModalProps) => {
       values.name = values.name.trim().replace(/\s\s+/g, ' ')
       values.description = values.description.trim().replace(/\s\s+/g, ' ')
       createDocument(values).then((res) => {
-        setBarcode(res.data.barcode)
+        setQrCode(res.data.barcode)
         if (files.length > 0) {
           uploadDocumentPdf(res.data.id, files)
         }
@@ -351,9 +351,14 @@ const ImportDocumentModal = (props: ImportDocumentModalProps) => {
               title={`Drag 'n' drop some files here, or click to select files`}
             />
           </Box>
-          {barcode ? (
-            <Box ref={componentRef} id='barcode' display={'flex'} sx={{ justifyContent: 'center', width: '100%' }}>
-              <Barcode format='CODE128' value={barcode} />
+          {qrCode ? (
+            <Box
+              ref={componentRef}
+              id='barcode'
+              display={'flex'}
+              sx={{ justifyContent: 'center', width: '100%', my: 2 }}
+            >
+              <QRCodeSVG value={qrCode} />
             </Box>
           ) : null}
         </FormControl>
@@ -371,7 +376,7 @@ const ImportDocumentModal = (props: ImportDocumentModalProps) => {
             boxShadow: 'rgba(100, 100, 111, 0.2) 0px 7px 29px 0px'
           }}
         >
-          {barcode ? (
+          {qrCode ? (
             <Button sx={{ my: 1, mr: 1 }} variant='contained' color='primary' onClick={handleExport}>
               Export
             </Button>
@@ -382,7 +387,7 @@ const ImportDocumentModal = (props: ImportDocumentModalProps) => {
           )}
 
           <Button sx={{ my: 1 }} color='error' variant='outlined' onClick={props.handleClose}>
-            {barcode ? 'Close' : 'Cancel'}
+            {qrCode ? 'Close' : 'Cancel'}
           </Button>
         </Box>
       </form>

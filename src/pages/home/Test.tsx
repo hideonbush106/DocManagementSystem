@@ -3,7 +3,6 @@ import '@react-pdf-viewer/core/lib/styles/index.css'
 import React, { useCallback, useEffect, useState } from 'react'
 import PdfViewer from '~/components/modal/PdfViewer'
 import useMedia from '~/hooks/api/useMedia'
-import { inflate } from 'pako'
 
 const Test = () => {
   const [open, setOpen] = React.useState(false)
@@ -13,21 +12,36 @@ const Test = () => {
   const { getMedia } = useMedia()
   // const id = '0c08f2e8-b147-4612-ac7e-64f95b16e833'
   const id = '0c08f2e8-b147-4612-ac7e-64f95b16e833'
-  const getDocuemnt = useCallback(async () => {
+
+  const getDocument = useCallback(async () => {
     try {
       const response = await getMedia(id)
-      const file = new Blob([response], { type: 'application/pdf;charset=utf-8' })
-      const fileURL = URL.createObjectURL(file)
-      setFileUrl(fileURL)
-      console.log(fileURL)
+      const base64toBlob = (data: string) => {
+        // Cut the prefix `data:application/pdf;base64` from the raw base 64
+        const base64WithoutPrefix = data.substr('data:application/pdf;base64,'.length)
+
+        const bytes = atob(base64WithoutPrefix)
+        let length = bytes.length
+        const out = new Uint8Array(length)
+
+        while (length--) {
+          out[length] = bytes.charCodeAt(length)
+        }
+
+        return new Blob([out], { type: 'application/pdf' })
+      }
+      const blob = base64toBlob(response)
+      const url = URL.createObjectURL(blob)
+      setFileUrl(url)
+      console.log(url)
     } catch (error) {
       console.log(error)
     }
   }, [getMedia])
 
   useEffect(() => {
-    getDocuemnt()
-  }, [getDocuemnt])
+    getDocument()
+  }, [getDocument])
 
   return (
     <>

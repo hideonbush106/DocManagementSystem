@@ -9,7 +9,7 @@ const useMedia = () => {
     async (documentId: string) => {
       const endpoint = `/${rootEndpoint}/${documentId}`
       try {
-        const response = await callApi('get', endpoint, { responseType: 'arraybuffer' })
+        const response = await callApi('get', endpoint)
         return response
       } catch (error) {
         console.log(error)

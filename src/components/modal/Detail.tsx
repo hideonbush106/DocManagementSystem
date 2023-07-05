@@ -4,6 +4,9 @@ import dayjs from 'dayjs'
 import styled from 'styled-components'
 import { ArrowForward, Description } from '@mui/icons-material'
 import { DocumentDetail } from '~/global/interface'
+import useMedia from '~/hooks/api/useMedia'
+import PdfViewer from './PdfViewer'
+import { useState } from 'react'
 
 const TitleText = styled.span`
   font-weight: 600;
@@ -43,7 +46,9 @@ const Detail = ({ document, barcode, open, onClose }: DetailProps) => {
       }
     }
   }
-
+  const { getMedia } = useMedia()
+  const [fileUrl, setFileUrl] = useState<string>('')
+  const [openPDF, setOpenPDF] = useState<boolean>(false)
   const style = {
     fontFamily: 'var(--font-family)',
     position: 'absolute',
@@ -57,6 +62,29 @@ const Detail = ({ document, barcode, open, onClose }: DetailProps) => {
     py: { xs: 3, sm: 6 },
     px: { xs: 3, sm: 6 },
     color: 'var(--black-color)'
+  }
+
+  const getFile = async () => {
+    setOpenPDF(true)
+    try {
+      const response = await getMedia(document?.id || '')
+      const base64toBlob = (data: string) => {
+        const bytes = atob(data)
+        let length = bytes.length
+        const out = new Uint8Array(length)
+        while (length--) {
+          out[length] = bytes.charCodeAt(length)
+        }
+
+        return new Blob([out], { type: 'application/pdf' })
+      }
+      const blob = base64toBlob(response)
+      const url = URL.createObjectURL(blob)
+      setFileUrl(url)
+      console.log(url)
+    } catch (error) {
+      console.log(error)
+    }
   }
 
   return (
@@ -129,10 +157,12 @@ const Detail = ({ document, barcode, open, onClose }: DetailProps) => {
               <Button
                 size='small'
                 variant='contained'
+                onClick={getFile}
                 sx={{ width: '95px', lineHeight: 1, fontFamily: 'var(--family-font)', boxShadow: 'none' }}
               >
                 View PDF
               </Button>
+              <PdfViewer fileUrl={fileUrl} open={openPDF} handleClose={() => setOpenPDF(false)} />
               {barcode ? (
                 <Button
                   size='small'

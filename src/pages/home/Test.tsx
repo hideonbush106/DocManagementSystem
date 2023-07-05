@@ -1,11 +1,11 @@
 import { Button } from '@mui/material'
 import '@react-pdf-viewer/core/lib/styles/index.css'
-import React, { useCallback, useEffect, useState } from 'react'
+import { useState } from 'react'
 import PdfViewer from '~/components/modal/PdfViewer'
 import useMedia from '~/hooks/api/useMedia'
 
 const Test = () => {
-  const [open, setOpen] = React.useState(false)
+  const [open, setOpen] = useState(false)
 
   const handleClose = () => setOpen(false)
   const [fileUrl, setFileUrl] = useState<string>('')

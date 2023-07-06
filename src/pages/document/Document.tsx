@@ -1,5 +1,5 @@
 import SearchField from '~/components/TextField/SearchField'
-import { ImportButton, ReturnButton } from '~/components/button/Button'
+import { ImportButton, ImportRequestButton, ReturnButton } from '~/components/button/Button'
 import { ButtonWrapper, DocumentGrid, DocumentWrapper, NavWrapper, TreeWrapper } from './Document.styled'
 import TreeView from '@mui/lab/TreeView'
 import { Apartment, ChevronRight, ExpandMore, Folder, MeetingRoom, ViewModule } from '@mui/icons-material'
@@ -9,9 +9,12 @@ import useData from '~/hooks/useData'
 import { fakeArray } from '~/utils/fakeArray'
 import DataProvider from '~/context/DataContext'
 import { File, FolderTree } from '~/global/interface'
+import useAuth from '~/hooks/useAuth'
 
 const DocumentDisplay = () => {
   const { documentTree, loading } = useData()
+  const { user } = useAuth()
+  const role = user?.role
   const calculateSize = (folder: FolderTree) => {
     return folder.documents.reduce((sum: number, document: File) => sum + document.numOfPages, 0)
   }
@@ -27,10 +30,16 @@ const DocumentDisplay = () => {
             console.log(e.target.value)
           }}
         />
-        <ButtonWrapper>
-          <ImportButton text='New Document' />
-          <ReturnButton text='Return Document' />
-        </ButtonWrapper>
+        {role === 'STAFF' ? (
+          <ButtonWrapper>
+            <ImportButton text='New Document' />
+            <ReturnButton text='Return Document' />
+          </ButtonWrapper>
+        ) : (
+          <ButtonWrapper>
+            <ImportRequestButton text='Import Document' />
+          </ButtonWrapper>
+        )}
       </NavWrapper>
       <TreeWrapper>
         <TreeView sx={{ width: '100%' }} defaultCollapseIcon={<ExpandMore />} defaultExpandIcon={<ChevronRight />}>

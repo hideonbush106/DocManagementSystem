@@ -114,7 +114,6 @@ const ImportRequestModal = (props: ImportDocumentModalProps) => {
     setFolders([])
     formik.setFieldValue('document.folder.id', '')
     const lockers = await getLockerInRoom(event.target.value)
-    console.log(lockers)
     setLockers(lockers.data)
   }
 

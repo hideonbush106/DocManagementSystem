@@ -188,7 +188,7 @@ const Detail = ({ document, barcode, open, onClose }: DetailProps) => {
                 View PDF
               </Button>
               <PdfViewer fileUrl={fileUrl} open={openPDF} handleClose={() => setOpenPDF(false)} />
-              {barcode ? (
+              {barcode && (
                 <Button
                   size='small'
                   variant='outlined'

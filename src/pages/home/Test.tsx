@@ -8,13 +8,13 @@ const Test = () => {
   const [open, setOpen] = useState(false)
 
   const handleClose = () => setOpen(false)
-  const [fileUrl, setFileUrl] = useState<string>('')
+  const [fileUrl, setFileUrl] = useState<string>('initial')
   const { getMedia } = useMedia()
   // const id = '0c08f2e8-b147-4612-ac7e-64f95b16e833' //API .pdf
   // const id = '5a9b1011-8e3b-44b1-a2e2-530c858a1e9b' //usecase .pdf
   // const id = 'becc3d6e-9dc2-45e3-955f-24473c829ecc' //srs
-  const id = 'e07c68b2-112a-4cc1-b33e-3764861b2eb1' //process material
-  // const id = 'cb49cf1c-569b-4385-aa31-b11d97063d09'
+  // const id = 'e07c68b2-112a-4cc1-b33e-3764861b2eb1' //process material
+  const id = 'cb49cf1c-569b-4385-aa31-b11d97063d09'
   const getFile = async () => {
     try {
       const response = await getMedia(id)
@@ -34,6 +34,7 @@ const Test = () => {
       console.log(url)
     } catch (error) {
       console.log(error)
+      setFileUrl('')
     }
   }
   const handleOpen = () => {

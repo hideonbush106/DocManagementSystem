@@ -1,4 +1,4 @@
-import { Box, Button, Modal, Typography } from '@mui/material'
+import { Box, Button, CircularProgress, Modal, Typography } from '@mui/material'
 import { Viewer, Worker } from '@react-pdf-viewer/core'
 import '@react-pdf-viewer/default-layout/lib/styles/index.css'
 import { PictureAsPdf, Warning } from '@mui/icons-material'
@@ -56,7 +56,19 @@ const PdfViewer = (props: PdfViewProps) => {
               Document Preview
             </Typography>
           </Box>
-          {fileUrl ? (
+          {fileUrl === 'initial' ? (
+            <Box
+              sx={{
+                display: 'flex',
+                justifyContent: 'center',
+                height: '70vh',
+                flexDirection: 'column',
+                alignItems: 'center'
+              }}
+            >
+              <CircularProgress size={60} />
+            </Box>
+          ) : fileUrl ? (
             <Worker workerUrl='https://unpkg.com/pdfjs-dist@3.8.162/build/pdf.worker.min.js'>
               <Viewer fileUrl={fileUrl} />
             </Worker>

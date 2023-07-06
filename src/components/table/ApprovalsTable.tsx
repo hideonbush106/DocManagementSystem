@@ -1,7 +1,8 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { DataGrid, GridColDef, GridRenderCellParams } from '@mui/x-data-grid'
 import ActionsCell from './ActionCell'
 import PropTypes, { Validator } from 'prop-types'
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect } from 'react'
 import useDocumentApi from '~/hooks/api/useDocumentApi'
 import { ConfirmButton } from '../button/Button'
 import Scanner from '../modal/Scanner'
@@ -14,6 +15,7 @@ import { Box, CircularProgress } from '@mui/material'
 
 interface ApprovalsTableProps {
   view: 'dashboard' | 'full'
+  searchData?: string
 }
 
 interface PaginationModel {
@@ -21,7 +23,7 @@ interface PaginationModel {
   pageSize: number
 }
 
-const ApprovalsTable: React.FC<ApprovalsTableProps> = ({ view }) => {
+const ApprovalsTable: React.FC<ApprovalsTableProps> = ({ view, searchData }) => {
   let columns: GridColDef[] = []
   const { getPendingDocuments, confirmDocument } = useDocumentApi()
   const [open, setOpen] = useState(false)
@@ -94,27 +96,25 @@ const ApprovalsTable: React.FC<ApprovalsTableProps> = ({ view }) => {
     }
   }
 
-  const fetchData = useCallback(async () => {
-    if (isLoading) {
-      const result = await getPendingDocuments(paginationModel.pageSize, paginationModel.page)
-      setData(result.data.data)
-      setRowCountState((prevRowCountState) => (result.data.total !== undefined ? result.data.total : prevRowCountState))
-      setIsLoading(false)
-    }
-  }, [getPendingDocuments, isLoading, paginationModel.page, paginationModel.pageSize])
+  const fetchData = async () => {
+    setIsLoading(true)
+    const result = await getPendingDocuments(paginationModel.pageSize, paginationModel.page, searchData)
+    setData(result.data.data)
+    setRowCountState((prevRowCountState) => (result.data.total !== undefined ? result.data.total : prevRowCountState))
+    setIsLoading(false)
+  }
 
   const handlePaginationModelChange = (newPaginationModel: PaginationModel) => {
     setIsLoading(true)
     setData([])
     setPaginationModel(newPaginationModel)
-    fetchData()
   }
 
   useEffect(() => {
     fetchData()
-  }, [fetchData])
+  }, [paginationModel, searchData])
 
-  let rowHeight = 50
+  let rowHeight = 60
   if (view === 'dashboard') {
     columns = [
       {
@@ -132,7 +132,7 @@ const ApprovalsTable: React.FC<ApprovalsTableProps> = ({ view }) => {
       },
       { field: 'name', headerName: 'Name', flex: 1 },
       {
-        field: 'createdAt',
+        field: 'updatedAt',
         headerName: 'Created at',
         flex: 1,
         headerAlign: 'center',
@@ -154,13 +154,20 @@ const ApprovalsTable: React.FC<ApprovalsTableProps> = ({ view }) => {
                 handleDetailOpen(params.row.id as string)
               }
             },
-            { text: 'Confirm', onClick: () => console.log('Confirm clicked') }
+            {
+              text: 'Confirm',
+              onClick: () => {
+                setOpen(true)
+                setScanning(true)
+                setDocumentId(params.row.id as string)
+              }
+            }
           ]
           return <ActionsCell id={params.row.id as number} menuItems={menuItems} />
         }
       }
     ]
-    rowHeight = 35
+    rowHeight = 40
   } else if (view === 'full') {
     columns = [
       {
@@ -176,13 +183,14 @@ const ApprovalsTable: React.FC<ApprovalsTableProps> = ({ view }) => {
           params.api.getRowIndexRelativeToVisibleRows(params.row.id) +
           1
       },
-      { field: 'name', headerName: 'Name', flex: 1, minWidth: 100, maxWidth: 250 },
+      { field: 'name', headerName: 'Name', flex: 1, minWidth: 130 },
       {
         field: 'department',
         headerName: 'Department',
         flex: 1,
-        minWidth: 80,
-        maxWidth: 200,
+        filterable: false,
+        minWidth: 85,
+        maxWidth: 150,
         valueGetter: ({ row }) => {
           return row.folder.locker.room.department.name
         }
@@ -190,7 +198,7 @@ const ApprovalsTable: React.FC<ApprovalsTableProps> = ({ view }) => {
       {
         field: 'room',
         headerName: 'Room',
-        minWidth: 50,
+        minWidth: 85,
         maxWidth: 120,
         flex: 1,
         headerAlign: 'center',
@@ -202,7 +210,7 @@ const ApprovalsTable: React.FC<ApprovalsTableProps> = ({ view }) => {
       {
         field: 'locker',
         headerName: 'Locker',
-        minWidth: 50,
+        minWidth: 85,
         maxWidth: 120,
         flex: 1,
         headerAlign: 'center',
@@ -214,7 +222,7 @@ const ApprovalsTable: React.FC<ApprovalsTableProps> = ({ view }) => {
       {
         field: 'folder',
         headerName: 'Folder',
-        minWidth: 50,
+        minWidth: 85,
         maxWidth: 120,
         flex: 1,
         headerAlign: 'center',
@@ -224,16 +232,16 @@ const ApprovalsTable: React.FC<ApprovalsTableProps> = ({ view }) => {
       {
         field: 'category',
         headerName: 'Category',
-        minWidth: 75,
-        maxWidth: 150,
+        minWidth: 100,
+        maxWidth: 200,
         flex: 1,
         valueFormatter: ({ value }) => value.name
       },
       {
-        field: 'createdAt',
+        field: 'updatedAt',
         headerName: 'Created at',
         flex: 1,
-        minWidth: 140,
+        minWidth: 120,
         headerAlign: 'center',
         align: 'center',
         valueFormatter: ({ value }) => dayjs(value).format('MM/DD/YYYY')
@@ -241,7 +249,7 @@ const ApprovalsTable: React.FC<ApprovalsTableProps> = ({ view }) => {
       {
         field: 'action',
         headerName: 'Action',
-        width: 125,
+        width: 120,
         sortable: false,
         filterable: false,
         headerAlign: 'center',
@@ -283,7 +291,7 @@ const ApprovalsTable: React.FC<ApprovalsTableProps> = ({ view }) => {
     <div
       style={{
         width: '100%',
-        height: view === 'dashboard' ? 'calc(100% - 30px)' : '100%',
+        height: view === 'dashboard' ? 'calc(100% - 30px)' : 'calc(100vh - 225px)',
         borderRadius: 5,
         margin: '10px 0'
       }}
@@ -321,13 +329,13 @@ const ApprovalsTable: React.FC<ApprovalsTableProps> = ({ view }) => {
         columns={columns}
         rowCount={rowCountState}
         loading={isLoading}
-        pageSizeOptions={[10]}
+        pageSizeOptions={[paginationModel.pageSize]}
         paginationModel={paginationModel}
         paginationMode='server'
         onPaginationModelChange={handlePaginationModelChange}
         initialState={{
           sorting: {
-            sortModel: [{ field: 'createdAt', sort: 'asc' }]
+            sortModel: [{ field: 'updatedAt', sort: 'asc' }]
           }
         }}
         sx={{
@@ -351,7 +359,8 @@ const ApprovalsTable: React.FC<ApprovalsTableProps> = ({ view }) => {
 }
 
 ApprovalsTable.propTypes = {
-  view: PropTypes.oneOf<'dashboard' | 'full'>(['dashboard', 'full']).isRequired as Validator<'dashboard' | 'full'>
+  view: PropTypes.oneOf<'dashboard' | 'full'>(['dashboard', 'full']).isRequired as Validator<'dashboard' | 'full'>,
+  searchData: PropTypes.string
 }
 
 export default ApprovalsTable

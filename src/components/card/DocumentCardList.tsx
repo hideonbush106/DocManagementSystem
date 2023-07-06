@@ -42,7 +42,7 @@ const DocumentCardList = (props: Props) => {
       {items.map((item) => (
         <Grid key={item.id} item xs={12} sm={4} md={6} lg={4}>
           {type === 'file' ? (
-            <FileCard icon={icon} name={item.name} />
+            <FileCard icon={icon} name={item.name} id={item.id} />
           ) : (
             <Link to={`${type}/${item.id}`}>
               <DocumentCard icon={icon} name={item.name} key={item.id} />

@@ -68,7 +68,7 @@ const Detail = ({ document, barcode, open, onClose }: DetailProps) => {
     }
   }
   const { getMedia } = useMedia()
-  const [fileUrl, setFileUrl] = useState<string>('')
+  const [fileUrl, setFileUrl] = useState<string>('initial')
   const [openPDF, setOpenPDF] = useState<boolean>(false)
   const style = {
     fontFamily: 'var(--font-family)',
@@ -88,6 +88,7 @@ const Detail = ({ document, barcode, open, onClose }: DetailProps) => {
   const getFile = async () => {
     setOpenPDF(true)
     try {
+      setFileUrl('initial')
       const response = await getMedia(document?.id || '')
       const base64toBlob = (data: string) => {
         const bytes = atob(data)
@@ -105,6 +106,7 @@ const Detail = ({ document, barcode, open, onClose }: DetailProps) => {
       console.log(url)
     } catch (error) {
       console.log(error)
+      setFileUrl('')
     }
   }
 

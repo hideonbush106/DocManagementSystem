@@ -1,66 +1,51 @@
 import { Button } from '@mui/material'
-import React, { useEffect, useState } from 'react'
-import Detail from '~/components/modal/Detail'
-import { DocumentStatus } from '~/global/enum'
-import { DocumentDetail } from '~/global/interface'
-import useDocumentApi from '~/hooks/api/useDocumentApi'
+import '@react-pdf-viewer/core/lib/styles/index.css'
+import { useState } from 'react'
+import PdfViewer from '~/components/modal/PdfViewer'
+import useMedia from '~/hooks/api/useMedia'
 
 const Test = () => {
-  // const [, setOpen] = useState(false)
+  const [open, setOpen] = useState(false)
 
-  // const handleClose = () => {
-  //   setOpen(false)
-  // }
-
-  const [detail, setDetail] = useState(false)
-  const handleDetailClose = () => {
-    setDetail(false)
-  }
-
-  const { getDocument, getDocumentBarcode } = useDocumentApi()
-  const [document, setDocument] = React.useState<DocumentDetail>()
-  const [barcode, setBarcode] = React.useState<string>('')
-  const id = '0c08f2e8-b147-4612-ac7e-64f95b16e833'
-  // const id2 = 'b7b30a94-1844-4507-b921-fafecf0a548d'
-
-  const fetchData = async (id: string) => {
+  const handleClose = () => setOpen(false)
+  const [fileUrl, setFileUrl] = useState<string>('initial')
+  const { getMedia } = useMedia()
+  // const id = '0c08f2e8-b147-4612-ac7e-64f95b16e833' //API .pdf
+  // const id = '5a9b1011-8e3b-44b1-a2e2-530c858a1e9b' //usecase .pdf
+  // const id = 'becc3d6e-9dc2-45e3-955f-24473c829ecc' //srs
+  // const id = 'e07c68b2-112a-4cc1-b33e-3764861b2eb1' //process material
+  const id = 'cb49cf1c-569b-4385-aa31-b11d97063d09'
+  const getFile = async () => {
     try {
-      setBarcode('')
-      setDocument(undefined)
-      const document = await getDocument(id)
-      setDocument(document.data)
-      if ([DocumentStatus.PENDING, DocumentStatus.AVAILABLE, DocumentStatus.BORROWED].includes(document.data.status)) {
-        const barcode = await getDocumentBarcode(id)
-        if (barcode.data.barcode) {
-          setBarcode(barcode.data.barcode)
+      const response = await getMedia(id)
+      const base64toBlob = (data: string) => {
+        const bytes = atob(data)
+        let length = bytes.length
+        const out = new Uint8Array(length)
+        while (length--) {
+          out[length] = bytes.charCodeAt(length)
         }
+
+        return new Blob([out], { type: 'application/pdf' })
       }
+      const blob = base64toBlob(response)
+      const url = URL.createObjectURL(blob)
+      setFileUrl(url)
+      console.log(url)
     } catch (error) {
       console.log(error)
+      setFileUrl('')
     }
   }
-
-  useEffect(() => {
-    fetchData(id)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [id])
+  const handleOpen = () => {
+    setOpen(true)
+    getFile()
+  }
 
   return (
     <>
-      {/* <ModalLayout button='Test'>
-        <UpdateDocument handleClose={handleClose} />
-      </ModalLayout>
-      <ModalLayout button='Test2'>
-        <ModalTest handleClose={handleClose} />
-      </ModalLayout> */}
-      <Button
-        onClick={() => {
-          if (document) setDetail(true)
-        }}
-      >
-        Detail
-      </Button>
-      <Detail document={document} barcode={barcode} open={detail} onClose={handleDetailClose} />
+      <Button onClick={handleOpen}>Open</Button>
+      <PdfViewer fileUrl={fileUrl} open={open} handleClose={handleClose} />
     </>
   )
 }

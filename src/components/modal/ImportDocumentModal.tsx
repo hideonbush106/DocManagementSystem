@@ -48,19 +48,18 @@ const ImportDocumentModal = (props: ImportDocumentModalProps) => {
   })
 
   const validationSchema = yup.object({
-    name: yup.string().required('Document name is required').trim(),
-    description: yup.string().required('Description is required').trim(),
+    name: yup.string().trim(),
+    description: yup.string().trim(),
     numOfPages: yup
       .number()
       .integer('Number of pages must be an integer')
       .min(1, 'Number of pages must be greater than 0')
-      .max(500000, 'Number of pages must be less than 500000')
-      .required('Number of pages is required'),
+      .max(500000, 'Number of pages must be less than 500000'),
     folder: yup.object({
-      id: yup.string().required('Folder is required')
+      id: yup.string()
     }),
     category: yup.object({
-      id: yup.string().required('Category is required')
+      id: yup.string()
     })
   })
 
@@ -193,6 +192,8 @@ const ImportDocumentModal = (props: ImportDocumentModalProps) => {
             fullWidth
             onChange={formik.handleChange}
             required
+            error={formik.touched.name && Boolean(formik.errors.name)}
+            helperText={formik.touched.name && formik.errors.name}
           />
           <TextField
             sx={{ my: 1 }}
@@ -204,6 +205,8 @@ const ImportDocumentModal = (props: ImportDocumentModalProps) => {
             fullWidth
             onChange={formik.handleChange}
             required
+            error={formik.touched.numOfPages && Boolean(formik.errors.numOfPages)}
+            helperText={formik.touched.numOfPages && formik.errors.numOfPages}
           />
           <TextField
             sx={{ my: 1 }}
@@ -216,6 +219,8 @@ const ImportDocumentModal = (props: ImportDocumentModalProps) => {
             multiline
             maxRows={4}
             required
+            error={formik.touched.description && Boolean(formik.errors.description)}
+            helperText={formik.touched.description && formik.errors.description}
           />
           <Box display={'flex'} sx={{ width: '100%', justifyContent: 'space-between', flexWrap: 'wrap' }}>
             <TextField

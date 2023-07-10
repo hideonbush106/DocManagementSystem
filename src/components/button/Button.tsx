@@ -5,6 +5,7 @@ import KeyboardReturnRoundedIcon from '@mui/icons-material/KeyboardReturnRounded
 import DoneRoundedIcon from '@mui/icons-material/DoneRounded'
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded'
 import ImportDocumentModal from '../modal/ImportDocumentModal'
+import ImportRequestModal from '../modal/ImportRequestModal'
 
 interface ButtonProps {
   text: string
@@ -40,6 +41,39 @@ export const ImportButton = ({ text }: ButtonProps) => {
         {text}
       </Button>
       <ImportDocumentModal open={open} handleClose={handleClose} />
+    </>
+  )
+}
+
+export const ImportRequestButton = ({ text }: ButtonProps) => {
+  const [open, setOpen] = useState(false)
+  const handleClose = () => {
+    setOpen(false)
+  }
+
+  return (
+    <>
+      <Button
+        sx={{
+          backgroundColor: 'var(--primary-color)',
+          width: { sm: '165px', xs: '115px' },
+          height: '45px',
+          textTransform: 'capitalize',
+          fontSize: '14px',
+          padding: '10px',
+          lineHeight: '1.2',
+          '&:hover': {
+            backgroundColor: 'var(--primary-dark-color)'
+          }
+        }}
+        variant='contained'
+        startIcon={<AddRoundedIcon />}
+        color='primary'
+        onClick={() => setOpen(true)}
+      >
+        {text}
+      </Button>
+      <ImportRequestModal open={open} handleClose={handleClose} />
     </>
   )
 }

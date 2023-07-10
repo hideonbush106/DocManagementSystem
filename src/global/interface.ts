@@ -68,12 +68,18 @@ export interface Categories {
   }
 }
 
-export interface UpdateCategories {
-  id: string
+export interface CreateCategory {
   name: string
   department: {
     id: string
   }
+  capacity?: number
+}
+
+export interface UpdateCategory {
+  id: string
+  name: string
+  capacity?: number
 }
 
 export interface CreateDepartment {

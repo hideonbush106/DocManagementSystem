@@ -11,7 +11,7 @@ import useLockerApi from '~/hooks/api/useLockerApi'
 import useFolderApi from '~/hooks/api/useFolderApi'
 import * as yup from 'yup'
 import useDocumentApi from '~/hooks/api/useDocumentApi'
-import { notifySuccess } from '~/global/toastify'
+import { notifyError, notifySuccess } from '~/global/toastify'
 import ModalLayout from './ModalLayout'
 import useImportRequestApi from '~/hooks/api/useImportRequestApi'
 import useAuth from '~/hooks/useAuth'
@@ -79,20 +79,24 @@ const ImportRequestModal = (props: ImportDocumentModalProps) => {
       values.description = values.description.trim().replace(/\s\s+/g, ' ')
       values.document.description = values.document.description.trim().replace(/\s\s+/g, ' ')
       createImportRequest(values).then((res) => {
-        if (files.length > 0) {
-          uploadDocumentPdf(res.data.id, files)
+        if (res.status !== 400) {
+          if (files.length > 0) {
+            uploadDocumentPdf(res.data.id, files)
+          }
+          notifySuccess('Import document successfully')
+          formik.setFieldValue('description', '')
+          formik.setFieldValue('document.name', '')
+          formik.setFieldValue('document.description', '')
+          formik.setFieldValue('document.numOfPages', 1)
+          formik.setFieldValue('document.folder.id', '')
+          formik.setFieldValue('document.category.id', '')
+          setFiles([])
+          setRooms([])
+          setLockers([])
+          setFolders([])
+        } else {
+          notifyError(res.data.message)
         }
-        notifySuccess('Import document successfully')
-        formik.setFieldValue('description', '')
-        formik.setFieldValue('document.name', '')
-        formik.setFieldValue('document.description', '')
-        formik.setFieldValue('document.numOfPages', 1)
-        formik.setFieldValue('document.folder.id', '')
-        formik.setFieldValue('document.category.id', '')
-        setFiles([])
-        setRooms([])
-        setLockers([])
-        setFolders([])
       })
     }
   })

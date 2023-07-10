@@ -60,6 +60,7 @@ const BorrowRequestStaff = () => {
   const [selectedRequest, setSelectedRequest] = useState<any>(null)
   const [selectedStatus, setSelectedStatus] = useState<string>('')
   const [isFetching, setIsFetching] = useState(true)
+  const [isDetailModalOpen, setIsDetailModalOpen] = useState(false)
   const { getOwnBorrowRequests, getBorrowRequests, cancelBorrowRequest } = useBorrowRequestApi()
 
   const fetchBorrowRequests = async () => {
@@ -92,6 +93,7 @@ const BorrowRequestStaff = () => {
   }
   const handleInfoIconClick = async (id: string) => {
     try {
+      setIsDetailModalOpen(true)
       const response = await getBorrowRequests(id)
       const requestDetails = response.data
       setSelectedRequest(requestDetails)
@@ -113,6 +115,7 @@ const BorrowRequestStaff = () => {
 
   const handleClosePopup = () => {
     setSelectedRequest(null)
+    setIsDetailModalOpen(false)
   }
 
   const handleStatusChange = (event: SelectChangeEvent<string>) => {
@@ -214,9 +217,10 @@ const BorrowRequestStaff = () => {
         </div>
         <Pagination count={count} size='large' page={page} variant='outlined' shape='rounded' onChange={handleChange} />
         <DetailRequestModal
-          open={selectedRequest !== null}
+          open={isDetailModalOpen}
           handleClose={handleClosePopup}
           selectedRequest={selectedRequest}
+          isLoading={selectedRequest === null}
         />
       </Box>
     </>

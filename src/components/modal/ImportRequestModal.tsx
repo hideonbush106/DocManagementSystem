@@ -37,6 +37,17 @@ const ImportRequestModal = (props: ImportDocumentModalProps) => {
   const { getRoomsInDepartment } = useRoomApi()
   const { getLockerInRoom } = useLockerApi()
   const { getFoldersInLocker } = useFolderApi()
+  const [fileError, setFileError] = useState<string>('')
+
+  const handleFileChange = (selectedFiles: File[]) => {
+    if (selectedFiles.length > 0) {
+      setFiles(selectedFiles)
+      setFileError('')
+    } else {
+      setFiles([])
+      setFileError('File upload is required')
+    }
+  }
 
   const validationSchema = yup.object({
     document: yup.object({
@@ -75,25 +86,29 @@ const ImportRequestModal = (props: ImportDocumentModalProps) => {
     },
     validationSchema: validationSchema,
     onSubmit: (values: ImportRequest) => {
+      if (files.length === 0) {
+        setFileError('File upload is required')
+        return
+      }
       values.document.name = values.document.name.trim().replace(/\s\s+/g, ' ')
       values.description = values.description.trim().replace(/\s\s+/g, ' ')
       values.document.description = values.document.description.trim().replace(/\s\s+/g, ' ')
       createImportRequest(values).then((res) => {
         if (res.status !== 400) {
           if (files.length > 0) {
-            uploadDocumentPdf(res.data.id, files)
+            uploadDocumentPdf(res.data.document.id, files)
+            notifySuccess('Import document successfully')
+            formik.setFieldValue('description', '')
+            formik.setFieldValue('document.name', '')
+            formik.setFieldValue('document.description', '')
+            formik.setFieldValue('document.numOfPages', 1)
+            formik.setFieldValue('document.folder.id', '')
+            formik.setFieldValue('document.category.id', '')
+            setFiles([])
+            setRooms([])
+            setLockers([])
+            setFolders([])
           }
-          notifySuccess('Import document successfully')
-          formik.setFieldValue('description', '')
-          formik.setFieldValue('document.name', '')
-          formik.setFieldValue('document.description', '')
-          formik.setFieldValue('document.numOfPages', 1)
-          formik.setFieldValue('document.folder.id', '')
-          formik.setFieldValue('document.category.id', '')
-          setFiles([])
-          setRooms([])
-          setLockers([])
-          setFolders([])
         } else {
           notifyError(res.data.message)
         }
@@ -357,7 +372,7 @@ const ImportRequestModal = (props: ImportDocumentModalProps) => {
               ))}
             </TextField>
           </Box>
-          <Box sx={{ display: 'flex', justifyContent: 'center', my: 1 }}>
+          {/* <Box sx={{ display: 'flex', justifyContent: 'center', my: 1 }}>
             <FileUpload
               sx={{
                 my: 1,
@@ -372,7 +387,36 @@ const ImportRequestModal = (props: ImportDocumentModalProps) => {
               accept='application/pdf'
               title={`Drag 'n' drop some files here, or click to select files`}
             />
+          </Box> */}
+          <Box sx={{ display: 'flex', justifyContent: 'center', my: 1 }}>
+            <FileUpload
+              sx={{
+                my: 1,
+                width: {
+                  xs: '100%',
+                  sm: '80%'
+                },
+                border: fileError ? '1px solid red' : '1px solid #ccc',
+                borderRadius: 5,
+                backgroundColor: fileError ? '#ffeeee' : 'transparent',
+                textAlign: 'center',
+                padding: '20px'
+              }}
+              value={files}
+              onChange={(selectedFiles: File[]) => handleFileChange(selectedFiles)}
+              maxFiles={1}
+              accept='application/pdf'
+              title="Drag 'n' drop some files here, or click to select files"
+            />
           </Box>
+          {fileError && (
+            <Typography
+              sx={{ color: 'red', margin: '0.5rem 0 1rem', display: 'flex', justifyContent: 'center' }}
+              variant='body2'
+            >
+              {fileError}
+            </Typography>
+          )}
         </FormControl>
         <Box
           sx={{

@@ -148,7 +148,6 @@ const AuthProvider = ({ children }: Props) => {
             const errorDetails = error.response?.data.details
             switch (errorDetails) {
               case 'Session expired': {
-                message = 'Session expired. Please login again'
                 break
               }
               case 'Access denied': {

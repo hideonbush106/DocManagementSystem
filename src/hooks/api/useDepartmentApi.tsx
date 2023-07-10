@@ -68,7 +68,17 @@ const useDepartmentApi = () => {
     [callApi]
   )
 
-  return { getDepartment, deleteDepartment, getAllDepartments, createDepartment, updateDepartment }
+  const getDepartmentCount = React.useCallback(async () => {
+    const endpoint = `/${rootEndpoint}/count`
+    try {
+      const response = await callApi('get', endpoint)
+      return response
+    } catch (error) {
+      console.log(error)
+    }
+  }, [callApi])
+
+  return { getDepartment, deleteDepartment, getAllDepartments, createDepartment, updateDepartment, getDepartmentCount }
 }
 
 export default useDepartmentApi

@@ -1,9 +1,14 @@
 import { Box, Button, Modal, Typography } from '@mui/material'
-import Barcode from 'react-barcode'
 import dayjs from 'dayjs'
 import styled from 'styled-components'
 import { ArrowForward, Description } from '@mui/icons-material'
 import { DocumentDetail } from '~/global/interface'
+import useMedia from '~/hooks/api/useMedia'
+import PdfViewer from './PdfViewer'
+import { useState } from 'react'
+import { QRCodeSVG } from 'qrcode.react'
+import * as React from 'react'
+import { useReactToPrint } from 'react-to-print'
 
 const TitleText = styled.span`
   font-weight: 600;
@@ -19,6 +24,19 @@ const Text = styled(Typography)`
   }
 `
 
+const Print = styled(Box)`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  margin: 1rem 0;
+
+  @media print {
+    margin: 0;
+    height: 50vh;
+  }
+`
+
 interface DetailProps {
   document?: DocumentDetail
   barcode: string
@@ -27,6 +45,12 @@ interface DetailProps {
 }
 
 const Detail = ({ document, barcode, open, onClose }: DetailProps) => {
+  const qrCodeRef = React.useRef(null)
+  const handlePrint = useReactToPrint({
+    content: () => qrCodeRef.current,
+    documentTitle: 'Print QR Code'
+  })
+
   const getStatusColor = (status: string | undefined) => {
     if (status) {
       switch (status) {
@@ -43,7 +67,9 @@ const Detail = ({ document, barcode, open, onClose }: DetailProps) => {
       }
     }
   }
-
+  const { getMedia } = useMedia()
+  const [fileUrl, setFileUrl] = useState<string>('initial')
+  const [openPDF, setOpenPDF] = useState<boolean>(false)
   const style = {
     fontFamily: 'var(--font-family)',
     position: 'absolute',
@@ -57,6 +83,31 @@ const Detail = ({ document, barcode, open, onClose }: DetailProps) => {
     py: { xs: 3, sm: 6 },
     px: { xs: 3, sm: 6 },
     color: 'var(--black-color)'
+  }
+
+  const getFile = async () => {
+    setOpenPDF(true)
+    try {
+      setFileUrl('initial')
+      const response = await getMedia(document?.id || '')
+      const base64toBlob = (data: string) => {
+        const bytes = atob(data)
+        let length = bytes.length
+        const out = new Uint8Array(length)
+        while (length--) {
+          out[length] = bytes.charCodeAt(length)
+        }
+
+        return new Blob([out], { type: 'application/pdf' })
+      }
+      const blob = base64toBlob(response)
+      const url = URL.createObjectURL(blob)
+      setFileUrl(url)
+      console.log(url)
+    } catch (error) {
+      console.log(error)
+      setFileUrl('')
+    }
   }
 
   return (
@@ -109,14 +160,18 @@ const Detail = ({ document, barcode, open, onClose }: DetailProps) => {
             </Text>
           </Box>
           <Text variant='body1'>
-            <TitleText>Created at: </TitleText> {dayjs(document?.createdAt).format('DD/MM/YYYY HH:mm:ss')}
+            <TitleText>Created at: </TitleText> {dayjs(document?.createdAt).format('MM/DD/YYYY HH:mm:ss')}
           </Text>
           <Text variant='body1'>
-            <TitleText>Status: </TitleText>{' '}
+            <TitleText>Status: </TitleText>
             <span style={{ color: getStatusColor(document?.status), fontWeight: 600 }}>{document?.status}</span>
           </Text>
           <Box style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-            {barcode ? <Barcode value={barcode} /> : null}
+            {barcode && (
+              <Print ref={qrCodeRef}>
+                <QRCodeSVG value={barcode} />
+              </Print>
+            )}
             <Box
               style={{
                 width: '90%',
@@ -129,20 +184,23 @@ const Detail = ({ document, barcode, open, onClose }: DetailProps) => {
               <Button
                 size='small'
                 variant='contained'
+                onClick={getFile}
                 sx={{ width: '95px', lineHeight: 1, fontFamily: 'var(--family-font)', boxShadow: 'none' }}
               >
                 View PDF
               </Button>
-              {barcode ? (
+              <PdfViewer fileUrl={fileUrl} open={openPDF} handleClose={() => setOpenPDF(false)} />
+              {barcode && (
                 <Button
                   size='small'
                   variant='outlined'
                   endIcon={<ArrowForward />}
                   sx={{ lineHeight: 1, fontFamily: 'var(--family-font)' }}
+                  onClick={handlePrint}
                 >
                   Export
                 </Button>
-              ) : null}
+              )}
             </Box>
           </Box>
         </Box>

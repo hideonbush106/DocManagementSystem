@@ -1,4 +1,4 @@
-import { Categories, UpdateCategories } from '~/global/interface'
+import { CreateCategory, UpdateCategory } from '~/global/interface'
 import useApi from './useApi'
 import React from 'react'
 //TODO: waiting for back-end document api :)
@@ -20,7 +20,7 @@ const useCategoryApi = () => {
   )
 
   const createCategory = React.useCallback(
-    async (data: Categories) => {
+    async (data: CreateCategory) => {
       const endpoint = `/${rootEndpoint}`
       try {
         const response = await callApi('post', endpoint, {}, {}, data)
@@ -33,7 +33,7 @@ const useCategoryApi = () => {
   )
 
   const updateCategory = React.useCallback(
-    async (data: UpdateCategories) => {
+    async (data: UpdateCategory) => {
       const endpoint = `/${rootEndpoint}/`
       try {
         const response = await callApi('put', endpoint, {}, {}, data)

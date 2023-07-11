@@ -101,9 +101,7 @@ const ImportRequestEmployee = () => {
     try {
       const response = await cancelImportRequest(id)
       console.log(response)
-      setImportRequests((prevRequests) =>
-        prevRequests.map((request) => (request.id === id ? { ...request, status: 'CANCELED' } : request))
-      )
+      await fetchImportRequests()
     } catch (error) {
       console.error(error)
     }

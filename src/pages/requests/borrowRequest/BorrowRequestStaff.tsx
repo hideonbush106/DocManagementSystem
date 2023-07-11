@@ -111,9 +111,7 @@ const BorrowRequestStaff = () => {
     try {
       const response = await acceptBorrowRequest(borrowRequestId)
       console.log('Accept request successful:', response)
-      setBorrowRequests((prevRequests) =>
-        prevRequests.map((request) => (request.id === borrowRequestId ? { ...request, status: 'APPROVED' } : request))
-      )
+      await fetchBorrowRequests()
     } catch (error) {
       console.log('Accept request failed:', error)
     }
@@ -133,9 +131,6 @@ const BorrowRequestStaff = () => {
         const response = await rejectBorrowRequest({ id: String(rejectID), rejectedReason: reason })
         console.log('Reject request successful:', response)
         await fetchBorrowRequests()
-        setBorrowRequests((prevRequests) =>
-          prevRequests.map((request) => (request.id === rejectID ? { ...request, status: 'REJECTED' } : request))
-        )
       } catch (error) {
         console.log('Reject request failed:', error)
       }

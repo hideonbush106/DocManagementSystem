@@ -105,9 +105,7 @@ const BorrowRequestStaff = () => {
     try {
       const response = await cancelBorrowRequest(id)
       console.log(response)
-      setBorrowRequests((prevRequests) =>
-        prevRequests.map((request) => (request.id === id ? { ...request, status: 'CANCELED' } : request))
-      )
+      await fetchBorrowRequests()
     } catch (error) {
       console.error(error)
     }

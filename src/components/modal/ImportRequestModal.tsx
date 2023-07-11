@@ -1,3 +1,4 @@
+/* eslint-disable import/no-named-as-default-member */
 import { CreateNewFolderOutlined } from '@mui/icons-material'
 import { Box, Button, FormControl, MenuItem, TextField, Typography } from '@mui/material'
 import { useEffect, useState } from 'react'
@@ -15,6 +16,7 @@ import { notifyError, notifySuccess } from '~/global/toastify'
 import ModalLayout from './ModalLayout'
 import useImportRequestApi from '~/hooks/api/useImportRequestApi'
 import useAuth from '~/hooks/useAuth'
+import axios from 'axios'
 
 interface ImportDocumentModalProps {
   open: boolean
@@ -94,7 +96,7 @@ const ImportRequestModal = (props: ImportDocumentModalProps) => {
       values.description = values.description.trim().replace(/\s\s+/g, ' ')
       values.document.description = values.document.description.trim().replace(/\s\s+/g, ' ')
       createImportRequest(values).then((res) => {
-        if (res.status !== 400) {
+        try {
           if (files.length > 0) {
             uploadDocumentPdf(res.data.document.id, files)
             notifySuccess('Import document successfully')
@@ -110,8 +112,12 @@ const ImportRequestModal = (props: ImportDocumentModalProps) => {
             setFolders([])
             setCategories([])
           }
-        } else {
-          notifyError(res.data.message)
+        } catch (error: unknown) {
+          if (axios.isAxiosError(error)) {
+            notifyError(error.response?.data?.message || 'An error occurred')
+          } else {
+            notifyError(error instanceof Error ? error.message : 'An error occurred')
+          }
         }
       })
     }

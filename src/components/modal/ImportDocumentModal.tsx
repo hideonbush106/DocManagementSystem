@@ -14,6 +14,7 @@ import useDocumentApi from '~/hooks/api/useDocumentApi'
 import { QRCodeSVG } from 'qrcode.react'
 import { notifySuccess } from '~/global/toastify'
 import ModalLayout from './ModalLayout'
+import { useReactToPrint } from 'react-to-print'
 
 interface ImportDocumentModalProps {
   open: boolean
@@ -35,23 +36,30 @@ const ImportDocumentModal = (props: ImportDocumentModalProps) => {
   const { getRoomsInDepartment } = useRoomApi()
   const { getLockerInRoom } = useLockerApi()
   const { getFoldersInLocker } = useFolderApi()
-
+  const qrCodeRef = useRef(null)
   const componentRef = useRef<HTMLDivElement>(null)
 
+  const handlePrint = useReactToPrint({
+    content: () => qrCodeRef.current,
+    documentTitle: 'Print QR Code',
+    onAfterPrint() {
+      setQrCode('')
+    }
+  })
+
   const validationSchema = yup.object({
-    name: yup.string().required('Document name is required').trim(),
-    description: yup.string().required('Description is required').trim(),
+    name: yup.string().trim(),
+    description: yup.string().trim(),
     numOfPages: yup
       .number()
       .integer('Number of pages must be an integer')
       .min(1, 'Number of pages must be greater than 0')
-      .max(500000, 'Number of pages must be less than 500000')
-      .required('Number of pages is required'),
+      .max(500000, 'Number of pages must be less than 500000'),
     folder: yup.object({
-      id: yup.string().required('Folder is required')
+      id: yup.string()
     }),
     category: yup.object({
-      id: yup.string().required('Category is required')
+      id: yup.string()
     })
   })
 
@@ -77,6 +85,16 @@ const ImportDocumentModal = (props: ImportDocumentModalProps) => {
           uploadDocumentPdf(res.data.id, files)
         }
         notifySuccess('Import document successfully')
+        formik.setFieldValue('name', '')
+        formik.setFieldValue('description', '')
+        formik.setFieldValue('numOfPages', 1)
+        formik.setFieldValue('folder.id', '')
+        formik.setFieldValue('category.id', '')
+        setDepartments([])
+        setFiles([])
+        setRooms([])
+        setLockers([])
+        setFolders([])
       })
     }
   })
@@ -107,17 +125,6 @@ const ImportDocumentModal = (props: ImportDocumentModalProps) => {
     formik.setFieldValue('folder.id', [])
     const folder = await getFoldersInLocker(event.target.value)
     setFolders(folder.data)
-  }
-
-  const handleExport = () => {
-    const printWindow = window.open('')
-    if (componentRef.current && printWindow) {
-      const componentHTML = componentRef.current.innerHTML
-      printWindow.document.open()
-      printWindow.document.write(`${componentHTML}`)
-      printWindow.document.close()
-      printWindow.print()
-    }
   }
 
   useEffect(() => {
@@ -185,6 +192,8 @@ const ImportDocumentModal = (props: ImportDocumentModalProps) => {
             fullWidth
             onChange={formik.handleChange}
             required
+            error={formik.touched.name && Boolean(formik.errors.name)}
+            helperText={formik.touched.name && formik.errors.name}
           />
           <TextField
             sx={{ my: 1 }}
@@ -196,6 +205,8 @@ const ImportDocumentModal = (props: ImportDocumentModalProps) => {
             fullWidth
             onChange={formik.handleChange}
             required
+            error={formik.touched.numOfPages && Boolean(formik.errors.numOfPages)}
+            helperText={formik.touched.numOfPages && formik.errors.numOfPages}
           />
           <TextField
             sx={{ my: 1 }}
@@ -208,6 +219,8 @@ const ImportDocumentModal = (props: ImportDocumentModalProps) => {
             multiline
             maxRows={4}
             required
+            error={formik.touched.description && Boolean(formik.errors.description)}
+            helperText={formik.touched.description && formik.errors.description}
           />
           <Box display={'flex'} sx={{ width: '100%', justifyContent: 'space-between', flexWrap: 'wrap' }}>
             <TextField
@@ -358,7 +371,9 @@ const ImportDocumentModal = (props: ImportDocumentModalProps) => {
               display={'flex'}
               sx={{ justifyContent: 'center', width: '100%', my: 2 }}
             >
-              <QRCodeSVG value={qrCode} />
+              <div ref={qrCodeRef}>
+                <QRCodeSVG value={qrCode} />
+              </div>
             </Box>
           ) : null}
         </FormControl>
@@ -377,7 +392,7 @@ const ImportDocumentModal = (props: ImportDocumentModalProps) => {
           }}
         >
           {qrCode ? (
-            <Button sx={{ my: 1, mr: 1 }} variant='contained' color='primary' onClick={handleExport}>
+            <Button sx={{ my: 1, mr: 1 }} variant='contained' color='primary' onClick={handlePrint}>
               Export
             </Button>
           ) : (

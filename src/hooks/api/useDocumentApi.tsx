@@ -104,6 +104,16 @@ const useDocumentApi = () => {
     [callApi]
   )
 
+  const getDocumentCount = React.useCallback(async () => {
+    const endpoint = `/${rootEndpoint}/count`
+    try {
+      const response = await callApi('get', endpoint)
+      return response
+    } catch (error) {
+      console.log(error)
+    }
+  }, [callApi])
+
   return {
     getDocumentsInFolder,
     getDocument,
@@ -111,7 +121,8 @@ const useDocumentApi = () => {
     createDocument,
     uploadDocumentPdf,
     confirmDocument,
-    getPendingDocuments
+    getPendingDocuments,
+    getDocumentCount
   }
 }
 

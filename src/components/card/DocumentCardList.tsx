@@ -5,7 +5,11 @@ import { Apartment, SvgIconComponent, Folder, DescriptionOutlined, MeetingRoom, 
 import FileCard from './FileCard'
 
 type Props = {
-  items: { id: string; name: string }[]
+  items: {
+    status: string
+    id: string
+    name: string
+  }[]
   type: 'department' | 'room' | 'locker' | 'folder' | 'file'
 }
 
@@ -42,7 +46,14 @@ const DocumentCardList = (props: Props) => {
       {items.map((item) => (
         <Grid key={item.id} item xs={12} sm={4} md={6} lg={4}>
           {type === 'file' ? (
-            <FileCard icon={icon} name={item.name} fileId={item.id} fileName={item.name} />
+            <FileCard
+              icon={icon}
+              name={item.name}
+              fileId={item.id}
+              fileName={item.name}
+              id={item.id}
+              status={item.status}
+            />
           ) : (
             <Link to={`${type}/${item.id}`}>
               <DocumentCard icon={icon} name={item.name} key={item.id} />

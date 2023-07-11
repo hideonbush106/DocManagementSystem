@@ -1,4 +1,3 @@
-// ActionsCell.tsx
 import React, { useState } from 'react'
 import { Button, Menu, MenuItem } from '@mui/material'
 import MoreVertOutlinedIcon from '@mui/icons-material/MoreVertOutlined'
@@ -10,7 +9,7 @@ interface MenuItem {
 
 interface ActionsCellProps {
   id?: number
-  menuItems: MenuItem[]
+  menuItems: (MenuItem | null)[]
 }
 
 const ActionsCell: React.FC<ActionsCellProps> = ({ id, menuItems }) => {
@@ -23,6 +22,8 @@ const ActionsCell: React.FC<ActionsCellProps> = ({ id, menuItems }) => {
   const handleClose = () => {
     setAnchorEl(null)
   }
+
+  const filteredMenuItems = menuItems.filter((menuItem) => menuItem !== null) as MenuItem[]
 
   return (
     <>
@@ -47,9 +48,7 @@ const ActionsCell: React.FC<ActionsCellProps> = ({ id, menuItems }) => {
         onClose={handleClose}
         sx={{ '.MuiList-root': { padding: '0' } }}
       >
-        {/* <MenuItem onClick={onClick}>Action 1</MenuItem>
-        <MenuItem onClick={onClick}>Action 2</MenuItem> */}
-        {menuItems.map((menuItem, index) => (
+        {filteredMenuItems.map((menuItem, index) => (
           <MenuItem
             key={index}
             onClick={menuItem.onClick}

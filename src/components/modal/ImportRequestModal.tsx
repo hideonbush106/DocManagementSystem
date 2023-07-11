@@ -25,13 +25,15 @@ interface ImportDocumentModalProps {
 
 const ImportRequestModal = (props: ImportDocumentModalProps) => {
   const { open, handleClose } = props
+
   const [files, setFiles] = useState<File[]>([])
-  const { user } = useAuth()
-  const deptId = user?.departmentId
   const [categories, setCategories] = useState<Categories[]>([])
   const [rooms, setRooms] = useState<Room[]>([])
   const [lockers, setLockers] = useState<Locker[]>([])
   const [folders, setFolders] = useState<Folder[]>([])
+  const [fileError, setFileError] = useState<string>('')
+  const [submitSuccess, setSubmitSuccess] = useState(false)
+
   const { uploadDocumentPdf } = useDocumentApi()
   const { getDepartment } = useDepartmentApi()
   const { createImportRequest } = useImportRequestApi()
@@ -39,7 +41,8 @@ const ImportRequestModal = (props: ImportDocumentModalProps) => {
   const { getRoomsInDepartment } = useRoomApi()
   const { getLockerInRoom } = useLockerApi()
   const { getFoldersInLocker } = useFolderApi()
-  const [fileError, setFileError] = useState<string>('')
+  const { user } = useAuth()
+  const deptId = user?.departmentId
 
   const handleFileChange = (selectedFiles: File[]) => {
     if (selectedFiles.length > 0) {
@@ -100,12 +103,8 @@ const ImportRequestModal = (props: ImportDocumentModalProps) => {
           if (files.length > 0) {
             uploadDocumentPdf(res.data.document.id, files)
             notifySuccess('Import document successfully')
-            formik.setFieldValue('description', '')
-            formik.setFieldValue('document.name', '')
-            formik.setFieldValue('document.description', '')
-            formik.setFieldValue('document.numOfPages', 1)
-            formik.setFieldValue('document.folder.id', '')
-            formik.setFieldValue('document.category.id', '')
+            setSubmitSuccess(true)
+            formik.resetForm()
             setFiles([])
             setRooms([])
             setLockers([])
@@ -113,11 +112,7 @@ const ImportRequestModal = (props: ImportDocumentModalProps) => {
             setCategories([])
           }
         } catch (error: unknown) {
-          if (axios.isAxiosError(error)) {
-            notifyError(error.response?.data?.message || 'An error occurred')
-          } else {
-            notifyError(error instanceof Error ? error.message : 'An error occurred')
-          }
+          notifyError(res.details)
         }
       })
     }
@@ -149,6 +144,12 @@ const ImportRequestModal = (props: ImportDocumentModalProps) => {
     const folder = await getFoldersInLocker(event.target.value)
     setFolders(folder.data)
   }
+
+  useEffect(() => {
+    if (submitSuccess) {
+      handleClose()
+    }
+  }, [submitSuccess, handleClose])
 
   return (
     <ModalLayout open={open} handleClose={handleClose}>

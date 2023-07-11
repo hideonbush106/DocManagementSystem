@@ -6,6 +6,7 @@ import React, { useEffect, useState } from 'react'
 import useDocumentApi from '~/hooks/api/useDocumentApi'
 import { DocumentDetail } from '~/global/interface'
 import { DocumentStatus } from '~/global/enum'
+import useAuth from '~/hooks/useAuth'
 
 type Props = {
   icon: {
@@ -18,6 +19,8 @@ type Props = {
 
 const FileCard = (props: Props) => {
   const [detail, setDetail] = useState(false)
+  const { user } = useAuth()
+  const role = user?.role.toLocaleUpperCase()
 
   const handleDetailClose = () => {
     setDetail(false)
@@ -36,9 +39,11 @@ const FileCard = (props: Props) => {
       const document = await getDocument(id)
       setDocument(document.data)
       if ([DocumentStatus.PENDING, DocumentStatus.AVAILABLE, DocumentStatus.BORROWED].includes(document.data.status)) {
-        const barcode = await getDocumentBarcode(id)
-        if (barcode.data.barcode) {
-          setBarcode(barcode.data.barcode)
+        if (role !== 'EMPLOYEE') {
+          const barcode = await getDocumentBarcode(id)
+          if (barcode.data.barcode) {
+            setBarcode(barcode.data.barcode)
+          }
         }
       }
     } catch (error) {

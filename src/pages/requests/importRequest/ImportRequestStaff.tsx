@@ -132,9 +132,7 @@ const ImportRequestStaff = () => {
     try {
       const response = await acceptImportRequest(ImportRequestId)
       console.log('Accept request successful:', response)
-      setImportRequests((prevRequests) =>
-        prevRequests.map((request) => (request.id === ImportRequestId ? { ...request, status: 'APPROVED' } : request))
-      )
+      await fetchImportRequests()
     } catch (error) {
       console.log('Accept request failed:', error)
     }
@@ -154,9 +152,6 @@ const ImportRequestStaff = () => {
         const response = await rejectImportRequest({ id: String(rejectID), rejectedReason: reason })
         console.log('Reject request successful:', response)
         await fetchImportRequests()
-        setImportRequests((prevRequests) =>
-          prevRequests.map((request) => (request.id === rejectID ? { ...request, status: 'REJECTED' } : request))
-        )
       } catch (error) {
         console.log('Reject request failed:', error)
       }

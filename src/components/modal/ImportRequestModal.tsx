@@ -108,6 +108,7 @@ const ImportRequestModal = (props: ImportDocumentModalProps) => {
             setRooms([])
             setLockers([])
             setFolders([])
+            setCategories([])
           }
         } else {
           notifyError(res.data.message)
@@ -320,6 +321,8 @@ const ImportRequestModal = (props: ImportDocumentModalProps) => {
               variant='standard'
               required
               disabled={rooms.length === 0}
+              error={rooms.length === 0}
+              helperText={rooms.length === 0 ? 'There is no room in this department' : ''}
             >
               {rooms.map((room) => (
                 <MenuItem key={room.id} value={room.id}>
@@ -341,6 +344,8 @@ const ImportRequestModal = (props: ImportDocumentModalProps) => {
               variant='standard'
               required
               disabled={lockers.length === 0}
+              error={lockers.length === 0}
+              helperText={lockers.length === 0 ? 'There is no locker in this room' : ''}
             >
               {lockers.map((locker) => (
                 <MenuItem key={locker.id} value={locker.id}>
@@ -364,6 +369,8 @@ const ImportRequestModal = (props: ImportDocumentModalProps) => {
               variant='standard'
               required
               disabled={folders.length === 0}
+              error={folders.length === 0}
+              helperText={folders.length === 0 ? 'There is no folder in this locker' : ''}
             >
               {folders.map((folder) => (
                 <MenuItem key={folder.id} value={folder.id}>
@@ -372,22 +379,6 @@ const ImportRequestModal = (props: ImportDocumentModalProps) => {
               ))}
             </TextField>
           </Box>
-          {/* <Box sx={{ display: 'flex', justifyContent: 'center', my: 1 }}>
-            <FileUpload
-              sx={{
-                my: 1,
-                width: {
-                  xs: '100%',
-                  sm: '80%'
-                }
-              }}
-              value={files}
-              onChange={setFiles}
-              maxFiles={1}
-              accept='application/pdf'
-              title={`Drag 'n' drop some files here, or click to select files`}
-            />
-          </Box> */}
           <Box sx={{ display: 'flex', justifyContent: 'center', my: 1 }}>
             <FileUpload
               sx={{
@@ -397,7 +388,6 @@ const ImportRequestModal = (props: ImportDocumentModalProps) => {
                   sm: '80%'
                 },
                 border: fileError ? '1px solid red' : '1px solid #ccc',
-                borderRadius: 5,
                 backgroundColor: fileError ? '#ffeeee' : 'transparent',
                 textAlign: 'center',
                 padding: '20px'

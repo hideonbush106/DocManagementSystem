@@ -4,6 +4,7 @@ export const DocumentWrapper = styled.div`
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
+  padding: 8px 4px 8px 8px;
 `
 
 export const NavWrapper = styled.div`
@@ -12,18 +13,6 @@ export const NavWrapper = styled.div`
   flex-wrap: wrap;
   align-items: center;
   width: 100%;
-  @media (min-width: 0px) {
-    flex-direction: column-reverse;
-    align-items: end;
-  }
-  @media (min-width: 600px) {
-    flex-direction: column-reverse;
-    align-items: end;
-  }
-  @media (min-width: 900px) {
-    display: flex;
-    flex-direction: row;
-  }
   @media (min-width: 1200px) {
     display: flex;
     flex-direction: row;
@@ -31,14 +20,9 @@ export const NavWrapper = styled.div`
 `
 
 export const ButtonWrapper = styled.div`
-  @media (min-width: 0px) {
-    margin: 1rem 0;
-  }
-  @media (min-width: 600px) {
-    margin: 1rem 0;
-  }
+  margin: 1rem 0;
   button {
-    margin-inline: 0.5rem;
+    margin-inline: 0.25rem;
   }
 `
 

@@ -403,6 +403,7 @@ const ImportRequestModal = (props: ImportDocumentModalProps) => {
               maxFiles={1}
               accept='application/pdf'
               title="Drag 'n' drop some files here, or click to select files"
+              maxSize={1024 * 1024 * 8}
             />
           </Box>
           {fileError && (

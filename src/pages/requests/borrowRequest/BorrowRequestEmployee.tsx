@@ -52,7 +52,7 @@ const StatusText = ({ status }: { status: string }) => {
   }
   return null
 }
-const BorrowRequestStaff = () => {
+const BorrowRequestEmployee = () => {
   const PER_PAGE = 10
   const [page, setPage] = useState(1)
   const [borrowRequests, setBorrowRequests] = useState<any[]>([])
@@ -103,9 +103,7 @@ const BorrowRequestStaff = () => {
     try {
       const response = await cancelBorrowRequest(id)
       console.log(response)
-      setBorrowRequests((prevRequests) =>
-        prevRequests.map((request) => (request.id === id ? { ...request, status: 'CANCELED' } : request))
-      )
+      await fetchBorrowRequests()
     } catch (error) {
       console.error(error)
     }
@@ -222,4 +220,4 @@ const BorrowRequestStaff = () => {
     </>
   )
 }
-export default BorrowRequestStaff
+export default BorrowRequestEmployee

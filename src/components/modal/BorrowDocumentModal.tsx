@@ -1,8 +1,9 @@
+/* eslint-disable import/no-named-as-default-member */
 import EventIcon from '@mui/icons-material/Event'
 import { Box, Button, FormControl, FormHelperText, Grid, TextField, Typography } from '@mui/material'
 import { useFormik } from 'formik'
 import * as yup from 'yup'
-import { notifySuccess } from '~/global/toastify'
+import { notifyError, notifySuccess } from '~/global/toastify'
 import ModalLayout from './ModalLayout'
 import { BorrowRequest } from '~/global/interface'
 import useBorrowRequestApi from '~/hooks/api/useBorrowRequestApi'
@@ -10,6 +11,7 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
 import { DatePicker } from '@mui/x-date-pickers/DatePicker'
 import dayjs from 'dayjs'
+import axios from 'axios'
 
 interface BorrowDocumentModalProps {
   open: boolean
@@ -59,8 +61,12 @@ const BorrowDocumentModal = (props: BorrowDocumentModalProps) => {
         notifySuccess('Borrow document sent successfully')
         resetForm()
         handleClose()
-      } catch (error) {
-        console.log(error)
+      } catch (error: unknown) {
+        if (axios.isAxiosError(error)) {
+          notifyError(error.response?.data?.message || 'An error occurred')
+        } else {
+          notifyError(error instanceof Error ? error.message : 'An error occurred')
+        }
       }
     }
   })

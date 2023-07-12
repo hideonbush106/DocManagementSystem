@@ -42,7 +42,17 @@ const useUserApi = () => {
     [callApi]
   )
 
-  return { getUserLogin, getUserOwn, getUserProfile }
+  const getUserCount = React.useCallback(async () => {
+    const endpoint = `/${rootEndpoint}/count`
+    try {
+      const response = await callApi('get', endpoint)
+      return response
+    } catch (error) {
+      console.log(error)
+    }
+  }, [callApi])
+
+  return { getUserLogin, getUserOwn, getUserProfile, getUserCount }
 }
 
 export default useUserApi

@@ -1,4 +1,4 @@
-import { styled as mstyled, Modal, Box, Typography, Button } from '@mui/material'
+import { styled as mstyled, Modal, Box, Typography, Button, CircularProgress } from '@mui/material'
 import dayjs from 'dayjs'
 import { useState } from 'react'
 import styled from 'styled-components'
@@ -19,9 +19,10 @@ interface RequestModalProps {
   handleClose: () => void
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   selectedRequest: any
+  isLoading: boolean
 }
 
-const DetailRequestModal = ({ open, handleClose, selectedRequest }: RequestModalProps) => {
+const DetailRequestModal = ({ open, handleClose, selectedRequest, isLoading }: RequestModalProps) => {
   const [detail, setDetail] = useState(false)
   const { user } = useAuth()
   const role = user?.role
@@ -51,7 +52,35 @@ const DetailRequestModal = ({ open, handleClose, selectedRequest }: RequestModal
 
   return (
     <>
-      {role === 'STAFF' ? (
+      {isLoading ? (
+        <Modal open={open} onClose={handleClose} closeAfterTransition>
+          <Box
+            sx={{
+              borderRadius: '5px',
+              position: 'absolute',
+              top: '50%',
+              left: '50%',
+              transform: 'translate(-50%, -50%)',
+              width: {
+                xs: '100vw',
+                sm: '60vw',
+                md: '45vw',
+                lg: '32vw'
+              },
+              height: 'fit-content',
+              bgcolor: 'background.paper',
+              boxShadow: 24,
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              border: 'none',
+              padding: '30px'
+            }}
+          >
+            <CircularProgress />
+          </Box>
+        </Modal>
+      ) : role === 'STAFF' ? (
         <Modal open={open} onClose={handleClose} closeAfterTransition>
           <Box
             sx={{
@@ -92,6 +121,11 @@ const DetailRequestModal = ({ open, handleClose, selectedRequest }: RequestModal
                   <TitleText>Created at: </TitleText>
                   {dayjs(selectedRequest.createdAt).format('MM/DD/YYYY HH:mm:ss')}
                 </Text>
+                {selectedRequest.startDate && (
+                  <Text>
+                    <TitleText>Start date: </TitleText> {dayjs(selectedRequest.startDate).format('MM/DD/YYYY')}
+                  </Text>
+                )}
                 {selectedRequest.borrowDuration && (
                   <Text>
                     <TitleText>Borrow duration: </TitleText> {selectedRequest.borrowDuration}
@@ -191,6 +225,11 @@ const DetailRequestModal = ({ open, handleClose, selectedRequest }: RequestModal
                   <TitleText>Created at: </TitleText>
                   {dayjs(selectedRequest.createdAt).format('MM/DD/YYYY HH:mm:ss')}
                 </Text>
+                {selectedRequest.startDate && (
+                  <Text>
+                    <TitleText>Start date: </TitleText> {dayjs(selectedRequest.startDate).format('MM/DD/YYYY')}
+                  </Text>
+                )}
                 {selectedRequest.borrowDuration && (
                   <Text>
                     <TitleText>Borrow duration: </TitleText> {selectedRequest.borrowDuration}

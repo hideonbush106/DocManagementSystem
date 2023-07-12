@@ -52,7 +52,7 @@ const StatusText = ({ status }: { status: string }) => {
   }
   return null
 }
-const BorrowRequestStaff = () => {
+const BorrowRequestEmployee = () => {
   const PER_PAGE = 10
   const [page, setPage] = useState(1)
   const [borrowRequests, setBorrowRequests] = useState<any[]>([])
@@ -60,6 +60,7 @@ const BorrowRequestStaff = () => {
   const [selectedRequest, setSelectedRequest] = useState<any>(null)
   const [selectedStatus, setSelectedStatus] = useState<string>('')
   const [isFetching, setIsFetching] = useState(true)
+  const [isDetailModalOpen, setIsDetailModalOpen] = useState(false)
   const { getOwnBorrowRequests, getBorrowRequests, cancelBorrowRequest } = useBorrowRequestApi()
 
   const fetchBorrowRequests = async () => {
@@ -92,6 +93,7 @@ const BorrowRequestStaff = () => {
   }
   const handleInfoIconClick = async (id: string) => {
     try {
+      setIsDetailModalOpen(true)
       const response = await getBorrowRequests(id)
       const requestDetails = response.data
       setSelectedRequest(requestDetails)
@@ -103,9 +105,7 @@ const BorrowRequestStaff = () => {
     try {
       const response = await cancelBorrowRequest(id)
       console.log(response)
-      setBorrowRequests((prevRequests) =>
-        prevRequests.map((request) => (request.id === id ? { ...request, status: 'CANCELED' } : request))
-      )
+      await fetchBorrowRequests()
     } catch (error) {
       console.error(error)
     }
@@ -113,6 +113,7 @@ const BorrowRequestStaff = () => {
 
   const handleClosePopup = () => {
     setSelectedRequest(null)
+    setIsDetailModalOpen(false)
   }
 
   const handleStatusChange = (event: SelectChangeEvent<string>) => {
@@ -214,12 +215,13 @@ const BorrowRequestStaff = () => {
         </div>
         <Pagination count={count} size='large' page={page} variant='outlined' shape='rounded' onChange={handleChange} />
         <DetailRequestModal
-          open={selectedRequest !== null}
+          open={isDetailModalOpen}
           handleClose={handleClosePopup}
           selectedRequest={selectedRequest}
+          isLoading={selectedRequest === null}
         />
       </Box>
     </>
   )
 }
-export default BorrowRequestStaff
+export default BorrowRequestEmployee

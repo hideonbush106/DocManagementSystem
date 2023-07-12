@@ -23,6 +23,9 @@ import useBorrowRequestApi from '~/hooks/api/useBorrowRequestApi'
 import dayjs from 'dayjs'
 import FilterRequest from '~/components/filter/FilterRequest'
 import { RequestStatus } from '~/global/enum'
+import QrCodeScannerIcon from '@mui/icons-material/QrCodeScanner'
+import Scanner from '~/components/modal/Scanner'
+import { notifySuccess } from '~/global/toastify'
 
 const Text = styled(Typography)`
   color: var(--black-color);
@@ -60,9 +63,30 @@ const BorrowRequestStaff = () => {
   const [selectedRequest, setSelectedRequest] = useState<any>(null)
   const [rejectID, setRejectID] = useState<number | null>(null)
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const [isDetailModalOpen, setIsDetailModalOpen] = useState(false)
   const [selectedStatus, setSelectedStatus] = useState<string>('')
   const [isFetching, setIsFetching] = useState(true)
-  const { getBorrowRequests, getBorrowRequestsAll, acceptBorrowRequest, rejectBorrowRequest } = useBorrowRequestApi()
+  const [isScanModalOpen, setIsScanModalOpen] = useState(false)
+  const [scanning, setScanning] = useState(true)
+  const { getBorrowRequests, getBorrowRequestsAll, acceptBorrowRequest, rejectBorrowRequest, verifyBorrowRequest } =
+    useBorrowRequestApi()
+
+  const WrapperDiv = styled('div')(({ theme }) => ({
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'flex-end',
+
+    [theme.breakpoints.down('sm')]: {
+      justifyContent: 'flex-start',
+      position: 'static'
+    },
+
+    [theme.breakpoints.up('md')]: {
+      position: 'absolute',
+      right: '15px',
+      top: '-65px'
+    }
+  }))
 
   const fetchBorrowRequests = async () => {
     try {
@@ -94,6 +118,7 @@ const BorrowRequestStaff = () => {
   }
   const handleInfoIconClick = async (id: string) => {
     try {
+      setIsDetailModalOpen(true)
       const response = await getBorrowRequests(id)
       const requestDetails = response.data
       setSelectedRequest(requestDetails)
@@ -103,14 +128,13 @@ const BorrowRequestStaff = () => {
   }
   const handleClosePopup = () => {
     setSelectedRequest(null)
+    setIsDetailModalOpen(false)
   }
   const handleAccept = async (borrowRequestId: string) => {
     try {
       const response = await acceptBorrowRequest(borrowRequestId)
       console.log('Accept request successful:', response)
-      setBorrowRequests((prevRequests) =>
-        prevRequests.map((request) => (request.id === borrowRequestId ? { ...request, status: 'APPROVED' } : request))
-      )
+      await fetchBorrowRequests()
     } catch (error) {
       console.log('Accept request failed:', error)
     }
@@ -130,9 +154,6 @@ const BorrowRequestStaff = () => {
         const response = await rejectBorrowRequest({ id: String(rejectID), rejectedReason: reason })
         console.log('Reject request successful:', response)
         await fetchBorrowRequests()
-        setBorrowRequests((prevRequests) =>
-          prevRequests.map((request) => (request.id === rejectID ? { ...request, status: 'REJECTED' } : request))
-        )
       } catch (error) {
         console.log('Reject request failed:', error)
       }
@@ -147,15 +168,59 @@ const BorrowRequestStaff = () => {
     setSelectedStatus('')
   }
 
+  const handleScanModalClose = () => {
+    setIsScanModalOpen(false)
+  }
+
+  const handleQrIconClick = () => {
+    setIsScanModalOpen(true)
+    setScanning(true)
+  }
+
+  const handleScan = async (scanData: string | null) => {
+    if (scanData && scanData !== '') {
+      try {
+        const result = await verifyBorrowRequest({
+          QRCode: scanData
+        })
+        if (result) {
+          notifySuccess('Borrow request confirmed successfully')
+        }
+        setIsFetching(true)
+        await fetchBorrowRequests()
+      } catch (error) {
+        console.log(error)
+      } finally {
+        handleScanModalClose()
+        setScanning(false)
+      }
+    }
+  }
+
   return (
     <>
-      <Box display='flex' flexDirection='column' justifyContent='space-between' minHeight='81vh' marginTop='10px'>
+      <Box
+        display='flex'
+        flexDirection='column'
+        justifyContent='space-between'
+        minHeight='81vh'
+        marginTop='10px'
+        position='relative'
+      >
         <div>
-          <FilterRequest
-            selectedStatus={selectedStatus}
-            onChange={handleStatusChange}
-            onClearFilter={handleClearFilter}
-          />
+          <WrapperDiv>
+            <FilterRequest
+              selectedStatus={selectedStatus}
+              onChange={handleStatusChange}
+              onClearFilter={handleClearFilter}
+            />
+            <QrCodeScannerIcon
+              sx={{ margin: '0 20px', color: 'var(--primary-dark-color)' }}
+              fontSize='large'
+              onClick={handleQrIconClick}
+              cursor='pointer'
+            />
+          </WrapperDiv>
           {isFetching ? (
             <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }} width='100%' height='60vh'>
               <CircularProgress />
@@ -239,11 +304,18 @@ const BorrowRequestStaff = () => {
         </div>
         <Pagination count={count} size='large' page={page} variant='outlined' shape='rounded' onChange={handleChange} />
         <DetailRequestModal
-          open={selectedRequest !== null}
+          open={isDetailModalOpen}
           handleClose={handleClosePopup}
           selectedRequest={selectedRequest}
+          isLoading={selectedRequest === null}
         />
         <RejectRequestModal open={isModalOpen} onClose={handleRejectModalClose} onSubmit={handleRejectModalSubmit} />
+        <Scanner
+          open={isScanModalOpen}
+          handleClose={handleScanModalClose}
+          scanning={scanning}
+          handleScan={handleScan}
+        />
       </Box>
     </>
   )

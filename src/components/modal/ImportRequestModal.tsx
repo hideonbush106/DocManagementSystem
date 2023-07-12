@@ -1,3 +1,4 @@
+/* eslint-disable import/no-named-as-default-member */
 import { CreateNewFolderOutlined } from '@mui/icons-material'
 import { Box, Button, FormControl, MenuItem, TextField, Typography } from '@mui/material'
 import { useEffect, useState } from 'react'
@@ -11,7 +12,7 @@ import useLockerApi from '~/hooks/api/useLockerApi'
 import useFolderApi from '~/hooks/api/useFolderApi'
 import * as yup from 'yup'
 import useDocumentApi from '~/hooks/api/useDocumentApi'
-import { notifySuccess } from '~/global/toastify'
+import { notifyError, notifySuccess } from '~/global/toastify'
 import ModalLayout from './ModalLayout'
 import useImportRequestApi from '~/hooks/api/useImportRequestApi'
 import useAuth from '~/hooks/useAuth'
@@ -23,13 +24,15 @@ interface ImportDocumentModalProps {
 
 const ImportRequestModal = (props: ImportDocumentModalProps) => {
   const { open, handleClose } = props
+
   const [files, setFiles] = useState<File[]>([])
-  const { user } = useAuth()
-  const deptId = user?.departmentId
   const [categories, setCategories] = useState<Categories[]>([])
   const [rooms, setRooms] = useState<Room[]>([])
   const [lockers, setLockers] = useState<Locker[]>([])
   const [folders, setFolders] = useState<Folder[]>([])
+  const [fileError, setFileError] = useState<string>('')
+  const [submitSuccess, setSubmitSuccess] = useState(false)
+
   const { uploadDocumentPdf } = useDocumentApi()
   const { getDepartment } = useDepartmentApi()
   const { createImportRequest } = useImportRequestApi()
@@ -37,6 +40,18 @@ const ImportRequestModal = (props: ImportDocumentModalProps) => {
   const { getRoomsInDepartment } = useRoomApi()
   const { getLockerInRoom } = useLockerApi()
   const { getFoldersInLocker } = useFolderApi()
+  const { user } = useAuth()
+  const deptId = user?.departmentId
+
+  const handleFileChange = (selectedFiles: File[]) => {
+    if (selectedFiles.length > 0) {
+      setFiles(selectedFiles)
+      setFileError('')
+    } else {
+      setFiles([])
+      setFileError('File upload is required')
+    }
+  }
 
   const validationSchema = yup.object({
     document: yup.object({
@@ -75,24 +90,29 @@ const ImportRequestModal = (props: ImportDocumentModalProps) => {
     },
     validationSchema: validationSchema,
     onSubmit: (values: ImportRequest) => {
+      if (files.length === 0) {
+        setFileError('File upload is required')
+        return
+      }
       values.document.name = values.document.name.trim().replace(/\s\s+/g, ' ')
       values.description = values.description.trim().replace(/\s\s+/g, ' ')
       values.document.description = values.document.description.trim().replace(/\s\s+/g, ' ')
       createImportRequest(values).then((res) => {
-        if (files.length > 0) {
-          uploadDocumentPdf(res.data.id, files)
+        try {
+          if (files.length > 0) {
+            uploadDocumentPdf(res.data.document.id, files)
+            notifySuccess('Import document successfully')
+            setSubmitSuccess(true)
+            formik.resetForm()
+            setFiles([])
+            setRooms([])
+            setLockers([])
+            setFolders([])
+            setCategories([])
+          }
+        } catch (error: unknown) {
+          notifyError(res.details)
         }
-        notifySuccess('Import document successfully')
-        formik.setFieldValue('description', '')
-        formik.setFieldValue('document.name', '')
-        formik.setFieldValue('document.description', '')
-        formik.setFieldValue('document.numOfPages', 1)
-        formik.setFieldValue('document.folder.id', '')
-        formik.setFieldValue('document.category.id', '')
-        setFiles([])
-        setRooms([])
-        setLockers([])
-        setFolders([])
       })
     }
   })
@@ -123,6 +143,12 @@ const ImportRequestModal = (props: ImportDocumentModalProps) => {
     const folder = await getFoldersInLocker(event.target.value)
     setFolders(folder.data)
   }
+
+  useEffect(() => {
+    if (submitSuccess) {
+      handleClose()
+    }
+  }, [submitSuccess, handleClose])
 
   return (
     <ModalLayout open={open} handleClose={handleClose}>
@@ -301,6 +327,8 @@ const ImportRequestModal = (props: ImportDocumentModalProps) => {
               variant='standard'
               required
               disabled={rooms.length === 0}
+              error={rooms.length === 0}
+              helperText={rooms.length === 0 ? 'There is no room in this department' : ''}
             >
               {rooms.map((room) => (
                 <MenuItem key={room.id} value={room.id}>
@@ -322,6 +350,8 @@ const ImportRequestModal = (props: ImportDocumentModalProps) => {
               variant='standard'
               required
               disabled={lockers.length === 0}
+              error={lockers.length === 0}
+              helperText={lockers.length === 0 ? 'There is no locker in this room' : ''}
             >
               {lockers.map((locker) => (
                 <MenuItem key={locker.id} value={locker.id}>
@@ -345,6 +375,8 @@ const ImportRequestModal = (props: ImportDocumentModalProps) => {
               variant='standard'
               required
               disabled={folders.length === 0}
+              error={folders.length === 0}
+              helperText={folders.length === 0 ? 'There is no folder in this locker' : ''}
             >
               {folders.map((folder) => (
                 <MenuItem key={folder.id} value={folder.id}>
@@ -360,15 +392,28 @@ const ImportRequestModal = (props: ImportDocumentModalProps) => {
                 width: {
                   xs: '100%',
                   sm: '80%'
-                }
+                },
+                border: fileError ? '1px solid red' : '1px solid #ccc',
+                backgroundColor: fileError ? '#ffeeee' : 'transparent',
+                textAlign: 'center',
+                padding: '20px'
               }}
               value={files}
-              onChange={setFiles}
+              onChange={(selectedFiles: File[]) => handleFileChange(selectedFiles)}
               maxFiles={1}
               accept='application/pdf'
-              title={`Drag 'n' drop some files here, or click to select files`}
+              title="Drag 'n' drop some files here, or click to select files"
+              maxSize={1024 * 1024 * 8}
             />
           </Box>
+          {fileError && (
+            <Typography
+              sx={{ color: 'red', margin: '0.5rem 0 1rem', display: 'flex', justifyContent: 'center' }}
+              variant='body2'
+            >
+              {fileError}
+            </Typography>
+          )}
         </FormControl>
         <Box
           sx={{

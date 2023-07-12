@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import SearchField from '~/components/TextField/SearchField'
 import { ImportButton, ImportRequestButton, ReturnButton } from '~/components/button/Button'
 import { ButtonWrapper, DocumentGrid, DocumentWrapper, NavWrapper, TreeWrapper } from './Document.styled'
@@ -10,11 +11,60 @@ import { fakeArray } from '~/utils/fakeArray'
 import DataProvider from '~/context/DataContext'
 import { File, FolderTree } from '~/global/interface'
 import useAuth from '~/hooks/useAuth'
+import { useMediaQuery, useTheme } from '@mui/material'
+import SpeedDialCustom from '~/components/speed-dial/SpeedDial'
+import ImportDocumentModal from '~/components/modal/ImportDocumentModal'
+import AddRoundedIcon from '@mui/icons-material/AddRounded'
+import KeyboardReturnRoundedIcon from '@mui/icons-material/KeyboardReturnRounded'
 
 const DocumentDisplay = () => {
+  const [speedDialOpen, setSpeedDialOpen] = useState(false)
+  const [importDocumentModalOpen, setImportDocumentModalOpen] = useState(false)
   const { documentTree, loading } = useData()
   const { user } = useAuth()
   const role = user?.role
+  const theme = useTheme()
+  const belowLg = useMediaQuery(theme.breakpoints.down('lg'))
+
+  const handleImportDocumentModalOpen = () => {
+    setImportDocumentModalOpen(true)
+  }
+
+  const handleImportDocumentModalClose = () => {
+    setImportDocumentModalOpen(false)
+  }
+
+  const speedDialActions = [
+    {
+      name: 'New Document',
+      icon: <AddRoundedIcon />,
+      action: handleImportDocumentModalOpen,
+      style: {
+        backgroundColor: 'var(--primary-color)',
+        color: 'var(--white-color)',
+        '&:hover': {
+          backgroundColor: 'var(--primary-dark-color)'
+        }
+      }
+    },
+    {
+      name: 'Return Document',
+      icon: <KeyboardReturnRoundedIcon />,
+      action: handleImportDocumentModalOpen,
+      style: {
+        backgroundColor: 'var(--green-color)',
+        color: 'var(--white-color)',
+        '&:hover': {
+          backgroundColor: 'var(--green-dark-color)'
+        }
+      }
+    }
+  ]
+
+  const handleSpeedDial = () => {
+    setSpeedDialOpen((prev) => !prev)
+  }
+
   const calculateSize = (folder: FolderTree) => {
     return folder.documents.reduce((sum: number, document: File) => sum + document.numOfPages, 0)
   }
@@ -30,17 +80,23 @@ const DocumentDisplay = () => {
             console.log(e.target.value)
           }}
         />
-        {role === 'STAFF' ? (
-          <ButtonWrapper>
-            <ImportButton text='New Document' />
-            <ReturnButton text='Return Document' />
-          </ButtonWrapper>
-        ) : (
-          <ButtonWrapper>
-            <ImportRequestButton text='Import Document' />
-          </ButtonWrapper>
-        )}
+        {!belowLg &&
+          (role === 'STAFF' ? (
+            <ButtonWrapper>
+              <ImportButton text='New Document' />
+              <ReturnButton text='Return Document' />
+            </ButtonWrapper>
+          ) : (
+            <ButtonWrapper>
+              <ImportRequestButton text='Import Document' />
+            </ButtonWrapper>
+          ))}
       </NavWrapper>
+      {/* render when screen above large */}
+      {belowLg && <SpeedDialCustom actions={speedDialActions} open={speedDialOpen} onClick={handleSpeedDial} />}
+      {/* Modals */}
+      <ImportDocumentModal open={importDocumentModalOpen} handleClose={handleImportDocumentModalClose} />
+      {/* Tree view */}
       <TreeWrapper>
         <TreeView sx={{ width: '100%' }} defaultCollapseIcon={<ExpandMore />} defaultExpandIcon={<ChevronRight />}>
           {!loading

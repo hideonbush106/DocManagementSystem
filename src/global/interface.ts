@@ -193,3 +193,7 @@ export interface DocumentDetail {
     name: string
   }
 }
+
+export interface VerifiedRequset {
+  QRCode: string
+}

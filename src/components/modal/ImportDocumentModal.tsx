@@ -12,7 +12,7 @@ import useFolderApi from '~/hooks/api/useFolderApi'
 import * as yup from 'yup'
 import useDocumentApi from '~/hooks/api/useDocumentApi'
 import { QRCodeSVG } from 'qrcode.react'
-import { notifySuccess } from '~/global/toastify'
+import { notifyError, notifySuccess } from '~/global/toastify'
 import ModalLayout from './ModalLayout'
 import { useReactToPrint } from 'react-to-print'
 
@@ -80,21 +80,25 @@ const ImportDocumentModal = (props: ImportDocumentModalProps) => {
       values.name = values.name.trim().replace(/\s\s+/g, ' ')
       values.description = values.description.trim().replace(/\s\s+/g, ' ')
       createDocument(values).then((res) => {
-        setQrCode(res.data.barcode)
-        if (files.length > 0) {
-          uploadDocumentPdf(res.data.id, files)
+        if (res.status !== 400) {
+          setQrCode(res.data.barcode)
+          if (files.length > 0) {
+            uploadDocumentPdf(res.data.id, files)
+          }
+          notifySuccess('Import document successfully')
+          formik.setFieldValue('name', '')
+          formik.setFieldValue('description', '')
+          formik.setFieldValue('numOfPages', 1)
+          formik.setFieldValue('folder.id', '')
+          formik.setFieldValue('category.id', '')
+          setDepartments([])
+          setFiles([])
+          setRooms([])
+          setLockers([])
+          setFolders([])
+        } else {
+          notifyError(res.data.message)
         }
-        notifySuccess('Import document successfully')
-        formik.setFieldValue('name', '')
-        formik.setFieldValue('description', '')
-        formik.setFieldValue('numOfPages', 1)
-        formik.setFieldValue('folder.id', '')
-        formik.setFieldValue('category.id', '')
-        setDepartments([])
-        setFiles([])
-        setRooms([])
-        setLockers([])
-        setFolders([])
       })
     }
   })

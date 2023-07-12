@@ -11,12 +11,11 @@ type SpeedDialAction = {
 type Props = {
   actions: SpeedDialAction[]
   open: boolean
-  hidden: boolean
   onClick: () => void
 }
 
 const SpeedDialCustom = (props: Props) => {
-  const { actions, open, hidden, onClick } = props
+  const { actions, open, onClick } = props
   const theme = createTheme({
     components: {
       MuiSpeedDial: {
@@ -51,7 +50,6 @@ const SpeedDialCustom = (props: Props) => {
         icon={<SpeedDialIcon />}
         onClick={onClick}
         open={open}
-        style={{ display: hidden ? 'none' : 'flex' }}
       >
         {actions.map((action) => (
           <SpeedDialAction

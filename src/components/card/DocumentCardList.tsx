@@ -53,6 +53,7 @@ const DocumentCardList = (props: Props) => {
               fileName={item.name}
               id={item.id}
               status={item.status}
+              action
             />
           ) : (
             <Link to={`${type}/${item.id}`}>

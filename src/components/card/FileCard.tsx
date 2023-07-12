@@ -19,6 +19,7 @@ type Props = {
   fileId: string
   fileName: string
   status: string
+  action?: boolean
 }
 const FileCard: React.FC<Props> = (props: Props) => {
   const { icon, name, fileId, fileName, status } = props
@@ -94,7 +95,7 @@ const FileCard: React.FC<Props> = (props: Props) => {
   return (
     <DocumentCard icon={icon} name={name}>
       <div style={{ marginLeft: 'auto', marginRight: '-18px' }}>
-        <ActionsCell menuItems={actions} />
+        {props.action && <ActionsCell menuItems={actions} />}
         <Detail document={document} barcode={barcode} open={detail} onClose={handleDetailClose} />
         <BorrowDocumentModal
           open={isBorrowModalOpen}

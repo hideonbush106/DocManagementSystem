@@ -15,11 +15,16 @@ import SpeedDialCustom from '~/components/speed-dial/SpeedDial'
 import ImportDocumentModal from '~/components/modal/ImportDocumentModal'
 import AddRoundedIcon from '@mui/icons-material/AddRounded'
 import KeyboardReturnRoundedIcon from '@mui/icons-material/KeyboardReturnRounded'
+import useDocumentApi from '~/hooks/api/useDocumentApi'
+import SearchDocumentResult from '~/components/modal/SearchDocumentResult'
 
 const DocumentDisplay = () => {
   const [speedDialOpen, setSpeedDialOpen] = useState(false)
   const [importDocumentModalOpen, setImportDocumentModalOpen] = useState(false)
+  const [searchResultModalOpen, setSearchResultModalOpen] = useState(false)
+  const [searchResult, setSearchResult] = useState<File[]>([])
   const { documentTree, loading } = useData()
+  const { findDocument } = useDocumentApi()
   const theme = useTheme()
   const belowLg = useMediaQuery(theme.breakpoints.down('lg'))
 
@@ -69,14 +74,21 @@ const DocumentDisplay = () => {
     return current / capacity >= 0.8
   }
 
+  const handleSearch = async (value: string) => {
+    const { data: documents } = await findDocument(value)
+    setSearchResultModalOpen(true)
+    setSearchResult(documents.data)
+  }
+
   return (
     <DocumentWrapper>
+      <SearchDocumentResult
+        open={searchResultModalOpen}
+        handleClose={() => setSearchResultModalOpen(false)}
+        items={searchResult}
+      />
       <NavWrapper>
-        <SearchField
-          onChange={(e) => {
-            console.log(e.target.value)
-          }}
-        />
+        <SearchField handleSearch={handleSearch} />
         {/* render when screen above large */}
         {!belowLg && (
           <ButtonWrapper>

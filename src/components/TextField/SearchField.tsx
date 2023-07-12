@@ -1,25 +1,38 @@
+import React, { useState } from 'react'
 import { Search } from '@mui/icons-material'
 import { InputAdornment } from '@mui/material'
 import { SearchFieldStyles } from './SearchField.styled'
 
 interface Props {
-  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void
+  handleSearch: (value: string) => void
 }
 
 const SearchField = (props: Props) => {
+  const [value, setValue] = useState('')
+  const handleClick = () => {
+    props.handleSearch(value)
+  }
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setValue(e.target.value)
+  }
+
   return (
     <SearchFieldStyles
       size='small'
+      value={value}
       InputProps={{
         startAdornment: (
-          <InputAdornment position='start'>
+          <InputAdornment position='start' onClick={handleClick}>
             <Search />
           </InputAdornment>
         )
       }}
       variant='outlined'
       placeholder='Search file'
-      onChange={props.onChange}
+      onChange={handleChange}
+      onKeyUp={(e) => {
+        if (e.key === 'Enter') props.handleSearch(value)
+      }}
     />
   )
 }

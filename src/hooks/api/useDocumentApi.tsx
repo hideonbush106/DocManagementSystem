@@ -44,6 +44,19 @@ const useDocumentApi = () => {
     },
     [callApi]
   )
+
+  const findDocument = React.useCallback(
+    async (keyword: string) => {
+      const endpoint = `/${rootEndpoint}?keyword=${keyword}`
+      try {
+        const response = await callApi('get', endpoint)
+        return response
+      } catch (error) {
+        console.log(error)
+      }
+    },
+    [callApi]
+  )
   //Todo: fix this
   const uploadDocumentPdf = React.useCallback(
     async (documentId: string, file: File[]) => {
@@ -118,6 +131,7 @@ const useDocumentApi = () => {
     getDocumentsInFolder,
     getDocument,
     getDocumentBarcode,
+    findDocument,
     createDocument,
     uploadDocumentPdf,
     confirmDocument,

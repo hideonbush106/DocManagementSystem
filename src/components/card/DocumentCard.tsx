@@ -1,5 +1,5 @@
 import { SvgIconComponent } from '@mui/icons-material'
-import { Paper } from '@mui/material'
+import { Paper, Typography } from '@mui/material'
 
 type Props = {
   icon: {
@@ -15,7 +15,9 @@ const DocumentCard = (props: Props) => {
   return (
     <Paper elevation={0} sx={{ display: 'flex', padding: '14px', borderRadius: '10px', alignItems: 'center' }}>
       <Icon.Component sx={{ marginRight: '14px' }} style={{ color: Icon.color }} />
-      {name}
+      <Typography variant='body1' fontFamily='inherit'>
+        {name}
+      </Typography>
       {children}
     </Paper>
   )

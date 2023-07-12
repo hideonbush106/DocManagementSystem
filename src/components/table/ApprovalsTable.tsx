@@ -1,7 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { DataGrid, GridColDef, GridRenderCellParams } from '@mui/x-data-grid'
 import ActionsCell from './ActionCell'
-import PropTypes, { Validator } from 'prop-types'
 import { useState } from 'react'
 import useDocumentApi from '~/hooks/api/useDocumentApi'
 import { ConfirmButton } from '../button/Button'
@@ -27,7 +26,7 @@ interface PaginationModel {
   pageSize: number
 }
 
-const ApprovalsTable: React.FC<ApprovalsTableProps> = (props: ApprovalsTableProps) => {
+const ApprovalsTable = (props: ApprovalsTableProps) => {
   let loading = props.loading
   const { view, rows, rowCount, paginationModel, handlePaginationModelChange } = props
   let columns: GridColDef[] = []
@@ -106,45 +105,22 @@ const ApprovalsTable: React.FC<ApprovalsTableProps> = (props: ApprovalsTableProp
         headerAlign: 'center',
         align: 'center',
         renderCell: (params) =>
-          paginationModel.pageSize * paginationModel.page +
-          params.api.getRowIndexRelativeToVisibleRows(params.row.id) +
-          1
+          `${
+            paginationModel.pageSize * paginationModel.page +
+            params.api.getRowIndexRelativeToVisibleRows(params.row.id) +
+            1
+          }`
       },
-      { field: 'name', headerName: 'Name', flex: 1 },
+      { field: 'name', headerName: 'Name', flex: 2, sortable: false, filterable: false },
       {
         field: 'updatedAt',
         headerName: 'Created at',
         flex: 1,
+        minWidth: 110,
+        maxWidth: 200,
         headerAlign: 'center',
         align: 'center',
         valueFormatter: ({ value }) => dayjs(value).format('MM/DD/YYYY')
-      },
-      {
-        field: 'more-options',
-        headerName: '',
-        width: 20,
-        sortable: false,
-        filterable: false,
-        align: 'left',
-        renderCell: (params: GridRenderCellParams) => {
-          const menuItems = [
-            {
-              text: 'Detail',
-              onClick: () => {
-                handleDetailOpen(params.row.id as string)
-              }
-            },
-            {
-              text: 'Confirm',
-              onClick: () => {
-                setOpen(true)
-                setScanning(true)
-                setDocumentId(params.row.id as string)
-              }
-            }
-          ]
-          return <ActionsCell id={params.row.id as number} menuItems={menuItems} />
-        }
       }
     ]
     rowHeight = 40
@@ -159,9 +135,11 @@ const ApprovalsTable: React.FC<ApprovalsTableProps> = (props: ApprovalsTableProp
         headerAlign: 'center',
         align: 'center',
         renderCell: (params) =>
-          paginationModel.pageSize * paginationModel.page +
-          params.api.getRowIndexRelativeToVisibleRows(params.row.id) +
-          1
+          `${
+            paginationModel.pageSize * paginationModel.page +
+            params.api.getRowIndexRelativeToVisibleRows(params.row.id) +
+            1
+          }`
       },
       { field: 'name', headerName: 'Name', flex: 1, minWidth: 130 },
       {
@@ -336,10 +314,6 @@ const ApprovalsTable: React.FC<ApprovalsTableProps> = (props: ApprovalsTableProp
       />
     </div>
   )
-}
-
-ApprovalsTable.propTypes = {
-  view: PropTypes.oneOf<'dashboard' | 'full'>(['dashboard', 'full']).isRequired as Validator<'dashboard' | 'full'>
 }
 
 export default ApprovalsTable

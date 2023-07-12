@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { Box, CircularProgress, Grid, Typography } from '@mui/material'
 import { DescriptionOutlined } from '@mui/icons-material'
 import ModalLayout from './ModalLayout'
@@ -13,6 +13,7 @@ interface Props {
 }
 
 const SearchDocumentResult = ({ open, handleClose, items, loading }: Props) => {
+  const navigate = useNavigate()
   return (
     <ModalLayout open={open} handleClose={handleClose}>
       <Typography
@@ -32,20 +33,29 @@ const SearchDocumentResult = ({ open, handleClose, items, loading }: Props) => {
       </Typography>
       {!loading ? (
         items && items.length > 0 ? (
-          <Grid container spacing={3} sx={{ padding: '0.5rem' }}>
+          <Grid container>
             {items.map((item) => (
-              <Grid key={item.id} item xs={12} onClick={() => handleClose()}>
-                <Link
-                  to={`/document/department/${item.folder?.locker?.room?.department?.id}/room/${item.folder?.locker?.room?.id}/locker/${item.folder?.locker?.id}/folder/${item.folder?.id}`}
-                >
-                  <FileCard
-                    icon={{ Component: DescriptionOutlined, color: '#84B1ED' }}
-                    name={item.name}
-                    fileId={item.id}
-                    fileName={item.name}
-                    id={item.id}
-                  />
-                </Link>
+              <Grid
+                key={item.id}
+                item
+                xs={12}
+                sx={{ '&:not(:last-child)': { borderBottom: '1px solid #84B1ED' } }}
+                padding='5px'
+              >
+                <FileCard
+                  icon={{ Component: DescriptionOutlined, color: '#84B1ED' }}
+                  name={item.name}
+                  fileId={item.id}
+                  fileName={item.name}
+                  id={item.id}
+                  action
+                  onClick={() => {
+                    handleClose()
+                    navigate(
+                      `/document/department/${item.folder?.locker?.room?.department?.id}/room/${item.folder?.locker?.room?.id}/locker/${item.folder?.locker?.id}/folder/${item.folder?.id}`
+                    )
+                  }}
+                />
               </Grid>
             ))}
           </Grid>

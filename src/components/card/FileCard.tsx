@@ -18,10 +18,9 @@ type Props = {
   id: string
   fileId: string
   fileName: string
-  status: string
 }
 const FileCard: React.FC<Props> = (props: Props) => {
-  const { icon, name, fileId, fileName, status } = props
+  const { icon, name, fileId, fileName } = props
   const [isBorrowModalOpen, setIsBorrowModalOpen] = useState(false)
   const { user } = useAuth()
   const role = user?.role
@@ -49,9 +48,7 @@ const FileCard: React.FC<Props> = (props: Props) => {
       text: 'Details',
       onClick: () => handleDetailOpen()
     },
-    role === 'EMPLOYEE' && status === DocumentStatus.BORROWED
-      ? null
-      : role !== 'EMPLOYEE'
+    role === 'STAFF'
       ? {
           text: 'Edit',
           onClick: () => {

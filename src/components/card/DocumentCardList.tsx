@@ -6,7 +6,6 @@ import FileCard from './FileCard'
 
 type Props = {
   items: {
-    status: string
     id: string
     name: string
   }[]
@@ -46,15 +45,7 @@ const DocumentCardList = (props: Props) => {
       {items.map((item) => (
         <Grid key={item.id} item xs={12} sm={4} md={6} lg={4}>
           {type === 'file' ? (
-            <FileCard
-              icon={icon}
-              name={item.name}
-              fileId={item.id}
-              fileName={item.name}
-              id={item.id}
-              status={item.status}
-              action
-            />
+            <FileCard icon={icon} name={item.name} fileId={item.id} fileName={item.name} id={item.id} action />
           ) : (
             <Link to={`${type}/${item.id}`}>
               <DocumentCard icon={icon} name={item.name} key={item.id} />

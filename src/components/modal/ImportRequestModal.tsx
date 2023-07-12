@@ -1,143 +1,154 @@
+/* eslint-disable import/no-named-as-default-member */
 import { CreateNewFolderOutlined } from '@mui/icons-material'
 import { Box, Button, FormControl, MenuItem, TextField, Typography } from '@mui/material'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 import FileUpload from 'react-material-file-upload'
 import { useFormik } from 'formik'
 import useDepartmentApi from '~/hooks/api/useDepartmentApi'
-import { Categories, CreateDocument, Department, Folder, Locker, Room } from '~/global/interface'
+import { Categories, Folder, ImportRequest, Locker, Room } from '~/global/interface'
 import useCategoryApi from '~/hooks/api/useCategoryApi'
 import useRoomApi from '~/hooks/api/useRoomApi'
 import useLockerApi from '~/hooks/api/useLockerApi'
 import useFolderApi from '~/hooks/api/useFolderApi'
 import * as yup from 'yup'
 import useDocumentApi from '~/hooks/api/useDocumentApi'
-import { QRCodeSVG } from 'qrcode.react'
 import { notifyError, notifySuccess } from '~/global/toastify'
 import ModalLayout from './ModalLayout'
-import { useReactToPrint } from 'react-to-print'
+import useImportRequestApi from '~/hooks/api/useImportRequestApi'
+import useAuth from '~/hooks/useAuth'
 
 interface ImportDocumentModalProps {
   open: boolean
   handleClose: () => void
 }
 
-const ImportDocumentModal = (props: ImportDocumentModalProps) => {
+const ImportRequestModal = (props: ImportDocumentModalProps) => {
   const { open, handleClose } = props
+
   const [files, setFiles] = useState<File[]>([])
-  const [departments, setDepartments] = useState<Department[]>([])
   const [categories, setCategories] = useState<Categories[]>([])
   const [rooms, setRooms] = useState<Room[]>([])
   const [lockers, setLockers] = useState<Locker[]>([])
   const [folders, setFolders] = useState<Folder[]>([])
-  const [qrCode, setQrCode] = useState<string>('')
-  const { createDocument, uploadDocumentPdf } = useDocumentApi()
-  const { getAllDepartments } = useDepartmentApi()
+  const [fileError, setFileError] = useState<string>('')
+  const [submitSuccess, setSubmitSuccess] = useState(false)
+
+  const { uploadDocumentPdf } = useDocumentApi()
+  const { getDepartment } = useDepartmentApi()
+  const { createImportRequest } = useImportRequestApi()
   const { getAllCategories } = useCategoryApi()
   const { getRoomsInDepartment } = useRoomApi()
   const { getLockerInRoom } = useLockerApi()
   const { getFoldersInLocker } = useFolderApi()
-  const qrCodeRef = useRef(null)
-  const componentRef = useRef<HTMLDivElement>(null)
+  const { user } = useAuth()
+  const deptId = user?.departmentId
 
-  const handlePrint = useReactToPrint({
-    content: () => qrCodeRef.current,
-    documentTitle: 'Print QR Code',
-    onAfterPrint() {
-      setQrCode('')
+  const handleFileChange = (selectedFiles: File[]) => {
+    if (selectedFiles.length > 0) {
+      setFiles(selectedFiles)
+      setFileError('')
+    } else {
+      setFiles([])
+      setFileError('File upload is required')
     }
-  })
+  }
 
   const validationSchema = yup.object({
-    name: yup.string().trim(),
-    description: yup.string().trim(),
-    numOfPages: yup
-      .number()
-      .integer('Number of pages must be an integer')
-      .min(1, 'Number of pages must be greater than 0')
-      .max(500000, 'Number of pages must be less than 500000'),
-    folder: yup.object({
-      id: yup.string()
+    document: yup.object({
+      name: yup.string().required('Document name is required').trim(),
+      description: yup.string().required('Document description is required').trim(),
+      numOfPages: yup
+        .number()
+        .integer('Number of pages must be an integer')
+        .min(1, 'Number of pages must be greater than 0')
+        .max(500000, 'Number of pages must be less than 500000')
+        .required('Number of pages is required'),
+      folder: yup.object({
+        id: yup.string().required('Folder is required')
+      }),
+      category: yup.object({
+        id: yup.string().required('Category is required')
+      })
     }),
-    category: yup.object({
-      id: yup.string()
-    })
+    description: yup.string().required('Request description is required').trim()
   })
 
   const formik = useFormik({
     initialValues: {
-      name: '',
-      description: '',
-      numOfPages: 1,
-      folder: {
-        id: ''
+      document: {
+        name: '',
+        description: '',
+        numOfPages: 1,
+        folder: {
+          id: ''
+        },
+        category: {
+          id: ''
+        }
       },
-      category: {
-        id: ''
-      }
+      description: ''
     },
     validationSchema: validationSchema,
-    onSubmit: (values: CreateDocument) => {
-      values.name = values.name.trim().replace(/\s\s+/g, ' ')
+    onSubmit: (values: ImportRequest) => {
+      if (files.length === 0) {
+        setFileError('File upload is required')
+        return
+      }
+      values.document.name = values.document.name.trim().replace(/\s\s+/g, ' ')
       values.description = values.description.trim().replace(/\s\s+/g, ' ')
-      createDocument(values).then((res) => {
-        if (res.status !== 400) {
-          setQrCode(res.data.barcode)
+      values.document.description = values.document.description.trim().replace(/\s\s+/g, ' ')
+      createImportRequest(values).then((res) => {
+        try {
           if (files.length > 0) {
-            uploadDocumentPdf(res.data.id, files)
+            uploadDocumentPdf(res.data.document.id, files)
+            notifySuccess('Import document successfully')
+            setSubmitSuccess(true)
+            formik.resetForm()
+            setFiles([])
+            setRooms([])
+            setLockers([])
+            setFolders([])
+            setCategories([])
           }
-          notifySuccess('Import document successfully')
-          formik.setFieldValue('name', '')
-          formik.setFieldValue('description', '')
-          formik.setFieldValue('numOfPages', 1)
-          formik.setFieldValue('folder.id', '')
-          formik.setFieldValue('category.id', '')
-          setDepartments([])
-          setFiles([])
-          setRooms([])
-          setLockers([])
-          setFolders([])
-        } else {
-          notifyError(res.data.message)
+        } catch (error: unknown) {
+          notifyError(res.details)
         }
       })
     }
   })
 
-  const departmentHandleChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    setCategories([])
-    formik.setFieldValue('category.id', [])
-    setRooms([])
-    setLockers([])
-    setFolders([])
-    formik.setFieldValue('folder.id', [])
-    const categories = await getAllCategories(event.target.value)
-    setCategories(categories.data)
-    const rooms = await getRoomsInDepartment(event.target.value)
-    setRooms(rooms.data)
-  }
+  useEffect(() => {
+    const fetchData = async () => {
+      if (deptId) {
+        const categories = await getAllCategories(deptId)
+        setCategories(categories.data)
+        const rooms = await getRoomsInDepartment(deptId)
+        setRooms(rooms.data)
+      }
+    }
+    fetchData()
+  }, [getAllCategories, getRoomsInDepartment, getDepartment, deptId])
 
   const roomHandleChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     setLockers([])
     setFolders([])
-    formik.setFieldValue('folder.id', [])
+    formik.setFieldValue('document.folder.id', '')
     const lockers = await getLockerInRoom(event.target.value)
     setLockers(lockers.data)
   }
 
   const lockerHandleChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     setFolders([])
-    formik.setFieldValue('folder.id', [])
+    formik.setFieldValue('document.folder.id', '')
     const folder = await getFoldersInLocker(event.target.value)
     setFolders(folder.data)
   }
 
   useEffect(() => {
-    const fetchData = async () => {
-      const departments = await getAllDepartments()
-      setDepartments(departments.data)
+    if (submitSuccess) {
+      handleClose()
     }
-    fetchData()
-  }, [getAllDepartments])
+  }, [submitSuccess, handleClose])
 
   return (
     <ModalLayout open={open} handleClose={handleClose}>
@@ -185,33 +196,8 @@ const ImportDocumentModal = (props: ImportDocumentModalProps) => {
             }}
             variant='h6'
           >
-            Document Information
+            Request Information
           </Typography>
-          <TextField
-            sx={{ my: 1 }}
-            value={formik.values.name}
-            label='Document name'
-            name='name'
-            variant='standard'
-            fullWidth
-            onChange={formik.handleChange}
-            required
-            error={formik.touched.name && Boolean(formik.errors.name)}
-            helperText={formik.touched.name && formik.errors.name}
-          />
-          <TextField
-            sx={{ my: 1 }}
-            label='Number of pages'
-            value={formik.values.numOfPages}
-            type='number'
-            name='numOfPages'
-            variant='standard'
-            fullWidth
-            onChange={formik.handleChange}
-            required
-            error={formik.touched.numOfPages && Boolean(formik.errors.numOfPages)}
-            helperText={formik.touched.numOfPages && formik.errors.numOfPages}
-          />
           <TextField
             sx={{ my: 1 }}
             label='Description'
@@ -223,46 +209,87 @@ const ImportDocumentModal = (props: ImportDocumentModalProps) => {
             multiline
             maxRows={4}
             required
-            error={formik.touched.description && Boolean(formik.errors.description)}
-            helperText={formik.touched.description && formik.errors.description}
+            error={formik.touched.description && formik.errors.description ? true : false}
+            helperText={formik.touched.description && formik.errors.description ? formik.errors.description : ''}
+          />
+          <Typography
+            sx={{
+              fontWeight: 600,
+              color: 'var(--black-color)',
+              my: 1.5,
+              fontSize: {
+                xs: '1.2rem',
+                sm: '1.5rem'
+              }
+            }}
+            variant='h6'
+          >
+            Document Information
+          </Typography>
+          <TextField
+            sx={{ my: 1 }}
+            value={formik.values.document.name}
+            label='Document name'
+            name='document.name'
+            variant='standard'
+            fullWidth
+            onChange={formik.handleChange}
+            required
+            error={formik.touched.document?.name && formik.errors.document?.name ? true : false}
+            helperText={
+              formik.touched.document?.name && formik.errors.document?.name ? formik.errors.document?.name : ''
+            }
+          />
+          <TextField
+            sx={{ my: 1 }}
+            label='Number of pages'
+            value={formik.values.document.numOfPages}
+            type='number'
+            name='document.numOfPages'
+            variant='standard'
+            fullWidth
+            onChange={formik.handleChange}
+            required
+            error={formik.touched.document?.numOfPages && formik.errors.document?.numOfPages ? true : false}
+            helperText={
+              formik.touched.document?.numOfPages && formik.errors.document?.numOfPages
+                ? formik.errors.document?.numOfPages
+                : ''
+            }
+          />
+          <TextField
+            sx={{ my: 1 }}
+            label='Description'
+            value={formik.values.document.description}
+            name='document.description'
+            variant='standard'
+            fullWidth
+            onChange={formik.handleChange}
+            multiline
+            maxRows={4}
+            required
+            error={formik.touched.document?.description && formik.errors.document?.description ? true : false}
+            helperText={formik.touched.document?.description && formik.errors.document?.description}
           />
           <Box display={'flex'} sx={{ width: '100%', justifyContent: 'space-between', flexWrap: 'wrap' }}>
             <TextField
-              onChange={departmentHandleChange}
-              sx={{
-                my: 1,
-                width: {
-                  xs: '100%',
-                  sm: '47%'
-                }
-              }}
-              select
-              label='Department'
-              variant='standard'
-              required
-            >
-              {departments.map((dept) => (
-                <MenuItem key={dept.id} value={dept.id}>
-                  {dept.name}
-                </MenuItem>
-              ))}
-            </TextField>
-            <TextField
-              value={formik.values.category.id}
+              value={formik.values.document.category.id}
               onChange={formik.handleChange}
               sx={{
                 my: 1,
                 width: {
                   xs: '100%',
-                  sm: '47%'
+                  sm: '100%'
                 }
               }}
               select
               label='Category Type'
               variant='standard'
-              name='category.id'
+              name='document.category.id'
               required
               disabled={categories.length === 0}
+              error={formik.touched.document?.category?.id && formik.errors.document?.category?.id ? true : false}
+              helperText={formik.touched.document?.category?.id && formik.errors.document?.category?.id}
             >
               {categories.map((cate) => (
                 <MenuItem key={cate.id} value={cate.id}>
@@ -300,6 +327,8 @@ const ImportDocumentModal = (props: ImportDocumentModalProps) => {
               variant='standard'
               required
               disabled={rooms.length === 0}
+              error={rooms.length === 0}
+              helperText={rooms.length === 0 ? 'There is no room in this department' : ''}
             >
               {rooms.map((room) => (
                 <MenuItem key={room.id} value={room.id}>
@@ -321,6 +350,8 @@ const ImportDocumentModal = (props: ImportDocumentModalProps) => {
               variant='standard'
               required
               disabled={lockers.length === 0}
+              error={lockers.length === 0}
+              helperText={lockers.length === 0 ? 'There is no locker in this room' : ''}
             >
               {lockers.map((locker) => (
                 <MenuItem key={locker.id} value={locker.id}>
@@ -329,9 +360,9 @@ const ImportDocumentModal = (props: ImportDocumentModalProps) => {
               ))}
             </TextField>
             <TextField
-              value={formik.values.folder.id}
+              value={formik.values.document.folder.id}
               onChange={formik.handleChange}
-              name='folder.id'
+              name='document.folder.id'
               sx={{
                 my: 1,
                 width: {
@@ -344,6 +375,8 @@ const ImportDocumentModal = (props: ImportDocumentModalProps) => {
               variant='standard'
               required
               disabled={folders.length === 0}
+              error={folders.length === 0}
+              helperText={folders.length === 0 ? 'There is no folder in this locker' : ''}
             >
               {folders.map((folder) => (
                 <MenuItem key={folder.id} value={folder.id}>
@@ -359,29 +392,29 @@ const ImportDocumentModal = (props: ImportDocumentModalProps) => {
                 width: {
                   xs: '100%',
                   sm: '80%'
-                }
+                },
+                border: fileError ? '1px solid red' : '1px solid #ccc',
+                backgroundColor: fileError ? '#ffeeee' : 'transparent',
+                textAlign: 'center',
+                padding: '20px'
               }}
               value={files}
-              onChange={setFiles}
+              onChange={(selectedFiles: File[]) => handleFileChange(selectedFiles)}
               maxFiles={1}
               accept='application/pdf'
-              title={`Drag 'n' drop some files here, or click to select files`}
+              title="Drag 'n' drop some files here, or click to select files"
+              maxSize={1024 * 1024 * 8}
             />
           </Box>
-          {qrCode ? (
-            <Box
-              ref={componentRef}
-              id='barcode'
-              display={'flex'}
-              sx={{ justifyContent: 'center', width: '100%', my: 2 }}
+          {fileError && (
+            <Typography
+              sx={{ color: 'red', margin: '0.5rem 0 1rem', display: 'flex', justifyContent: 'center' }}
+              variant='body2'
             >
-              <div ref={qrCodeRef}>
-                <QRCodeSVG value={qrCode} />
-              </div>
-            </Box>
-          ) : null}
+              {fileError}
+            </Typography>
+          )}
         </FormControl>
-
         <Box
           sx={{
             p: 1.5,
@@ -395,18 +428,11 @@ const ImportDocumentModal = (props: ImportDocumentModalProps) => {
             boxShadow: 'rgba(100, 100, 111, 0.2) 0px 7px 29px 0px'
           }}
         >
-          {qrCode ? (
-            <Button sx={{ my: 1, mr: 1 }} variant='contained' color='primary' onClick={handlePrint}>
-              Export
-            </Button>
-          ) : (
-            <Button sx={{ my: 1, mr: 1 }} variant='contained' color='primary' type='submit'>
-              Submit
-            </Button>
-          )}
-
+          <Button sx={{ my: 1, mr: 1 }} variant='contained' color='primary' type='submit'>
+            Submit
+          </Button>
           <Button sx={{ my: 1 }} color='error' variant='outlined' onClick={props.handleClose}>
-            {qrCode ? 'Close' : 'Cancel'}
+            Cancel
           </Button>
         </Box>
       </form>
@@ -414,4 +440,4 @@ const ImportDocumentModal = (props: ImportDocumentModalProps) => {
   )
 }
 
-export default ImportDocumentModal
+export default ImportRequestModal

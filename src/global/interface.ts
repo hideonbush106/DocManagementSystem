@@ -9,7 +9,7 @@ export interface Room {
   name: string
   capacity: number
   lockerMap?: Map<string, Locker>
-  department: Department
+  department?: Department
 }
 
 export interface Locker {
@@ -17,14 +17,14 @@ export interface Locker {
   name: string
   capacity: number
   folderMap?: Map<string, FolderTree>
-  room: Room
+  room?: Room
 }
 
 export interface Folder {
   id: string
   name: string
   capacity: number
-  locker: Locker
+  locker?: Locker
 }
 
 export interface File {
@@ -36,7 +36,7 @@ export interface File {
   numOfPages: number
   createdAt: Date
   updatedAt: Date
-  folder: Folder
+  folder?: Folder
 }
 
 export interface FolderTree extends Folder {

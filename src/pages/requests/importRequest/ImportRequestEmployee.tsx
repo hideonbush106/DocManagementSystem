@@ -57,6 +57,7 @@ const ImportRequestEmployee = () => {
   const [selectedRequest, setSelectedRequest] = useState<any>(null)
   const [selectedStatus, setSelectedStatus] = useState<string>('')
   const [isFetching, setIsFetching] = useState(true)
+  const [isDetailModalOpen, setIsDetailModalOpen] = useState(false)
   const { getImportRequestsOwn, getImportRequest, cancelImportRequest } = useImportRequestApi()
 
   const fetchImportRequests = async () => {
@@ -87,6 +88,7 @@ const ImportRequestEmployee = () => {
 
   const handleInfoIconClick = async (id: string) => {
     try {
+      setIsDetailModalOpen(true)
       const response = await getImportRequest(id)
       const requestDetails = response.data
       setSelectedRequest(requestDetails)
@@ -107,6 +109,7 @@ const ImportRequestEmployee = () => {
 
   const handleClosePopup = () => {
     setSelectedRequest(null)
+    setIsDetailModalOpen(false)
   }
   const handleStatusChange = (event: SelectChangeEvent<string>) => {
     setSelectedStatus(event.target.value)
@@ -197,9 +200,10 @@ const ImportRequestEmployee = () => {
         </div>
         <Pagination count={count} size='large' page={page} variant='outlined' shape='rounded' onChange={handleChange} />
         <DetailRequestModal
-          open={selectedRequest !== null}
+          open={isDetailModalOpen}
           handleClose={handleClosePopup}
           selectedRequest={selectedRequest}
+          isLoading={selectedRequest === null}
         />
       </Box>
     </>

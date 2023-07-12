@@ -18,15 +18,14 @@ type Props = {
   id: string
   fileId: string
   fileName: string
-  status: string
   action?: boolean
 }
 const FileCard: React.FC<Props> = (props: Props) => {
-  const { icon, name, fileId, fileName, status } = props
+  const { icon, name, fileId, fileName } = props
   const [isBorrowModalOpen, setIsBorrowModalOpen] = useState(false)
-  const { user } = useAuth()
-  const role = user?.role
   const [detail, setDetail] = useState(false)
+  const { user } = useAuth()
+  const role = user?.role.toLocaleUpperCase()
   const { getDocument, getDocumentBarcode } = useDocumentApi()
   const [document, setDocument] = React.useState<DocumentDetail>()
   const [barcode, setBarcode] = React.useState<string>('')
@@ -50,9 +49,7 @@ const FileCard: React.FC<Props> = (props: Props) => {
       text: 'Details',
       onClick: () => handleDetailOpen()
     },
-    role === 'EMPLOYEE' && status === DocumentStatus.BORROWED
-      ? null
-      : role !== 'EMPLOYEE'
+    role === 'STAFF'
       ? {
           text: 'Edit',
           onClick: () => {
@@ -78,9 +75,11 @@ const FileCard: React.FC<Props> = (props: Props) => {
       const document = await getDocument(id)
       setDocument(document.data)
       if ([DocumentStatus.PENDING, DocumentStatus.AVAILABLE, DocumentStatus.BORROWED].includes(document.data.status)) {
-        const barcode = await getDocumentBarcode(id)
-        if (barcode.data.barcode) {
-          setBarcode(barcode.data.barcode)
+        if (role !== 'EMPLOYEE') {
+          const barcode = await getDocumentBarcode(id)
+          if (barcode.data.barcode) {
+            setBarcode(barcode.data.barcode)
+          }
         }
       }
     } catch (error) {

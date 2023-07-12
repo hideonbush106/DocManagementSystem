@@ -16,7 +16,6 @@ import { notifyError, notifySuccess } from '~/global/toastify'
 import ModalLayout from './ModalLayout'
 import useImportRequestApi from '~/hooks/api/useImportRequestApi'
 import useAuth from '~/hooks/useAuth'
-import axios from 'axios'
 
 interface ImportDocumentModalProps {
   open: boolean

@@ -52,7 +52,7 @@ const StatusText = ({ status }: { status: string }) => {
   }
   return null
 }
-const BorrowRequestStaff = () => {
+const BorrowRequestEmployee = () => {
   const PER_PAGE = 10
   const [page, setPage] = useState(1)
   const [borrowRequests, setBorrowRequests] = useState<any[]>([])
@@ -224,4 +224,4 @@ const BorrowRequestStaff = () => {
     </>
   )
 }
-export default BorrowRequestStaff
+export default BorrowRequestEmployee

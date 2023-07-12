@@ -22,6 +22,7 @@ interface UserInfo {
   photoUrl: string | null
   role: string
   department: string
+  departmentId: string
 }
 
 export type AuthContextType = {
@@ -45,7 +46,8 @@ const initialContext: AuthContextType = {
     phone: '',
     photoUrl: '',
     role: '',
-    department: ''
+    department: '',
+    departmentId: ''
   },
   idToken: null,
   login: async () => {
@@ -63,6 +65,7 @@ export const AuthContext = React.createContext<AuthContextType>(initialContext)
 
 const getUserInfo = async (token: string) => {
   const { data } = await get('/users/own', {}, { Authentication: token, accept: 'application/json' })
+
   return {
     id: data.id,
     code: data.code,
@@ -71,7 +74,8 @@ const getUserInfo = async (token: string) => {
     phone: data.phone,
     photoUrl: data.photoURL,
     role: data.role.name,
-    department: data.department.name
+    department: data.department.name,
+    departmentId: data.department.id
   }
 }
 

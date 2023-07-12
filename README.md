@@ -1,6 +1,6 @@
 # Document Management System
 
-This is our project for "Wep application Document Management System" (Code subject: SWP391)
+This is our project for "Web application Document Management System" (Code subject: SWP391)
 
 ## Run Locally
 

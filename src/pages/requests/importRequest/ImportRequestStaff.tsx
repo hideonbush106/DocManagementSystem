@@ -22,6 +22,10 @@ import useImportRequestApi from '~/hooks/api/useImportRequestApi'
 import dayjs from 'dayjs'
 import FilterRequest from '~/components/filter/FilterRequest'
 import { RequestStatus } from '~/global/enum'
+import QrCodeScannerIcon from '@mui/icons-material/QrCodeScanner'
+import Scanner from '~/components/modal/Scanner'
+import { notifySuccess } from '~/global/toastify'
+
 const Text = styled(Typography)`
   color: var(--black-color);
   margin: 0.5rem 0;
@@ -60,7 +64,27 @@ const ImportRequestStaff = () => {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [selectedStatus, setSelectedStatus] = useState<string>('')
   const [isFetching, setIsFetching] = useState(true)
-  const { getImportRequestsAll, getImportRequest, acceptImportRequest, rejectImportRequest } = useImportRequestApi()
+  const [isScanModalOpen, setIsScanModalOpen] = useState(false)
+  const [scanning, setScanning] = useState(true)
+  const { getImportRequestsAll, getImportRequest, acceptImportRequest, rejectImportRequest, verifyImportRequest } =
+    useImportRequestApi()
+
+  const WrapperDiv = styled('div')(({ theme }) => ({
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'flex-end',
+
+    [theme.breakpoints.down('sm')]: {
+      justifyContent: 'flex-start',
+      position: 'static'
+    },
+
+    [theme.breakpoints.up('md')]: {
+      position: 'absolute',
+      right: '15px',
+      top: '-65px'
+    }
+  }))
 
   const fetchImportRequests = async () => {
     try {
@@ -99,13 +123,16 @@ const ImportRequestStaff = () => {
   const handleClosePopup = () => {
     setSelectedRequest(null)
   }
+
+  const handleScanModalClose = () => {
+    setIsScanModalOpen(false)
+  }
+
   const handleAccept = async (ImportRequestId: string) => {
     try {
       const response = await acceptImportRequest(ImportRequestId)
       console.log('Accept request successful:', response)
-      setImportRequests((prevRequests) =>
-        prevRequests.map((request) => (request.id === ImportRequestId ? { ...request, status: 'APPROVED' } : request))
-      )
+      await fetchImportRequests()
     } catch (error) {
       console.log('Accept request failed:', error)
     }
@@ -125,9 +152,6 @@ const ImportRequestStaff = () => {
         const response = await rejectImportRequest({ id: String(rejectID), rejectedReason: reason })
         console.log('Reject request successful:', response)
         await fetchImportRequests()
-        setImportRequests((prevRequests) =>
-          prevRequests.map((request) => (request.id === rejectID ? { ...request, status: 'REJECTED' } : request))
-        )
       } catch (error) {
         console.log('Reject request failed:', error)
       }
@@ -141,15 +165,55 @@ const ImportRequestStaff = () => {
     setSelectedStatus('')
   }
 
+  const handleQrIconClick = () => {
+    setIsScanModalOpen(true)
+    setScanning(true)
+  }
+
+  const handleScan = async (scanData: string | null) => {
+    if (scanData && scanData !== '') {
+      try {
+        const result = await verifyImportRequest({
+          QRCode: scanData
+        })
+        if (result) {
+          notifySuccess('Import request confirmed successfully')
+        }
+        setIsFetching(true)
+        await fetchImportRequests()
+      } catch (error) {
+        console.log(error)
+      } finally {
+        handleScanModalClose()
+        setScanning(false)
+      }
+    }
+  }
+
   return (
     <>
-      <Box display='flex' flexDirection='column' justifyContent='space-between' minHeight='81vh' marginTop='10px'>
+      <Box
+        display='flex'
+        flexDirection='column'
+        justifyContent='space-between'
+        minHeight='81vh'
+        marginTop='10px'
+        position='relative'
+      >
         <div>
-          <FilterRequest
-            selectedStatus={selectedStatus}
-            onChange={handleStatusChange}
-            onClearFilter={handleClearFilter}
-          />
+          <WrapperDiv>
+            <FilterRequest
+              selectedStatus={selectedStatus}
+              onChange={handleStatusChange}
+              onClearFilter={handleClearFilter}
+            />
+            <QrCodeScannerIcon
+              sx={{ margin: '0 20px', color: 'var(--primary-dark-color)' }}
+              fontSize='large'
+              onClick={handleQrIconClick}
+              cursor='pointer'
+            />
+          </WrapperDiv>
           {isFetching ? (
             <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }} width='100%' height='60vh'>
               <CircularProgress />
@@ -231,6 +295,12 @@ const ImportRequestStaff = () => {
           selectedRequest={selectedRequest}
         />
         <RejectRequestModal open={isModalOpen} onClose={handleRejectModalClose} onSubmit={handleRejectModalSubmit} />
+        <Scanner
+          open={isScanModalOpen}
+          handleClose={handleScanModalClose}
+          scanning={scanning}
+          handleScan={handleScan}
+        />
       </Box>
     </>
   )

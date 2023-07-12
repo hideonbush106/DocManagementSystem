@@ -54,7 +54,7 @@ const NavTabs = ({ tabs }: NavTabsProps) => {
 
   return (
     <>
-      <Box sx={{ width: '100%' }}>
+      <Box sx={{ width: 'fit-content' }}>
         <Tabs
           value={value}
           onChange={handleChange}
@@ -73,8 +73,8 @@ const NavTabs = ({ tabs }: NavTabsProps) => {
             <LinkTab key={index} label={tab.label} iconprop={tab.icon} />
           ))}
         </Tabs>
-        {renderTabContent()}
       </Box>
+      <Box sx={{ width: '100%' }}>{renderTabContent()}</Box>
     </>
   )
 }

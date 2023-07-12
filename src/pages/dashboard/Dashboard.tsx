@@ -164,6 +164,35 @@ const Dashboard = () => {
     setPaginationImportRequests(newPaginationImportRequests)
   }
 
+  //fetch API documents
+  const [loadingDocument, setLoadingDocument] = useState(true)
+  const { getAllDocuments } = useDocumentApi()
+  const [documents, setDocuments] = useState([])
+  const [rowCountDocuments, setRowCountDocuments] = useState<number>(0)
+  const [paginationDocuments, setPaginationDocuments] = useState<PaginationModel>({
+    page: 0,
+    pageSize: 5
+  })
+  useEffect(() => {
+    const fetchDataDocuments = async () => {
+      setLoadingDocument(true)
+      const result = await getAllDocuments(paginationDocuments.pageSize, paginationDocuments.page)
+      if (result && result.data) {
+        setDocuments(result.data.data)
+        setRowCountDocuments((prevRowCountDocuments) =>
+          result.data.total !== undefined ? result.data.total : prevRowCountDocuments
+        )
+      }
+      setLoadingDocument(false)
+    }
+    fetchDataDocuments()
+  }, [paginationDocuments])
+  const handlePaginationDocumentChange = (newPaginationDocuments: PaginationModel) => {
+    setLoadingDocument(true)
+    setDocuments([])
+    setPaginationDocuments(newPaginationDocuments)
+  }
+
   // useEffect(() => {
   //   Promise.all([fetchPendingApproval(), fetchDataBorrowRequests(), fetchDataImportRequests()])
   //   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -183,7 +212,13 @@ const Dashboard = () => {
                 <ViewButton text='View All' />
               </Link>
             </SubtitleWrapper>
-            <DocumentTable />
+            <DocumentTable
+              rows={documents}
+              rowCount={rowCountDocuments}
+              loading={loadingDocument}
+              paginationModel={paginationDocuments}
+              handlePaginationModelChange={handlePaginationDocumentChange}
+            />
           </Wrapper>
         </DocumentContainer>
         <SumaryContainer xs={12} md={6} lg={4}>

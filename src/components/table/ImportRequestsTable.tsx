@@ -1,5 +1,4 @@
 import { DataGrid, GridColDef } from '@mui/x-data-grid'
-import React from 'react'
 import { Typography } from '@mui/material'
 import { RequestStatus } from '~/global/enum'
 
@@ -35,7 +34,7 @@ const getStatusColor = (status: string) => {
   }
 }
 
-const ImportRequestsTable: React.FC<ImportRequestsTableProps> = (props: ImportRequestsTableProps) => {
+const ImportRequestsTable = (props: ImportRequestsTableProps) => {
   const { rows, loading, rowCount, paginationModel, handlePaginationModelChange } = props
   const columns: GridColDef[] = [
     {
@@ -74,7 +73,12 @@ const ImportRequestsTable: React.FC<ImportRequestsTableProps> = (props: ImportRe
       align: 'center',
       headerAlign: 'center',
       renderCell: ({ row }) => (
-        <Typography variant='caption' fontWeight={600} style={{ color: getStatusColor(row.status) }}>
+        <Typography
+          variant='caption'
+          fontFamily={'var(--font-family)'}
+          fontWeight={600}
+          style={{ color: getStatusColor(row.status) }}
+        >
           {row.status}
         </Typography>
       )

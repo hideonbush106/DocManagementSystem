@@ -1,6 +1,5 @@
 import { Typography } from '@mui/material'
 import { DataGrid, GridColDef } from '@mui/x-data-grid'
-import React from 'react'
 import { RequestStatus } from '~/global/enum'
 
 interface BorrowRequestsTableProps {
@@ -36,7 +35,7 @@ const getStatusColor = (status: string) => {
   }
 }
 
-const BorrowRequestsTable: React.FC<BorrowRequestsTableProps> = (props: BorrowRequestsTableProps) => {
+const BorrowRequestsTable = (props: BorrowRequestsTableProps) => {
   const { role, rows, loading, rowCount, paginationModel, handlePaginationModelChange } = props
   let columns: GridColDef[] = []
 
@@ -86,7 +85,12 @@ const BorrowRequestsTable: React.FC<BorrowRequestsTableProps> = (props: BorrowRe
         align: 'center',
         headerAlign: 'center',
         renderCell: ({ row }) => (
-          <Typography variant='caption' fontWeight={600} style={{ color: getStatusColor(row.status) }}>
+          <Typography
+            variant='caption'
+            fontFamily={'var(--font-family)'}
+            fontWeight={600}
+            style={{ color: getStatusColor(row.status) }}
+          >
             {row.status}
           </Typography>
         )
@@ -130,7 +134,12 @@ const BorrowRequestsTable: React.FC<BorrowRequestsTableProps> = (props: BorrowRe
         align: 'center',
         headerAlign: 'center',
         renderCell: ({ row }) => (
-          <Typography variant='caption' fontWeight={600} style={{ color: getStatusColor(row.status) }}>
+          <Typography
+            variant='caption'
+            fontFamily={'var(--font-family)'}
+            fontWeight={600}
+            style={{ color: getStatusColor(row.status) }}
+          >
             {row.status}
           </Typography>
         )

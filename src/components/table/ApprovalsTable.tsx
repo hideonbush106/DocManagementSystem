@@ -115,6 +115,8 @@ const ApprovalsTable = (props: ApprovalsTableProps) => {
       {
         field: 'updatedAt',
         headerName: 'Created at',
+        sortable: false,
+        filterable: false,
         flex: 1,
         minWidth: 110,
         maxWidth: 200,

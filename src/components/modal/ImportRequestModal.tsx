@@ -63,7 +63,6 @@ const ImportRequestModal = (props: ImportDocumentModalProps) => {
         .number()
         .integer('Number of pages must be an integer')
         .min(1, 'Number of pages must be greater than 0')
-        .max(500000, 'Number of pages must be less than 500000')
         .required('Number of pages is required'),
       folder: yup.object({
         id: yup.string().required('Folder is required')
@@ -412,7 +411,6 @@ const ImportRequestModal = (props: ImportDocumentModalProps) => {
               maxFiles={1}
               accept='application/pdf'
               title="Drag 'n' drop some files here, or click to select files"
-              maxSize={1024 * 1024 * 8}
             />
           </Box>
           {fileError && (

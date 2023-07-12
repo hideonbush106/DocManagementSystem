@@ -1,7 +1,7 @@
 import ImportRequest from './importRequest/ImportRequest'
 import BorrowRequest from './borrowRequest/BorrowRequest'
 import NavTabs from '~/components/tab/NavTabs'
-import { Input, Outbox, Output } from '@mui/icons-material'
+import { Input, Outbox } from '@mui/icons-material'
 
 const Requests = () => {
   const tabs = [

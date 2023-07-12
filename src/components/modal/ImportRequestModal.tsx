@@ -32,6 +32,8 @@ const ImportRequestModal = (props: ImportDocumentModalProps) => {
   const [folders, setFolders] = useState<Folder[]>([])
   const [fileError, setFileError] = useState<string>('')
   const [submitSuccess, setSubmitSuccess] = useState(false)
+  const [selectedRoom, setSelectedRoom] = useState(false)
+  const [selectedLocker, setSelectedLocker] = useState(false)
 
   const { uploadDocumentPdf } = useDocumentApi()
   const { getDepartment } = useDepartmentApi()
@@ -135,6 +137,7 @@ const ImportRequestModal = (props: ImportDocumentModalProps) => {
     formik.setFieldValue('document.folder.id', '')
     const lockers = await getLockerInRoom(event.target.value)
     setLockers(lockers.data)
+    setSelectedRoom(true)
   }
 
   const lockerHandleChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -142,6 +145,7 @@ const ImportRequestModal = (props: ImportDocumentModalProps) => {
     formik.setFieldValue('document.folder.id', '')
     const folder = await getFoldersInLocker(event.target.value)
     setFolders(folder.data)
+    setSelectedLocker(true)
   }
 
   useEffect(() => {
@@ -149,6 +153,13 @@ const ImportRequestModal = (props: ImportDocumentModalProps) => {
       handleClose()
     }
   }, [submitSuccess, handleClose])
+
+  useEffect(() => {
+    if (!open) {
+      setSelectedRoom(false)
+      setSelectedLocker(false)
+    }
+  }, [open])
 
   return (
     <ModalLayout open={open} handleClose={handleClose}>
@@ -327,8 +338,6 @@ const ImportRequestModal = (props: ImportDocumentModalProps) => {
               variant='standard'
               required
               disabled={rooms.length === 0}
-              error={rooms.length === 0}
-              helperText={rooms.length === 0 ? 'There is no room in this department' : ''}
             >
               {rooms.map((room) => (
                 <MenuItem key={room.id} value={room.id}>
@@ -350,8 +359,8 @@ const ImportRequestModal = (props: ImportDocumentModalProps) => {
               variant='standard'
               required
               disabled={lockers.length === 0}
-              error={lockers.length === 0}
-              helperText={lockers.length === 0 ? 'There is no locker in this room' : ''}
+              error={selectedRoom && lockers.length === 0}
+              helperText={selectedRoom && lockers.length === 0 ? 'There is no locker in this room' : ''}
             >
               {lockers.map((locker) => (
                 <MenuItem key={locker.id} value={locker.id}>
@@ -375,8 +384,8 @@ const ImportRequestModal = (props: ImportDocumentModalProps) => {
               variant='standard'
               required
               disabled={folders.length === 0}
-              error={folders.length === 0}
-              helperText={folders.length === 0 ? 'There is no folder in this locker' : ''}
+              error={selectedLocker && folders.length === 0}
+              helperText={selectedLocker && folders.length === 0 ? 'There is no folder in this locker' : ''}
             >
               {folders.map((folder) => (
                 <MenuItem key={folder.id} value={folder.id}>

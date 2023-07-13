@@ -66,7 +66,7 @@ const DocumentCardList = (props: Props) => {
   }
 
   return (
-    <Grid container height='96.5%'>
+    <Grid container height='100%' spacing={3}>
       <Grid item container spacing={3} sx={{ marginTop: '0.5rem' }} height='fit-content'>
         {items.slice((page - 1) * ITEMS_PER_PAGE, (page - 1) * ITEMS_PER_PAGE + ITEMS_PER_PAGE).map((item) => (
           <Grid key={item.id} item xs={12} sm={4} md={6} lg={4}>
@@ -80,7 +80,7 @@ const DocumentCardList = (props: Props) => {
           </Grid>
         ))}
       </Grid>
-      <Grid item mt='auto'>
+      <Grid item mt='auto' xs={10}>
         <Pagination
           size='large'
           count={totalPages}
@@ -88,6 +88,7 @@ const DocumentCardList = (props: Props) => {
           onChange={handleChange}
           variant='outlined'
           shape='rounded'
+          sx={{ '& .MuiPagination-ul': { gap: '5px 0' } }}
         />
       </Grid>
     </Grid>

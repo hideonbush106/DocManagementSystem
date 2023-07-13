@@ -91,20 +91,20 @@ const AuthProvider = ({ children }: Props) => {
     try {
       await signOut(auth)
       await get('/users/logout', {}, { Authentication: idToken, accept: 'application/json' })
+      setIdToken(null)
+      setUser(undefined)
     } catch (error) {
       console.log(error)
       notifyError('Fail to logout')
     }
-    setIdToken(null)
-    setUser(undefined)
     setLoading(false)
   }
 
   initialContext.login = async () => {
-    setLoading(true)
     try {
       // sign in with google to get token
       const userCredential = await signInWithPopup(auth, provider)
+      setLoading(true)
       initialContext.refreshToken = async () => {
         const token = await userCredential.user.getIdToken(true)
         setIdToken(token)
@@ -120,8 +120,10 @@ const AuthProvider = ({ children }: Props) => {
     } catch (error) {
       console.log(error)
       if (error instanceof FirebaseError) {
-        if (error.code !== 'auth/popup-closed-by-user' && error.code !== 'auth/cancelled-popup-request')
+        if (error.code !== 'auth/popup-closed-by-user' && error.code !== 'auth/cancelled-popup-request') {
           notifyError('Login failed')
+          return
+        }
       }
       if (error instanceof AxiosError && error.response?.data.details === 'Access denied') {
         notifyError('Account is not allowed to access the system')
@@ -161,7 +163,7 @@ const AuthProvider = ({ children }: Props) => {
               default:
                 message = 'Something went wrong'
             }
-            notifyError(message)
+            if (message !== '') notifyError(message)
             await signOut(auth)
           }
         }

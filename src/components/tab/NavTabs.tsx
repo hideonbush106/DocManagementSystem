@@ -52,9 +52,8 @@ const NavTabs = ({ tabs }: NavTabsProps) => {
 
   const [value, setValue] = React.useState(0)
 
-  const handleChange = (event: React.SyntheticEvent, newValue: number) => {
+  const handleChange = (_e: React.SyntheticEvent, newValue: number) => {
     setValue(newValue)
-    console.log(event)
   }
 
   const renderTabContent = () => {

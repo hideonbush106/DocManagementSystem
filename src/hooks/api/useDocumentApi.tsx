@@ -1,4 +1,4 @@
-import { ConfirmDocument, CreateDocument } from '~/global/interface'
+import { ConfirmDocument, CreateDocument, UpdateDocument } from '~/global/interface'
 import useApi from './useApi'
 import React from 'react'
 
@@ -126,6 +126,19 @@ const useDocumentApi = () => {
     [callApi]
   )
 
+  const updateDocument = React.useCallback(
+    async (data: UpdateDocument) => {
+      const endpoint = `/${rootEndpoint}/`
+      try {
+        const response = await callApi('put', endpoint, {}, {}, data)
+        return response
+      } catch (error) {
+        console.log(error)
+      }
+    },
+    [callApi]
+  )
+
   const getPendingDocuments = React.useCallback(
     async (take: number, page: number, keyword?: string, folderId?: string) => {
       let endpoint = `/${rootEndpoint}/pending?take=${take}&page=${page + 1}`
@@ -183,6 +196,7 @@ const useDocumentApi = () => {
     getDocumentBarcode,
     findDocument,
     createDocument,
+    updateDocument,
     uploadDocumentPdf,
     confirmDocument,
     getPendingDocuments,

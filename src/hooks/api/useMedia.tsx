@@ -18,7 +18,20 @@ const useMedia = () => {
     [callApi]
   )
 
-  return { getMedia }
+  const checkMedia = React.useCallback(
+    async (documentId: string) => {
+      const endpoint = `/${rootEndpoint}/check/${documentId}`
+      try {
+        const response = await callApi('get', endpoint)
+        return response
+      } catch (error) {
+        console.log(error)
+      }
+    },
+    [callApi]
+  )
+
+  return { getMedia, checkMedia }
 }
 
 export default useMedia

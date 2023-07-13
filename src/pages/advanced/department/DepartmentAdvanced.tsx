@@ -1,22 +1,22 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { Apartment } from '@mui/icons-material'
 import { CircularProgress, List, ListItemButton, ListItemIcon, ListItemText } from '@mui/material'
-import AddRoundedIcon from '@mui/icons-material/AddRounded'
 import React, { useEffect, useState } from 'react'
-import { Department, UpdateDepartment, CreateDepartment } from '~/global/interface'
+import { Department /*, UpdateDepartment, CreateDepartment*/ } from '~/global/interface'
 import useDepartmentApi from '~/hooks/api/useDepartmentApi'
-import { notifySuccess } from '~/global/toastify'
-import CreateDepartmentModal from '~/components/modal/advanced/department/CreateDepartmentModal'
 import { Box } from '@mui/system'
-import { DeleteButton } from '~/components/button/advanced/DeleteButton'
-import { UpdateDeptButton } from '~/components/button/advanced/UpdateButton'
+// import AddRoundedIcon from '@mui/icons-material/AddRounded'
+// import { notifySuccess } from '~/global/toastify'
+// import CreateDepartmentModal from '~/components/modal/advanced/department/CreateDepartmentModal'
+// import { DeleteButton } from '~/components/button/advanced/DeleteButton'
+// import { UpdateDeptButton } from '~/components/button/advanced/UpdateButton'
 
 const DepartmentAdvanced = () => {
   const [departments, setDepartments] = useState<Department[]>([])
-  const { getAllDepartments, updateDepartment, createDepartment, deleteDepartment } = useDepartmentApi()
+  const { getAllDepartments /*, updateDepartment, createDepartment, deleteDepartment*/ } = useDepartmentApi()
 
   const [loading, setLoading] = React.useState<boolean>(true)
-  const [isModalOpen, setModalOpen] = useState(false)
+  //   const [isModalOpen, setModalOpen] = useState(false)
 
   const fetchData = async () => {
     await getAllDepartments().then((result) => {
@@ -29,61 +29,61 @@ const DepartmentAdvanced = () => {
     fetchData()
   }, [])
 
-  const handleUpdate = async (values: UpdateDepartment) => {
-    try {
-      await updateDepartment(values).then((result) => {
-        if (result) {
-          setLoading(true)
-          setDepartments([]) // Clear the departments array
-          notifySuccess('Update successfully')
-        }
-      })
-      await fetchData() // Fetch the updated data
-    } catch (error) {
-      console.log(error)
-    }
-  }
+  //   const handleUpdate = async (values: UpdateDepartment) => {
+  //     try {
+  //       await updateDepartment(values).then((result) => {
+  //         if (result) {
+  //           setLoading(true)
+  //           setDepartments([]) // Clear the departments array
+  //           notifySuccess('Update successfully')
+  //         }
+  //       })
+  //       await fetchData() // Fetch the updated data
+  //     } catch (error) {
+  //       console.log(error)
+  //     }
+  //   }
 
-  const handleModalOpen = () => {
-    setModalOpen(true)
-  }
+  //   const handleModalOpen = () => {
+  //     setModalOpen(true)
+  //   }
 
-  const handleCreate = async (values: CreateDepartment) => {
-    try {
-      await createDepartment(values).then((result) => {
-        if (result) {
-          setLoading(true)
-          setDepartments([]) // Clear the departments array
-          notifySuccess('Create successfully')
-          setModalOpen(false)
-        }
-      })
-      await fetchData() // Fetch the updated data
-    } catch (error) {
-      console.log(error)
-    }
-  }
+  //   const handleCreate = async (values: CreateDepartment) => {
+  //     try {
+  //       await createDepartment(values).then((result) => {
+  //         if (result) {
+  //           setLoading(true)
+  //           setDepartments([]) // Clear the departments array
+  //           notifySuccess('Create successfully')
+  //           setModalOpen(false)
+  //         }
+  //       })
+  //       await fetchData() // Fetch the updated data
+  //     } catch (error) {
+  //       console.log(error)
+  //     }
+  //   }
 
-  const handleDelete = async (id: string) => {
-    try {
-      await deleteDepartment(id).then((result) => {
-        if (result) {
-          setLoading(true)
-          setDepartments([]) // Clear the departments array
-          notifySuccess('Delete successfully')
-        } else {
-          setLoading(true)
-        }
-      })
-      await fetchData() // Fetch the updated data
-    } catch (error) {
-      console.log(error)
-    }
-  }
+  //   const handleDelete = async (id: string) => {
+  //     try {
+  //       await deleteDepartment(id).then((result) => {
+  //         if (result) {
+  //           setLoading(true)
+  //           setDepartments([]) // Clear the departments array
+  //           notifySuccess('Delete successfully')
+  //         } else {
+  //           setLoading(true)
+  //         }
+  //       })
+  //       await fetchData() // Fetch the updated data
+  //     } catch (error) {
+  //       console.log(error)
+  //     }
+  //   }
 
   return (
     <>
-      <CreateDepartmentModal open={isModalOpen} handleClose={() => setModalOpen(false)} onSubmit={handleCreate} />
+      {/* <CreateDepartmentModal open={isModalOpen} handleClose={() => setModalOpen(false)} onSubmit={handleCreate} /> */}
       <List
         sx={{
           width: '100%',
@@ -102,6 +102,7 @@ const DepartmentAdvanced = () => {
               <ListItemButton
                 key={dept.id}
                 sx={{
+                  height: '52.2px',
                   paddingLeft: { sm: '5rem', xs: '1rem' },
                   paddingRight: { sm: '5rem', xs: '1rem' },
                   cursor: 'default'
@@ -115,11 +116,11 @@ const DepartmentAdvanced = () => {
                   primary={dept.name}
                   primaryTypographyProps={{ fontFamily: 'inherit', color: 'var(--black-color)' }}
                 />
-                <UpdateDeptButton id={dept.id} name={dept.name} handleUpdate={handleUpdate} />
-                <DeleteButton id={dept.id} name={dept.name} type='department' handleDelete={handleDelete} />
+                {/* <UpdateDeptButton id={dept.id} name={dept.name} handleUpdate={handleUpdate} />
+                <DeleteButton id={dept.id} name={dept.name} type='department' handleDelete={handleDelete} /> */}
               </ListItemButton>
             ))}
-            <ListItemButton
+            {/* <ListItemButton
               sx={{ paddingLeft: { sm: '5rem', xs: '1rem' }, paddingRight: { sm: '5rem', xs: '1rem' }, height: '53px' }}
               onClick={handleModalOpen}
             >
@@ -130,7 +131,7 @@ const DepartmentAdvanced = () => {
                 primary={'New department'}
                 primaryTypographyProps={{ fontFamily: 'inherit', color: 'var(--black-color)' }}
               />
-            </ListItemButton>
+            </ListItemButton> */}
           </>
         ) : (
           <>

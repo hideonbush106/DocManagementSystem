@@ -239,8 +239,8 @@ const ApprovalsTable = (props: ApprovalsTableProps) => {
               onClick: () => {
                 handleDetailOpen(params.row.id as string)
               }
-            },
-            { text: 'Delete', onClick: () => console.log('Delete clicked') }
+            }
+            //{ text: 'Delete', onClick: () => console.log('Delete clicked') }
           ]
           return <ActionsCell id={params.row.id as number} menuItems={menuItems} />
         }

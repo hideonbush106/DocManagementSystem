@@ -14,7 +14,7 @@ const DocumentCard = (props: Props) => {
   return (
     <Paper elevation={0} sx={{ display: 'flex', padding: '14px', borderRadius: '10px', alignItems: 'center' }}>
       <Icon.Component sx={{ marginRight: '14px' }} style={{ color: Icon.color }} />
-      <Typography variant='body1' fontFamily='inherit' width='100%'>
+      <Typography variant='body1' fontFamily='inherit' width='100%' whiteSpace={'nowrap'}>
         {name}
       </Typography>
     </Paper>

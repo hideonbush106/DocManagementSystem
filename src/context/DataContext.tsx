@@ -26,7 +26,6 @@ const DataProvider = ({ children }: Props) => {
       .then((res) => {
         const tree: DepartmentTree[] = res.data
         setDocumentTree(tree)
-        console.log(tree)
         const map = new Map<string, Department>()
         tree.forEach((department) => {
           const roomMap = new Map<string, Room>()

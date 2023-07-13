@@ -15,17 +15,18 @@ type Props = {
 }
 
 const DocumentCardList = (props: Props) => {
+  const ITEMS_PER_PAGE = 15
   const { items, type } = props
   const [page, setPage] = useState(1)
 
   useEffect(() => {
     if (props.itemId) {
       const itemIndex = items.findIndex((item) => item.id === props.itemId)
-      if (itemIndex !== -1) setPage(Math.ceil(itemIndex / 6))
+      if (itemIndex !== -1) setPage(Math.ceil(itemIndex / ITEMS_PER_PAGE))
     }
   }, [props.itemId, items])
 
-  const totalPages = Math.ceil(items.length / 6)
+  const totalPages = Math.ceil(items.length / ITEMS_PER_PAGE)
 
   const handleChange = (_event: React.ChangeEvent<unknown>, value: number) => {
     setPage(value)
@@ -67,7 +68,7 @@ const DocumentCardList = (props: Props) => {
   return (
     <Grid container height='96.5%'>
       <Grid item container spacing={3} sx={{ marginTop: '0.5rem' }} height='fit-content'>
-        {items.slice((page - 1) * 6, (page - 1) * 6 + 6).map((item) => (
+        {items.slice((page - 1) * ITEMS_PER_PAGE, (page - 1) * ITEMS_PER_PAGE + ITEMS_PER_PAGE).map((item) => (
           <Grid key={item.id} item xs={12} sm={4} md={6} lg={4}>
             {type === 'file' ? (
               <FileCard icon={icon} name={item.name} fileId={item.id} fileName={item.name} id={item.id} action />

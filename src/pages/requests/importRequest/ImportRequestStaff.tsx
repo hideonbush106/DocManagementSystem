@@ -80,9 +80,9 @@ const ImportRequestStaff = () => {
       position: 'static'
     },
 
-    [theme.breakpoints.up('md')]: {
+    [theme.breakpoints.up('sm')]: {
       position: 'absolute',
-      right: '15px',
+      right: '0px',
       top: '-65px'
     }
   }))
@@ -207,7 +207,7 @@ const ImportRequestStaff = () => {
               onClearFilter={handleClearFilter}
             />
             <QrCodeScannerIcon
-              sx={{ margin: '0 20px', color: 'var(--primary-dark-color)' }}
+              sx={{ marginLeft: '20px', color: 'var(--primary-dark-color)' }}
               fontSize='large'
               onClick={handleQrIconClick}
               cursor='pointer'

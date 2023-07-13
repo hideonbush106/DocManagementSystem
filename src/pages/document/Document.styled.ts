@@ -52,6 +52,7 @@ export const DocumentGrid = styled.div`
   width: 65%;
   @media (min-width: 0px) {
     width: 100%;
+    height: 100%;
     margin-left: 0;
   }
   @media (min-width: 600px) {
@@ -65,6 +66,6 @@ export const DocumentGrid = styled.div`
   @media (min-width: 1200px) {
     margin-left: 2rem;
     width: 65%;
+    height: 70vh;
   }
-  height: 70vh;
 `

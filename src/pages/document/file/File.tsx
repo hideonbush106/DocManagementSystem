@@ -1,6 +1,6 @@
 import React from 'react'
 import { Box, Breadcrumbs, CircularProgress, Typography } from '@mui/material'
-import { Link, useParams } from 'react-router-dom'
+import { Link, useParams, useSearchParams } from 'react-router-dom'
 import DocumentCardList from '~/components/card/DocumentCardList'
 import useDocumentApi from '~/hooks/api/useDocumentApi'
 import useData from '~/hooks/useData'
@@ -11,6 +11,7 @@ const File = () => {
   const [files, setFile] = React.useState<FileType[]>([])
   const [loading, setLoading] = React.useState<boolean>(true)
   const { departmentId, roomId, lockerId, folderId } = useParams()
+  const [search] = useSearchParams()
   const { documentMap } = useData()
   const { getDocumentsInFolder } = useDocumentApi()
   const department = documentMap.get(departmentId as string)
@@ -21,7 +22,7 @@ const File = () => {
   React.useEffect(() => {
     if (folder) {
       setLoading(true)
-      getDocumentsInFolder(folder.id)
+      getDocumentsInFolder(folder.id, 1)
         .then(({ data }) => {
           setFile(data.data as FileType[])
           setLoading(false)
@@ -45,7 +46,7 @@ const File = () => {
       </Breadcrumbs>
       {!loading ? (
         files.length > 0 ? (
-          <DocumentCardList type='file' items={files} />
+          <DocumentCardList type='file' items={files} itemId={search.get('documentId')} />
         ) : (
           <Typography variant='body1' textAlign='center' mt='20px' fontFamily='inherit'>
             There is no files

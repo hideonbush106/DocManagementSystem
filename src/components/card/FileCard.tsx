@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import { Box, Paper } from '@mui/material'
 import { SvgIconComponent } from '@mui/icons-material'
 import DocumentCard from './DocumentCard'
 import ActionsCell from '../table/ActionCell'
@@ -21,11 +22,13 @@ type Props = {
   id: string
   fileId: string
   fileName: string
+  action?: boolean
+  onClick?: () => void
 }
 const FileCard: React.FC<Props> = (props: Props) => {
   const { user } = useAuth()
   const role = user?.role.toLocaleUpperCase()
-  const { icon, fileId, name, fileName } = props
+  const { icon, name, fileId, fileName, action, onClick } = props
   const [isBorrowModalOpen, setIsBorrowModalOpen] = useState(false)
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false)
   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false)
@@ -33,7 +36,6 @@ const FileCard: React.FC<Props> = (props: Props) => {
   const { getAllCategories } = useCategoryApi()
   const { checkMedia } = useMedia()
   const [document, setDocument] = React.useState<DocumentDetail>()
-  const [documentName, setDocumentName] = React.useState<string>(name)
   const [barcode, setBarcode] = React.useState<string>('')
   const [isHavePdf, setIsHavePdf] = useState<boolean>(false)
   const [categories, setCategories] = useState<Categories[]>([])
@@ -86,7 +88,6 @@ const FileCard: React.FC<Props> = (props: Props) => {
       setBarcode('')
       setDocument(undefined)
       const document = await getDocument(id)
-      setDocumentName(document.data.name)
       setDocument(document.data)
       if ([DocumentStatus.PENDING, DocumentStatus.AVAILABLE, DocumentStatus.BORROWED].includes(document.data.status)) {
         if (role !== 'EMPLOYEE') {
@@ -114,28 +115,38 @@ const FileCard: React.FC<Props> = (props: Props) => {
   }, [props.id])
 
   return (
-    <DocumentCard icon={icon} name={documentName}>
-      <div style={{ marginLeft: 'auto', marginRight: '-18px' }}>
-        <ActionsCell menuItems={actions} />
-        <Detail document={document} barcode={barcode} open={isDetailModalOpen} onClose={handleDetailClose} />
-        <BorrowDocumentModal
-          open={isBorrowModalOpen}
-          handleClose={handleCloseBorrowModal}
-          fileId={fileId}
-          fileName={fileName}
+    <Paper
+      elevation={0}
+      sx={{
+        display: 'flex',
+        borderRadius: '10px',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        ...(onClick && { cursor: 'pointer' })
+      }}
+    >
+      <Box onClick={onClick} width='100%'>
+        <DocumentCard icon={icon} name={name} />
+      </Box>
+      {action && <ActionsCell menuItems={actions} />}
+      <Detail document={document} barcode={barcode} open={isDetailModalOpen} onClose={handleDetailClose} />
+      <BorrowDocumentModal
+        open={isBorrowModalOpen}
+        handleClose={handleCloseBorrowModal}
+        fileId={fileId}
+        fileName={fileName}
+      />
+      {role == 'STAFF' && (
+        <UpdateDocumentModal
+          document={document}
+          isHavePdf={isHavePdf}
+          categories={categories}
+          open={isUpdateModalOpen}
+          handleClose={handleCloseUpdateModal}
+          reload={fetchData}
         />
-        {role == 'STAFF' && (
-          <UpdateDocumentModal
-            document={document}
-            isHavePdf={isHavePdf}
-            categories={categories}
-            open={isUpdateModalOpen}
-            handleClose={handleCloseUpdateModal}
-            reload={fetchData}
-          />
-        )}
-      </div>
-    </DocumentCard>
+      )}
+    </Paper>
   )
 }
 

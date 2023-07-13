@@ -46,7 +46,7 @@ const UpdateAdvancedModal = <T extends UpdateRoom | UpdateLocker | UpdateFolder 
   })
 
   const unchanged =
-    formik.values.name === props.initialValues.name &&
+    formik.values.name.trim() === props.initialValues.name &&
     (props.initialValues.hasOwnProperty('capacity') ? formik.values.capacity === props.initialValues.capacity : true)
 
   return (

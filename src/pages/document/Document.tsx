@@ -16,7 +16,6 @@ import SpeedDialCustom from '~/components/speed-dial/SpeedDial'
 import ImportDocumentModal from '~/components/modal/ImportDocumentModal'
 import AddRoundedIcon from '@mui/icons-material/AddRounded'
 import KeyboardReturnRoundedIcon from '@mui/icons-material/KeyboardReturnRounded'
-import useDocumentApi from '~/hooks/api/useDocumentApi'
 import SearchDocumentResult from '~/components/modal/SearchDocumentResult'
 import ImportRequestModal from '~/components/modal/ImportRequestModal'
 import Scanner from '~/components/modal/Scanner'
@@ -26,7 +25,7 @@ import useDocumentApi from '~/hooks/api/useDocumentApi'
 const DocumentDisplay = () => {
   const [speedDialOpen, setSpeedDialOpen] = useState(false)
   const [importDocumentModalOpen, setImportDocumentModalOpen] = useState(false)
-  const [importRequestModalOpen, setImportRequestModalOpen] = useState(false)
+  const [isImportRequestModalOpen, setIsImportRequestModalOpen] = useState(false)
   const [searchResultModalOpen, setSearchResultModalOpen] = useState(false)
   const [searchResult, setSearchResult] = useState<File[]>([])
   const [searchResultLoading, setSearchResultLoading] = useState(false)

@@ -1,15 +1,22 @@
 import Chart from 'react-apexcharts'
 
-const SummaryChart = () => {
+type Props = {
+  items: {
+    status: string
+    count: number
+  }[]
+}
+
+const SummaryChart = ({ items }: Props) => {
   return (
     <>
       <Chart
         type='donut'
         width={'100%'}
         height={'100%'}
-        series={[46, 90]}
+        series={items.map((item) => item.count)}
         options={{
-          labels: ['Lending', 'Available'],
+          labels: items.map((item) => item.status),
           colors: ['var(--red-color)', 'var(--primary-color)'],
           plotOptions: {
             pie: {

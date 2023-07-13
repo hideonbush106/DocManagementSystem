@@ -45,8 +45,8 @@ const PendingApprovals = () => {
     <PendingApprovalsWrapper>
       <HeaderWrapper>
         <SearchField
-          onChange={(e) => {
-            setSearchData(e.target.value)
+          handleSearch={(value) => {
+            setSearchData(value)
           }}
         />
       </HeaderWrapper>

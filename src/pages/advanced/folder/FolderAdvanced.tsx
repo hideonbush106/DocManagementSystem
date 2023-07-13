@@ -281,13 +281,25 @@ const FolderAdvanced = () => {
                         {folders.map((folder) => (
                           <ListItemButton
                             key={folder.id}
-                            sx={{ paddingLeft: { sm: '8rem', xs: '1rem' }, paddingRight: { sm: '5rem', xs: '1rem' } }}
-                            onClick={() => {
-                              handleQRCodeClick(folder.id)
+                            disableTouchRipple
+                            sx={{
+                              paddingLeft: { sm: '8rem', xs: '1rem' },
+                              paddingRight: { sm: '5rem', xs: '1rem' },
+                              cursor: 'default'
                             }}
                           >
-                            <ListItemIcon sx={{ color: 'var(--black-color)', minWidth: { sm: '56px', xs: '40px' } }}>
-                              <FolderIcon />
+                            <ListItemIcon
+                              sx={{
+                                color: 'var(--black-color)',
+                                minWidth: { sm: '56px', xs: '40px' }
+                              }}
+                            >
+                              <FolderIcon
+                                onClick={() => {
+                                  handleQRCodeClick(folder.id)
+                                }}
+                                cursor='pointer'
+                              />
                             </ListItemIcon>
                             <ListItemText
                               primary={folder.name}

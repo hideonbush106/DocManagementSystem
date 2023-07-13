@@ -19,6 +19,21 @@ const useDocumentApi = () => {
     [callApi]
   )
 
+  const getAllDocuments = React.useCallback(
+    async (take: number, page: number, keyword?: string, folderId?: string) => {
+      let endpoint = `/${rootEndpoint}?take=${take}&page=${page + 1}`
+      if (keyword) endpoint += `&keyword=${keyword}`
+      if (folderId) endpoint += `&folderId=${folderId}`
+      try {
+        const response = await callApi('get', endpoint)
+        return response
+      } catch (error) {
+        console.log(error)
+      }
+    },
+    [callApi]
+  )
+
   const getDocumentBarcode = React.useCallback(
     async (documentId: string) => {
       const endpoint = `/${rootEndpoint}/barcode/${documentId}`
@@ -145,7 +160,8 @@ const useDocumentApi = () => {
     uploadDocumentPdf,
     confirmDocument,
     getPendingDocuments,
-    getDocumentCount
+    getDocumentCount,
+    getAllDocuments
   }
 }
 

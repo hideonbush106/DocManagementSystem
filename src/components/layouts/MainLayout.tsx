@@ -41,6 +41,7 @@ const MainLayout = (props: Props) => {
   const { children, title } = props
   const user = useAuth()
   const role = user.user?.role
+  const department = user.user?.department
 
   React.useEffect(() => {
     const getData = async () => {
@@ -73,7 +74,7 @@ const MainLayout = (props: Props) => {
       icon: <img src='/assets/department.svg' alt='department' />,
       iconBackground: 'blue',
       title: 'Departments',
-      content: `${departmentCount ? departmentCount : ''} Departments`
+      content: role === 'STAFF' ? `${departmentCount ? departmentCount : ''} Departments` : `${department}`
     },
     {
       icon: <img src='/assets/user.svg' alt='member' />,
@@ -134,13 +135,12 @@ const MainLayout = (props: Props) => {
         <Grid container alignItems='center' justifyContent='space-between' marginY='19px' paddingX='8px'>
           <Grid item container md={12} lg={7.45}>
             {items.map((item, index) => (
-              <>
+              <React.Fragment key={index}>
                 <Grid
                   item
                   container
                   md={3.9}
                   lg={3.7}
-                  key={index}
                   alignItems='center'
                   justifyContent={belowLg ? 'center' : 'flex-start'}
                 >
@@ -170,9 +170,9 @@ const MainLayout = (props: Props) => {
                   </Grid>
                 </Grid>
                 {index <= items.length - 2 && (
-                  <Grid md={0.1} lg={0.3} style={{ borderLeft: '1px solid var(--gray-color)' }}></Grid>
+                  <Grid item md={0.1} lg={0.3} style={{ borderLeft: '1px solid var(--gray-color)' }}></Grid>
                 )}
-              </>
+              </React.Fragment>
             ))}
           </Grid>
 

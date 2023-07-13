@@ -8,7 +8,8 @@ export const Title = styled(Typography)`
 export const DashboardWrapper = styled(Grid)``
 
 export const DocumentContainer = styled(Grid)`
-  height: 40vh;
+  height: calc((100vh - 200px) / 2);
+  min-height: 280px;
   @media (max-width: 600px) {
     margin-top: 1rem;
   }
@@ -18,7 +19,7 @@ export const Wrapper = styled.div`
   background-color: var(--white-color);
   width: 100%;
   height: 100%;
-  padding: 01rem;
+  padding: 1rem;
   border-radius: 5px;
 `
 
@@ -26,7 +27,7 @@ export const SumaryContainer = styled(DocumentContainer)``
 
 export const ApprovalContainer = styled(DocumentContainer)``
 
-export const RequestContainer = styled(DocumentContainer)``
+export const BorrowRequestContainer = styled(DocumentContainer)``
 
 export const StatisticContainer = styled(SumaryContainer)``
 

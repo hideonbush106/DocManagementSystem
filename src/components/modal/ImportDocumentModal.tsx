@@ -53,7 +53,8 @@ const ImportDocumentModal = (props: ImportDocumentModalProps) => {
     numOfPages: yup
       .number()
       .integer('Number of pages must be an integer')
-      .min(1, 'Number of pages must be greater than 0'),
+      .min(1, 'Number of pages must be greater than 0')
+      .required('Number of pages is required'),
     folder: yup.object({
       id: yup.string()
     }),
@@ -363,6 +364,7 @@ const ImportDocumentModal = (props: ImportDocumentModalProps) => {
               value={files}
               onChange={setFiles}
               maxFiles={1}
+              maxSize={1024 * 1024 * 8}
               accept='application/pdf'
               title={`Drag 'n' drop some files here, or click to select files`}
             />
@@ -399,7 +401,19 @@ const ImportDocumentModal = (props: ImportDocumentModalProps) => {
               Export
             </Button>
           ) : (
-            <Button sx={{ my: 1, mr: 1 }} variant='contained' color='primary' type='submit'>
+            <Button
+              sx={{ my: 1, mr: 1 }}
+              variant='contained'
+              color='primary'
+              disabled={
+                formik.values.name === '' ||
+                formik.values.description === '' ||
+                formik.values.folder.id === '' ||
+                formik.values.numOfPages === 0 ||
+                formik.values.category.id === ''
+              }
+              type='submit'
+            >
               Submit
             </Button>
           )}

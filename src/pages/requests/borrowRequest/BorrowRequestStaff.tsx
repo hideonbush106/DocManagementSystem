@@ -8,7 +8,6 @@ import {
   CircularProgress,
   Pagination,
   SelectChangeEvent,
-  Skeleton,
   Typography,
   styled
 } from '@mui/material'
@@ -229,76 +228,68 @@ const BorrowRequestStaff = () => {
             <Typography variant='body1'>No matching requests found.</Typography>
           ) : (
             <Box display='flex' flexWrap='wrap'>
-              {borrowRequests.length === 0 ? (
-                <Box sx={{ width: 300 }}>
-                  <Skeleton />
-                  <Skeleton animation='wave' />
-                  <Skeleton animation={false} />
-                </Box>
-              ) : (
-                _DATA.currentData().map((request) => (
-                  <RequestCard key={request.id}>
+              {_DATA.currentData().map((request) => (
+                <RequestCard key={request.id}>
+                  <div
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'space-between'
+                    }}
+                  >
                     <div
                       style={{
                         display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'space-between'
+                        alignItems: 'center'
                       }}
                     >
-                      <div
-                        style={{
-                          display: 'flex',
-                          alignItems: 'center'
-                        }}
-                      >
-                        <Avatar sx={{ width: '45px', height: '45px' }} src={request.createdBy.photoURL} />
-                        <div style={{ display: 'flex', flexDirection: 'column', marginLeft: '0.75rem' }}>
-                          <Typography
-                            sx={{ fontSize: '16px', fontWeight: '600', marginRight: '10px' }}
-                          >{`${request.createdBy.firstName} ${request.createdBy.lastName}`}</Typography>
-                          <Typography sx={{ color: '#a5aab5', letterSpacing: '0', fontSize: '16px' }}>
-                            {request.code}
-                          </Typography>
-                        </div>
+                      <Avatar sx={{ width: '45px', height: '45px' }} src={request.createdBy.photoURL} />
+                      <div style={{ display: 'flex', flexDirection: 'column', marginLeft: '0.75rem' }}>
+                        <Typography
+                          sx={{ fontSize: '16px', fontWeight: '600', marginRight: '10px' }}
+                        >{`${request.createdBy.firstName} ${request.createdBy.lastName}`}</Typography>
+                        <Typography sx={{ color: '#a5aab5', letterSpacing: '0', fontSize: '16px' }}>
+                          {request.code}
+                        </Typography>
                       </div>
-                      <InfoIcon
-                        sx={{ color: 'var(--black-light-color)', cursor: 'pointer' }}
-                        onClick={() => handleInfoIconClick(request.id)}
-                      />
                     </div>
-                    <div style={{ height: '200px' }}>
+                    <InfoIcon
+                      sx={{ color: 'var(--black-light-color)', cursor: 'pointer' }}
+                      onClick={() => handleInfoIconClick(request.id)}
+                    />
+                  </div>
+                  <div style={{ height: '200px' }}>
+                    <Text variant='body2'>
+                      <strong> File name: </strong>
+                      {request.document.name}
+                    </Text>
+                    <Text variant='body2'>
+                      <strong> Description: </strong>
+                      {request.description}
+                    </Text>
+                    <Text variant='body2'>
+                      <strong> Time request: </strong>
+                      {dayjs(request.createdAt).format('MM/DD/YYYY HH:mm:ss')}
+                    </Text>
+                    {request.rejectedReason && (
                       <Text variant='body2'>
-                        <strong> File name: </strong>
-                        {request.document.name}
+                        <strong> Reason: </strong>
+                        {request.rejectedReason}
                       </Text>
-                      <Text variant='body2'>
-                        <strong> Description: </strong>
-                        {request.description}
-                      </Text>
-                      <Text variant='body2'>
-                        <strong> Time request: </strong>
-                        {dayjs(request.createdAt).format('MM/DD/YYYY HH:mm:ss')}
-                      </Text>
-                      {request.rejectedReason && (
-                        <Text variant='body2'>
-                          <strong> Reason: </strong>
-                          {request.rejectedReason}
-                        </Text>
-                      )}
-                    </div>
-                    <CardActions sx={{ justifyContent: 'space-evenly' }}>
-                      {request.status === 'PENDING' ? (
-                        <>
-                          <AcceptButton text='Approve' onClick={() => handleAccept(request.id)} />
-                          <RejectButton text='Reject' onClick={() => handleReject(request.id)} />
-                        </>
-                      ) : (
-                        <StatusText status={request.status} />
-                      )}
-                    </CardActions>
-                  </RequestCard>
-                ))
-              )}
+                    )}
+                  </div>
+                  <CardActions sx={{ justifyContent: 'space-evenly' }}>
+                    {request.status === 'PENDING' ? (
+                      <>
+                        <AcceptButton text='Approve' onClick={() => handleAccept(request.id)} />
+                        <RejectButton text='Reject' onClick={() => handleReject(request.id)} />
+                      </>
+                    ) : (
+                      <StatusText status={request.status} />
+                    )}
+                  </CardActions>
+                </RequestCard>
+              ))}
             </Box>
           )}
         </div>

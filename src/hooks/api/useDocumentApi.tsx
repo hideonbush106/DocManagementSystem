@@ -114,6 +114,32 @@ const useDocumentApi = () => {
     }
   }, [callApi])
 
+  const checkReturnDocument = React.useCallback(
+    async (documentId: string | null) => {
+      const endpoint = `/${rootEndpoint}/check-return/`
+      try {
+        const response = await callApi('post', endpoint, {}, {}, { QRCode: documentId })
+        return response
+      } catch (error) {
+        console.log(error)
+      }
+    },
+    [callApi]
+  )
+
+  const returnDocument = React.useCallback(
+    async (documentId: string | null) => {
+      const endpoint = `/${rootEndpoint}/return/`
+      try {
+        const response = await callApi('post', endpoint, {}, {}, { QRCode: documentId })
+        return response
+      } catch (error) {
+        console.log(error)
+      }
+    },
+    [callApi]
+  )
+
   return {
     getDocumentsInFolder,
     getDocument,
@@ -122,7 +148,9 @@ const useDocumentApi = () => {
     uploadDocumentPdf,
     confirmDocument,
     getPendingDocuments,
-    getDocumentCount
+    getDocumentCount,
+    checkReturnDocument,
+    returnDocument
   }
 }
 

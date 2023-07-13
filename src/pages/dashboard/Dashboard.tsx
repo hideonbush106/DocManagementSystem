@@ -106,7 +106,7 @@ const Dashboard = () => {
               loading={isLoading}
               paginationModel={paginationModel}
               handlePaginationModelChange={handlePaginationModelChange}
-            />{' '}
+            />
           </Wrapper>
         </ApprovalContainer>
         <RequestContainer xs={12} md={6} lg={4}>

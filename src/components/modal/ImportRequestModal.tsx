@@ -436,7 +436,21 @@ const ImportRequestModal = (props: ImportDocumentModalProps) => {
             boxShadow: 'rgba(100, 100, 111, 0.2) 0px 7px 29px 0px'
           }}
         >
-          <Button sx={{ my: 1, mr: 1 }} variant='contained' color='primary' type='submit'>
+          <Button
+            sx={{ my: 1, mr: 1 }}
+            variant='contained'
+            color='primary'
+            type='submit'
+            disabled={
+              formik.values.document.category.id === '' ||
+              formik.values.document.folder.id === '' ||
+              formik.values.document.numOfPages === 0 ||
+              formik.values.document.name === '' ||
+              formik.values.document.description === '' ||
+              formik.values.description === '' ||
+              files.length === 0
+            }
+          >
             Submit
           </Button>
           <Button sx={{ my: 1 }} color='error' variant='outlined' onClick={props.handleClose}>

@@ -31,7 +31,6 @@ const Test = () => {
       const blob = base64toBlob(response)
       const url = URL.createObjectURL(blob)
       setFileUrl(url)
-      console.log(url)
     } catch (error) {
       console.log(error)
       setFileUrl('')

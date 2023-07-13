@@ -86,7 +86,6 @@ const ImportRequestEmployee = () => {
   const handleChange = (e: React.ChangeEvent<unknown>, pageNumber: number) => {
     setPage(pageNumber)
     _DATA.jump(pageNumber)
-    console.log(e)
   }
 
   const handleInfoIconClick = async (id: string) => {
@@ -102,8 +101,7 @@ const ImportRequestEmployee = () => {
 
   const handleCancel = async (id: string) => {
     try {
-      const response = await cancelImportRequest(id)
-      console.log(response)
+      await cancelImportRequest(id)
       await fetchImportRequests()
     } catch (error) {
       console.error(error)

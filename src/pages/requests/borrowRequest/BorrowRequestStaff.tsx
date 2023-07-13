@@ -113,7 +113,6 @@ const BorrowRequestStaff = () => {
   const handleChange = (e: React.ChangeEvent<unknown>, pageNumber: number) => {
     setPage(pageNumber)
     _DATA.jump(pageNumber)
-    console.log(e)
   }
   const handleInfoIconClick = async (id: string) => {
     try {
@@ -131,8 +130,7 @@ const BorrowRequestStaff = () => {
   }
   const handleAccept = async (borrowRequestId: string) => {
     try {
-      const response = await acceptBorrowRequest(borrowRequestId)
-      console.log('Accept request successful:', response)
+      await acceptBorrowRequest(borrowRequestId)
       await fetchBorrowRequests()
     } catch (error) {
       console.log('Accept request failed:', error)
@@ -146,12 +144,10 @@ const BorrowRequestStaff = () => {
     setIsModalOpen(false)
   }
   const handleRejectModalSubmit = async (reason: string) => {
-    console.log('Rejected:', reason)
     setIsModalOpen(false)
     if (rejectID) {
       try {
-        const response = await rejectBorrowRequest({ id: String(rejectID), rejectedReason: reason })
-        console.log('Reject request successful:', response)
+        await rejectBorrowRequest({ id: String(rejectID), rejectedReason: reason })
         await fetchBorrowRequests()
       } catch (error) {
         console.log('Reject request failed:', error)

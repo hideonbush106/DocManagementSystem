@@ -118,7 +118,6 @@ const UpdateDocumentModal = (props: UpdateDocumentProps) => {
         >
           Update Document
         </Typography>
-        {document?.id}
       </Box>
       <form onSubmit={formik.handleSubmit} action='POST'>
         <FormControl sx={{ width: '100%', px: 5 }}>

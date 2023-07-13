@@ -106,7 +106,6 @@ const BorrowRequestEmployee = () => {
   const handleChange = (e: React.ChangeEvent<unknown>, pageNumber: number) => {
     setPage(pageNumber)
     _DATA.jump(pageNumber)
-    console.log(e)
   }
   const handleInfoIconClick = async (id: string) => {
     try {

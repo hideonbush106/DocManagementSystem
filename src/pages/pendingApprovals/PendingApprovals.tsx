@@ -40,13 +40,13 @@ const PendingApprovals = () => {
   }
 
   useEffect(() => {
-    if (user?.role === 'staff') {
+    if (user?.role === 'STAFF') {
       fetchData()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [paginationModel, searchData])
 
-  return user?.role === 'staff' ? (
+  return user?.role === 'STAFF' ? (
     <PendingApprovalsWrapper>
       <HeaderWrapper>
         <SearchField

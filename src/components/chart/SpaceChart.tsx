@@ -1,37 +1,47 @@
 import Chart from 'react-apexcharts'
 
-const SpaceChart = () => {
+type Props = {
+  stored: { stored: number; name: string }[]
+  capacity: { capacity: number; name: string }[]
+}
+
+const SpaceChart = ({ stored, capacity }: Props) => {
+  const freeData = capacity.map((item) => item.capacity - (stored.find((s) => s.name === item.name)?.stored || 0))
+
   return (
     <>
       <Chart
         type='bar'
-        width={'100%'}
+        width={'95%'}
         height={'95%'}
         series={[
           {
             name: 'Stored',
-            data: [345, 578, 698],
+            data: stored.map((item) => item.stored),
             color: 'var(--blue-background-color)'
           },
           {
             name: 'Free',
-            data: [167, 178, 338],
-            color: 'var(--gray-light-color)'
+            data: freeData,
+            color: 'var(--gray-color)'
           }
         ]}
         options={{
           chart: {
             stacked: true,
-            offsetX: -15
+            offsetY: -10,
+            toolbar: {
+              show: false
+            }
           },
           plotOptions: {
             bar: {
               horizontal: true,
-              columnWidth: '50%'
+              barHeight: '60vh'
             }
           },
           xaxis: {
-            categories: ['HR', 'Accountant', 'Sales']
+            categories: capacity.map((item) => item.name)
           },
           legend: {
             position: 'bottom',

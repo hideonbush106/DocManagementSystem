@@ -25,6 +25,7 @@ import useAuth from '~/hooks/useAuth'
 import BorrowRequestsTable from '~/components/table/BorrowRequestsTable'
 import useImportRequestApi from '~/hooks/api/useImportRequestApi'
 import ImportRequestsTable from '~/components/table/ImportRequestsTable'
+import useStatisticApi from '~/hooks/api/useStatisticApi'
 
 const Subtitle = styled(Typography)({
   fontWeight: '600',
@@ -193,6 +194,28 @@ const Dashboard = () => {
     setPaginationDocuments(newPaginationDocuments)
   }
 
+  //fetch API document-summary
+  const [summaryChart, setSummaryChart] = useState([])
+  const [storedProp, setStoredProp] = useState([])
+  const [capacityProp, setCapacityProp] = useState([])
+  const { getStatistic } = useStatisticApi()
+  useEffect(() => {
+    const fetchSummaryChart = async () => {
+      const result = await getStatistic('document-summary')
+      if (result) {
+        setSummaryChart(result.data)
+      }
+    }
+    const fetchSpaceChart = async () => {
+      const result = await getStatistic('space-summary')
+      if (result) {
+        setStoredProp(result.data[0].stored)
+        setCapacityProp(result.data[1].capacity)
+      }
+    }
+    Promise.all([fetchSummaryChart(), fetchSpaceChart()])
+  }, [])
+
   // useEffect(() => {
   //   Promise.all([fetchPendingApproval(), fetchDataBorrowRequests(), fetchDataImportRequests()])
   //   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -225,7 +248,7 @@ const Dashboard = () => {
           <Wrapper>
             <Subtitle variant='h6'>Document Summary (Files) </Subtitle>
             <TitleUnderline />
-            <SummaryChart />
+            <SummaryChart items={summaryChart} />
           </Wrapper>
         </SumaryContainer>
         <ApprovalContainer xs={12} md={6} lg={4}>
@@ -284,7 +307,7 @@ const Dashboard = () => {
           <Wrapper>
             <Subtitle variant='h6'>Available Space (Pages) </Subtitle>
             <TitleUnderline />
-            <SpaceChart />
+            <SpaceChart stored={storedProp} capacity={capacityProp} />
           </Wrapper>
         </StatisticContainer>
       </DashboardWrapper>

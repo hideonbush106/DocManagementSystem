@@ -235,7 +235,7 @@ const MainLayout = (props: Props) => {
             ) : (
               <Grid item container lg={4.55} spacing={1} justifyContent='flex-end'>
                 <Grid item>
-                  <ImportRequestButton text='Import Document' />
+                  <ImportRequestButton onClick={handleImportRequestModalOpen} text='Import Document' />
                 </Grid>
               </Grid>
             ))}

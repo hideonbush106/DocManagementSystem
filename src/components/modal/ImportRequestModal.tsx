@@ -32,6 +32,8 @@ const ImportRequestModal = (props: ImportDocumentModalProps) => {
   const [folders, setFolders] = useState<Folder[]>([])
   const [fileError, setFileError] = useState<string>('')
   const [submitSuccess, setSubmitSuccess] = useState(false)
+  const [selectedRoom, setSelectedRoom] = useState(false)
+  const [selectedLocker, setSelectedLocker] = useState(false)
 
   const { uploadDocumentPdf } = useDocumentApi()
   const { getDepartment } = useDepartmentApi()
@@ -61,7 +63,6 @@ const ImportRequestModal = (props: ImportDocumentModalProps) => {
         .number()
         .integer('Number of pages must be an integer')
         .min(1, 'Number of pages must be greater than 0')
-        .max(500000, 'Number of pages must be less than 500000')
         .required('Number of pages is required'),
       folder: yup.object({
         id: yup.string().required('Folder is required')
@@ -135,6 +136,7 @@ const ImportRequestModal = (props: ImportDocumentModalProps) => {
     formik.setFieldValue('document.folder.id', '')
     const lockers = await getLockerInRoom(event.target.value)
     setLockers(lockers.data)
+    setSelectedRoom(true)
   }
 
   const lockerHandleChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -142,6 +144,7 @@ const ImportRequestModal = (props: ImportDocumentModalProps) => {
     formik.setFieldValue('document.folder.id', '')
     const folder = await getFoldersInLocker(event.target.value)
     setFolders(folder.data)
+    setSelectedLocker(true)
   }
 
   useEffect(() => {
@@ -149,6 +152,13 @@ const ImportRequestModal = (props: ImportDocumentModalProps) => {
       handleClose()
     }
   }, [submitSuccess, handleClose])
+
+  useEffect(() => {
+    if (!open) {
+      setSelectedRoom(false)
+      setSelectedLocker(false)
+    }
+  }, [open])
 
   return (
     <ModalLayout open={open} handleClose={handleClose}>
@@ -327,8 +337,6 @@ const ImportRequestModal = (props: ImportDocumentModalProps) => {
               variant='standard'
               required
               disabled={rooms.length === 0}
-              error={rooms.length === 0}
-              helperText={rooms.length === 0 ? 'There is no room in this department' : ''}
             >
               {rooms.map((room) => (
                 <MenuItem key={room.id} value={room.id}>
@@ -350,8 +358,8 @@ const ImportRequestModal = (props: ImportDocumentModalProps) => {
               variant='standard'
               required
               disabled={lockers.length === 0}
-              error={lockers.length === 0}
-              helperText={lockers.length === 0 ? 'There is no locker in this room' : ''}
+              error={selectedRoom && lockers.length === 0}
+              helperText={selectedRoom && lockers.length === 0 ? 'There is no locker in this room' : ''}
             >
               {lockers.map((locker) => (
                 <MenuItem key={locker.id} value={locker.id}>
@@ -375,8 +383,8 @@ const ImportRequestModal = (props: ImportDocumentModalProps) => {
               variant='standard'
               required
               disabled={folders.length === 0}
-              error={folders.length === 0}
-              helperText={folders.length === 0 ? 'There is no folder in this locker' : ''}
+              error={selectedLocker && folders.length === 0}
+              helperText={selectedLocker && folders.length === 0 ? 'There is no folder in this locker' : ''}
             >
               {folders.map((folder) => (
                 <MenuItem key={folder.id} value={folder.id}>
@@ -401,9 +409,9 @@ const ImportRequestModal = (props: ImportDocumentModalProps) => {
               value={files}
               onChange={(selectedFiles: File[]) => handleFileChange(selectedFiles)}
               maxFiles={1}
+              maxSize={1024 * 1024 * 8}
               accept='application/pdf'
               title="Drag 'n' drop some files here, or click to select files"
-              maxSize={1024 * 1024 * 8}
             />
           </Box>
           {fileError && (

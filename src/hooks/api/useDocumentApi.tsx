@@ -48,10 +48,32 @@ const useDocumentApi = () => {
   )
 
   const getDocumentsInFolder = React.useCallback(
-    async (folderId: string) => {
-      const endpoint = `/${rootEndpoint}?folderId=${folderId}`
+    async (folderId: string, skipPagination = 0) => {
+      const endpoint = `/${rootEndpoint}`
+      const params = {
+        folderId: folderId,
+        skipPagination: skipPagination
+      }
       try {
-        const response = await callApi('get', endpoint)
+        const response = await callApi('get', endpoint, {}, params)
+        return response
+      } catch (error) {
+        console.log(error)
+      }
+    },
+    [callApi]
+  )
+
+  const findDocument = React.useCallback(
+    async (keyword: string, skipPagination = 0) => {
+      const endpoint = `/${rootEndpoint}`
+      const params = {
+        keyword: keyword,
+        skipPagination: skipPagination
+      }
+
+      try {
+        const response = await callApi('get', endpoint, {}, params)
         return response
       } catch (error) {
         console.log(error)
@@ -133,6 +155,7 @@ const useDocumentApi = () => {
     getDocumentsInFolder,
     getDocument,
     getDocumentBarcode,
+    findDocument,
     createDocument,
     uploadDocumentPdf,
     confirmDocument,

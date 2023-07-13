@@ -18,7 +18,32 @@ const useStatisticApi = () => {
     [callApi]
   )
 
-  return { getStatistic }
+  const getImportRequestStatistic = React.useCallback(
+    async (year: number) => {
+      const endpoint = `/${rootEndpoint}/status-import-request/${year}`
+      try {
+        const response = await callApi('get', endpoint)
+        return response
+      } catch (error) {
+        console.log(error)
+      }
+    },
+    [callApi]
+  )
+  const getBorrowRequestStatistic = React.useCallback(
+    async (year: number) => {
+      const endpoint = `/${rootEndpoint}/status-borrow-request/${year}`
+      try {
+        const response = await callApi('get', endpoint)
+        return response
+      } catch (error) {
+        console.log(error)
+      }
+    },
+    [callApi]
+  )
+
+  return { getStatistic, getImportRequestStatistic, getBorrowRequestStatistic }
 }
 
 export default useStatisticApi

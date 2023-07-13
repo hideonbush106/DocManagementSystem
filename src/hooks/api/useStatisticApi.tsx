@@ -43,7 +43,20 @@ const useStatisticApi = () => {
     [callApi]
   )
 
-  return { getStatistic, getImportRequestStatistic, getBorrowRequestStatistic }
+  const getMonthlyRequestStatistic = React.useCallback(
+    async (year: number) => {
+      const endpoint = `/${rootEndpoint}/request-monthly-report/${year}`
+      try {
+        const response = await callApi('get', endpoint)
+        return response
+      } catch (error) {
+        console.log(error)
+      }
+    },
+    [callApi]
+  )
+
+  return { getStatistic, getImportRequestStatistic, getBorrowRequestStatistic, getMonthlyRequestStatistic }
 }
 
 export default useStatisticApi

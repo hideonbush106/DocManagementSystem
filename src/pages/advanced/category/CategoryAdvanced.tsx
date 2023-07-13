@@ -166,7 +166,11 @@ const CategoryAdvanced = () => {
                 {categories.map((category) => (
                   <ListItemButton
                     key={category.id}
-                    sx={{ paddingLeft: { sm: '8rem', xs: '1rem' }, paddingRight: { sm: '5rem', xs: '1rem' } }}
+                    sx={{
+                      paddingLeft: { sm: '8rem', xs: '1rem' },
+                      paddingRight: { sm: '5rem', xs: '1rem' },
+                      cursor: 'default'
+                    }}
                     disableTouchRipple
                   >
                     <ListItemIcon sx={{ color: 'var(--black-color)', minWidth: { sm: '56px', xs: '40px' } }}>

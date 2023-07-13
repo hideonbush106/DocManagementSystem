@@ -12,10 +12,10 @@ interface SidebarProps {
 
 const OptionList: React.FC<SidebarProps> = ({ prop }) => {
   const { user, logout } = useAuth()
-  const Role = user?.role.toLocaleUpperCase() === 'STAFF' ? OptionsStaff : OptionsEmp
+  const options = user?.role.toLocaleUpperCase() === 'STAFF' ? OptionsStaff : OptionsEmp
   const [btn, setButton] = useState<number | null>(null) //dashboard is default option
 
-  const department = user?.role.toLocaleUpperCase() === 'STAFF' ? 'Staff' : user?.department
+  const role = user?.role.toLocaleUpperCase() === 'STAFF' ? 'Staff' : 'Employee'
 
   const handleClick = (id: number) => {
     setButton(id)
@@ -26,13 +26,13 @@ const OptionList: React.FC<SidebarProps> = ({ prop }) => {
 
   const location = useLocation()
   useEffect(() => {
-    const option = Role.find((option) => location.pathname.includes(`/${option.link}`))
+    const option = options.find((option) => location.pathname.includes(`/${option.link}`))
     if (option) {
       setButton(option.id)
     } else {
       setButton(null)
     }
-  }, [location, Role])
+  }, [location, options])
 
   return (
     <>
@@ -41,9 +41,9 @@ const OptionList: React.FC<SidebarProps> = ({ prop }) => {
         <Typography align='center' sx={{ width: '100%', fontWeight: 600 }}>
           {user?.name}
         </Typography>
-        <Typography color={'var(--gray-color)'}>{department}</Typography>
+        <Typography color={'var(--gray-color)'}>{role}</Typography>
       </Avatar>
-      {Role.map((option) => (
+      {options.map((option) => (
         <Link
           key={option.id}
           to={`/${option.link}`}

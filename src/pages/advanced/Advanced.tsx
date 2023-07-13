@@ -17,7 +17,7 @@ const Advanced = () => {
     { label: 'Folder', component: <FolderAdvanced />, icon: Folder },
     { label: 'Category', component: <CategoryAdvanced />, icon: Category }
   ]
-  return user?.role === 'staff' ? (
+  return user?.role === 'STAFF' ? (
     <>
       <NavTabs tabs={tabs} />
     </>

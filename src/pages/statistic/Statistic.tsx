@@ -117,11 +117,15 @@ const Statistic = () => {
                 sx={{
                   width: '60px',
                   height: '32px',
-                  '.MuiInputBase-input': { padding: '2px 5px', textAlign: 'center' },
+                  '.MuiInputBase-input': { padding: '2px 5px', textAlign: 'center', visibility: 'hidden' },
                   '.MuiInputBase-root': {
                     fontSize: '0.8rem'
+                  },
+                  '.MuiOutlinedInput-notchedOutline': {
+                    display: 'none'
                   }
                 }}
+                yearsPerRow={3}
                 shouldDisableYear={shouldDisableYear}
                 onChange={handleYearImportChange}
               />
@@ -145,11 +149,15 @@ const Statistic = () => {
                 sx={{
                   width: '60px',
                   height: '32px',
-                  '.MuiInputBase-input': { padding: '2px 5px', textAlign: 'center' },
+                  '.MuiInputBase-input': { padding: '2px 5px', textAlign: 'center', visibility: 'hidden' },
                   '.MuiInputBase-root': {
                     fontSize: '0.8rem'
+                  },
+                  '.MuiOutlinedInput-notchedOutline': {
+                    display: 'none'
                   }
                 }}
+                yearsPerRow={3}
                 shouldDisableYear={shouldDisableYear}
                 onChange={handleYearRequestChange}
               />

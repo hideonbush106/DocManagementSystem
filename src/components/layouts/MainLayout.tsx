@@ -110,6 +110,7 @@ const MainLayout = (props: Props) => {
       } finally {
         handleReturnDocumentModalClose()
         handleReturnConfirmModalOpen()
+        setScanning(false)
       }
     }
   }

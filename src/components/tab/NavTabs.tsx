@@ -3,6 +3,7 @@ import Box from '@mui/material/Box'
 import Tabs from '@mui/material/Tabs'
 import Tab, { TabProps } from '@mui/material/Tab'
 import { SvgIconComponent } from '@mui/icons-material'
+import { useMediaQuery, useTheme } from '@mui/material'
 // import Notification from '../notification/Notification'
 
 interface LinkTabProps extends TabProps {
@@ -12,24 +13,32 @@ interface LinkTabProps extends TabProps {
 }
 
 function LinkTab(props: LinkTabProps) {
+  const theme = useTheme()
+  const md = useMediaQuery(theme.breakpoints.down('md'))
+
   return (
-    <Tab
-      component='div'
-      onClick={(event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-        event.preventDefault()
-      }}
-      icon={props.iconprop ? React.createElement(props.iconprop) : ''}
-      iconPosition='start'
-      sx={{
-        fontWeight: 'bold',
-        backgroundColor: 'var(--background-dark-color)',
-        borderRadius: '10px 10px 0 0',
-        padding: '0 20px',
-        lineHeight: 1,
-        fontFamily: 'inherit'
-      }}
-      {...props}
-    />
+    <>
+      <Tab
+        component='div'
+        onClick={(event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+          event.preventDefault()
+        }}
+        icon={props.iconprop ? React.createElement(props.iconprop) : ''}
+        iconPosition='start'
+        sx={{
+          fontWeight: 'bold',
+          backgroundColor: 'var(--background-dark-color)',
+          borderRadius: '10px 10px 0 0',
+          padding: md ? '0' : '0 15px',
+          minWidth: 'fit-content',
+          maxWidth: '90px',
+          lineHeight: 1,
+          fontFamily: 'inherit',
+          flex: 1
+        }}
+        {...props}
+      />
+    </>
   )
 }
 
@@ -38,6 +47,9 @@ interface NavTabsProps {
 }
 
 const NavTabs = ({ tabs }: NavTabsProps) => {
+  const theme = useTheme()
+  const md = useMediaQuery(theme.breakpoints.down('md'))
+
   const [value, setValue] = React.useState(0)
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
@@ -54,7 +66,7 @@ const NavTabs = ({ tabs }: NavTabsProps) => {
 
   return (
     <>
-      <Box sx={{ width: 'fit-content' }}>
+      <Box sx={{ width: '100%' }}>
         <Tabs
           value={value}
           onChange={handleChange}
@@ -70,7 +82,7 @@ const NavTabs = ({ tabs }: NavTabsProps) => {
           }}
         >
           {tabs.map((tab, index) => (
-            <LinkTab key={index} label={tab.label} iconprop={tab.icon} />
+            <LinkTab key={index} label={!md ? tab.label : ''} iconprop={tab.icon} />
           ))}
         </Tabs>
       </Box>

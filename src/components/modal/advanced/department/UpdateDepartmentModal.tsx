@@ -12,7 +12,11 @@ interface UpdateDepartmentProps {
 
 const UpdateDepartmentModal = (props: UpdateDepartmentProps) => {
   const validationSchema = yup.object({
-    name: yup.string().trim().required('Department name is required')
+    name: yup
+      .string()
+      .trim()
+      .required('Department name is required')
+      .max(20, 'Department name is less than 20 characters')
   })
 
   const formik = useFormik({

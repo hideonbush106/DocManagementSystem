@@ -15,6 +15,7 @@ import React, { useEffect, useState } from 'react'
 import { DeleteButton } from '~/components/button/advanced/DeleteButton'
 import { UpdateButton } from '~/components/button/advanced/UpdateButton'
 import CreateAdvancedModal from '~/components/modal/advanced/CreateAdvancedModal'
+import QRCodeModal from '~/components/modal/advanced/QRCodeModal'
 import { CreateFolder, Department, Folder, Locker, Room, UpdateFolder } from '~/global/interface'
 import { notifyError, notifySuccess } from '~/global/toastify'
 import useDepartmentApi from '~/hooks/api/useDepartmentApi'
@@ -189,8 +190,28 @@ const FolderAdvanced = () => {
     await fetchFolders()
   }
 
+  const [isQRCodeOpen, setQRCodeOpen] = useState(false)
+  const handleQRCodeClose = () => {
+    setQRCodeOpen(false)
+  }
+  const handleQRCodeClick = (id: string) => {
+    fetchFolderQRCode(id)
+    setQRCodeOpen(true)
+  }
+
+  const [QRCode, setQRCode] = React.useState('')
+  const { folderQRcode } = useFolderApi()
+  const fetchFolderQRCode = async (id: string) => {
+    setQRCode('')
+    const result = await folderQRcode(id)
+    if (result) {
+      setQRCode(result.data.barcode)
+    }
+  }
+
   return (
     <>
+      {QRCode && <QRCodeModal open={isQRCodeOpen} onClose={handleQRCodeClose} qrCode={QRCode} />}
       {selectedDepartment.id && selectedRoom && selectedLocker && (
         <CreateAdvancedModal<CreateFolder>
           open={isModalOpen}
@@ -261,7 +282,9 @@ const FolderAdvanced = () => {
                           <ListItemButton
                             key={folder.id}
                             sx={{ paddingLeft: { sm: '8rem', xs: '1rem' }, paddingRight: { sm: '5rem', xs: '1rem' } }}
-                            disableTouchRipple
+                            onClick={() => {
+                              handleQRCodeClick(folder.id)
+                            }}
                           >
                             <ListItemIcon sx={{ color: 'var(--black-color)', minWidth: { sm: '56px', xs: '40px' } }}>
                               <FolderIcon />

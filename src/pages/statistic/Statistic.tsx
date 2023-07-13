@@ -1,8 +1,13 @@
 import { Grid, Paper, Typography } from '@mui/material'
 import AnalysisChart from '~/components/chart/AnalysisChart'
 import { TitleUnderline } from './Statistic.styled'
+import MonthlyChart from '~/components/chart/MonthlyChart'
 
 const Statistic = () => {
+  const monthlyData = [
+    { name: 'Imported', color: 'var(--primary-color)', value: [20, 40, 50, 70] },
+    { name: 'Borrowed', color: 'var(--red-color)', value: [60, 60, 40, 60] }
+  ]
   const importData = [
     { name: 'HR', color: 'var(--primary-color)', value: 60 },
     { name: 'Acc', color: 'var(--green-color)', value: 40 },
@@ -19,7 +24,15 @@ const Statistic = () => {
 
   return (
     <Grid container spacing={2}>
-      <Grid item xs={12} lg={8}></Grid>
+      <Grid item xs={12} lg={8}>
+        <Paper sx={{ backgroundColor: 'var(--white-color)', boxShadow: 'none', height: '413px', padding: '12px 16px' }}>
+          <Typography fontSize='13px' color='#797979' fontWeight={600}>
+            MONTHLY REPORTS (FILES)
+          </Typography>
+          <TitleUnderline />
+          <MonthlyChart items={monthlyData} />
+        </Paper>
+      </Grid>
       <Grid item xs={12} md={6} lg={4}>
         <Paper sx={{ backgroundColor: 'var(--white-color)', boxShadow: 'none', height: '413px', padding: '12px 16px' }}>
           <Typography fontSize='13px' color='#797979' fontWeight={600}>

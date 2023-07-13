@@ -197,3 +197,13 @@ export interface DocumentDetail {
 export interface VerifiedRequset {
   QRCode: string
 }
+
+export interface ImportStatistic {
+  name: string
+  count: string
+}
+
+export interface BorrowStatistic {
+  name: string
+  count: string
+}

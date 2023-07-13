@@ -83,7 +83,7 @@ const ImportRequestEmployee = () => {
   }, [page, selectedStatus])
   const count = totalPages
   const _DATA = usePagination(importRequests, PER_PAGE)
-  const handleChange = (e: React.ChangeEvent<unknown>, pageNumber: number) => {
+  const handleChange = (_e: React.ChangeEvent<unknown>, pageNumber: number) => {
     setPage(pageNumber)
     _DATA.jump(pageNumber)
   }

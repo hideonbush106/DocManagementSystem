@@ -259,7 +259,7 @@ const ApprovalsTable: React.FC<ApprovalsTableProps> = (props: ApprovalsTableProp
               onClick: () => {
                 handleDetailOpen(params.row.id as string)
               }
-            },
+            }
             //{ text: 'Delete', onClick: () => console.log('Delete clicked') }
           ]
           return <ActionsCell id={params.row.id as number} menuItems={menuItems} />

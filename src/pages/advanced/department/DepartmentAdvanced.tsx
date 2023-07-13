@@ -101,7 +101,11 @@ const DepartmentAdvanced = () => {
             {departments.map((dept) => (
               <ListItemButton
                 key={dept.id}
-                sx={{ paddingLeft: { sm: '5rem', xs: '1rem' }, paddingRight: { sm: '5rem', xs: '1rem' } }}
+                sx={{
+                  paddingLeft: { sm: '5rem', xs: '1rem' },
+                  paddingRight: { sm: '5rem', xs: '1rem' },
+                  cursor: 'default'
+                }}
                 disableTouchRipple
               >
                 <ListItemIcon sx={{ color: 'var(--black-color)' }}>

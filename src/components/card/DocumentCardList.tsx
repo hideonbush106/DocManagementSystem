@@ -1,8 +1,9 @@
-import { Grid } from '@mui/material'
+import { Grid, Pagination } from '@mui/material'
 import { Link } from 'react-router-dom'
 import DocumentCard from './DocumentCard'
 import { Apartment, SvgIconComponent, Folder, DescriptionOutlined, MeetingRoom, ViewModule } from '@mui/icons-material'
 import FileCard from './FileCard'
+import { useEffect, useState } from 'react'
 
 type Props = {
   items: {
@@ -10,10 +11,34 @@ type Props = {
     name: string
   }[]
   type: 'department' | 'room' | 'locker' | 'folder' | 'file'
+  itemId?: string | null
 }
 
 const DocumentCardList = (props: Props) => {
+  const ITEMS_PER_PAGE = 15
   const { items, type } = props
+  const [page, setPage] = useState(1)
+
+  useEffect(() => {
+    if (props.itemId) {
+      const itemIndex = items.findIndex((item) => item.id === props.itemId)
+      if (itemIndex !== -1) setPage(Math.ceil(itemIndex / ITEMS_PER_PAGE))
+    }
+  }, [props.itemId, items])
+
+  const totalPages = Math.ceil(items.length / ITEMS_PER_PAGE)
+
+  const handleChange = (_event: React.ChangeEvent<unknown>, value: number) => {
+    setPage(value)
+  }
+
+  // sort by name
+  items.sort((a, b) => {
+    if (a.name < b.name) return -1
+    if (a.name > b.name) return 1
+    return 0
+  })
+
   let icon: {
     Component: SvgIconComponent
     color?: string
@@ -41,18 +66,31 @@ const DocumentCardList = (props: Props) => {
   }
 
   return (
-    <Grid container spacing={3} sx={{ marginTop: '0.5rem' }}>
-      {items.map((item) => (
-        <Grid key={item.id} item xs={12} sm={4} md={6} lg={4}>
-          {type === 'file' ? (
-            <FileCard icon={icon} name={item.name} fileId={item.id} fileName={item.name} id={item.id} />
-          ) : (
-            <Link to={`${type}/${item.id}`}>
-              <DocumentCard icon={icon} name={item.name} key={item.id} />
-            </Link>
-          )}
-        </Grid>
-      ))}
+    <Grid container height='100%' spacing={3}>
+      <Grid item container spacing={3} sx={{ marginTop: '0.5rem' }} height='fit-content'>
+        {items.slice((page - 1) * ITEMS_PER_PAGE, (page - 1) * ITEMS_PER_PAGE + ITEMS_PER_PAGE).map((item) => (
+          <Grid key={item.id} item xs={12} sm={4} md={6} lg={4}>
+            {type === 'file' ? (
+              <FileCard icon={icon} name={item.name} fileId={item.id} fileName={item.name} id={item.id} action />
+            ) : (
+              <Link to={`${type}/${item.id}`}>
+                <DocumentCard icon={icon} name={item.name} key={item.id} />
+              </Link>
+            )}
+          </Grid>
+        ))}
+      </Grid>
+      <Grid item mt='auto' xs={10}>
+        <Pagination
+          size='large'
+          count={totalPages}
+          page={page}
+          onChange={handleChange}
+          variant='outlined'
+          shape='rounded'
+          sx={{ '& .MuiPagination-ul': { gap: '5px 0' } }}
+        />
+      </Grid>
     </Grid>
   )
 }

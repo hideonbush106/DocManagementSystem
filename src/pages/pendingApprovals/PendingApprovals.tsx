@@ -4,6 +4,8 @@ import SearchField from '~/components/TextField/SearchField'
 import { Typography } from '@mui/material'
 import { useEffect, useState } from 'react'
 import useDocumentApi from '~/hooks/api/useDocumentApi'
+import useAuth from '~/hooks/useAuth'
+import { Navigate } from 'react-router-dom'
 
 interface PaginationModel {
   page: number
@@ -11,6 +13,7 @@ interface PaginationModel {
 }
 
 const PendingApprovals = () => {
+  const { user } = useAuth()
   const [searchData, setSearchData] = useState('')
   const [isLoading, setIsLoading] = useState(true)
   const { getPendingDocuments } = useDocumentApi()
@@ -37,16 +40,18 @@ const PendingApprovals = () => {
   }
 
   useEffect(() => {
-    fetchData()
+    if (user?.role === 'STAFF') {
+      fetchData()
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [paginationModel, searchData])
 
-  return (
+  return user?.role === 'STAFF' ? (
     <PendingApprovalsWrapper>
       <HeaderWrapper>
         <SearchField
-          onChange={(e) => {
-            setSearchData(e.target.value)
+          handleSearch={(value) => {
+            setSearchData(value)
           }}
         />
       </HeaderWrapper>
@@ -62,6 +67,8 @@ const PendingApprovals = () => {
         handlePaginationModelChange={handlePaginationModelChange}
       />
     </PendingApprovalsWrapper>
+  ) : (
+    <Navigate to='/dashboard' replace />
   )
 }
 

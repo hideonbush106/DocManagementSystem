@@ -16,6 +16,8 @@ import SpeedDialCustom from '~/components/speed-dial/SpeedDial'
 import ImportDocumentModal from '~/components/modal/ImportDocumentModal'
 import AddRoundedIcon from '@mui/icons-material/AddRounded'
 import KeyboardReturnRoundedIcon from '@mui/icons-material/KeyboardReturnRounded'
+import useDocumentApi from '~/hooks/api/useDocumentApi'
+import SearchDocumentResult from '~/components/modal/SearchDocumentResult'
 import ImportRequestModal from '~/components/modal/ImportRequestModal'
 import Scanner from '~/components/modal/Scanner'
 import ReturnConfirmModal from '~/components/modal/ReturnConfirmModal'
@@ -24,8 +26,12 @@ import useDocumentApi from '~/hooks/api/useDocumentApi'
 const DocumentDisplay = () => {
   const [speedDialOpen, setSpeedDialOpen] = useState(false)
   const [importDocumentModalOpen, setImportDocumentModalOpen] = useState(false)
-  const [isImportRequestModalOpen, setIsImportRequestModalOpen] = useState(false)
+  const [importRequestModalOpen, setImportRequestModalOpen] = useState(false)
+  const [searchResultModalOpen, setSearchResultModalOpen] = useState(false)
+  const [searchResult, setSearchResult] = useState<File[]>([])
+  const [searchResultLoading, setSearchResultLoading] = useState(false)
   const { documentTree, loading } = useData()
+  const { findDocument } = useDocumentApi()
   const { user } = useAuth()
   const role = user?.role
   const theme = useTheme()
@@ -144,14 +150,28 @@ const DocumentDisplay = () => {
     return current / capacity >= 0.8
   }
 
+  const handleSearch = async (value: string) => {
+    setSearchResultLoading(true)
+    setSearchResultModalOpen(true)
+    const { data: documents } = await findDocument(value, 1)
+    setSearchResult(documents.data)
+    setSearchResultLoading(false)
+  }
+
   return (
     <DocumentWrapper>
+      <SearchDocumentResult
+        open={searchResultModalOpen}
+        handleClose={() => {
+          setSearchResultModalOpen(false)
+          setSearchResult([])
+        }}
+        items={searchResult}
+        loading={searchResultLoading}
+      />
       <NavWrapper>
-        <SearchField
-          onChange={(e) => {
-            console.log(e.target.value)
-          }}
-        />
+        <SearchField handleSearch={handleSearch} />
+        {/* render when screen above large */}
         {!belowLg &&
           (role === 'STAFF' ? (
             <ButtonWrapper>

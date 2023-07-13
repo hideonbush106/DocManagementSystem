@@ -31,7 +31,7 @@ const UpdateDepartmentModal = (props: UpdateDepartmentProps) => {
     }
   })
 
-  const nameUnchanged = formik.values.name === props.name
+  const nameUnchanged = formik.values.name.trim() === props.name
 
   return (
     <>

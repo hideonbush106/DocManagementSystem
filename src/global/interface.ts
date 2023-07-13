@@ -201,3 +201,13 @@ export interface DocumentDetail {
 export interface VerifiedRequset {
   QRCode: string
 }
+
+export interface ImportAnalysisData {
+  name: string
+  count: string
+}
+
+export interface BorrowAnalysisData {
+  name: string
+  count: string
+}

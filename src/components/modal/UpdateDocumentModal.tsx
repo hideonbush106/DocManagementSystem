@@ -39,8 +39,8 @@ const UpdateDocumentModal = (props: UpdateDocumentProps) => {
   const { updateDocument, uploadDocumentPdf } = useDocumentApi()
 
   const validationSchema = yup.object({
-    name: yup.string().trim(),
-    description: yup.string().trim(),
+    name: yup.string().trim().required('Document name is required'),
+    description: yup.string().trim().required('Description is required'),
     category: yup.object({
       id: yup.string()
     })
@@ -141,11 +141,11 @@ const UpdateDocumentModal = (props: UpdateDocumentProps) => {
             label='Document name'
             name='name'
             variant='standard'
+            placeholder={document?.name}
             fullWidth
             onChange={formik.handleChange}
-            required
-            error={formik.touched.name && Boolean(formik.errors.name)}
-            helperText={formik.touched.name && formik.errors.name}
+            error={Boolean(formik.errors.name)}
+            helperText={formik.errors.name}
           />
           <TextField
             sx={{ my: 1 }}
@@ -153,18 +153,17 @@ const UpdateDocumentModal = (props: UpdateDocumentProps) => {
             value={formik.values.description}
             name='description'
             variant='standard'
+            placeholder={document?.description}
             fullWidth
             onChange={formik.handleChange}
             multiline
             maxRows={4}
-            required
-            error={formik.touched.description && Boolean(formik.errors.description)}
-            helperText={formik.touched.description && formik.errors.description}
+            error={Boolean(formik.errors.description)}
+            helperText={formik.errors.description}
           />
           <Box display={'flex'} sx={{ width: '100%', justifyContent: 'space-between', flexWrap: 'wrap' }}>
             <Typography
               sx={{
-                fontWeight: 600,
                 color: 'var(--black-color)',
                 my: 1.5,
                 fontSize: {
@@ -191,7 +190,6 @@ const UpdateDocumentModal = (props: UpdateDocumentProps) => {
               label='Category Type'
               variant='standard'
               name='category.id'
-              required
               disabled={categories.length === 0}
             >
               {categories.map((cate) => (
@@ -203,7 +201,6 @@ const UpdateDocumentModal = (props: UpdateDocumentProps) => {
           </Box>
           <Typography
             sx={{
-              fontWeight: 600,
               color: 'var(--black-color)',
               my: 1.5,
               fontSize: {

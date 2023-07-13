@@ -98,7 +98,10 @@ const MainLayout = (props: Props) => {
             action: handleImportDocumentModalOpen,
             style: {
               backgroundColor: 'var(--primary-color)',
-              color: 'var(--white-color)'
+              color: 'var(--white-color)',
+              '&:hover': {
+                backgroundColor: 'var(--primary-dark-color)'
+              }
             }
           },
           {
@@ -107,7 +110,10 @@ const MainLayout = (props: Props) => {
             action: handleImportDocumentModalOpen,
             style: {
               backgroundColor: 'var(--green-color)',
-              color: 'var(--white-color)'
+              color: 'var(--white-color)',
+              '&:hover': {
+                backgroundColor: 'var(--green-dark-color)'
+              }
             }
           }
         ]

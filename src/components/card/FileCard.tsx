@@ -122,13 +122,17 @@ const FileCard: React.FC<Props> = (props: Props) => {
         borderRadius: '10px',
         alignItems: 'center',
         justifyContent: 'space-between',
+        position: 'relative',
+        overflow: 'hidden',
         ...(onClick && { cursor: 'pointer' })
       }}
     >
       <Box onClick={onClick} width='100%'>
         <DocumentCard icon={icon} name={name} />
       </Box>
-      {action && <ActionsCell menuItems={actions} />}
+      <Box style={{ position: 'absolute', right: 0, backgroundColor: 'white' }}>
+        {action && <ActionsCell menuItems={actions} />}
+      </Box>
       <Detail document={document} barcode={barcode} open={isDetailModalOpen} onClose={handleDetailClose} />
       <BorrowDocumentModal
         open={isBorrowModalOpen}

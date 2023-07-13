@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import { Box, Paper } from '@mui/material'
 import { SvgIconComponent } from '@mui/icons-material'
 import DocumentCard from './DocumentCard'
 import ActionsCell from '../table/ActionCell'
@@ -18,9 +19,11 @@ type Props = {
   id: string
   fileId: string
   fileName: string
+  action?: boolean
+  onClick?: () => void
 }
 const FileCard: React.FC<Props> = (props: Props) => {
-  const { icon, name, fileId, fileName } = props
+  const { icon, name, fileId, fileName, action, onClick } = props
   const [isBorrowModalOpen, setIsBorrowModalOpen] = useState(false)
   const [detail, setDetail] = useState(false)
   const { user } = useAuth()
@@ -37,7 +40,6 @@ const FileCard: React.FC<Props> = (props: Props) => {
   }
   const handleOpenBorrowModal = () => {
     setIsBorrowModalOpen(true)
-    console.log(fileId)
   }
 
   const handleCloseBorrowModal = () => {
@@ -91,18 +93,28 @@ const FileCard: React.FC<Props> = (props: Props) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [props.id])
   return (
-    <DocumentCard icon={icon} name={name}>
-      <div style={{ marginLeft: 'auto', marginRight: '-18px' }}>
-        <ActionsCell menuItems={actions} />
-        <Detail document={document} barcode={barcode} open={detail} onClose={handleDetailClose} />
-        <BorrowDocumentModal
-          open={isBorrowModalOpen}
-          handleClose={handleCloseBorrowModal}
-          fileId={fileId}
-          fileName={fileName}
-        />
-      </div>
-    </DocumentCard>
+    <Paper
+      elevation={0}
+      sx={{
+        display: 'flex',
+        borderRadius: '10px',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        ...(onClick && { cursor: 'pointer' })
+      }}
+    >
+      <Box onClick={onClick} width='100%'>
+        <DocumentCard icon={icon} name={name} />
+      </Box>
+      {action && <ActionsCell menuItems={actions} />}
+      <Detail document={document} barcode={barcode} open={detail} onClose={handleDetailClose} />
+      <BorrowDocumentModal
+        open={isBorrowModalOpen}
+        handleClose={handleCloseBorrowModal}
+        fileId={fileId}
+        fileName={fileName}
+      />
+    </Paper>
   )
 }
 

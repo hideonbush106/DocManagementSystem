@@ -1,31 +1,49 @@
-import React from 'react'
 import useApi from './useApi'
+import React from 'react'
 
 const useStatisticApi = () => {
-  const callApi = useApi()
   const rootEndpoint = 'statistics'
+  const callApi = useApi()
 
-  const getImportStatistic = React.useCallback(async () => {
-    const endpoint = `/${rootEndpoint}/import`
-    try {
-      const response = await callApi('get', endpoint)
-      return response
-    } catch (error) {
-      console.log(error)
-    }
-  }, [callApi])
+  const getStatistic = React.useCallback(
+    async (chart: string) => {
+      const endpoint = `/${rootEndpoint}/${chart}`
+      try {
+        const response = await callApi('get', endpoint)
+        return response
+      } catch (error) {
+        console.log(error)
+      }
+    },
+    [callApi]
+  )
 
-  const getBorrowStatistic = React.useCallback(async () => {
-    const endpoint = `/${rootEndpoint}/borrow`
-    try {
-      const response = await callApi('get', endpoint)
-      return response
-    } catch (error) {
-      console.log(error)
-    }
-  }, [callApi])
+  const getImportRequestStatistic = React.useCallback(
+    async (year: number) => {
+      const endpoint = `/${rootEndpoint}/status-import-request/${year}`
+      try {
+        const response = await callApi('get', endpoint)
+        return response
+      } catch (error) {
+        console.log(error)
+      }
+    },
+    [callApi]
+  )
+  const getBorrowRequestStatistic = React.useCallback(
+    async (year: number) => {
+      const endpoint = `/${rootEndpoint}/status-borrow-request/${year}`
+      try {
+        const response = await callApi('get', endpoint)
+        return response
+      } catch (error) {
+        console.log(error)
+      }
+    },
+    [callApi]
+  )
 
-  return { getImportStatistic, getBorrowStatistic }
+  return { getStatistic, getImportRequestStatistic, getBorrowRequestStatistic }
 }
 
 export default useStatisticApi

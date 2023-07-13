@@ -2,7 +2,7 @@
 import { DataGrid, GridColDef, GridRenderCellParams } from '@mui/x-data-grid'
 import ActionsCell from './ActionCell'
 import PropTypes, { Validator } from 'prop-types'
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import useDocumentApi from '~/hooks/api/useDocumentApi'
 import { ConfirmButton } from '../button/Button'
 import Scanner from '../modal/Scanner'
@@ -15,7 +15,11 @@ import { Box, CircularProgress } from '@mui/material'
 
 interface ApprovalsTableProps {
   view: 'dashboard' | 'full'
-  searchData?: string
+  rows: never[]
+  rowCount: number
+  loading: boolean
+  paginationModel: PaginationModel
+  handlePaginationModelChange: (newPaginationModel: PaginationModel) => void
 }
 
 interface PaginationModel {
@@ -23,36 +27,26 @@ interface PaginationModel {
   pageSize: number
 }
 
-const ApprovalsTable: React.FC<ApprovalsTableProps> = ({ view, searchData }) => {
+const ApprovalsTable: React.FC<ApprovalsTableProps> = (props: ApprovalsTableProps) => {
+  let loading = props.loading
+  const { view, rows, rowCount, paginationModel, handlePaginationModelChange } = props
   let columns: GridColDef[] = []
-  const { getPendingDocuments, confirmDocument } = useDocumentApi()
   const [open, setOpen] = useState(false)
-  const [isLoading, setIsLoading] = useState(true)
-  const [data, setData] = useState([])
   const [documentId, setDocumentId] = useState('')
-  const [rowCountState, setRowCountState] = useState<number>(0)
-  const [paginationModel, setPaginationModel] = useState<PaginationModel>({
-    page: 0,
-    pageSize: view === 'full' ? 10 : 5
-  })
-  const [scanning, setScanning] = useState(true)
+  const [scanning, setScanning] = useState(false)
+  const { confirmDocument } = useDocumentApi()
 
-  const [detail, setDetail] = useState(false)
-  const [loadingData, setLoadingData] = useState(false)
-
-  const handleDetailOpen = async (id: string) => {
-    setLoadingData(true)
-    await fetchDetails(id)
-    setDetail(true)
-  }
-
-  const handleDetailClose = () => {
-    setDetail(false)
-  }
-
+  const [loadingDetail, setLoadingDetail] = useState(false)
   const { getDocument, getDocumentBarcode } = useDocumentApi()
   const [document, setDocument] = useState<DocumentDetail>()
   const [barcode, setBarcode] = useState<string>('')
+  const [openDetail, setOpenDetail] = useState(false)
+
+  const handleDetailOpen = async (id: string) => {
+    setLoadingDetail(true)
+    await fetchDetails(id)
+    setOpenDetail(true)
+  }
 
   const fetchDetails = async (id: string) => {
     try {
@@ -66,13 +60,17 @@ const ApprovalsTable: React.FC<ApprovalsTableProps> = ({ view, searchData }) => 
           setBarcode(barcode.data.barcode)
         }
       }
-      setLoadingData(false)
+      setLoadingDetail(false)
     } catch (error) {
       console.log(error)
     }
   }
 
-  const handleClose = () => {
+  const handleDetailClose = () => {
+    setOpenDetail(false)
+  }
+
+  const handleCloseScan = () => {
     setOpen(false)
   }
 
@@ -86,33 +84,15 @@ const ApprovalsTable: React.FC<ApprovalsTableProps> = ({ view, searchData }) => 
         if (result) {
           notifySuccess('Document confirmed successfully')
         }
-        setIsLoading(true)
+        loading = true
       } catch (error) {
         console.log(error)
       } finally {
-        handleClose()
+        handleCloseScan()
         setScanning(false)
       }
     }
   }
-
-  const fetchData = async () => {
-    setIsLoading(true)
-    const result = await getPendingDocuments(paginationModel.pageSize, paginationModel.page, searchData)
-    setData(result.data.data)
-    setRowCountState((prevRowCountState) => (result.data.total !== undefined ? result.data.total : prevRowCountState))
-    setIsLoading(false)
-  }
-
-  const handlePaginationModelChange = (newPaginationModel: PaginationModel) => {
-    setIsLoading(true)
-    setData([])
-    setPaginationModel(newPaginationModel)
-  }
-
-  useEffect(() => {
-    fetchData()
-  }, [paginationModel, searchData])
 
   let rowHeight = 60
   if (view === 'dashboard') {
@@ -296,9 +276,9 @@ const ApprovalsTable: React.FC<ApprovalsTableProps> = ({ view, searchData }) => 
         margin: '10px 0'
       }}
     >
-      <Scanner scanning={scanning} open={open} handleClose={handleClose} handleScan={handleScan} />
-      {!loadingData ? (
-        <Detail document={document} barcode={barcode} open={detail} onClose={handleDetailClose} />
+      <Scanner scanning={scanning} open={open} handleClose={handleCloseScan} handleScan={handleScan} />
+      {!loadingDetail ? (
+        <Detail document={document} barcode={barcode} open={openDetail} onClose={handleDetailClose} />
       ) : (
         <Box
           sx={{
@@ -325,10 +305,10 @@ const ApprovalsTable: React.FC<ApprovalsTableProps> = ({ view, searchData }) => 
         disableColumnMenu
         hideFooterSelectedRowCount
         rowHeight={rowHeight}
-        rows={data}
+        rows={rows}
         columns={columns}
-        rowCount={rowCountState}
-        loading={isLoading}
+        rowCount={rowCount}
+        loading={loading}
         pageSizeOptions={[paginationModel.pageSize]}
         paginationModel={paginationModel}
         paginationMode='server'
@@ -359,8 +339,7 @@ const ApprovalsTable: React.FC<ApprovalsTableProps> = ({ view, searchData }) => 
 }
 
 ApprovalsTable.propTypes = {
-  view: PropTypes.oneOf<'dashboard' | 'full'>(['dashboard', 'full']).isRequired as Validator<'dashboard' | 'full'>,
-  searchData: PropTypes.string
+  view: PropTypes.oneOf<'dashboard' | 'full'>(['dashboard', 'full']).isRequired as Validator<'dashboard' | 'full'>
 }
 
 export default ApprovalsTable

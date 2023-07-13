@@ -21,13 +21,12 @@ type Props = {
   fileName: string
 }
 const FileCard: React.FC<Props> = (props: Props) => {
+  const { user } = useAuth()
+  const role = user?.role.toLocaleUpperCase()
   const { icon, fileId, name, fileName } = props
   const [isBorrowModalOpen, setIsBorrowModalOpen] = useState(false)
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false)
   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false)
-
-  const { user } = useAuth()
-  const role = user?.role
   const { getDocument, getDocumentBarcode } = useDocumentApi()
   const [document, setDocument] = React.useState<DocumentDetail>()
   const [documentName, setDocumentName] = React.useState<string>(name)
@@ -67,7 +66,7 @@ const FileCard: React.FC<Props> = (props: Props) => {
       : {
           text: 'Borrow',
           onClick: () => handleOpenBorrowModal()
-        },
+        }
     // {
     //   text: 'Delete',
     //   onClick: () => {
@@ -84,9 +83,11 @@ const FileCard: React.FC<Props> = (props: Props) => {
       setDocumentName(document.data.name)
       setDocument(document.data)
       if ([DocumentStatus.PENDING, DocumentStatus.AVAILABLE, DocumentStatus.BORROWED].includes(document.data.status)) {
-        const barcode = await getDocumentBarcode(id)
-        if (barcode.data.barcode) {
-          setBarcode(barcode.data.barcode)
+        if (role !== 'EMPLOYEE') {
+          const barcode = await getDocumentBarcode(id)
+          if (barcode.data.barcode) {
+            setBarcode(barcode.data.barcode)
+          }
         }
       }
     } catch (error) {

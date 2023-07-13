@@ -8,15 +8,17 @@ import { useTheme } from '@mui/material/styles'
 import useMediaQuery from '@mui/material/useMediaQuery'
 // coponents
 import BasicLayout from './BasicLayout'
-import { ImportButton, ReturnButton } from '../button/Button.tsx'
+import { ImportButton, ImportRequestButton, ReturnButton } from '../button/Button.tsx'
 import ImportDocumentModal from '../modal/ImportDocumentModal'
 import SpeedDialCustom from '../speed-dial/SpeedDial.tsx'
+import useAuth from '~/hooks/useAuth.tsx'
 // custom hooks
 import useDepartmentApi from '~/hooks/api/useDepartmentApi.tsx'
 import useUserApi from '~/hooks/api/useUserApi.tsx'
 import useDocumentApi from '~/hooks/api/useDocumentApi.tsx'
 // styles
 import { IconDiv } from './MainLayout.styled.ts'
+import ImportRequestModal from '../modal/ImportRequestModal.tsx'
 
 type Props = {
   children: React.ReactNode
@@ -29,6 +31,7 @@ const MainLayout = (props: Props) => {
   const [documentCount, setDocumentCount] = React.useState()
   const [speedDialOpen, setSpeedDialOpen] = React.useState(false)
   const [importDocumentModalOpen, setImportDocumentModalOpen] = React.useState(false)
+  const [isImportRequestModalOpen, setIsImportRequestModalOpen] = React.useState(false)
   const theme = useTheme()
   const { getDepartmentCount } = useDepartmentApi()
   const { getUserCount } = useUserApi()
@@ -36,6 +39,8 @@ const MainLayout = (props: Props) => {
   const belowLg = useMediaQuery(theme.breakpoints.down('lg'))
   const belowMd = useMediaQuery(theme.breakpoints.down('md'))
   const { children, title } = props
+  const user = useAuth()
+  const role = user.user?.role
 
   React.useEffect(() => {
     const getData = async () => {
@@ -56,6 +61,13 @@ const MainLayout = (props: Props) => {
     setImportDocumentModalOpen(false)
   }
 
+  const handleImportReqquestModalOpen = () => {
+    setIsImportRequestModalOpen(true)
+  }
+
+  const handleImportReqquestModalClose = () => {
+    setIsImportRequestModalOpen(false)
+  }
   const items = [
     {
       icon: <img src='/assets/department.svg' alt='department' />,
@@ -77,32 +89,39 @@ const MainLayout = (props: Props) => {
     }
   ]
 
-  const actions = [
-    {
-      name: 'New Document',
-      icon: <AddRoundedIcon />,
-      action: handleImportDocumentModalOpen,
-      style: {
-        backgroundColor: 'var(--primary-color)',
-        color: 'var(--white-color)',
-        '&:hover': {
-          backgroundColor: 'var(--primary-dark-color)'
-        }
-      }
-    },
-    {
-      name: 'Return Document',
-      icon: <KeyboardReturnRoundedIcon />,
-      action: handleImportDocumentModalOpen,
-      style: {
-        backgroundColor: 'var(--green-color)',
-        color: 'var(--white-color)',
-        '&:hover': {
-          backgroundColor: 'var(--green-dark-color)'
-        }
-      }
-    }
-  ]
+  const actions =
+    role === 'STAFF'
+      ? [
+          {
+            name: 'New Document',
+            icon: <AddRoundedIcon />,
+            action: handleImportDocumentModalOpen,
+            style: {
+              backgroundColor: 'var(--primary-color)',
+              color: 'var(--white-color)'
+            }
+          },
+          {
+            name: 'Return Document',
+            icon: <KeyboardReturnRoundedIcon />,
+            action: handleImportDocumentModalOpen,
+            style: {
+              backgroundColor: 'var(--green-color)',
+              color: 'var(--white-color)'
+            }
+          }
+        ]
+      : [
+          {
+            name: 'Import Document',
+            icon: <AddRoundedIcon />,
+            action: handleImportReqquestModalOpen,
+            style: {
+              backgroundColor: 'var(--primary-color)',
+              color: 'var(--white-color)'
+            }
+          }
+        ]
 
   const handleSpeedDial = () => {
     setSpeedDialOpen((prev) => !prev)
@@ -156,23 +175,31 @@ const MainLayout = (props: Props) => {
               </>
             ))}
           </Grid>
-          {/* render when screen below large */}
-          {!belowLg && (
-            <Grid item container lg={4.55} spacing={1} justifyContent='flex-end'>
-              <Grid item>
-                <ImportButton text='New Document' />
+
+          {!belowLg &&
+            (role === 'STAFF' ? (
+              <Grid item container lg={4.55} spacing={1} justifyContent='flex-end'>
+                <Grid item>
+                  <ImportButton text='New Document' />
+                </Grid>
+                <Grid item>
+                  <ReturnButton text='Return Document' />
+                </Grid>
               </Grid>
-              <Grid item>
-                <ReturnButton text='Return Document' />
+            ) : (
+              <Grid item container lg={4.55} spacing={1} justifyContent='flex-end'>
+                <Grid item>
+                  <ImportRequestButton text='Import Document' />
+                </Grid>
               </Grid>
-            </Grid>
-          )}
+            ))}
         </Grid>
       )}
       {/* render when screen above large */}
       {belowLg && <SpeedDialCustom actions={actions} open={speedDialOpen} onClick={handleSpeedDial} />}
       {/* Modals */}
       <ImportDocumentModal open={importDocumentModalOpen} handleClose={handleImportDocumentModalClose} />
+      <ImportRequestModal open={isImportRequestModalOpen} handleClose={handleImportReqquestModalClose} />
       {children}
     </BasicLayout>
   )

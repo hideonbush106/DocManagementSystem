@@ -107,7 +107,7 @@ const DocumentDisplay = () => {
   const handleSearch = async (value: string) => {
     setSearchResultLoading(true)
     setSearchResultModalOpen(true)
-    const { data: documents } = await findDocument(value)
+    const { data: documents } = await findDocument(value, 1)
     setSearchResult(documents.data)
     setSearchResultLoading(false)
   }

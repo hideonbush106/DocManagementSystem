@@ -52,7 +52,7 @@ const SearchDocumentResult = ({ open, handleClose, items, loading }: Props) => {
                   onClick={() => {
                     handleClose()
                     navigate(
-                      `/document/department/${item.folder?.locker?.room?.department?.id}/room/${item.folder?.locker?.room?.id}/locker/${item.folder?.locker?.id}/folder/${item.folder?.id}`
+                      `/document/department/${item.folder?.locker?.room?.department?.id}/room/${item.folder?.locker?.room?.id}/locker/${item.folder?.locker?.id}/folder/${item.folder?.id}?documentId=${item.id}`
                     )
                   }}
                 />

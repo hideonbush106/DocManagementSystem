@@ -188,7 +188,7 @@ const useDocumentApi = () => {
     getPendingDocuments,
     getDocumentCount,
     checkReturnDocument,
-    returnDocument
+    returnDocument,
     getAllDocuments
   }
 }

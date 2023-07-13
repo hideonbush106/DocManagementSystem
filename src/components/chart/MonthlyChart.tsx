@@ -5,7 +5,7 @@ type Props = {
   items: {
     name: string
     color: string
-    value: (number | { x: number; y: number })[]
+    value: number[]
   }[]
 }
 
@@ -22,7 +22,7 @@ const MonthlyChart = ({ items }: Props) => {
       }
     },
     dataLabels: {
-      enabled: false
+      enabled: true
     },
     labels: items.map((item) => item.name),
     colors: items.map((item) => item.color),
@@ -70,7 +70,7 @@ const MonthlyChart = ({ items }: Props) => {
       }
     ],
     xaxis: {
-      categories: [2009, 2010, 2011, 2012]
+      categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
     },
     yaxis: [
       {
@@ -91,13 +91,7 @@ const MonthlyChart = ({ items }: Props) => {
   }
   const series: ApexAxisChartSeries = items.map((item) => ({
     name: item.name,
-    data: item.value.map((entry) => {
-      if (typeof entry === 'number') {
-        return entry
-      } else {
-        return entry.y
-      }
-    })
+    data: item.value
   }))
 
   return <Chart type='line' width='100%' height='95%' options={options} series={series} />

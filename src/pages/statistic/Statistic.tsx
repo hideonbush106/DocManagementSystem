@@ -5,8 +5,8 @@ import MonthlyChart from '~/components/chart/MonthlyChart'
 
 const Statistic = () => {
   const monthlyData = [
-    { name: 'Imported', color: 'var(--primary-color)', value: [20, 40, 50, 70] },
-    { name: 'Borrowed', color: 'var(--red-color)', value: [60, 60, 40, 60] }
+    { name: 'Imported', color: 'var(--primary-color)', value: [20, 40, 50, 70, 34, 57] },
+    { name: 'Borrowed', color: 'var(--red-color)', value: [60, 60, 40, 60, 56, 24] }
   ]
   const importData = [
     { name: 'HR', color: 'var(--primary-color)', value: 60 },

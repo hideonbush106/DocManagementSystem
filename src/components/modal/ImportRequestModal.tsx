@@ -409,6 +409,7 @@ const ImportRequestModal = (props: ImportDocumentModalProps) => {
               value={files}
               onChange={(selectedFiles: File[]) => handleFileChange(selectedFiles)}
               maxFiles={1}
+              maxSize={1024 * 1024 * 8}
               accept='application/pdf'
               title="Drag 'n' drop some files here, or click to select files"
             />

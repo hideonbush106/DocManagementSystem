@@ -78,7 +78,7 @@ const ColumnChart = ({ items }: Props) => {
     name: item.name,
     data: item.value
   }))
-  return <Chart type='bar' width='100%' height='95%' options={options} series={series} />
+  return <Chart type='bar' width='100%' height='90%' options={options} series={series} />
 }
 
 export default ColumnChart

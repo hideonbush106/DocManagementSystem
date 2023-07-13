@@ -80,13 +80,13 @@ const MainLayout = (props: Props) => {
       icon: <img src='/assets/user.svg' alt='member' />,
       iconBackground: 'purple',
       title: 'Members',
-      content: `${userCount ? userCount : ''} Members`
+      content: `${userCount || userCount === 0 ? userCount : ''} Members`
     },
     {
       icon: <img src='/assets/folder.svg' alt='document' />,
       iconBackground: 'green',
       title: 'Documents',
-      content: `${documentCount ? documentCount : ''} Files`
+      content: `${documentCount || documentCount === 0 ? documentCount : ''} Files`
     }
   ]
 

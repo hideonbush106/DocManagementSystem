@@ -1,11 +1,10 @@
 import React from 'react'
-import { Breadcrumbs, Grid, Skeleton, Typography } from '@mui/material'
+import { Box, Breadcrumbs, CircularProgress, Typography } from '@mui/material'
 import { Link, useParams } from 'react-router-dom'
 import DocumentCardList from '~/components/card/DocumentCardList'
 import useDocumentApi from '~/hooks/api/useDocumentApi'
 import useData from '~/hooks/useData'
 import { File as FileType } from '~/global/interface'
-import { fakeArray } from '~/utils/fakeArray'
 import { notifyError } from '~/global/toastify'
 
 const File = () => {
@@ -48,16 +47,14 @@ const File = () => {
         files.length > 0 ? (
           <DocumentCardList type='file' items={files} />
         ) : (
-          <Typography variant='h5' textAlign='center' mt='20px' fontFamily='inherit'>
+          <Typography variant='body1' textAlign='center' mt='20px' fontFamily='inherit'>
             There is no files
           </Typography>
         )
       ) : (
-        fakeArray(6).map((_, index) => (
-          <Grid key={index} item md={4}>
-            <Skeleton animation='wave' variant='rounded' height='3rem' />
-          </Grid>
-        ))
+        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }} width={'100%'} height={'100%'}>
+          <CircularProgress />
+        </Box>
       )}
     </>
   )

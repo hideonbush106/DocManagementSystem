@@ -1,19 +1,19 @@
 import { EditNoteOutlined } from '@mui/icons-material'
 import { Box, Button, FormControl, TextField, Typography, MenuItem } from '@mui/material'
 import FileUpload from 'react-material-file-upload'
-import useCategoryApi from '~/hooks/api/useCategoryApi'
 import { useEffect, useState } from 'react'
 import { useFormik } from 'formik'
-import { Categories, UpdateDocument, DocumentDetail } from '~/global/interface'
+import { UpdateDocument, DocumentDetail, Categories } from '~/global/interface'
 import * as yup from 'yup'
 import useDocumentApi from '~/hooks/api/useDocumentApi'
 import { notifySuccess } from '~/global/toastify'
 import ModalLayout from './ModalLayout'
 import styled from 'styled-components'
-import useMedia from '~/hooks/api/useMedia'
 
 interface UpdateDocumentProps {
   document?: DocumentDetail
+  categories: Categories[]
+  isHavePdf: boolean
   open: boolean
   handleClose: () => void
   reload: (id: string) => void
@@ -34,13 +34,9 @@ const Text = styled(Typography)`
 `
 
 const UpdateDocumentModal = (props: UpdateDocumentProps) => {
-  const { open, handleClose, reload, document } = props
+  const { open, handleClose, reload, document, categories, isHavePdf } = props
   const [files, setFiles] = useState<File[]>([])
-  const [categories, setCategories] = useState<Categories[]>([])
-  const [isHavePdf, setIsHavePdf] = useState<boolean>(false)
   const { updateDocument, uploadDocumentPdf } = useDocumentApi()
-  const { getAllCategories } = useCategoryApi()
-  const { checkMedia } = useMedia()
 
   const validationSchema = yup.object({
     name: yup.string().trim(),
@@ -54,41 +50,42 @@ const UpdateDocumentModal = (props: UpdateDocumentProps) => {
     enableReinitialize: true,
     initialValues: {
       id: '',
-      name: document?.name || '',
-      description: document?.description || '',
+      name: document?.name ?? '',
+      description: document?.description ?? '',
       category: {
-        id: document?.category?.id || ''
+        id: document?.category?.id ?? ''
       }
     },
     validationSchema: validationSchema,
     onSubmit: async (values: UpdateDocument) => {
-      values.name = values.name.trim().replace(/\s\s+/g, ' ')
-      values.description = values.description.trim().replace(/\s\s+/g, ' ')
-      values.id = document?.id || ''
+      values.name = values.name.trim().replace(/\s\s+/g, '')
+      values.description = values.description.trim().replace(/\s\s+/g, '')
+      values.id = document?.id ?? ''
       const result = await updateDocument(values)
       if (result.data) {
         if (files.length > 0) {
-          uploadDocumentPdf(document?.id || '', files)
+          uploadDocumentPdf(document?.id ?? '', files)
         }
         notifySuccess('Update document successfully')
         handleClose()
         formik.setFieldValue('name', '')
         formik.setFieldValue('description', '')
-        reload(document?.id || '')
+        reload(document?.id ?? '')
       }
     }
   })
 
   useEffect(() => {
-    const fetchData = async () => {
-      const categories = await getAllCategories(document?.folder?.locker?.room?.department?.id || '')
-      setCategories(categories.data)
-      const isHavePdf = await checkMedia(document?.id || '')
-      console.log(isHavePdf.data)
-      setIsHavePdf(isHavePdf.data)
+    if (!props.open) {
+      formik.resetForm()
     }
-    fetchData()
-  }, [document?.id])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [!props.open])
+
+  const unchanged =
+    formik.values.name.trim() === document?.name &&
+    formik.values.description.trim() === document?.description &&
+    formik.values.category.id === document?.category?.id
 
   return (
     <ModalLayout open={open} handleClose={handleClose}>
@@ -121,6 +118,7 @@ const UpdateDocumentModal = (props: UpdateDocumentProps) => {
         >
           Update Document
         </Typography>
+        {document?.id}
       </Box>
       <form onSubmit={formik.handleSubmit} action='POST'>
         <FormControl sx={{ width: '100%', px: 5 }}>
@@ -279,7 +277,13 @@ const UpdateDocumentModal = (props: UpdateDocumentProps) => {
             boxShadow: 'rgba(100, 100, 111, 0.2) 0px 7px 29px 0px'
           }}
         >
-          <Button sx={{ my: 1, mr: 1 }} variant='contained' color='primary' type='submit'>
+          <Button
+            sx={{ my: 1, mr: 1 }}
+            variant='contained'
+            color='primary'
+            type='submit'
+            disabled={formik.isValidating || !formik.isValid || unchanged}
+          >
             Submit
           </Button>
           <Button sx={{ my: 1 }} color='error' variant='outlined' onClick={props.handleClose}>

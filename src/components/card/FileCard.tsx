@@ -3,12 +3,14 @@ import { SvgIconComponent } from '@mui/icons-material'
 import DocumentCard from './DocumentCard'
 import ActionsCell from '../table/ActionCell'
 import useDocumentApi from '~/hooks/api/useDocumentApi'
-import { DocumentDetail } from '~/global/interface'
+import { Categories, DocumentDetail } from '~/global/interface'
 import { DocumentStatus } from '~/global/enum'
 import BorrowDocumentModal from '../modal/BorrowDocumentModal'
 import useAuth from '~/hooks/useAuth'
 import Detail from '../modal/Detail'
 import UpdateDocumentModal from '../modal/UpdateDocumentModal'
+import useCategoryApi from '~/hooks/api/useCategoryApi'
+import useMedia from '~/hooks/api/useMedia'
 
 type Props = {
   icon: {
@@ -28,9 +30,13 @@ const FileCard: React.FC<Props> = (props: Props) => {
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false)
   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false)
   const { getDocument, getDocumentBarcode } = useDocumentApi()
+  const { getAllCategories } = useCategoryApi()
+  const { checkMedia } = useMedia()
   const [document, setDocument] = React.useState<DocumentDetail>()
   const [documentName, setDocumentName] = React.useState<string>(name)
   const [barcode, setBarcode] = React.useState<string>('')
+  const [isHavePdf, setIsHavePdf] = useState<boolean>(false)
+  const [categories, setCategories] = useState<Categories[]>([])
 
   const handleDetailClose = () => {
     setIsDetailModalOpen(false)
@@ -90,6 +96,13 @@ const FileCard: React.FC<Props> = (props: Props) => {
           }
         }
       }
+      Promise.all([
+        checkMedia(document.data.id),
+        getAllCategories(document.data.folder.locker.room.department.id)
+      ]).then(([isHavePdf, categories]) => {
+        setIsHavePdf(isHavePdf.data)
+        setCategories(categories.data)
+      })
     } catch (error) {
       console.log(error)
     }
@@ -111,12 +124,16 @@ const FileCard: React.FC<Props> = (props: Props) => {
           fileId={fileId}
           fileName={fileName}
         />
-        <UpdateDocumentModal
-          document={document}
-          open={isUpdateModalOpen}
-          handleClose={handleCloseUpdateModal}
-          reload={fetchData}
-        />
+        {role == 'STAFF' && (
+          <UpdateDocumentModal
+            document={document}
+            isHavePdf={isHavePdf}
+            categories={categories}
+            open={isUpdateModalOpen}
+            handleClose={handleCloseUpdateModal}
+            reload={fetchData}
+          />
+        )}
       </div>
     </DocumentCard>
   )

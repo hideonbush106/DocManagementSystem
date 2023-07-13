@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import { Box, Paper } from '@mui/material'
 import { SvgIconComponent } from '@mui/icons-material'
 import DocumentCard from './DocumentCard'
 import ActionsCell from '../table/ActionCell'
@@ -18,13 +19,15 @@ type Props = {
   id: string
   fileId: string
   fileName: string
+  action?: boolean
+  onClick?: () => void
 }
 const FileCard: React.FC<Props> = (props: Props) => {
-  const { icon, name, fileId, fileName } = props
+  const { icon, name, fileId, fileName, action, onClick } = props
   const [isBorrowModalOpen, setIsBorrowModalOpen] = useState(false)
-  const { user } = useAuth()
-  const role = user?.role
   const [detail, setDetail] = useState(false)
+  const { user } = useAuth()
+  const role = user?.role.toLocaleUpperCase()
   const { getDocument, getDocumentBarcode } = useDocumentApi()
   const [document, setDocument] = React.useState<DocumentDetail>()
   const [barcode, setBarcode] = React.useState<string>('')
@@ -37,7 +40,6 @@ const FileCard: React.FC<Props> = (props: Props) => {
   }
   const handleOpenBorrowModal = () => {
     setIsBorrowModalOpen(true)
-    console.log(fileId)
   }
 
   const handleCloseBorrowModal = () => {
@@ -74,9 +76,11 @@ const FileCard: React.FC<Props> = (props: Props) => {
       const document = await getDocument(id)
       setDocument(document.data)
       if ([DocumentStatus.PENDING, DocumentStatus.AVAILABLE, DocumentStatus.BORROWED].includes(document.data.status)) {
-        const barcode = await getDocumentBarcode(id)
-        if (barcode.data.barcode) {
-          setBarcode(barcode.data.barcode)
+        if (role !== 'EMPLOYEE') {
+          const barcode = await getDocumentBarcode(id)
+          if (barcode.data.barcode) {
+            setBarcode(barcode.data.barcode)
+          }
         }
       }
     } catch (error) {
@@ -89,18 +93,28 @@ const FileCard: React.FC<Props> = (props: Props) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [props.id])
   return (
-    <DocumentCard icon={icon} name={name}>
-      <div style={{ marginLeft: 'auto', marginRight: '-18px' }}>
-        <ActionsCell menuItems={actions} />
-        <Detail document={document} barcode={barcode} open={detail} onClose={handleDetailClose} />
-        <BorrowDocumentModal
-          open={isBorrowModalOpen}
-          handleClose={handleCloseBorrowModal}
-          fileId={fileId}
-          fileName={fileName}
-        />
-      </div>
-    </DocumentCard>
+    <Paper
+      elevation={0}
+      sx={{
+        display: 'flex',
+        borderRadius: '10px',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        ...(onClick && { cursor: 'pointer' })
+      }}
+    >
+      <Box onClick={onClick} width='100%'>
+        <DocumentCard icon={icon} name={name} />
+      </Box>
+      {action && <ActionsCell menuItems={actions} />}
+      <Detail document={document} barcode={barcode} open={detail} onClose={handleDetailClose} />
+      <BorrowDocumentModal
+        open={isBorrowModalOpen}
+        handleClose={handleCloseBorrowModal}
+        fileId={fileId}
+        fileName={fileName}
+      />
+    </Paper>
   )
 }
 

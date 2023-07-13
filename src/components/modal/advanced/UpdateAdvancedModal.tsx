@@ -18,7 +18,13 @@ const UpdateAdvancedModal = <T extends UpdateRoom | UpdateLocker | UpdateFolder 
 ) => {
   const validationSchema = yup.object(
     props.disableCapacity
-      ? { name: yup.string().trim().required(`${props.type} name is required`) }
+      ? {
+          name: yup
+            .string()
+            .trim()
+            .required(`${props.type} name is required`)
+            .max(20, `${props.type} name is less than 20 characters`)
+        }
       : {
           name: yup.string().trim().required(`${props.type} name is required`),
           capacity: yup

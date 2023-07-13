@@ -18,6 +18,8 @@ import RequestsTable from '~/components/table/RequestsTable'
 import ApprovalsTable from '~/components/table/ApprovalsTable'
 import SummaryChart from '~/components/chart/SummaryChart'
 import SpaceChart from '~/components/chart/SpaceChart'
+import { useEffect, useState } from 'react'
+import useDocumentApi from '~/hooks/api/useDocumentApi'
 
 const Subtitle = styled(Typography)({
   fontWeight: '600',
@@ -27,7 +29,41 @@ const Subtitle = styled(Typography)({
   color: 'var(--black-light-color)'
 })
 
+interface PaginationModel {
+  page: number
+  pageSize: number
+}
+
 const Dashboard = () => {
+  const [isLoading, setIsLoading] = useState(true)
+  const { getPendingDocuments } = useDocumentApi()
+  const [data, setData] = useState([])
+  const [rowCountState, setRowCountState] = useState<number>(0)
+
+  const [paginationModel, setPaginationModel] = useState<PaginationModel>({
+    page: 0,
+    pageSize: 5
+  })
+
+  const fetchData = async () => {
+    setIsLoading(true)
+    const result = await getPendingDocuments(paginationModel.pageSize, paginationModel.page)
+    setData(result.data.data)
+    setRowCountState((prevRowCountState) => (result.data.total !== undefined ? result.data.total : prevRowCountState))
+    setIsLoading(false)
+  }
+
+  const handlePaginationModelChange = (newPaginationModel: PaginationModel) => {
+    setIsLoading(true)
+    setData([])
+    setPaginationModel(newPaginationModel)
+  }
+
+  useEffect(() => {
+    fetchData()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [paginationModel])
+
   return (
     <>
       <DashboardWrapper container spacing={{ sm: 2, xs: 0 }} margin={0}>
@@ -63,7 +99,14 @@ const Dashboard = () => {
                 <ViewButton text='View' />
               </Link>
             </SubtitleWrapper>
-            <ApprovalsTable view='dashboard' />
+            <ApprovalsTable
+              view={'dashboard'}
+              rows={data}
+              rowCount={rowCountState}
+              loading={isLoading}
+              paginationModel={paginationModel}
+              handlePaginationModelChange={handlePaginationModelChange}
+            />{' '}
           </Wrapper>
         </ApprovalContainer>
         <RequestContainer xs={12} md={6} lg={4}>

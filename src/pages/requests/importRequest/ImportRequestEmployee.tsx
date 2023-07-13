@@ -21,6 +21,8 @@ import useImportRequestApi from '~/hooks/api/useImportRequestApi'
 import dayjs from 'dayjs'
 import FilterRequest from '~/components/filter/FilterRequest'
 import { RequestStatus } from '~/global/enum'
+import { WrapperDiv } from '../borrowRequest/BorrowRequestEmployee'
+
 const Text = styled(Typography)`
   color: var(--black-color);
   margin: 0.5rem 0;
@@ -31,6 +33,7 @@ const Text = styled(Typography)`
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
 `
+
 const StatusText = ({ status }: { status: string }) => {
   if (status === RequestStatus.REJECTED) {
     return <StatusDiv rejected>Rejected</StatusDiv>
@@ -57,6 +60,7 @@ const ImportRequestEmployee = () => {
   const [selectedRequest, setSelectedRequest] = useState<any>(null)
   const [selectedStatus, setSelectedStatus] = useState<string>('')
   const [isFetching, setIsFetching] = useState(true)
+  const [isDetailModalOpen, setIsDetailModalOpen] = useState(false)
   const { getImportRequestsOwn, getImportRequest, cancelImportRequest } = useImportRequestApi()
 
   const fetchImportRequests = async () => {
@@ -87,6 +91,7 @@ const ImportRequestEmployee = () => {
 
   const handleInfoIconClick = async (id: string) => {
     try {
+      setIsDetailModalOpen(true)
       const response = await getImportRequest(id)
       const requestDetails = response.data
       setSelectedRequest(requestDetails)
@@ -107,6 +112,7 @@ const ImportRequestEmployee = () => {
 
   const handleClosePopup = () => {
     setSelectedRequest(null)
+    setIsDetailModalOpen(false)
   }
   const handleStatusChange = (event: SelectChangeEvent<string>) => {
     setSelectedStatus(event.target.value)
@@ -117,13 +123,22 @@ const ImportRequestEmployee = () => {
   }
   return (
     <>
-      <Box display='flex' flexDirection='column' justifyContent='space-between' minHeight='81vh' marginTop='10px'>
+      <Box
+        display='flex'
+        flexDirection='column'
+        justifyContent='space-between'
+        minHeight='81vh'
+        marginTop='10px'
+        position='relative'
+      >
         <div>
-          <FilterRequest
-            selectedStatus={selectedStatus}
-            onChange={handleStatusChange}
-            onClearFilter={handleClearFilter}
-          />
+          <WrapperDiv>
+            <FilterRequest
+              selectedStatus={selectedStatus}
+              onChange={handleStatusChange}
+              onClearFilter={handleClearFilter}
+            />
+          </WrapperDiv>
           {isFetching ? (
             <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }} width='100%' height='60vh'>
               <CircularProgress />
@@ -197,9 +212,10 @@ const ImportRequestEmployee = () => {
         </div>
         <Pagination count={count} size='large' page={page} variant='outlined' shape='rounded' onChange={handleChange} />
         <DetailRequestModal
-          open={selectedRequest !== null}
+          open={isDetailModalOpen}
           handleClose={handleClosePopup}
           selectedRequest={selectedRequest}
+          isLoading={selectedRequest === null}
         />
       </Box>
     </>

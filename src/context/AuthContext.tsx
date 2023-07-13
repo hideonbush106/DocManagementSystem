@@ -22,6 +22,7 @@ interface UserInfo {
   photoUrl: string | null
   role: string
   department: string
+  departmentId: string
 }
 
 export type AuthContextType = {
@@ -45,7 +46,8 @@ const initialContext: AuthContextType = {
     phone: '',
     photoUrl: '',
     role: '',
-    department: ''
+    department: '',
+    departmentId: ''
   },
   idToken: null,
   login: async () => {
@@ -63,6 +65,7 @@ export const AuthContext = React.createContext<AuthContextType>(initialContext)
 
 const getUserInfo = async (token: string) => {
   const { data } = await get('/users/own', {}, { Authentication: token, accept: 'application/json' })
+
   return {
     id: data.id,
     code: data.code,
@@ -71,7 +74,8 @@ const getUserInfo = async (token: string) => {
     phone: data.phone,
     photoUrl: data.photoURL,
     role: data.role.name,
-    department: data.department.name
+    department: data.department.name,
+    departmentId: data.department.id
   }
 }
 
@@ -87,20 +91,20 @@ const AuthProvider = ({ children }: Props) => {
     try {
       await signOut(auth)
       await get('/users/logout', {}, { Authentication: idToken, accept: 'application/json' })
+      setIdToken(null)
+      setUser(undefined)
     } catch (error) {
       console.log(error)
       notifyError('Fail to logout')
     }
-    setIdToken(null)
-    setUser(undefined)
     setLoading(false)
   }
 
   initialContext.login = async () => {
-    setLoading(true)
     try {
       // sign in with google to get token
       const userCredential = await signInWithPopup(auth, provider)
+      setLoading(true)
       initialContext.refreshToken = async () => {
         const token = await userCredential.user.getIdToken(true)
         setIdToken(token)
@@ -116,8 +120,10 @@ const AuthProvider = ({ children }: Props) => {
     } catch (error) {
       console.log(error)
       if (error instanceof FirebaseError) {
-        if (error.code !== 'auth/popup-closed-by-user' && error.code !== 'auth/cancelled-popup-request')
+        if (error.code !== 'auth/popup-closed-by-user' && error.code !== 'auth/cancelled-popup-request') {
           notifyError('Login failed')
+          return
+        }
       }
       if (error instanceof AxiosError && error.response?.data.details === 'Access denied') {
         notifyError('Account is not allowed to access the system')
@@ -157,7 +163,7 @@ const AuthProvider = ({ children }: Props) => {
               default:
                 message = 'Something went wrong'
             }
-            notifyError(message)
+            if (message !== '') notifyError(message)
             await signOut(auth)
           }
         }

@@ -3,9 +3,10 @@ import Chart from 'react-apexcharts'
 type Props = {
   stored: { stored: number; name: string }[]
   capacity: { capacity: number; name: string }[]
+  role: string | undefined
 }
 
-const SpaceChart = ({ stored, capacity }: Props) => {
+const SpaceChart = ({ stored, capacity, role }: Props) => {
   const freeData = capacity.map((item) => item.capacity - (stored.find((s) => s.name === item.name)?.stored || 0))
 
   return (
@@ -37,7 +38,7 @@ const SpaceChart = ({ stored, capacity }: Props) => {
           plotOptions: {
             bar: {
               horizontal: true,
-              barHeight: '60vh'
+              barHeight: role === 'STAFF' ? '70%' : '40%'
             }
           },
           xaxis: {

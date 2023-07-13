@@ -258,7 +258,7 @@ const Dashboard = () => {
                 <Subtitle variant='h6'>{role === 'STAFF' ? 'Pending Approvals' : 'Import Requests'}</Subtitle>
                 <TitleUnderline />
               </div>
-              <Link to='/pending-approval'>
+              <Link to={role === 'STAFF' ? '/pending-approval' : '/request'}>
                 <ViewButton text='View' />
               </Link>
             </SubtitleWrapper>
@@ -307,7 +307,7 @@ const Dashboard = () => {
           <Wrapper>
             <Subtitle variant='h6'>Available Space (Pages) </Subtitle>
             <TitleUnderline />
-            <SpaceChart stored={storedProp} capacity={capacityProp} />
+            <SpaceChart stored={storedProp} capacity={capacityProp} role={role} />
           </Wrapper>
         </StatisticContainer>
       </DashboardWrapper>

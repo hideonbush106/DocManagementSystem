@@ -1,6 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { Grid, Paper, Typography } from '@mui/material'
 import AnalysisChart from '~/components/chart/AnalysisChart'
+import MonthlyChart from '~/components/chart/MonthlyChart'
 import { ChartWrapper, TitleUnderline } from './Statistic.styled'
 import ColumnChart from '~/components/chart/ColumnChart'
 import { useEffect, useState } from 'react'
@@ -12,9 +13,10 @@ import useStatisticApi from '~/hooks/api/useStatisticApi'
 import { BorrowAnalysisData, ImportAnalysisData } from '~/global/interface'
 
 const Statistic = () => {
-  const { getStatistic, getImportRequestStatistic, getBorrowRequestStatistic } = useStatisticApi()
+  const { getStatistic, getImportRequestStatistic, getBorrowRequestStatistic, getMonthlyRequestStatistic } = useStatisticApi()
   const [selectedYearImport, setSelectedYearImport] = useState<number>(2023)
   const [selectedYearRequest, setSelectedYearRequest] = useState<number>(2023)
+  const [selectedYearMonthly, setSelectedYearMonthly] = useState<number>(2023)
   const [importRequestData, setImportRequestData] = useState([
     { name: 'Approved', color: 'var(--green-color)', value: [] },
     { name: 'Rejected', color: 'var(--red-color)', value: [] }
@@ -37,6 +39,11 @@ const Statistic = () => {
     { name: 'Acc', color: 'var(--green-color)', value: 0 },
     { name: 'Sales', color: 'var(--red-color)', value: 0 },
     { name: 'Admin', color: 'var(--yellow-color)', value: 0 }
+  ])
+
+  const [monthlyRequestData, setMonthlyRequestData] = useState([
+    { name: 'Imported', color: 'var(--primary-color)', value: [] },
+    { name: 'Borrowed', color: 'var(--red-color)', value: [] }
   ])
 
   const fetchImportRequestStatistic = async (year: number) => {
@@ -74,6 +81,17 @@ const Statistic = () => {
       return prev
     })
   }
+  const fetchMonthlyRequestStatistic = async (year: number) => {
+    const response = await getMonthlyRequestStatistic(year)
+    const monthlyRequestData = response.data
+    setMonthlyRequestData([
+      { name: 'Imported', color: 'var(--primary-color)', value: monthlyRequestData[1].import },
+      { name: 'Borrowed', color: 'var(--red-color)', value: monthlyRequestData[0].borrow }
+    ])
+  }
+  useEffect(() => {
+    fetchMonthlyRequestStatistic(selectedYearMonthly)
+  }, [selectedYearMonthly])
 
   const fetchBorrowAnalysisData = async () => {
     const response = await getStatistic('borrow')
@@ -105,6 +123,13 @@ const Statistic = () => {
     }
   }
 
+  const handleYearMonthlyChange = (value: number | null) => {
+    if (value) {
+      const year = dayjs(value).year()
+      setSelectedYearMonthly(year)
+    }
+  }
+
   const shouldDisableYear = (date: number) => {
     const year = dayjs(date).year()
     return year > dayjs().year()
@@ -112,7 +137,38 @@ const Statistic = () => {
 
   return (
     <Grid container spacing={2}>
-      <Grid item xs={12} lg={8}></Grid>
+      <Grid item xs={12} lg={8}>
+        <Paper sx={{ backgroundColor: 'var(--white-color)', boxShadow: 'none', height: '328px', padding: '12px 16px' }}>
+          <ChartWrapper>
+            <div>
+              <Typography fontSize='13px' color='#797979' fontWeight={600}>
+                REQUESTS MONTHLY (FILES)
+              </Typography>
+              <TitleUnderline />
+            </div>
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+              <DatePicker
+                views={['year']}
+                sx={{
+                  width: '60px',
+                  height: '32px',
+                  '.MuiInputBase-input': { padding: '2px 5px', textAlign: 'center', visibility: 'hidden' },
+                  '.MuiInputBase-root': {
+                    fontSize: '0.8rem'
+                  },
+                  '.MuiOutlinedInput-notchedOutline': {
+                    display: 'none'
+                  }
+                }}
+                yearsPerRow={3}
+                shouldDisableYear={shouldDisableYear}
+                onChange={handleYearMonthlyChange}
+              />
+            </LocalizationProvider>
+          </ChartWrapper>
+          <MonthlyChart items={monthlyRequestData} />
+        </Paper>
+      </Grid>
       <Grid item xs={12} md={6} lg={4}>
         <Paper sx={{ backgroundColor: 'var(--white-color)', boxShadow: 'none', height: '328px', padding: '12px 16px' }}>
           <Typography fontSize='13px' color='#797979' fontWeight={600}>

@@ -1,69 +1,80 @@
 :root {
-  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
-
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
-
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  -webkit-text-size-adjust: 100%;
+  --primary-color: #0d66ff;
+  --primary-dark-color: #1152c1;
+  --green-color: #34a853;
+  --green-dark-color: #2a8743;
+  --green-light-color: #d9f5e1;
+  --red-color: #ea4335;
+  --red-dark-color: #c23c30;
+  --red-light-color: #ffcbcbcf;
+  --background-color: #e8ecf2;
+  --background-dark-color: #d1dcec;
+  --gray-color: #a5aab5;
+  --gray-light-color: #d0d0d1e4;
+  --black-color: #434343;
+  --black-light-color: #797979;
+  --blue-background-color: #84b1ed;
+  --purple-background-color: #b0a0ff;
+  --green-background-color: #82d999;
+  --white-color: #fff;
+  --orange-color: #ff9800;
+  --yellow-color: #e8aa14;
 }
 
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
+*,
+*:before,
+*:after {
+  box-sizing: border-box;
 }
-a:hover {
-  color: #535bf2;
-}
-
-body {
+* {
   margin: 0;
-  display: flex;
-  place-items: center;
-  min-width: 320px;
-  min-height: 100vh;
+  padding: 0;
+  font-family: 'Poppins', sans-serif !important;
 }
-
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
+img,
+picture,
+svg,
+video {
+  display: block;
+  max-width: 100%;
 }
-
+input,
+select,
+textarea {
+  background-color: transparent;
+  outline: none;
+}
 button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: #1a1a1a;
   cursor: pointer;
-  transition: border-color 0.25s;
+  background-color: transparent;
+  outline: none;
+  border: 0;
 }
-button:hover {
-  border-color: #646cff;
-}
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
+body {
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 1;
 }
 
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
-  }
-  a:hover {
-    color: #747bff;
-  }
-  button {
-    background-color: #f9f9f9;
-  }
+a:visited {
+  color: inherit;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+a:link {
+  color: inherit;
+  text-decoration: none;
+  cursor: pointer;
+}
+*::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+*::-webkit-scrollbar-track {
+  background-color: #0000;
+}
+*::-webkit-scrollbar-thumb {
+  background-color: var(--gray-color);
+  border-radius: 50px;
 }

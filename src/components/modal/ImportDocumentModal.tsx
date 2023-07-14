@@ -1,6 +1,6 @@
 import { CreateNewFolderOutlined } from '@mui/icons-material'
 import { Box, Button, FormControl, MenuItem, TextField, Typography } from '@mui/material'
-import { useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import FileUpload from 'react-material-file-upload'
 import { useFormik } from 'formik'
 import useDepartmentApi from '~/hooks/api/useDepartmentApi'
@@ -12,7 +12,7 @@ import useFolderApi from '~/hooks/api/useFolderApi'
 import * as yup from 'yup'
 import useDocumentApi from '~/hooks/api/useDocumentApi'
 import { QRCodeSVG } from 'qrcode.react'
-import { notifyError, notifySuccess } from '~/global/toastify'
+import { notifySuccess } from '~/global/toastify'
 import ModalLayout from './ModalLayout'
 import { useReactToPrint } from 'react-to-print'
 
@@ -63,6 +63,11 @@ const ImportDocumentModal = (props: ImportDocumentModalProps) => {
     })
   })
 
+  const fetchData = useCallback(async () => {
+    const departments = await getAllDepartments()
+    setDepartments(departments.data)
+  }, [getAllDepartments])
+
   const formik = useFormik({
     initialValues: {
       name: '',
@@ -79,27 +84,26 @@ const ImportDocumentModal = (props: ImportDocumentModalProps) => {
     onSubmit: (values: CreateDocument) => {
       values.name = values.name.trim().replace(/\s\s+/g, ' ')
       values.description = values.description.trim().replace(/\s\s+/g, ' ')
-      createDocument(values).then((res) => {
-        if (res.status !== 400) {
+      createDocument(values)
+        .then((res) => {
           setQrCode(res.data.barcode)
           if (files.length > 0) {
             uploadDocumentPdf(res.data.id, files)
           }
           notifySuccess('Import document successfully')
-          formik.setFieldValue('name', '')
-          formik.setFieldValue('description', '')
-          formik.setFieldValue('numOfPages', 1)
-          formik.setFieldValue('folder.id', '')
-          formik.setFieldValue('category.id', '')
+          formik.resetForm()
           setDepartments([])
           setFiles([])
           setRooms([])
           setLockers([])
           setFolders([])
-        } else {
-          notifyError(res.data.message)
-        }
-      })
+        })
+        .catch((err) => {
+          console.log(err)
+        })
+        .finally(() => {
+          fetchData()
+        })
     }
   })
 
@@ -132,12 +136,8 @@ const ImportDocumentModal = (props: ImportDocumentModalProps) => {
   }
 
   useEffect(() => {
-    const fetchData = async () => {
-      const departments = await getAllDepartments()
-      setDepartments(departments.data)
-    }
     fetchData()
-  }, [getAllDepartments])
+  }, [fetchData, getAllDepartments])
 
   return (
     <ModalLayout open={open} handleClose={handleClose}>
@@ -418,7 +418,15 @@ const ImportDocumentModal = (props: ImportDocumentModalProps) => {
             </Button>
           )}
 
-          <Button sx={{ my: 1 }} color='error' variant='outlined' onClick={props.handleClose}>
+          <Button
+            sx={{ my: 1 }}
+            color='error'
+            variant='outlined'
+            onClick={() => {
+              setQrCode('')
+              props.handleClose()
+            }}
+          >
             {qrCode ? 'Close' : 'Cancel'}
           </Button>
         </Box>

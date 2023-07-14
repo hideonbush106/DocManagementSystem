@@ -103,10 +103,9 @@ const BorrowRequestEmployee = () => {
 
   const count = totalPages
   const _DATA = usePagination(borrowRequests, PER_PAGE)
-  const handleChange = (e: React.ChangeEvent<unknown>, pageNumber: number) => {
+  const handleChange = (_e: React.ChangeEvent<unknown>, pageNumber: number) => {
     setPage(pageNumber)
     _DATA.jump(pageNumber)
-    console.log(e)
   }
   const handleInfoIconClick = async (id: string) => {
     try {

@@ -1,11 +1,10 @@
 import React from 'react'
-import { Breadcrumbs, Grid, Skeleton, Typography } from '@mui/material'
+import { Box, Breadcrumbs, CircularProgress, Typography } from '@mui/material'
 import { Link, useParams, useSearchParams } from 'react-router-dom'
 import DocumentCardList from '~/components/card/DocumentCardList'
 import useDocumentApi from '~/hooks/api/useDocumentApi'
 import useData from '~/hooks/useData'
 import { File as FileType } from '~/global/interface'
-import { fakeArray } from '~/utils/fakeArray'
 import { notifyError } from '~/global/toastify'
 
 const File = () => {
@@ -20,7 +19,7 @@ const File = () => {
   const locker = room?.lockerMap?.get(lockerId as string)
   const folder = locker?.folderMap?.get(folderId as string)
 
-  React.useEffect(() => {
+  const fetchDocumentsInFolder = async () => {
     if (folder) {
       setLoading(true)
       getDocumentsInFolder(folder.id, 1)
@@ -34,6 +33,10 @@ const File = () => {
           notifyError('Failed to get files')
         })
     }
+  }
+  React.useEffect(() => {
+    fetchDocumentsInFolder()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [folder, getDocumentsInFolder])
 
   return (
@@ -47,18 +50,21 @@ const File = () => {
       </Breadcrumbs>
       {!loading ? (
         files.length > 0 ? (
-          <DocumentCardList type='file' items={files} itemId={search.get('documentId')} />
+          <DocumentCardList
+            type='file'
+            items={files}
+            itemId={search.get('documentId')}
+            fetchFolder={fetchDocumentsInFolder}
+          />
         ) : (
-          <Typography variant='h5' textAlign='center' mt='20px' fontFamily='inherit'>
+          <Typography variant='body1' textAlign='center' mt='20px' fontFamily='inherit'>
             There is no files
           </Typography>
         )
       ) : (
-        fakeArray(6).map((_, index) => (
-          <Grid key={index} item md={4}>
-            <Skeleton animation='wave' variant='rounded' height='3rem' />
-          </Grid>
-        ))
+        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }} width={'100%'} height={'100%'}>
+          <CircularProgress />
+        </Box>
       )}
     </>
   )

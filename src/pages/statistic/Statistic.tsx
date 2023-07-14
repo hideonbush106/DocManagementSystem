@@ -10,9 +10,13 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
 import { DatePicker } from '@mui/x-date-pickers/DatePicker'
 import dayjs from 'dayjs'
 import useStatisticApi from '~/hooks/api/useStatisticApi'
+import { BorrowAnalysisData, ImportAnalysisData } from '~/global/interface'
+import useAuth from '~/hooks/useAuth'
 
 const Statistic = () => {
-  const { getImportRequestStatistic, getBorrowRequestStatistic, getMonthlyRequestStatistic } = useStatisticApi()
+  const { getStatistic, getImportRequestStatistic, getBorrowRequestStatistic, getMonthlyRequestStatistic } =
+    useStatisticApi()
+  const { user } = useAuth()
   const [selectedYearImport, setSelectedYearImport] = useState<number>(2023)
   const [selectedYearRequest, setSelectedYearRequest] = useState<number>(2023)
   const [selectedYearMonthly, setSelectedYearMonthly] = useState<number>(2023)
@@ -24,6 +28,20 @@ const Statistic = () => {
   const [borrowRequestData, setBorrowRequestData] = useState([
     { name: 'Approved', color: 'var(--green-color)', value: [] },
     { name: 'Rejected', color: 'var(--red-color)', value: [] }
+  ])
+
+  const [importAnalysisData, setImportAnalysisData] = useState([
+    { name: 'HR', color: 'var(--primary-color)', value: 0 },
+    { name: 'Employee', color: 'var(--green-color)', value: 0 },
+    { name: 'Sales', color: 'var(--red-color)', value: 0 },
+    { name: 'Admin', color: 'var(--yellow-color)', value: 0 }
+  ])
+
+  const [borrowAnalysisData, setBorrowAnalysisData] = useState([
+    { name: 'HR', color: 'var(--primary-color)', value: 0 },
+    { name: 'Employee', color: 'var(--green-color)', value: 0 },
+    { name: 'Sales', color: 'var(--red-color)', value: 0 },
+    { name: 'Admin', color: 'var(--yellow-color)', value: 0 }
   ])
 
   const [monthlyRequestData, setMonthlyRequestData] = useState([
@@ -55,6 +73,17 @@ const Statistic = () => {
     fetchBorrowRequestStatistic(selectedYearRequest)
   }, [selectedYearRequest])
 
+  const fetchImportAnalysisData = async () => {
+    const response = await getStatistic('import')
+    const importAnalysisData = response.data
+    setImportAnalysisData((prev) => {
+      importAnalysisData.forEach((data: ImportAnalysisData) => {
+        const dataIndex = prev.findIndex((element) => element.name.toUpperCase() === data.name)
+        if (dataIndex !== -1) prev[dataIndex].value = Number.parseInt(data.count)
+      })
+      return prev
+    })
+  }
   const fetchMonthlyRequestStatistic = async (year: number) => {
     const response = await getMonthlyRequestStatistic(year)
     const monthlyRequestData = response.data
@@ -67,19 +96,21 @@ const Statistic = () => {
     fetchMonthlyRequestStatistic(selectedYearMonthly)
   }, [selectedYearMonthly])
 
-  const importData = [
-    { name: 'HR', color: 'var(--primary-color)', value: 60 },
-    { name: 'Acc', color: 'var(--green-color)', value: 40 },
-    { name: 'Sales', color: 'var(--red-color)', value: 214 },
-    { name: 'Admin', color: 'var(--yellow-color)', value: 30 }
-  ]
+  const fetchBorrowAnalysisData = async () => {
+    const response = await getStatistic('borrow')
+    const borrowAnalysisData = response.data
+    setBorrowAnalysisData((prev) => {
+      borrowAnalysisData.forEach((data: BorrowAnalysisData) => {
+        const dataIndex = prev.findIndex((element) => element.name.toUpperCase() === data.name)
+        if (dataIndex !== -1) prev[dataIndex].value = Number.parseInt(data.count)
+      })
+      return prev
+    })
+  }
 
-  const lendingData = [
-    { name: 'HR', color: 'var(--primary-color)', value: 8 },
-    { name: 'Acc', color: 'var(--green-color)', value: 7 },
-    { name: 'Sales', color: 'var(--red-color)', value: 20 },
-    { name: 'Admin', color: 'var(--yellow-color)', value: 5 }
-  ]
+  useEffect(() => {
+    if (user?.role === 'STAFF') Promise.all([fetchBorrowAnalysisData(), fetchImportAnalysisData()])
+  }, [])
 
   const handleYearImportChange = (value: number | null) => {
     if (value) {
@@ -109,12 +140,12 @@ const Statistic = () => {
 
   return (
     <Grid container spacing={2}>
-      <Grid item xs={12} lg={8}>
-        <Paper sx={{ backgroundColor: 'var(--white-color)', boxShadow: 'none', height: '413px', padding: '12px 16px' }}>
+      <Grid item xs={12} lg={user?.role === 'STAFF' ? 8 : 12}>
+        <Paper sx={{ backgroundColor: 'var(--white-color)', boxShadow: 'none', height: '328px', padding: '12px 16px' }}>
           <ChartWrapper>
             <div>
               <Typography fontSize='13px' color='#797979' fontWeight={600}>
-                REQUESTS MONTHLY (FILES)
+                REQUESTS MONTHLY
               </Typography>
               <TitleUnderline />
             </div>
@@ -141,25 +172,35 @@ const Statistic = () => {
           <MonthlyChart items={monthlyRequestData} />
         </Paper>
       </Grid>
-      <Grid item xs={12} md={6} lg={4}>
-        <Paper sx={{ backgroundColor: 'var(--white-color)', boxShadow: 'none', height: '413px', padding: '12px 16px' }}>
-          <Typography fontSize='13px' color='#797979' fontWeight={600}>
-            IMPORTS ANALYSIS (FILES)
-          </Typography>
-          <TitleUnderline />
-          <AnalysisChart items={importData} />
-        </Paper>
-      </Grid>
-      <Grid item xs={12} md={6} lg={4}>
-        <Paper sx={{ backgroundColor: 'var(--white-color)', boxShadow: 'none', height: '328px', padding: '12px 16px' }}>
-          <Typography fontSize='13px' color='#797979' fontWeight={600}>
-            LENDING ANALYSIS (FILES)
-          </Typography>
-          <TitleUnderline />
-          <AnalysisChart items={lendingData} />
-        </Paper>
-      </Grid>
-      <Grid item xs={12} md={6} lg={4}>
+      {user?.role === 'STAFF' ? (
+        <>
+          <Grid item xs={12} md={6} lg={4}>
+            <Paper
+              sx={{ backgroundColor: 'var(--white-color)', boxShadow: 'none', height: '328px', padding: '12px 16px' }}
+            >
+              <Typography fontSize='13px' color='#797979' fontWeight={600}>
+                IMPORTS ANALYSIS (FILES)
+              </Typography>
+              <TitleUnderline />
+              <AnalysisChart items={importAnalysisData} />
+            </Paper>
+          </Grid>
+          <Grid item xs={12} md={6} lg={4}>
+            <Paper
+              sx={{ backgroundColor: 'var(--white-color)', boxShadow: 'none', height: '328px', padding: '12px 16px' }}
+            >
+              <Typography fontSize='13px' color='#797979' fontWeight={600}>
+                LENDING ANALYSIS (FILES)
+              </Typography>
+              <TitleUnderline />
+              <AnalysisChart items={borrowAnalysisData} />
+            </Paper>
+          </Grid>
+        </>
+      ) : (
+        <></>
+      )}
+      <Grid item xs={12} md={6} lg={user?.role === 'STAFF' ? 4 : 6}>
         <Paper sx={{ backgroundColor: 'var(--white-color)', boxShadow: 'none', height: '328px', padding: '12px 16px' }}>
           <ChartWrapper>
             <div>
@@ -191,7 +232,7 @@ const Statistic = () => {
           <ColumnChart items={importRequestData} />
         </Paper>
       </Grid>
-      <Grid item xs={12} md={6} lg={4}>
+      <Grid item xs={12} md={6} lg={user?.role === 'STAFF' ? 4 : 6}>
         <Paper sx={{ backgroundColor: 'var(--white-color)', boxShadow: 'none', height: '328px', padding: '12px 16px' }}>
           <ChartWrapper>
             <div>

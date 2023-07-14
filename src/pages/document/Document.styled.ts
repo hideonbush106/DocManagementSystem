@@ -31,7 +31,7 @@ export const TreeWrapper = styled.div`
   background: white;
   width: 30%;
   border-radius: 5px;
-  height: 70vh;
+  height: 75vh;
   overflow-y: scroll;
   @media (min-width: 0px) {
     display: none;
@@ -50,9 +50,10 @@ export const TreeWrapper = styled.div`
 
 export const DocumentGrid = styled.div`
   width: 65%;
+  height: 75vh;
+
   @media (min-width: 0px) {
     width: 100%;
-    height: 100%;
     margin-left: 0;
   }
   @media (min-width: 600px) {
@@ -66,6 +67,5 @@ export const DocumentGrid = styled.div`
   @media (min-width: 1200px) {
     margin-left: 2rem;
     width: 65%;
-    height: 70vh;
   }
 `

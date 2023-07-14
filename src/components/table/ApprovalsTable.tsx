@@ -80,8 +80,9 @@ const ApprovalsTable = (props: ApprovalsTableProps) => {
           id: documentId,
           locationQRcode: scanData
         })
-        if (result) {
+        if (result.message === 'Success') {
           notifySuccess('Document confirmed successfully')
+          setScanning(false)
         }
         loading = true
       } catch (error) {
@@ -239,8 +240,8 @@ const ApprovalsTable = (props: ApprovalsTableProps) => {
               onClick: () => {
                 handleDetailOpen(params.row.id as string)
               }
-            },
-            { text: 'Delete', onClick: () => console.log('Delete clicked') }
+            }
+            //{ text: 'Delete', onClick: () => console.log('Delete clicked') }
           ]
           return <ActionsCell id={params.row.id as number} menuItems={menuItems} />
         }

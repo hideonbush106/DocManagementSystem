@@ -106,6 +106,15 @@ export interface CreateDocument {
   }
 }
 
+export interface UpdateDocument {
+  id: string
+  name: string
+  description: string
+  category: {
+    id: string
+  }
+}
+
 export interface ConfirmDocument {
   id: string
   locationQRcode: string
@@ -188,12 +197,14 @@ export interface DocumentDetail {
       room: {
         name: string
         department: {
+          id: string
           name: string
         }
       }
     }
   }
   category: {
+    id: string
     name: string
   }
 }
@@ -228,4 +239,14 @@ export interface UpdateUser {
   lastName: string
   email: string
   phone: string
+}
+
+export interface ImportAnalysisData {
+  name: string
+  count: string
+}
+
+export interface BorrowAnalysisData {
+  name: string
+  count: string
 }

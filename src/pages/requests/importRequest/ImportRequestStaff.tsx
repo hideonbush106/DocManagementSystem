@@ -66,7 +66,7 @@ const ImportRequestStaff = () => {
   const [selectedStatus, setSelectedStatus] = useState<string>('')
   const [isFetching, setIsFetching] = useState(true)
   const [isScanModalOpen, setIsScanModalOpen] = useState(false)
-  const [scanning, setScanning] = useState(true)
+  const [scanning, setScanning] = useState(false)
   const { getImportRequestsAll, getImportRequest, acceptImportRequest, rejectImportRequest, verifyImportRequest } =
     useImportRequestApi()
 
@@ -107,10 +107,9 @@ const ImportRequestStaff = () => {
   }, [page, selectedStatus])
   const count = totalPages
   const _DATA = usePagination(importRequests, PER_PAGE)
-  const handleChange = (e: React.ChangeEvent<unknown>, pageNumber: number) => {
+  const handleChange = (_e: React.ChangeEvent<unknown>, pageNumber: number) => {
     setPage(pageNumber)
     _DATA.jump(pageNumber)
-    console.log(e)
   }
   const handleInfoIconClick = async (id: string) => {
     try {
@@ -133,8 +132,7 @@ const ImportRequestStaff = () => {
 
   const handleAccept = async (ImportRequestId: string) => {
     try {
-      const response = await acceptImportRequest(ImportRequestId)
-      console.log('Accept request successful:', response)
+      await acceptImportRequest(ImportRequestId)
       await fetchImportRequests()
     } catch (error) {
       console.log('Accept request failed:', error)
@@ -148,12 +146,10 @@ const ImportRequestStaff = () => {
     setIsModalOpen(false)
   }
   const handleRejectModalSubmit = async (reason: string) => {
-    console.log('Rejected:', reason)
     setIsModalOpen(false)
     if (rejectID) {
       try {
-        const response = await rejectImportRequest({ id: String(rejectID), rejectedReason: reason })
-        console.log('Reject request successful:', response)
+        await rejectImportRequest({ id: String(rejectID), rejectedReason: reason })
         await fetchImportRequests()
       } catch (error) {
         console.log('Reject request failed:', error)
@@ -183,12 +179,12 @@ const ImportRequestStaff = () => {
           notifySuccess('Import request confirmed successfully')
         }
         setIsFetching(true)
-        await fetchImportRequests()
       } catch (error) {
         console.log(error)
       } finally {
         handleScanModalClose()
         setScanning(false)
+        await fetchImportRequests()
       }
     }
   }

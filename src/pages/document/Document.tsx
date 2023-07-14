@@ -11,19 +11,21 @@ import { fakeArray } from '~/utils/fakeArray'
 import DataProvider from '~/context/DataContext'
 import { File, FolderTree } from '~/global/interface'
 import useAuth from '~/hooks/useAuth'
-import { useMediaQuery, useTheme } from '@mui/material'
+import { Box, CircularProgress, useMediaQuery, useTheme } from '@mui/material'
 import SpeedDialCustom from '~/components/speed-dial/SpeedDial'
 import ImportDocumentModal from '~/components/modal/ImportDocumentModal'
 import AddRoundedIcon from '@mui/icons-material/AddRounded'
 import KeyboardReturnRoundedIcon from '@mui/icons-material/KeyboardReturnRounded'
-import useDocumentApi from '~/hooks/api/useDocumentApi'
 import SearchDocumentResult from '~/components/modal/SearchDocumentResult'
 import ImportRequestModal from '~/components/modal/ImportRequestModal'
+import Scanner from '~/components/modal/Scanner'
+import ReturnConfirmModal from '~/components/modal/ReturnConfirmModal'
+import useDocumentApi from '~/hooks/api/useDocumentApi'
 
 const DocumentDisplay = () => {
   const [speedDialOpen, setSpeedDialOpen] = useState(false)
   const [importDocumentModalOpen, setImportDocumentModalOpen] = useState(false)
-  const [importRequestModalOpen, setImportRequestModalOpen] = useState(false)
+  const [isImportRequestModalOpen, setIsImportRequestModalOpen] = useState(false)
   const [searchResultModalOpen, setSearchResultModalOpen] = useState(false)
   const [searchResult, setSearchResult] = useState<File[]>([])
   const [searchResultLoading, setSearchResultLoading] = useState(false)
@@ -33,7 +35,15 @@ const DocumentDisplay = () => {
   const role = user?.role
   const theme = useTheme()
   const belowLg = useMediaQuery(theme.breakpoints.down('lg'))
-
+  const [scanData, setScanData] = useState<string | null>(null)
+  const [scanning, setScanning] = useState(false)
+  const [isReturnDocumentModalOpen, setIsReturnDocumentModalOpen] = useState(false)
+  const [isReturnConfirmModalOpen, setIsReturnConfirmModalOpen] = useState(false)
+  const { checkReturnDocument } = useDocumentApi()
+  const [response, setResponse] = useState({
+    data: '',
+    message: ''
+  })
   const handleImportDocumentModalOpen = () => {
     setImportDocumentModalOpen(true)
   }
@@ -42,12 +52,47 @@ const DocumentDisplay = () => {
     setImportDocumentModalOpen(false)
   }
 
-  const handleImportReqquestModalOpen = () => {
-    setImportRequestModalOpen(true)
+  const handleImportRequestModalOpen = () => {
+    setIsImportRequestModalOpen(true)
   }
 
-  const handleImportReqquestModalClose = () => {
-    setImportRequestModalOpen(false)
+  const handleImportRequestModalClose = () => {
+    setIsImportRequestModalOpen(false)
+  }
+
+  const handleReturnDocumentModalOpen = () => {
+    setScanning(true)
+    setIsReturnDocumentModalOpen(true)
+  }
+
+  const handleReturnDocumentModalClose = () => {
+    setScanning(false)
+    setIsReturnDocumentModalOpen(false)
+  }
+
+  const handleReturnConfirmModalOpen = () => {
+    setIsReturnConfirmModalOpen(true)
+  }
+
+  const handleReturnConfirmModalClose = () => {
+    setIsReturnConfirmModalOpen(false)
+  }
+
+  const fetchReturn = async (scanData: string | null) => {
+    if (scanData && scanData !== '') {
+      try {
+        const response = await checkReturnDocument(scanData)
+        console.log(response)
+        setResponse(response)
+        setScanData(scanData)
+        setScanning(false)
+      } catch (error) {
+        console.log(error)
+      } finally {
+        handleReturnDocumentModalClose()
+        handleReturnConfirmModalOpen()
+      }
+    }
   }
 
   const speedDialActions =
@@ -68,7 +113,7 @@ const DocumentDisplay = () => {
           {
             name: 'Return Document',
             icon: <KeyboardReturnRoundedIcon />,
-            action: handleImportDocumentModalOpen,
+            action: handleReturnDocumentModalOpen,
             style: {
               backgroundColor: 'var(--green-color)',
               color: 'var(--white-color)',
@@ -82,7 +127,7 @@ const DocumentDisplay = () => {
           {
             name: 'Import Document',
             icon: <AddRoundedIcon />,
-            action: handleImportReqquestModalOpen,
+            action: handleImportRequestModalOpen,
             style: {
               backgroundColor: 'var(--primary-color)',
               color: 'var(--white-color)',
@@ -129,12 +174,12 @@ const DocumentDisplay = () => {
         {!belowLg &&
           (role === 'STAFF' ? (
             <ButtonWrapper>
-              <ImportButton text='New Document' />
-              <ReturnButton text='Return Document' />
+              <ImportButton text='New Document' onClick={handleImportDocumentModalOpen} />
+              <ReturnButton text='Return Document' onClick={handleReturnDocumentModalOpen} />
             </ButtonWrapper>
           ) : (
             <ButtonWrapper>
-              <ImportRequestButton text='Import Document' />
+              <ImportRequestButton text='Import Document' onClick={handleImportRequestModalOpen} />
             </ButtonWrapper>
           ))}
       </NavWrapper>
@@ -142,13 +187,31 @@ const DocumentDisplay = () => {
       {belowLg && <SpeedDialCustom actions={speedDialActions} open={speedDialOpen} onClick={handleSpeedDial} />}
       {/* Modals */}
       <ImportDocumentModal open={importDocumentModalOpen} handleClose={handleImportDocumentModalClose} />
-      <ImportRequestModal open={importRequestModalOpen} handleClose={handleImportReqquestModalClose} />
+      <ImportRequestModal open={isImportRequestModalOpen} handleClose={handleImportRequestModalClose} />
+      <Scanner
+        scanning={scanning}
+        handleScan={fetchReturn}
+        open={isReturnDocumentModalOpen}
+        handleClose={handleReturnDocumentModalClose}
+      />
+      <ReturnConfirmModal
+        scanData={scanData}
+        response={response}
+        open={isReturnConfirmModalOpen}
+        handleClose={handleReturnConfirmModalClose}
+      />
       {/* Tree view */}
       <TreeWrapper>
         <TreeView sx={{ width: '100%' }} defaultCollapseIcon={<ExpandMore />} defaultExpandIcon={<ChevronRight />}>
           {!loading
             ? documentTree?.map((dept, index) => (
-                <DocumentTreeItem key={index} nodeId={dept.id} labelText={dept.name} labelIcon={Apartment}>
+                <DocumentTreeItem
+                  key={index}
+                  nodeId={dept.id}
+                  labelText={dept.name}
+                  labelIcon={Apartment}
+                  href={`/document/department/${dept.id}`}
+                >
                   {dept.rooms.map((room, index) => (
                     <DocumentTreeItem
                       key={index}
@@ -157,6 +220,7 @@ const DocumentDisplay = () => {
                       labelInfo={`${room.lockers.length}/${room.capacity}`}
                       labelIcon={MeetingRoom}
                       isFull={isFull(room.lockers.length, room.capacity)}
+                      href={`/document/department/${dept.id}/room/${room.id}`}
                     >
                       {room.lockers.map((locker, index) => (
                         <DocumentTreeItem
@@ -166,6 +230,7 @@ const DocumentDisplay = () => {
                           labelInfo={`${locker.folders.length}/${locker.capacity}`}
                           labelIcon={ViewModule}
                           isFull={isFull(locker.folders.length, locker.capacity)}
+                          href={`/document/department/${dept.id}/room/${room.id}/locker/${locker.id}`}
                         >
                           {locker.folders.map((folder, index) => (
                             <DocumentTreeItem
@@ -175,6 +240,7 @@ const DocumentDisplay = () => {
                               labelInfo={`${calculateSize(folder)}/${folder.capacity}`}
                               labelIcon={Folder}
                               isFull={isFull(calculateSize(folder), folder.capacity)}
+                              href={`/document/department/${dept.id}/room/${room.id}/locker/${locker.id}/folder/${folder.id}`}
                             />
                           ))}
                         </DocumentTreeItem>
@@ -189,7 +255,13 @@ const DocumentDisplay = () => {
         </TreeView>
       </TreeWrapper>
       <DocumentGrid>
-        <Outlet />
+        {!loading ? (
+          <Outlet />
+        ) : (
+          <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }} width={'100%'} height={'100%'}>
+            <CircularProgress />
+          </Box>
+        )}
       </DocumentGrid>
     </DocumentWrapper>
   )

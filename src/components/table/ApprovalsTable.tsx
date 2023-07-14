@@ -80,8 +80,9 @@ const ApprovalsTable = (props: ApprovalsTableProps) => {
           id: documentId,
           locationQRcode: scanData
         })
-        if (result) {
+        if (result.message === 'Success') {
           notifySuccess('Document confirmed successfully')
+          setScanning(false)
         }
         loading = true
       } catch (error) {

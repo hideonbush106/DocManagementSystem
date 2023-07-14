@@ -73,11 +73,12 @@ const BorrowDocumentModal = (props: BorrowDocumentModalProps) => {
   const shouldDisableDate = (date: Date) => {
     const today = dayjs().startOf('day')
     const selectedDate = dayjs(date).startOf('day')
-    if (selectedDate.isBefore(today)) {
-      return true
-    }
-    const dayOfWeek = selectedDate.day()
-    return dayOfWeek === 0 || dayOfWeek === 6
+    // if (selectedDate.isBefore(today)) {
+    //   return true
+    // }
+    // const dayOfWeek = selectedDate.day()
+    // return dayOfWeek === 0 || dayOfWeek === 6
+    return selectedDate.isBefore(today)
   }
 
   return (

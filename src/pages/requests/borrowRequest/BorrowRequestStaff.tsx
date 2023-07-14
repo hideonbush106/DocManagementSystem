@@ -66,7 +66,7 @@ const BorrowRequestStaff = () => {
   const [selectedStatus, setSelectedStatus] = useState<string>('')
   const [isFetching, setIsFetching] = useState(true)
   const [isScanModalOpen, setIsScanModalOpen] = useState(false)
-  const [scanning, setScanning] = useState(true)
+  const [scanning, setScanning] = useState(false)
   const { getBorrowRequests, getBorrowRequestsAll, acceptBorrowRequest, rejectBorrowRequest, verifyBorrowRequest } =
     useBorrowRequestApi()
 
@@ -123,6 +123,7 @@ const BorrowRequestStaff = () => {
       console.log(error)
     }
   }
+
   const handleClosePopup = () => {
     setSelectedRequest(null)
     setIsDetailModalOpen(false)
@@ -181,12 +182,12 @@ const BorrowRequestStaff = () => {
           notifySuccess('Borrow request confirmed successfully')
         }
         setIsFetching(true)
-        await fetchBorrowRequests()
       } catch (error) {
         console.log(error)
       } finally {
         handleScanModalClose()
         setScanning(false)
+        await fetchBorrowRequests()
       }
     }
   }

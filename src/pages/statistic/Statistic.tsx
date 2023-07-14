@@ -145,7 +145,7 @@ const Statistic = () => {
           <ChartWrapper>
             <div>
               <Typography fontSize='13px' color='#797979' fontWeight={600}>
-                REQUESTS MONTHLY (FILES)
+                REQUESTS MONTHLY
               </Typography>
               <TitleUnderline />
             </div>
@@ -179,7 +179,7 @@ const Statistic = () => {
               sx={{ backgroundColor: 'var(--white-color)', boxShadow: 'none', height: '328px', padding: '12px 16px' }}
             >
               <Typography fontSize='13px' color='#797979' fontWeight={600}>
-                IMPORTS ANALYSIS (FILES)
+                IMPORTS ANALYSIS
               </Typography>
               <TitleUnderline />
               <AnalysisChart items={importAnalysisData} />
@@ -190,7 +190,7 @@ const Statistic = () => {
               sx={{ backgroundColor: 'var(--white-color)', boxShadow: 'none', height: '328px', padding: '12px 16px' }}
             >
               <Typography fontSize='13px' color='#797979' fontWeight={600}>
-                LENDING ANALYSIS (FILES)
+                LENDING ANALYSIS
               </Typography>
               <TitleUnderline />
               <AnalysisChart items={borrowAnalysisData} />

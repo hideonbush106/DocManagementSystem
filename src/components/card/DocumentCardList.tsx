@@ -12,6 +12,7 @@ type Props = {
   }[]
   type: 'department' | 'room' | 'locker' | 'folder' | 'file'
   itemId?: string | null
+  fetchFolder?: () => void
 }
 
 const DocumentCardList = (props: Props) => {
@@ -22,7 +23,7 @@ const DocumentCardList = (props: Props) => {
   useEffect(() => {
     if (props.itemId) {
       const itemIndex = items.findIndex((item) => item.id === props.itemId)
-      if (itemIndex !== -1) setPage(Math.ceil(itemIndex / ITEMS_PER_PAGE))
+      if (itemIndex !== -1) setPage(Math.ceil(itemIndex + 1 / ITEMS_PER_PAGE))
     }
   }, [props.itemId, items])
 
@@ -71,7 +72,15 @@ const DocumentCardList = (props: Props) => {
         {items.slice((page - 1) * ITEMS_PER_PAGE, (page - 1) * ITEMS_PER_PAGE + ITEMS_PER_PAGE).map((item) => (
           <Grid key={item.id} item xs={12} sm={4} md={6} lg={4}>
             {type === 'file' ? (
-              <FileCard icon={icon} name={item.name} fileId={item.id} fileName={item.name} id={item.id} action />
+              <FileCard
+                icon={icon}
+                name={item.name}
+                fileId={item.id}
+                fileName={item.name}
+                id={item.id}
+                action
+                fetchFolder={props.fetchFolder}
+              />
             ) : (
               <Link to={`${type}/${item.id}`}>
                 <DocumentCard icon={icon} name={item.name} key={item.id} />

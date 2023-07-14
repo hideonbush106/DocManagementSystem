@@ -172,7 +172,10 @@ const MainLayout = (props: Props) => {
             action: handleImportRequestModalOpen,
             style: {
               backgroundColor: 'var(--primary-color)',
-              color: 'var(--white-color)'
+              color: 'var(--white-color)',
+              '&:hover': {
+                backgroundColor: 'var(--primary-dark-color)'
+              }
             }
           }
         ]

@@ -45,7 +45,7 @@ export const ImportRequestButton = (props: ButtonProps) => {
       <Button
         sx={{
           backgroundColor: 'var(--primary-color)',
-          width: { sm: '165px', xs: '115px' },
+          width: { sm: '175px', xs: '125px' },
           height: '45px',
           textTransform: 'capitalize',
           fontSize: '14px',
@@ -73,7 +73,7 @@ export const ReturnButton = (props: ButtonProps) => {
       <Button
         sx={{
           backgroundColor: 'var(--green-color)',
-          width: { sm: '165px', xs: '125px' },
+          width: { sm: '180px', xs: '140px' },
           height: '45px',
           textTransform: 'capitalize',
           fontSize: '14px',

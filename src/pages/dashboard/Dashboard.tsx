@@ -232,7 +232,7 @@ const Dashboard = () => {
                 <TitleUnderline />
               </div>
               <Link to='/document'>
-                <ViewButton text='View All' />
+                <ViewButton text='View' />
               </Link>
             </SubtitleWrapper>
             <DocumentTable

@@ -16,7 +16,7 @@ interface UpdateDocumentProps {
   isHavePdf: boolean
   open: boolean
   handleClose: () => void
-  reload: (id: string) => void
+  reload?: () => void
 }
 
 const TitleText = styled.span`
@@ -70,7 +70,7 @@ const UpdateDocumentModal = (props: UpdateDocumentProps) => {
         handleClose()
         formik.setFieldValue('name', '')
         formik.setFieldValue('description', '')
-        reload(document?.id ?? '')
+        reload && reload()
       }
     }
   })

@@ -33,7 +33,7 @@ const MainLayout = (props: Props) => {
   const [documentCount, setDocumentCount] = React.useState()
   const [speedDialOpen, setSpeedDialOpen] = React.useState(false)
   const [scanning, setScanning] = React.useState(false)
-  const [importDocumentModalOpen, setImportDocumentModalOpen] = React.useState(false)
+  const [isImportDocumentModalOpen, setIsImportDocumentModalOpen] = React.useState(false)
   const [isImportRequestModalOpen, setIsImportRequestModalOpen] = React.useState(false)
   const [isReturnDocumentModalOpen, setIsReturnDocumentModalOpen] = React.useState(false)
   const [isReturnConfirmModalOpen, setIsReturnConfirmModalOpen] = React.useState(false)
@@ -65,11 +65,11 @@ const MainLayout = (props: Props) => {
   }, [getDepartmentCount, getDocumentCount, getUserCount])
 
   const handleImportDocumentModalOpen = () => {
-    setImportDocumentModalOpen(true)
+    setIsImportDocumentModalOpen(true)
   }
 
   const handleImportDocumentModalClose = () => {
-    setImportDocumentModalOpen(false)
+    setIsImportDocumentModalOpen(false)
   }
 
   const handleImportRequestModalOpen = () => {
@@ -254,7 +254,7 @@ const MainLayout = (props: Props) => {
       {/* render when screen above large */}
       {belowLg && <SpeedDialCustom actions={actions} open={speedDialOpen} onClick={handleSpeedDial} />}
       {/* Modals */}
-      <ImportDocumentModal open={importDocumentModalOpen} handleClose={handleImportDocumentModalClose} />
+      <ImportDocumentModal open={isImportDocumentModalOpen} handleClose={handleImportDocumentModalClose} />
       <ImportRequestModal open={isImportRequestModalOpen} handleClose={handleImportRequestModalClose} />
       <Scanner
         scanning={scanning}

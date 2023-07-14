@@ -1,7 +1,7 @@
 /* eslint-disable import/no-named-as-default-member */
 import { CreateNewFolderOutlined } from '@mui/icons-material'
 import { Box, Button, FormControl, MenuItem, TextField, Typography } from '@mui/material'
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import FileUpload from 'react-material-file-upload'
 import { useFormik } from 'formik'
 import useDepartmentApi from '~/hooks/api/useDepartmentApi'
@@ -117,18 +117,18 @@ const ImportRequestModal = (props: ImportDocumentModalProps) => {
       })
     }
   })
+  const fetchData = useCallback(async () => {
+    if (deptId) {
+      const categories = await getAllCategories(deptId)
+      setCategories(categories.data)
+      const rooms = await getRoomsInDepartment(deptId)
+      setRooms(rooms.data)
+    }
+  }, [deptId, getAllCategories, getRoomsInDepartment])
 
   useEffect(() => {
-    const fetchData = async () => {
-      if (deptId) {
-        const categories = await getAllCategories(deptId)
-        setCategories(categories.data)
-        const rooms = await getRoomsInDepartment(deptId)
-        setRooms(rooms.data)
-      }
-    }
     fetchData()
-  }, [getAllCategories, getRoomsInDepartment, getDepartment, deptId])
+  }, [getAllCategories, getRoomsInDepartment, getDepartment, deptId, fetchData])
 
   const roomHandleChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     setLockers([])
@@ -150,8 +150,10 @@ const ImportRequestModal = (props: ImportDocumentModalProps) => {
   useEffect(() => {
     if (submitSuccess) {
       handleClose()
+      setSubmitSuccess(false)
+      fetchData()
     }
-  }, [submitSuccess, handleClose])
+  }, [submitSuccess, handleClose, fetchData])
 
   useEffect(() => {
     if (!open) {

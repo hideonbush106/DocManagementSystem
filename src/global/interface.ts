@@ -213,6 +213,34 @@ export interface VerifiedRequset {
   QRCode: string
 }
 
+export interface User {
+  id: string
+  code: string
+  firstName: string
+  lastName: string
+  email: string
+  phone: string
+}
+
+export interface CreateUser {
+  code: string
+  firstName: string
+  lastName: string
+  email: string
+  phone: string
+  department: {
+    id: string
+  }
+}
+
+export interface UpdateUser {
+  id: string
+  firstName: string
+  lastName: string
+  email: string
+  phone: string
+}
+
 export interface ImportAnalysisData {
   name: string
   count: string

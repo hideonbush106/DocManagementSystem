@@ -4,8 +4,8 @@ import RoomAdvanced from './room/RoomAdvanced'
 import LockerAdvanced from './locker/LockerAdvanced'
 import FolderAdvanced from './folder/FolderAdvanced'
 import CategoryAdvanced from './category/CategoryAdvanced'
-
-import { Apartment, Folder, MeetingRoom, ViewModule, Category } from '@mui/icons-material'
+import EmployeeAdvanced from './employee/EmployeeAdvanced'
+import { Apartment, Folder, MeetingRoom, ViewModule, Category, PeopleAlt } from '@mui/icons-material'
 import useAuth from '~/hooks/useAuth'
 import { Navigate } from 'react-router-dom'
 
@@ -16,7 +16,8 @@ const Advanced = () => {
     { label: 'Room', component: <RoomAdvanced />, icon: MeetingRoom },
     { label: 'Locker', component: <LockerAdvanced />, icon: ViewModule },
     { label: 'Folder', component: <FolderAdvanced />, icon: Folder },
-    { label: 'Category', component: <CategoryAdvanced />, icon: Category }
+    { label: 'Category', component: <CategoryAdvanced />, icon: Category },
+    { label: 'Employee', component: <EmployeeAdvanced />, icon: PeopleAlt },
   ]
   return user?.role === 'STAFF' ? (
     <>

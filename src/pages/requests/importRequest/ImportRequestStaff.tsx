@@ -66,7 +66,7 @@ const ImportRequestStaff = () => {
   const [selectedStatus, setSelectedStatus] = useState<string>('')
   const [isFetching, setIsFetching] = useState(true)
   const [isScanModalOpen, setIsScanModalOpen] = useState(false)
-  const [scanning, setScanning] = useState(true)
+  const [scanning, setScanning] = useState(false)
   const { getImportRequestsAll, getImportRequest, acceptImportRequest, rejectImportRequest, verifyImportRequest } =
     useImportRequestApi()
 
@@ -179,12 +179,12 @@ const ImportRequestStaff = () => {
           notifySuccess('Import request confirmed successfully')
         }
         setIsFetching(true)
-        await fetchImportRequests()
       } catch (error) {
         console.log(error)
       } finally {
         handleScanModalClose()
         setScanning(false)
+        await fetchImportRequests()
       }
     }
   }

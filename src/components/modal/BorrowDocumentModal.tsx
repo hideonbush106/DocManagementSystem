@@ -39,9 +39,8 @@ const BorrowDocumentModal = (props: BorrowDocumentModalProps) => {
         const selectedDate = dayjs(value).startOf('day')
         const isBeforeTodayOrWeekend =
           selectedDate.isBefore(today) || selectedDate.day() === 0 || selectedDate.day() === 6
-        const isToday = selectedDate.isSame(today)
 
-        return !isBeforeTodayOrWeekend && !isToday
+        return !isBeforeTodayOrWeekend
       })
   })
 
@@ -188,6 +187,7 @@ const BorrowDocumentModal = (props: BorrowDocumentModalProps) => {
             <Grid item xs={12} sm={6}>
               <TextField
                 sx={{ my: 1 }}
+                type='number'
                 label='Borrow Duration (in days)'
                 value={formik.values.borrowDuration}
                 name='borrowDuration'

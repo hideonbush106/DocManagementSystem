@@ -104,7 +104,8 @@ const DepartmentAdvanced = () => {
                 sx={{
                   height: '52.2px',
                   paddingLeft: { sm: '5rem', xs: '1rem' },
-                  paddingRight: { sm: '5rem', xs: '1rem' }
+                  paddingRight: { sm: '5rem', xs: '1rem' },
+                  cursor: 'default'
                 }}
                 disableTouchRipple
               >

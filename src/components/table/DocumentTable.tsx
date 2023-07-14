@@ -1,142 +1,151 @@
 import { DataGrid, GridColDef, GridRenderCellParams } from '@mui/x-data-grid'
 
-const columns: GridColDef[] = [
-  {
-    field: 'id',
-    headerName: 'No.',
-    sortable: false,
-    filterable: false,
-    headerAlign: 'center',
-    align: 'center',
-    width: 50
-  },
-  { field: 'fileName', headerName: 'File name', flex: 1, minWidth: 150 },
-  { field: 'department', headerName: 'Department', flex: 1, minWidth: 140 },
-  { field: 'room', headerName: 'Room', flex: 1, minWidth: 60, align: 'center', headerAlign: 'center' },
-  { field: 'locker', headerName: 'Locker', flex: 1, minWidth: 60, align: 'center', headerAlign: 'center' },
-  { field: 'folder', headerName: 'Folder', flex: 1, minWidth: 60, align: 'center', headerAlign: 'center' },
-  {
-    field: 'category',
-    headerName: 'Category',
-    flex: 1,
-    minWidth: 80
-  },
-  {
-    field: 'status',
-    headerName: 'Status',
-    width: 80,
-    renderCell: (params: GridRenderCellParams) => {
-      const status = params.value as string
+interface DocumentsTableProps {
+  rows: never[]
+  rowCount: number
+  loading: boolean
+  paginationModel: PaginationModel
+  handlePaginationModelChange: (newPaginationModel: PaginationModel) => void
+}
 
-      let statusColor = ''
-      if (status === 'Available') {
-        statusColor = 'var(--primary-color)'
-      } else if (status === 'Lending') {
-        statusColor = 'var(--red-color)'
+interface PaginationModel {
+  page: number
+  pageSize: number
+}
+
+const DocumentTable = (props: DocumentsTableProps) => {
+  const { rows, loading, rowCount, paginationModel, handlePaginationModelChange } = props
+
+  const columns: GridColDef[] = [
+    {
+      field: 'id',
+      headerName: 'No.',
+      width: 50,
+      sortable: false,
+      filterable: false,
+      headerAlign: 'center',
+      align: 'center',
+      renderCell: (params) =>
+        `${
+          paginationModel.pageSize * paginationModel.page +
+          params.api.getRowIndexRelativeToVisibleRows(params.row.id) +
+          1
+        }`
+    },
+    { field: 'name', headerName: 'File name', flex: 1, minWidth: 130 },
+    {
+      field: 'department',
+      headerName: 'Department',
+      flex: 1,
+      minWidth: 70,
+      maxWidth: 120,
+      sortable: false,
+      filterable: false,
+      valueGetter: ({ row }) => {
+        return row.folder.locker.room.department.name
       }
+    },
+    {
+      field: 'room',
+      headerName: 'Room',
+      flex: 1,
+      minWidth: 80,
+      maxWidth: 120,
+      align: 'center',
+      headerAlign: 'center',
+      sortable: false,
+      filterable: false,
+      valueGetter: ({ row }) => {
+        return row.folder.locker.room.name
+      }
+    },
+    {
+      field: 'locker',
+      headerName: 'Locker',
+      flex: 1,
+      minWidth: 80,
+      maxWidth: 120,
+      align: 'center',
+      headerAlign: 'center',
+      sortable: false,
+      filterable: false,
+      valueGetter: ({ row }) => {
+        return row.folder.locker.name
+      }
+    },
+    {
+      field: 'folder',
+      headerName: 'Folder',
+      flex: 1,
+      minWidth: 80,
+      maxWidth: 120,
+      align: 'center',
+      headerAlign: 'center',
+      sortable: false,
+      filterable: false,
+      valueFormatter: ({ value }) => value.name
+    },
+    {
+      field: 'category',
+      headerName: 'Category',
+      flex: 1,
+      minWidth: 130,
+      sortable: false,
+      filterable: false,
+      valueFormatter: ({ value }) => value.name
+    },
+    {
+      field: 'status',
+      headerName: 'Status',
+      flex: 2,
+      minWidth: 70,
+      maxWidth: 120,
+      sortable: false,
+      filterable: false,
+      align: 'center',
+      headerAlign: 'center',
+      renderCell: (params: GridRenderCellParams) => {
+        const status = params.value as string
 
-      return <span style={{ color: statusColor, fontWeight: '500' }}>{status}</span>
+        let statusColor = ''
+        if (status.toLocaleUpperCase() === 'AVAILABLE') {
+          statusColor = 'var(--primary-color)'
+        } else {
+          statusColor = 'var(--red-color)'
+        }
+
+        return <span style={{ color: statusColor, fontWeight: '500' }}>{status}</span>
+      }
     }
-  }
-]
-
-const rows = [
-  {
-    id: 1,
-    fileName: 'Contract labor 2022',
-    department: 'Human Resources',
-    room: '1',
-    locker: '1',
-    folder: '1',
-    category: 'Contract',
-    status: 'Lending'
-  },
-  {
-    id: 2,
-    fileName: 'Report meeting',
-    department: 'Sales',
-    room: '3',
-    locker: '2',
-    folder: '2',
-    category: 'Report',
-    status: 'Available'
-  },
-  {
-    id: 3,
-    fileName: 'Tax bill',
-    department: 'Accountant',
-    room: '6',
-    locker: '6',
-    folder: '6',
-    category: 'Bill',
-    status: 'Lending'
-  },
-  {
-    id: 4,
-    fileName: 'Contract',
-    department: 'Human Resources',
-    room: '1',
-    locker: '1',
-    folder: '2',
-    category: 'Contract',
-    status: 'Available'
-  },
-  {
-    id: 5,
-    fileName: 'Bill',
-    department: 'Accountant',
-    room: '1',
-    locker: '1',
-    folder: '1',
-    category: 'Bill',
-    status: 'Available'
-  },
-  {
-    id: 7,
-    fileName: 'Report',
-    department: 'Sales',
-    room: '1',
-    locker: '1',
-    folder: '1',
-    category: 'Report',
-    status: 'Lending'
-  },
-  {
-    id: 8,
-    fileName: 'Contract',
-    department: 'Human Resources',
-    room: '1',
-    locker: '1',
-    folder: '1',
-    category: 'Contract',
-    status: 'Lending'
-  }
-]
-
-const DocumentTable = () => {
+  ]
   return (
     <div style={{ height: 'calc(100% - 30px)', width: '100%', margin: '10px 0' }}>
       <DataGrid
-        columnHeaderHeight={40}
+        columnHeaderHeight={50}
         disableColumnMenu
         hideFooterSelectedRowCount
-        rowHeight={35}
+        rowHeight={40}
         rows={rows}
         columns={columns}
-        autoPageSize={true}
+        rowCount={rowCount}
+        loading={loading}
+        pageSizeOptions={[paginationModel.pageSize]}
+        paginationModel={paginationModel}
+        paginationMode='server'
+        onPaginationModelChange={handlePaginationModelChange}
         sx={{
           border: 'none',
           fontSize: '12px',
           '	.MuiDataGrid-footerContainer': {
             borderTop: 'none',
-            maxHeight: '40px',
-            minHeight: '40px'
+            maxHeight: '35px',
+            minHeight: '35px'
           },
           '.MuiDataGrid-virtualScroller': {
             // overflow: 'visible'
           },
           '.MuiToolbar-root': {
-            minHeight: 40
+            minHeight: 35
           }
         }}
       />

@@ -1,22 +1,16 @@
-import { useState } from 'react'
 import { Button } from '@mui/material'
 import AddRoundedIcon from '@mui/icons-material/AddRounded'
 import KeyboardReturnRoundedIcon from '@mui/icons-material/KeyboardReturnRounded'
 import DoneRoundedIcon from '@mui/icons-material/DoneRounded'
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded'
-import ImportDocumentModal from '../modal/ImportDocumentModal'
-import ImportRequestModal from '../modal/ImportRequestModal'
 
 interface ButtonProps {
   text: string
   onClick?: () => void
 }
 
-export const ImportButton = ({ text }: ButtonProps) => {
-  const [open, setOpen] = useState(false)
-  const handleClose = () => {
-    setOpen(false)
-  }
+export const ImportButton = (props: ButtonProps) => {
+  const { text, onClick } = props
 
   return (
     <>
@@ -36,21 +30,16 @@ export const ImportButton = ({ text }: ButtonProps) => {
         variant='contained'
         startIcon={<AddRoundedIcon />}
         color='primary'
-        onClick={() => setOpen(true)}
+        onClick={onClick}
       >
         {text}
       </Button>
-      <ImportDocumentModal open={open} handleClose={handleClose} />
     </>
   )
 }
 
-export const ImportRequestButton = ({ text }: ButtonProps) => {
-  const [open, setOpen] = useState(false)
-  const handleClose = () => {
-    setOpen(false)
-  }
-
+export const ImportRequestButton = (props: ButtonProps) => {
+  const { text, onClick } = props
   return (
     <>
       <Button
@@ -69,21 +58,16 @@ export const ImportRequestButton = ({ text }: ButtonProps) => {
         variant='contained'
         startIcon={<AddRoundedIcon />}
         color='primary'
-        onClick={() => setOpen(true)}
+        onClick={onClick}
       >
         {text}
       </Button>
-      <ImportRequestModal open={open} handleClose={handleClose} />
     </>
   )
 }
 
-export const ReturnButton = ({ text }: ButtonProps) => {
-  const [open, setOpen] = useState(false)
-  const handleClose = () => {
-    setOpen(false)
-  }
-
+export const ReturnButton = (props: ButtonProps) => {
+  const { text, onClick } = props
   return (
     <>
       <Button
@@ -102,11 +86,10 @@ export const ReturnButton = ({ text }: ButtonProps) => {
         variant='contained'
         startIcon={<KeyboardReturnRoundedIcon />}
         color='primary'
-        onClick={() => setOpen(true)}
+        onClick={onClick}
       >
         {text}
       </Button>
-      <ImportDocumentModal open={open} handleClose={handleClose} />
     </>
   )
 }

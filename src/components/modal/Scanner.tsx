@@ -58,7 +58,7 @@ const Scanner = (props: CodeScannerProps) => {
               >
                 <Grid item xs={12} sm={8} md={8}>
                   <QrReader
-                    delay={1000}
+                    delay={1500}
                     style={{ width: 'inherit' }}
                     facingMode='environment'
                     onScan={handleScan}

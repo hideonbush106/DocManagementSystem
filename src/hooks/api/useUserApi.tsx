@@ -1,5 +1,6 @@
 import React from 'react'
 import useApi from './useApi'
+import { CreateUser, UpdateUser } from '~/global/interface'
 
 const useUserApi = () => {
   const callApi = useApi()
@@ -52,7 +53,59 @@ const useUserApi = () => {
     }
   }, [callApi])
 
-  return { getUserLogin, getUserOwn, getUserProfile, getUserCount }
+  const getAllUsers = React.useCallback(
+    async (departmentId: string) => {
+      const endpoint = `/${rootEndpoint}/list?departmentId=${departmentId}`
+      try {
+        const response = await callApi('get', endpoint)
+        return response
+      } catch (error) {
+        console.log(error)
+      }
+    },
+    [callApi]
+  )
+
+  const createUser = React.useCallback(
+    async (data: CreateUser) => {
+      const endpoint = `/${rootEndpoint}`
+      try {
+        const response = await callApi('post', endpoint, {}, {}, data)
+        return response
+      } catch (error) {
+        console.log(error)
+      }
+    },
+    [callApi]
+  )
+
+  const updateUser = React.useCallback(
+    async (data: UpdateUser) => {
+      const endpoint = `/${rootEndpoint}`
+      try {
+        const response = await callApi('put', endpoint, {}, {}, data)
+        return response
+      } catch (error) {
+        console.log(error)
+      }
+    },
+    [callApi]
+  )
+
+  const disableUser = React.useCallback(
+    async (userId: string) => {
+      const endpoint = `/${rootEndpoint}/disable/${userId}`
+      try {
+        const response = await callApi('delete', endpoint)
+        return response
+      } catch (error) {
+        console.log(error)
+      }
+    },
+    [callApi]
+  )
+
+  return { getUserLogin, getUserOwn, getUserProfile, getUserCount, getAllUsers, createUser, updateUser, disableUser }
 }
 
 export default useUserApi

@@ -425,6 +425,12 @@ const ImportDocumentModal = (props: ImportDocumentModalProps) => {
             variant='outlined'
             onClick={() => {
               setQrCode('')
+              formik.resetForm()
+              setDepartments([])
+              setFiles([])
+              setRooms([])
+              setLockers([])
+              setFolders([])
               props.handleClose()
             }}
           >

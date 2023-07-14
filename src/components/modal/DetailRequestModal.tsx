@@ -166,17 +166,19 @@ const DetailRequestModal = ({ open, handleClose, selectedRequest, isLoading }: R
                     margin: '20px 0 0'
                   }}
                 >
-                  {selectedRequest.status !== 'REJECTED' && selectedRequest.status !== 'CANCELED' && (
-                    <Button
-                      variant='contained'
-                      onClick={() => {
-                        if (selectedRequest.document) setDetail(true)
-                      }}
-                      sx={{ fontFamily: 'inherit' }}
-                    >
-                      Document Detail
-                    </Button>
-                  )}
+                  {selectedRequest.status !== 'REJECTED' &&
+                    selectedRequest.status !== 'CANCELED' &&
+                    selectedRequest.status !== 'EXPIRED' && (
+                      <Button
+                        variant='contained'
+                        onClick={() => {
+                          if (selectedRequest.document) setDetail(true)
+                        }}
+                        sx={{ fontFamily: 'inherit' }}
+                      >
+                        Document Detail
+                      </Button>
+                    )}
                 </Box>
                 <Detail
                   document={selectedRequest.document}
@@ -291,17 +293,19 @@ const DetailRequestModal = ({ open, handleClose, selectedRequest, isLoading }: R
                     margin: '20px 0 0'
                   }}
                 >
-                  {selectedRequest.status !== 'REJECTED' && selectedRequest.status !== 'CANCELED' && (
-                    <Button
-                      variant='contained'
-                      onClick={() => {
-                        if (selectedRequest.document) setDetail(true)
-                      }}
-                      sx={{ fontFamily: 'inherit' }}
-                    >
-                      Document Detail
-                    </Button>
-                  )}
+                  {selectedRequest.status !== 'REJECTED' &&
+                    selectedRequest.status !== 'CANCELED' &&
+                    selectedRequest.status !== 'EXPIRED' && (
+                      <Button
+                        variant='contained'
+                        onClick={() => {
+                          if (selectedRequest.document) setDetail(true)
+                        }}
+                        sx={{ fontFamily: 'inherit' }}
+                      >
+                        Document Detail
+                      </Button>
+                    )}
                 </Box>
                 <Detail
                   document={selectedRequest.document}

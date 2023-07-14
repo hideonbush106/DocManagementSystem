@@ -431,6 +431,7 @@ const ImportDocumentModal = (props: ImportDocumentModalProps) => {
               setRooms([])
               setLockers([])
               setFolders([])
+              fetchData()
               props.handleClose()
             }}
           >

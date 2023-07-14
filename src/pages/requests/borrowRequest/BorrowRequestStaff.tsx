@@ -180,7 +180,6 @@ const BorrowRequestStaff = () => {
         })
         if (result) {
           notifySuccess('Borrow request confirmed successfully')
-          setScanning(false)
         }
         setIsFetching(true)
       } catch (error) {

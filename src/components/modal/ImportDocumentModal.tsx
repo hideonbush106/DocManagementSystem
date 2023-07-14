@@ -109,11 +109,12 @@ const ImportDocumentModal = (props: ImportDocumentModalProps) => {
 
   const departmentHandleChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     setCategories([])
-    formik.setFieldValue('category.id', [])
+    formik.setFieldValue('category.id', '')
     setRooms([])
     setLockers([])
     setFolders([])
-    formik.setFieldValue('folder.id', [])
+    formik.setFieldValue('folder.id', '')
+    console.log(formik.values)
     const categories = await getAllCategories(event.target.value)
     setCategories(categories.data)
     const rooms = await getRoomsInDepartment(event.target.value)
@@ -123,14 +124,14 @@ const ImportDocumentModal = (props: ImportDocumentModalProps) => {
   const roomHandleChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     setLockers([])
     setFolders([])
-    formik.setFieldValue('folder.id', [])
+    formik.setFieldValue('folder.id', '')
     const lockers = await getLockerInRoom(event.target.value)
     setLockers(lockers.data)
   }
 
   const lockerHandleChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     setFolders([])
-    formik.setFieldValue('folder.id', [])
+    formik.setFieldValue('folder.id', '')
     const folder = await getFoldersInLocker(event.target.value)
     setFolders(folder.data)
   }
@@ -409,7 +410,7 @@ const ImportDocumentModal = (props: ImportDocumentModalProps) => {
                 formik.values.name === '' ||
                 formik.values.description === '' ||
                 formik.values.folder.id === '' ||
-                formik.values.numOfPages === 0 ||
+                formik.values.numOfPages <= 0 ||
                 formik.values.category.id === ''
               }
               type='submit'

@@ -13,7 +13,7 @@ import {
 import React, { useEffect, useState } from 'react'
 import { DeleteButton } from '~/components/button/advanced/DeleteButton'
 import { UpdateEmployeeButton } from '~/components/button/advanced/UpdateButton'
-import { CreateUser, Department, Room, UpdateUser, User } from '~/global/interface'
+import { CreateUser, Department, UpdateUser, User } from '~/global/interface'
 import { notifySuccess } from '~/global/toastify'
 import useDepartmentApi from '~/hooks/api/useDepartmentApi'
 import useUserApi from '~/hooks/api/useUserApi'

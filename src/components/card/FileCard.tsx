@@ -24,6 +24,7 @@ type Props = {
   fileName: string
   action?: boolean
   onClick?: () => void
+  fetchFolder?: () => void
 }
 const FileCard: React.FC<Props> = (props: Props) => {
   const { user } = useAuth()
@@ -128,7 +129,7 @@ const FileCard: React.FC<Props> = (props: Props) => {
       }}
     >
       <Box onClick={onClick} width='100%'>
-        <DocumentCard icon={icon} name={name} />
+        <DocumentCard icon={icon} name={document?.name ?? name} />
       </Box>
       <Box style={{ position: 'absolute', right: 0, backgroundColor: 'white' }}>
         {action && <ActionsCell menuItems={actions} />}
@@ -147,7 +148,7 @@ const FileCard: React.FC<Props> = (props: Props) => {
           categories={categories}
           open={isUpdateModalOpen}
           handleClose={handleCloseUpdateModal}
-          reload={fetchData}
+          reload={props.fetchFolder}
         />
       )}
     </Paper>

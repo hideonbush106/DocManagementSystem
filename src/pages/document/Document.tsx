@@ -11,7 +11,7 @@ import { fakeArray } from '~/utils/fakeArray'
 import DataProvider from '~/context/DataContext'
 import { File, FolderTree } from '~/global/interface'
 import useAuth from '~/hooks/useAuth'
-import { useMediaQuery, useTheme } from '@mui/material'
+import { Box, CircularProgress, useMediaQuery, useTheme } from '@mui/material'
 import SpeedDialCustom from '~/components/speed-dial/SpeedDial'
 import ImportDocumentModal from '~/components/modal/ImportDocumentModal'
 import AddRoundedIcon from '@mui/icons-material/AddRounded'
@@ -205,7 +205,13 @@ const DocumentDisplay = () => {
         <TreeView sx={{ width: '100%' }} defaultCollapseIcon={<ExpandMore />} defaultExpandIcon={<ChevronRight />}>
           {!loading
             ? documentTree?.map((dept, index) => (
-                <DocumentTreeItem key={index} nodeId={dept.id} labelText={dept.name} labelIcon={Apartment}>
+                <DocumentTreeItem
+                  key={index}
+                  nodeId={dept.id}
+                  labelText={dept.name}
+                  labelIcon={Apartment}
+                  href={`/document/department/${dept.id}`}
+                >
                   {dept.rooms.map((room, index) => (
                     <DocumentTreeItem
                       key={index}
@@ -214,6 +220,7 @@ const DocumentDisplay = () => {
                       labelInfo={`${room.lockers.length}/${room.capacity}`}
                       labelIcon={MeetingRoom}
                       isFull={isFull(room.lockers.length, room.capacity)}
+                      href={`/document/department/${dept.id}/room/${room.id}`}
                     >
                       {room.lockers.map((locker, index) => (
                         <DocumentTreeItem
@@ -223,6 +230,7 @@ const DocumentDisplay = () => {
                           labelInfo={`${locker.folders.length}/${locker.capacity}`}
                           labelIcon={ViewModule}
                           isFull={isFull(locker.folders.length, locker.capacity)}
+                          href={`/document/department/${dept.id}/room/${room.id}/locker/${locker.id}`}
                         >
                           {locker.folders.map((folder, index) => (
                             <DocumentTreeItem
@@ -232,6 +240,7 @@ const DocumentDisplay = () => {
                               labelInfo={`${calculateSize(folder)}/${folder.capacity}`}
                               labelIcon={Folder}
                               isFull={isFull(calculateSize(folder), folder.capacity)}
+                              href={`/document/department/${dept.id}/room/${room.id}/locker/${locker.id}/folder/${folder.id}`}
                             />
                           ))}
                         </DocumentTreeItem>
@@ -246,7 +255,13 @@ const DocumentDisplay = () => {
         </TreeView>
       </TreeWrapper>
       <DocumentGrid>
-        <Outlet />
+        {!loading ? (
+          <Outlet />
+        ) : (
+          <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }} width={'100%'} height={'100%'}>
+            <CircularProgress />
+          </Box>
+        )}
       </DocumentGrid>
     </DocumentWrapper>
   )

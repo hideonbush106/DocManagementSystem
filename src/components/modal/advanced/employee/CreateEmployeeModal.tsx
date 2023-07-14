@@ -18,7 +18,7 @@ const CreateEmployeeModal = (props: CreateEmployeeProps) => {
       .string()
       .trim()
       .required('Employee code is required')
-      .matches(/^DMS\d{6}$/, 'Employee code must be formatted DMS000000')
+      .matches(/^DMS\d{6}$/, 'Employee code must be formatted. Ex: DMS123456')
       .max(9, 'Employee code is less than or equal 20 characters'),
     firstName: yup
       .string()

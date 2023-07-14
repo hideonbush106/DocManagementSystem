@@ -11,7 +11,7 @@ import { fakeArray } from '~/utils/fakeArray'
 import DataProvider from '~/context/DataContext'
 import { File, FolderTree } from '~/global/interface'
 import useAuth from '~/hooks/useAuth'
-import { useMediaQuery, useTheme } from '@mui/material'
+import { Box, CircularProgress, useMediaQuery, useTheme } from '@mui/material'
 import SpeedDialCustom from '~/components/speed-dial/SpeedDial'
 import ImportDocumentModal from '~/components/modal/ImportDocumentModal'
 import AddRoundedIcon from '@mui/icons-material/AddRounded'
@@ -246,7 +246,13 @@ const DocumentDisplay = () => {
         </TreeView>
       </TreeWrapper>
       <DocumentGrid>
-        <Outlet />
+        {!loading ? (
+          <Outlet />
+        ) : (
+          <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }} width={'100%'} height={'100%'}>
+            <CircularProgress />
+          </Box>
+        )}
       </DocumentGrid>
     </DocumentWrapper>
   )

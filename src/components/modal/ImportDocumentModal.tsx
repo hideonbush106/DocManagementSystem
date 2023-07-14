@@ -15,6 +15,7 @@ import { QRCodeSVG } from 'qrcode.react'
 import { notifySuccess } from '~/global/toastify'
 import ModalLayout from './ModalLayout'
 import { useReactToPrint } from 'react-to-print'
+import styled from 'styled-components'
 
 interface ImportDocumentModalProps {
   open: boolean
@@ -39,11 +40,32 @@ const ImportDocumentModal = (props: ImportDocumentModalProps) => {
   const qrCodeRef = useRef(null)
   const componentRef = useRef<HTMLDivElement>(null)
 
+  const Print = styled(Box)`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    margin: 1rem 0;
+
+    @media print {
+      margin: 0;
+      height: 50vh;
+    }
+  `
+
   const handlePrint = useReactToPrint({
     content: () => qrCodeRef.current,
     documentTitle: 'Print QR Code',
     onAfterPrint() {
       setQrCode('')
+      formik.resetForm()
+      setDepartments([])
+      setFiles([])
+      setRooms([])
+      setLockers([])
+      setFolders([])
+      fetchData()
+      props.handleClose()
     }
   })
 
@@ -174,214 +196,218 @@ const ImportDocumentModal = (props: ImportDocumentModalProps) => {
       </Box>
       <form onSubmit={formik.handleSubmit} action='POST'>
         <FormControl sx={{ width: '100%', px: 5 }}>
-          <Typography
-            sx={{
-              fontWeight: 600,
-              color: 'var(--black-color)',
-              my: 1.5,
-              fontSize: {
-                xs: '1.2rem',
-                sm: '1.5rem'
-              }
-            }}
-            variant='h6'
-          >
-            Document Information
-          </Typography>
-          <TextField
-            sx={{ my: 1 }}
-            value={formik.values.name}
-            label='Document name'
-            name='name'
-            variant='standard'
-            fullWidth
-            onChange={formik.handleChange}
-            required
-            error={formik.touched.name && Boolean(formik.errors.name)}
-            helperText={formik.touched.name && formik.errors.name}
-          />
-          <TextField
-            sx={{ my: 1 }}
-            label='Number of pages'
-            value={formik.values.numOfPages}
-            type='number'
-            name='numOfPages'
-            variant='standard'
-            fullWidth
-            onChange={formik.handleChange}
-            required
-            error={formik.touched.numOfPages && Boolean(formik.errors.numOfPages)}
-            helperText={formik.touched.numOfPages && formik.errors.numOfPages}
-          />
-          <TextField
-            sx={{ my: 1 }}
-            label='Description'
-            value={formik.values.description}
-            name='description'
-            variant='standard'
-            fullWidth
-            onChange={formik.handleChange}
-            multiline
-            maxRows={4}
-            required
-            error={formik.touched.description && Boolean(formik.errors.description)}
-            helperText={formik.touched.description && formik.errors.description}
-          />
-          <Box display={'flex'} sx={{ width: '100%', justifyContent: 'space-between', flexWrap: 'wrap' }}>
-            <TextField
-              onChange={departmentHandleChange}
-              sx={{
-                my: 1,
-                width: {
-                  xs: '100%',
-                  sm: '47%'
-                }
-              }}
-              select
-              label='Department'
-              variant='standard'
-              required
-            >
-              {departments.map((dept) => (
-                <MenuItem key={dept.id} value={dept.id}>
-                  {dept.name}
-                </MenuItem>
-              ))}
-            </TextField>
-            <TextField
-              value={formik.values.category.id}
-              onChange={formik.handleChange}
-              sx={{
-                my: 1,
-                width: {
-                  xs: '100%',
-                  sm: '47%'
-                }
-              }}
-              select
-              label='Category Type'
-              variant='standard'
-              name='category.id'
-              required
-              disabled={categories.length === 0}
-            >
-              {categories.map((cate) => (
-                <MenuItem key={cate.id} value={cate.id}>
-                  {cate.name}
-                </MenuItem>
-              ))}
-            </TextField>
-          </Box>
-          <Typography
-            sx={{
-              fontWeight: 600,
-              color: 'var(--black-color)',
-              my: 1.5,
-              fontSize: {
-                xs: '1.2rem',
-                sm: '1.5rem'
-              }
-            }}
-            variant='h6'
-          >
-            Location
-          </Typography>
-          <Box display={'flex'} sx={{ width: '100%', justifyContent: 'space-between', flexWrap: 'wrap' }}>
-            <TextField
-              onChange={roomHandleChange}
-              sx={{
-                my: 1,
-                width: {
-                  xs: '100%',
-                  sm: '31%'
-                }
-              }}
-              select
-              label='Room'
-              variant='standard'
-              required
-              disabled={rooms.length === 0}
-            >
-              {rooms.map((room) => (
-                <MenuItem key={room.id} value={room.id}>
-                  {room.name}
-                </MenuItem>
-              ))}
-            </TextField>
-            <TextField
-              onChange={lockerHandleChange}
-              sx={{
-                my: 1,
-                width: {
-                  xs: '100%',
-                  sm: '31%'
-                }
-              }}
-              select
-              label='Locker'
-              variant='standard'
-              required
-              disabled={lockers.length === 0}
-            >
-              {lockers.map((locker) => (
-                <MenuItem key={locker.id} value={locker.id}>
-                  {locker.name}
-                </MenuItem>
-              ))}
-            </TextField>
-            <TextField
-              value={formik.values.folder.id}
-              onChange={formik.handleChange}
-              name='folder.id'
-              sx={{
-                my: 1,
-                width: {
-                  xs: '100%',
-                  sm: '31%'
-                }
-              }}
-              select
-              label='Folder'
-              variant='standard'
-              required
-              disabled={folders.length === 0}
-            >
-              {folders.map((folder) => (
-                <MenuItem key={folder.id} value={folder.id}>
-                  {folder.name}
-                </MenuItem>
-              ))}
-            </TextField>
-          </Box>
-          <Box sx={{ display: 'flex', justifyContent: 'center', my: 1 }}>
-            <FileUpload
-              sx={{
-                my: 1,
-                width: {
-                  xs: '100%',
-                  sm: '80%'
-                }
-              }}
-              value={files}
-              onChange={setFiles}
-              maxFiles={1}
-              maxSize={1024 * 1024 * 8}
-              accept='application/pdf'
-              title={`Drag 'n' drop some files here, or click to select files`}
-            />
-          </Box>
-          {qrCode ? (
+          {!qrCode ? (
+            <>
+              <Typography
+                sx={{
+                  fontWeight: 600,
+                  color: 'var(--black-color)',
+                  my: 1.5,
+                  fontSize: {
+                    xs: '1.2rem',
+                    sm: '1.5rem'
+                  }
+                }}
+                variant='h6'
+              >
+                Document Information
+              </Typography>
+
+              <TextField
+                sx={{ my: 1 }}
+                value={formik.values.name}
+                label='Document name'
+                name='name'
+                variant='standard'
+                fullWidth
+                onChange={formik.handleChange}
+                required
+                error={formik.touched.name && Boolean(formik.errors.name)}
+                helperText={formik.touched.name && formik.errors.name}
+              />
+              <TextField
+                sx={{ my: 1 }}
+                label='Number of pages'
+                value={formik.values.numOfPages}
+                type='number'
+                name='numOfPages'
+                variant='standard'
+                fullWidth
+                onChange={formik.handleChange}
+                required
+                error={formik.touched.numOfPages && Boolean(formik.errors.numOfPages)}
+                helperText={formik.touched.numOfPages && formik.errors.numOfPages}
+              />
+              <TextField
+                sx={{ my: 1 }}
+                label='Description'
+                value={formik.values.description}
+                name='description'
+                variant='standard'
+                fullWidth
+                onChange={formik.handleChange}
+                multiline
+                maxRows={4}
+                required
+                error={formik.touched.description && Boolean(formik.errors.description)}
+                helperText={formik.touched.description && formik.errors.description}
+              />
+              <Box display={'flex'} sx={{ width: '100%', justifyContent: 'space-between', flexWrap: 'wrap' }}>
+                <TextField
+                  onChange={departmentHandleChange}
+                  sx={{
+                    my: 1,
+                    width: {
+                      xs: '100%',
+                      sm: '47%'
+                    }
+                  }}
+                  select
+                  label='Department'
+                  variant='standard'
+                  required
+                >
+                  {departments.map((dept) => (
+                    <MenuItem key={dept.id} value={dept.id}>
+                      {dept.name}
+                    </MenuItem>
+                  ))}
+                </TextField>
+                <TextField
+                  value={formik.values.category.id}
+                  onChange={formik.handleChange}
+                  sx={{
+                    my: 1,
+                    width: {
+                      xs: '100%',
+                      sm: '47%'
+                    }
+                  }}
+                  select
+                  label='Category Type'
+                  variant='standard'
+                  name='category.id'
+                  required
+                  disabled={categories.length === 0}
+                >
+                  {categories.map((cate) => (
+                    <MenuItem key={cate.id} value={cate.id}>
+                      {cate.name}
+                    </MenuItem>
+                  ))}
+                </TextField>
+              </Box>
+              <Typography
+                sx={{
+                  fontWeight: 600,
+                  color: 'var(--black-color)',
+                  my: 1.5,
+                  fontSize: {
+                    xs: '1.2rem',
+                    sm: '1.5rem'
+                  }
+                }}
+                variant='h6'
+              >
+                Location
+              </Typography>
+              <Box display={'flex'} sx={{ width: '100%', justifyContent: 'space-between', flexWrap: 'wrap' }}>
+                <TextField
+                  onChange={roomHandleChange}
+                  sx={{
+                    my: 1,
+                    width: {
+                      xs: '100%',
+                      sm: '31%'
+                    }
+                  }}
+                  select
+                  label='Room'
+                  variant='standard'
+                  required
+                  disabled={rooms.length === 0}
+                >
+                  {rooms.map((room) => (
+                    <MenuItem key={room.id} value={room.id}>
+                      {room.name}
+                    </MenuItem>
+                  ))}
+                </TextField>
+                <TextField
+                  onChange={lockerHandleChange}
+                  sx={{
+                    my: 1,
+                    width: {
+                      xs: '100%',
+                      sm: '31%'
+                    }
+                  }}
+                  select
+                  label='Locker'
+                  variant='standard'
+                  required
+                  disabled={lockers.length === 0}
+                >
+                  {lockers.map((locker) => (
+                    <MenuItem key={locker.id} value={locker.id}>
+                      {locker.name}
+                    </MenuItem>
+                  ))}
+                </TextField>
+                <TextField
+                  value={formik.values.folder.id}
+                  onChange={formik.handleChange}
+                  name='folder.id'
+                  sx={{
+                    my: 1,
+                    width: {
+                      xs: '100%',
+                      sm: '31%'
+                    }
+                  }}
+                  select
+                  label='Folder'
+                  variant='standard'
+                  required
+                  disabled={folders.length === 0}
+                >
+                  {folders.map((folder) => (
+                    <MenuItem key={folder.id} value={folder.id}>
+                      {folder.name}
+                    </MenuItem>
+                  ))}
+                </TextField>
+              </Box>
+              <Box sx={{ display: 'flex', justifyContent: 'center', my: 1 }}>
+                <FileUpload
+                  sx={{
+                    my: 1,
+                    width: {
+                      xs: '100%',
+                      sm: '80%'
+                    }
+                  }}
+                  value={files}
+                  onChange={setFiles}
+                  maxFiles={1}
+                  maxSize={1024 * 1024 * 8}
+                  accept='application/pdf'
+                  title={`Drag 'n' drop some files here, or click to select files`}
+                />
+              </Box>
+            </>
+          ) : (
             <Box
               ref={componentRef}
               id='barcode'
               display={'flex'}
               sx={{ justifyContent: 'center', width: '100%', my: 2 }}
             >
-              <div ref={qrCodeRef}>
+              <Print ref={qrCodeRef}>
                 <QRCodeSVG value={qrCode} />
-              </div>
+              </Print>
             </Box>
-          ) : null}
+          )}
         </FormControl>
 
         <Box
@@ -431,6 +457,7 @@ const ImportDocumentModal = (props: ImportDocumentModalProps) => {
               setRooms([])
               setLockers([])
               setFolders([])
+              fetchData()
               props.handleClose()
             }}
           >

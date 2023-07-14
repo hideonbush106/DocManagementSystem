@@ -19,7 +19,7 @@ const File = () => {
   const locker = room?.lockerMap?.get(lockerId as string)
   const folder = locker?.folderMap?.get(folderId as string)
 
-  React.useEffect(() => {
+  const fetchDocumentsInFolder = async () => {
     if (folder) {
       setLoading(true)
       getDocumentsInFolder(folder.id, 1)
@@ -33,6 +33,10 @@ const File = () => {
           notifyError('Failed to get files')
         })
     }
+  }
+  React.useEffect(() => {
+    fetchDocumentsInFolder()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [folder, getDocumentsInFolder])
 
   return (
@@ -46,7 +50,12 @@ const File = () => {
       </Breadcrumbs>
       {!loading ? (
         files.length > 0 ? (
-          <DocumentCardList type='file' items={files} itemId={search.get('documentId')} />
+          <DocumentCardList
+            type='file'
+            items={files}
+            itemId={search.get('documentId')}
+            fetchFolder={fetchDocumentsInFolder}
+          />
         ) : (
           <Typography variant='body1' textAlign='center' mt='20px' fontFamily='inherit'>
             There is no files

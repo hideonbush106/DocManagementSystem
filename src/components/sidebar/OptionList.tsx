@@ -5,6 +5,7 @@ import { OptionsEmp, OptionsStaff } from './Options'
 import { Link, useLocation } from 'react-router-dom'
 import React, { useEffect, useState } from 'react'
 import LogoutIcon from '@mui/icons-material/Logout'
+import { Role } from '~/global/enum'
 
 interface SidebarProps {
   prop: React.RefObject<HTMLDivElement>
@@ -12,10 +13,10 @@ interface SidebarProps {
 
 const OptionList: React.FC<SidebarProps> = ({ prop }) => {
   const { user, logout } = useAuth()
-  const options = user?.role.toLocaleUpperCase() === 'STAFF' ? OptionsStaff : OptionsEmp
+  const options = user?.role.toLocaleUpperCase() === Role.MANAGER ? OptionsStaff : OptionsEmp
   const [btn, setButton] = useState<number | null>(null) //dashboard is default option
 
-  const role = user?.role.toLocaleUpperCase() === 'STAFF' ? 'Staff' : 'Employee'
+  const role = user?.role.toLocaleUpperCase() === Role.MANAGER ? 'Manager' : 'Employee'
 
   const handleClick = (id: number) => {
     setButton(id)

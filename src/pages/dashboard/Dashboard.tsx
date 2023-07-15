@@ -26,6 +26,7 @@ import BorrowRequestsTable from '~/components/table/BorrowRequestsTable'
 import useImportRequestApi from '~/hooks/api/useImportRequestApi'
 import ImportRequestsTable from '~/components/table/ImportRequestsTable'
 import useStatisticApi from '~/hooks/api/useStatisticApi'
+import { Role } from '~/global/enum'
 
 const Subtitle = styled(Typography)({
   fontWeight: '600',
@@ -65,7 +66,7 @@ const Dashboard = () => {
       )
       setLoadingApproval(false)
     }
-    if (role === 'STAFF') {
+    if (role === Role.MANAGER) {
       fetchPendingApproval()
     }
   }, [paginationApproval])
@@ -89,7 +90,7 @@ const Dashboard = () => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       let result: any
       setLoadingBorrowRequests(true)
-      if (role === 'STAFF') {
+      if (role === Role.MANAGER) {
         result = await getBorrowRequestsAll(
           undefined,
           undefined,
@@ -134,7 +135,7 @@ const Dashboard = () => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       let result: any
       setLoadingImportRequests(true)
-      if (role === 'STAFF') {
+      if (role === Role.MANAGER) {
         result = await getImportRequestsAll(
           undefined,
           undefined,
@@ -255,14 +256,14 @@ const Dashboard = () => {
           <Wrapper>
             <SubtitleWrapper>
               <div className='title'>
-                <Subtitle variant='h6'>{role === 'STAFF' ? 'Pending Approvals' : 'Import Requests'}</Subtitle>
+                <Subtitle variant='h6'>{role === Role.MANAGER ? 'Pending Approvals' : 'Import Requests'}</Subtitle>
                 <TitleUnderline />
               </div>
-              <Link to={role === 'STAFF' ? '/pending-approval' : '/request'}>
+              <Link to={role === Role.MANAGER ? '/pending-approval' : '/request'}>
                 <ViewButton text='View' />
               </Link>
             </SubtitleWrapper>
-            {role === 'STAFF' ? (
+            {role === Role.MANAGER ? (
               <ApprovalsTable
                 view={'dashboard'}
                 rows={pendingApproval}

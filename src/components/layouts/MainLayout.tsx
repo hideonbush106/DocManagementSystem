@@ -21,6 +21,7 @@ import { IconDiv } from './MainLayout.styled.ts'
 import ImportRequestModal from '../modal/ImportRequestModal.tsx'
 import Scanner from '../modal/Scanner.tsx'
 import ReturnConfirmModal from '../modal/ReturnConfirmModal.tsx'
+import { Role } from '~/global/enum.ts'
 
 type Props = {
   children: React.ReactNode
@@ -121,7 +122,7 @@ const MainLayout = (props: Props) => {
       icon: <img src='/assets/department.svg' alt='department' />,
       iconBackground: 'blue',
       title: 'Departments',
-      content: role === 'STAFF' ? `${departmentCount ? departmentCount : ''} Departments` : `${department}`
+      content: role === Role.MANAGER ? `${departmentCount ? departmentCount : ''} Departments` : `${department}`
     },
     {
       icon: <img src='/assets/user.svg' alt='member' />,
@@ -138,7 +139,7 @@ const MainLayout = (props: Props) => {
   ]
 
   const actions =
-    role === 'STAFF'
+    role === Role.MANAGER
       ? [
           {
             name: 'Import Document',
@@ -233,7 +234,7 @@ const MainLayout = (props: Props) => {
           </Grid>
 
           {!belowLg &&
-            (role === 'STAFF' ? (
+            (role === Role.MANAGER ? (
               <Grid item container lg={4.55} spacing={1} justifyContent='flex-end'>
                 <Grid item>
                   <ImportButton onClick={handleImportDocumentModalOpen} text='New Document' />

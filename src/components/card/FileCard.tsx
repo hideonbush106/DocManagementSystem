@@ -5,7 +5,7 @@ import DocumentCard from './DocumentCard'
 import ActionsCell from '../table/ActionCell'
 import useDocumentApi from '~/hooks/api/useDocumentApi'
 import { Categories, DocumentDetail } from '~/global/interface'
-import { DocumentStatus } from '~/global/enum'
+import { DocumentStatus, Role } from '~/global/enum'
 import BorrowDocumentModal from '../modal/BorrowDocumentModal'
 import useAuth from '~/hooks/useAuth'
 import Detail from '../modal/Detail'
@@ -67,7 +67,7 @@ const FileCard: React.FC<Props> = (props: Props) => {
       text: 'Details',
       onClick: () => handleDetailOpen()
     },
-    role == 'STAFF'
+    role == Role.MANAGER
       ? {
           text: 'Edit',
           onClick: () => handleOpenUpdateModal()
@@ -141,7 +141,7 @@ const FileCard: React.FC<Props> = (props: Props) => {
         fileId={fileId}
         fileName={fileName}
       />
-      {role == 'STAFF' && (
+      {role == Role.MANAGER && (
         <UpdateDocumentModal
           document={document}
           isHavePdf={isHavePdf}

@@ -33,14 +33,14 @@ const Statistic = () => {
 
   const [importAnalysisData, setImportAnalysisData] = useState([
     { name: 'HR', color: 'var(--primary-color)', value: 0 },
-    { name: 'Employee', color: 'var(--green-color)', value: 0 },
+    { name: 'R&D', color: 'var(--green-color)', value: 0 },
     { name: 'Sales', color: 'var(--red-color)', value: 0 },
     { name: 'Admin', color: 'var(--yellow-color)', value: 0 }
   ])
 
   const [borrowAnalysisData, setBorrowAnalysisData] = useState([
     { name: 'HR', color: 'var(--primary-color)', value: 0 },
-    { name: 'Employee', color: 'var(--green-color)', value: 0 },
+    { name: 'R&D', color: 'var(--green-color)', value: 0 },
     { name: 'Sales', color: 'var(--red-color)', value: 0 },
     { name: 'Admin', color: 'var(--yellow-color)', value: 0 }
   ])

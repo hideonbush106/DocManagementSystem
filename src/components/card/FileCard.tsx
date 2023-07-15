@@ -91,7 +91,7 @@ const FileCard: React.FC<Props> = (props: Props) => {
       const document = await getDocument(id)
       setDocument(document.data)
       if ([DocumentStatus.PENDING, DocumentStatus.AVAILABLE, DocumentStatus.BORROWED].includes(document.data.status)) {
-        if (role !== 'EMPLOYEE') {
+        if (role !== Role.EMPLOYEE) {
           const barcode = await getDocumentBarcode(id)
           if (barcode.data.barcode) {
             setBarcode(barcode.data.barcode)

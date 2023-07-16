@@ -7,7 +7,7 @@ import {
   SettingsOutlined
 } from '@mui/icons-material'
 
-export const OptionsStaff = [
+export const OptionsManager = [
   { id: 1, text: 'Dashboard', link: 'dashboard', icon: GridViewOutlined },
   { id: 2, text: 'Documents', link: 'document', icon: DescriptionOutlined },
   { id: 3, text: 'Pending Approval', link: 'pending-approval', icon: TaskAltOutlined },

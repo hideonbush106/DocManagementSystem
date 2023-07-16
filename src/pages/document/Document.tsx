@@ -21,6 +21,7 @@ import ImportRequestModal from '~/components/modal/ImportRequestModal'
 import Scanner from '~/components/modal/Scanner'
 import ReturnConfirmModal from '~/components/modal/ReturnConfirmModal'
 import useDocumentApi from '~/hooks/api/useDocumentApi'
+import { Role } from '~/global/enum'
 
 const DocumentDisplay = () => {
   const [speedDialOpen, setSpeedDialOpen] = useState(false)
@@ -96,7 +97,7 @@ const DocumentDisplay = () => {
   }
 
   const speedDialActions =
-    role === 'STAFF'
+    role === Role.MANAGER
       ? [
           {
             name: 'New Document',
@@ -172,7 +173,7 @@ const DocumentDisplay = () => {
         <SearchField handleSearch={handleSearch} />
         {/* render when screen above large */}
         {!belowLg &&
-          (role === 'STAFF' ? (
+          (role === Role.MANAGER ? (
             <ButtonWrapper>
               <ImportButton text='New Document' onClick={handleImportDocumentModalOpen} />
               <ReturnButton text='Return Document' onClick={handleReturnDocumentModalOpen} />

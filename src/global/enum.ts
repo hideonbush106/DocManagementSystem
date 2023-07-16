@@ -14,3 +14,8 @@ export enum RequestStatus {
   DONE = 'DONE',
   EXPIRED = 'EXPIRED'
 }
+
+export enum Role {
+  MANAGER = 'MANAGER',
+  EMPLOYEE = 'EMPLOYEE',
+}

@@ -5,7 +5,7 @@ import styled from 'styled-components'
 import Detail from './Detail'
 import useAuth from '~/hooks/useAuth'
 import { QRCodeSVG } from 'qrcode.react'
-import { RequestStatus } from '~/global/enum'
+import { RequestStatus, Role } from '~/global/enum'
 
 const TitleText = styled.span`
   font-weight: 600;
@@ -80,7 +80,7 @@ const DetailRequestModal = ({ open, handleClose, selectedRequest, isLoading }: R
             <CircularProgress />
           </Box>
         </Modal>
-      ) : role === 'STAFF' ? (
+      ) : role === Role.MANAGER ? (
         <Modal open={open} onClose={handleClose} closeAfterTransition>
           <Box
             sx={{

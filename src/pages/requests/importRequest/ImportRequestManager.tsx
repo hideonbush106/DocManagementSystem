@@ -54,7 +54,7 @@ const StatusText = ({ status }: { status: string }) => {
   }
   return null
 }
-const ImportRequestStaff = () => {
+const ImportRequestManager = () => {
   const PER_PAGE = 10
   const [page, setPage] = useState(1)
   const [importRequests, setImportRequests] = useState<any[]>([])
@@ -305,4 +305,4 @@ const ImportRequestStaff = () => {
     </>
   )
 }
-export default ImportRequestStaff
+export default ImportRequestManager

@@ -212,6 +212,7 @@ const DocumentDisplay = () => {
                   labelText={dept.name}
                   labelIcon={Apartment}
                   href={`/document/department/${dept.id}`}
+                  itemType='department'
                 >
                   {dept.rooms.map((room, index) => (
                     <DocumentTreeItem
@@ -222,6 +223,7 @@ const DocumentDisplay = () => {
                       labelIcon={MeetingRoom}
                       isFull={isFull(room.lockers.length, room.capacity)}
                       href={`/document/department/${dept.id}/room/${room.id}`}
+                      itemType='room'
                     >
                       {room.lockers.map((locker, index) => (
                         <DocumentTreeItem
@@ -232,6 +234,7 @@ const DocumentDisplay = () => {
                           labelIcon={ViewModule}
                           isFull={isFull(locker.folders.length, locker.capacity)}
                           href={`/document/department/${dept.id}/room/${room.id}/locker/${locker.id}`}
+                          itemType='locker'
                         >
                           {locker.folders.map((folder, index) => (
                             <DocumentTreeItem
@@ -242,6 +245,7 @@ const DocumentDisplay = () => {
                               labelIcon={Folder}
                               isFull={isFull(calculateSize(folder), folder.capacity)}
                               href={`/document/department/${dept.id}/room/${room.id}/locker/${locker.id}/folder/${folder.id}`}
+                              itemType='folder'
                             />
                           ))}
                         </DocumentTreeItem>

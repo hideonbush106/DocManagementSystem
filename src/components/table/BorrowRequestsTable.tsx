@@ -1,6 +1,6 @@
 import { Typography } from '@mui/material'
 import { DataGrid, GridColDef } from '@mui/x-data-grid'
-import { RequestStatus } from '~/global/enum'
+import { RequestStatus, Role } from '~/global/enum'
 
 interface BorrowRequestsTableProps {
   role: string | undefined
@@ -39,7 +39,7 @@ const BorrowRequestsTable = (props: BorrowRequestsTableProps) => {
   const { role, rows, loading, rowCount, paginationModel, handlePaginationModelChange } = props
   let columns: GridColDef[] = []
 
-  if (role === 'STAFF') {
+  if (role === Role.MANAGER) {
     columns = [
       {
         field: 'id',

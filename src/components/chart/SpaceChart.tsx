@@ -1,4 +1,5 @@
 import Chart from 'react-apexcharts'
+import { Role } from '~/global/enum';
 
 type Props = {
   stored: { stored: number; name: string }[]
@@ -38,7 +39,7 @@ const SpaceChart = ({ stored, capacity, role }: Props) => {
           plotOptions: {
             bar: {
               horizontal: true,
-              barHeight: role === 'STAFF' ? '70%' : '40%'
+              barHeight: role === Role.MANAGER ? '70%' : '40%'
             }
           },
           xaxis: {

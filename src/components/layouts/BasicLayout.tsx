@@ -9,6 +9,7 @@ import Sidebar from '~/components/sidebar/Sidebar'
 
 // Styles
 import { MainContainer, Wrapper } from './BasicLayout.styled'
+import Notification from '../notification/Notification'
 
 type Props = {
   children: ReactNode
@@ -39,13 +40,14 @@ const BasicLayout = ({ children, title }: Props) => {
                 color: '#000'
               }}
             >
-              {!isnotification ? (
+              {/* {!isnotification ? (
                 <NotificationsOutlined sx={{ margin: 0.5 }} />
               ) : (
                 <Badge badgeContent color='error'>
                   <NotificationsOutlined sx={{ margin: 0.5 }} />
                 </Badge>
-              )}
+              )} */}
+              <Notification />
             </Fab>
           </Grid>
         </Grid>

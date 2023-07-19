@@ -1,5 +1,5 @@
 import Chart from 'react-apexcharts'
-import { Role } from '~/global/enum';
+import { Role } from '~/global/enum'
 
 type Props = {
   stored: { stored: number; name: string }[]

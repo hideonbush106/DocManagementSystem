@@ -1,8 +1,7 @@
 import { ReactNode, useRef } from 'react'
 
 // MUI
-import { Badge, Fab, Grid, Typography } from '@mui/material'
-import { NotificationsOutlined } from '@mui/icons-material'
+import { Fab, Grid, Typography } from '@mui/material'
 
 // Components
 import Sidebar from '~/components/sidebar/Sidebar'

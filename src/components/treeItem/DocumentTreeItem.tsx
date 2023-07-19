@@ -65,31 +65,26 @@ interface Props extends TreeItemProps {
 
 const DocumentTreeItem = (props: Props) => {
   const { labelIcon: LabelIcon, labelInfo, labelText, isFull, href, itemType } = props
-  let iconColor = ''
-  let iconToolTip = ''
+  let iconToolTip: string
   switch (itemType) {
     case 'department': {
-      iconColor = 'var(--red-color)'
       iconToolTip = 'Department'
       break
     }
     case 'room': {
-      iconColor = 'var(--orange-color)'
       iconToolTip = 'Room'
       break
     }
     case 'locker': {
-      iconColor = 'var(--green-color)'
       iconToolTip = 'Locker'
       break
     }
     case 'folder': {
-      iconColor = 'var(--primary-color)'
       iconToolTip = 'Folder'
       break
     }
     default:
-      iconColor = 'var(--black-color)'
+      iconToolTip = ''
   }
   const { loading } = useData()
   const navigate = useNavigate()
@@ -105,7 +100,7 @@ const DocumentTreeItem = (props: Props) => {
         !loading ? (
           <Box sx={{ display: 'flex', alignItems: 'center', p: 0.5, pr: 0 }} onDoubleClick={handleDoubleClick}>
             <Tooltip title={iconToolTip}>
-              <Box component={LabelIcon} color={iconColor} sx={{ mr: 1 }} />
+              <Box component={LabelIcon} color='var(--black-color)' sx={{ mr: 1 }} />
             </Tooltip>
             <Typography variant='body2' sx={{ fontWeight: 'inherit', flexGrow: 1, fontFamily: 'inherit' }}>
               {labelText}

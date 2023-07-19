@@ -18,7 +18,6 @@ type Props = {
 
 const BasicLayout = ({ children, title }: Props) => {
   const mainContainerRef = useRef<HTMLDivElement>(null)
-  const isnotification = false
 
   return (
     <Wrapper>
@@ -40,13 +39,6 @@ const BasicLayout = ({ children, title }: Props) => {
                 color: '#000'
               }}
             >
-              {/* {!isnotification ? (
-                <NotificationsOutlined sx={{ margin: 0.5 }} />
-              ) : (
-                <Badge badgeContent color='error'>
-                  <NotificationsOutlined sx={{ margin: 0.5 }} />
-                </Badge>
-              )} */}
               <Notification />
             </Fab>
           </Grid>

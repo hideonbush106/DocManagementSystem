@@ -12,6 +12,7 @@ import dayjs from 'dayjs'
 import useStatisticApi from '~/hooks/api/useStatisticApi'
 import { BorrowAnalysisData, ImportAnalysisData } from '~/global/interface'
 import useAuth from '~/hooks/useAuth'
+import { Role } from '~/global/enum'
 
 const Statistic = () => {
   const { getStatistic, getImportRequestStatistic, getBorrowRequestStatistic, getMonthlyRequestStatistic } =
@@ -32,14 +33,14 @@ const Statistic = () => {
 
   const [importAnalysisData, setImportAnalysisData] = useState([
     { name: 'HR', color: 'var(--primary-color)', value: 0 },
-    { name: 'Employee', color: 'var(--green-color)', value: 0 },
+    { name: 'R&D', color: 'var(--green-color)', value: 0 },
     { name: 'Sales', color: 'var(--red-color)', value: 0 },
     { name: 'Admin', color: 'var(--yellow-color)', value: 0 }
   ])
 
   const [borrowAnalysisData, setBorrowAnalysisData] = useState([
     { name: 'HR', color: 'var(--primary-color)', value: 0 },
-    { name: 'Employee', color: 'var(--green-color)', value: 0 },
+    { name: 'R&D', color: 'var(--green-color)', value: 0 },
     { name: 'Sales', color: 'var(--red-color)', value: 0 },
     { name: 'Admin', color: 'var(--yellow-color)', value: 0 }
   ])
@@ -109,7 +110,7 @@ const Statistic = () => {
   }
 
   useEffect(() => {
-    if (user?.role === 'STAFF') Promise.all([fetchBorrowAnalysisData(), fetchImportAnalysisData()])
+    if (user?.role === Role.MANAGER) Promise.all([fetchBorrowAnalysisData(), fetchImportAnalysisData()])
   }, [])
 
   const handleYearImportChange = (value: number | null) => {
@@ -140,7 +141,7 @@ const Statistic = () => {
 
   return (
     <Grid container spacing={2}>
-      <Grid item xs={12} lg={user?.role === 'STAFF' ? 8 : 12}>
+      <Grid item xs={12} lg={user?.role === Role.MANAGER ? 8 : 12}>
         <Paper sx={{ backgroundColor: 'var(--white-color)', boxShadow: 'none', height: '328px', padding: '12px 16px' }}>
           <ChartWrapper>
             <div>
@@ -172,7 +173,7 @@ const Statistic = () => {
           <MonthlyChart items={monthlyRequestData} />
         </Paper>
       </Grid>
-      {user?.role === 'STAFF' ? (
+      {user?.role === Role.MANAGER ? (
         <>
           <Grid item xs={12} md={6} lg={4}>
             <Paper
@@ -200,7 +201,7 @@ const Statistic = () => {
       ) : (
         <></>
       )}
-      <Grid item xs={12} md={6} lg={user?.role === 'STAFF' ? 4 : 6}>
+      <Grid item xs={12} md={6} lg={user?.role === Role.MANAGER ? 4 : 6}>
         <Paper sx={{ backgroundColor: 'var(--white-color)', boxShadow: 'none', height: '328px', padding: '12px 16px' }}>
           <ChartWrapper>
             <div>
@@ -232,7 +233,7 @@ const Statistic = () => {
           <ColumnChart items={importRequestData} />
         </Paper>
       </Grid>
-      <Grid item xs={12} md={6} lg={user?.role === 'STAFF' ? 4 : 6}>
+      <Grid item xs={12} md={6} lg={user?.role === Role.MANAGER ? 4 : 6}>
         <Paper sx={{ backgroundColor: 'var(--white-color)', boxShadow: 'none', height: '328px', padding: '12px 16px' }}>
           <ChartWrapper>
             <div>

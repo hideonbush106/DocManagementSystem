@@ -8,6 +8,7 @@ import EmployeeAdvanced from './employee/EmployeeAdvanced'
 import { Apartment, Folder, MeetingRoom, ViewModule, Category, PeopleAlt } from '@mui/icons-material'
 import useAuth from '~/hooks/useAuth'
 import { Navigate } from 'react-router-dom'
+import { Role } from '~/global/enum'
 
 const Advanced = () => {
   const { user } = useAuth()
@@ -19,7 +20,7 @@ const Advanced = () => {
     { label: 'Category', component: <CategoryAdvanced />, icon: Category },
     { label: 'Employee', component: <EmployeeAdvanced />, icon: PeopleAlt },
   ]
-  return user?.role === 'STAFF' ? (
+  return user?.role === Role.MANAGER ? (
     <>
       <NavTabs tabs={tabs} />
     </>

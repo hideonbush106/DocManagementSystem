@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react'
 import useDocumentApi from '~/hooks/api/useDocumentApi'
 import useAuth from '~/hooks/useAuth'
 import { Navigate } from 'react-router-dom'
+import { Role } from '~/global/enum'
 
 interface PaginationModel {
   page: number
@@ -40,13 +41,13 @@ const PendingApprovals = () => {
   }
 
   useEffect(() => {
-    if (user?.role === 'STAFF') {
+    if (user?.role === Role.MANAGER) {
       fetchData()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [paginationModel, searchData])
 
-  return user?.role === 'STAFF' ? (
+  return user?.role === Role.MANAGER ? (
     <PendingApprovalsWrapper>
       <HeaderWrapper>
         <SearchField

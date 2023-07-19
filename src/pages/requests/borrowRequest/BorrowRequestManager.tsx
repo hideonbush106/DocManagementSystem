@@ -54,7 +54,7 @@ const StatusText = ({ status }: { status: string }) => {
   }
   return null
 }
-const BorrowRequestStaff = () => {
+const BorrowRequestManager = () => {
   const PER_PAGE = 10
   const [page, setPage] = useState(1)
   const [borrowRequests, setBorrowRequests] = useState<any[]>([])
@@ -307,4 +307,4 @@ const BorrowRequestStaff = () => {
     </>
   )
 }
-export default BorrowRequestStaff
+export default BorrowRequestManager

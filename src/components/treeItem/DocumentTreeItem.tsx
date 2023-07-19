@@ -2,7 +2,7 @@ import React from 'react'
 import { useNavigate } from 'react-router-dom'
 import { SvgIconComponent } from '@mui/icons-material'
 import useData from '~/hooks/useData'
-import { Box, Skeleton, Typography } from '@mui/material'
+import { Box, Skeleton, Tooltip, Typography } from '@mui/material'
 import { TreeItemStyledRoot } from './DocumentTreeItem.styled'
 import { TreeItemProps, useTreeItem, TreeItemContentProps } from '@mui/lab/TreeItem'
 import clsx from 'clsx'
@@ -60,10 +60,32 @@ interface Props extends TreeItemProps {
   labelIcon: SvgIconComponent
   isFull?: boolean
   href?: string
+  itemType?: 'department' | 'room' | 'locker' | 'folder'
 }
 
 const DocumentTreeItem = (props: Props) => {
-  const { labelIcon: LabelIcon, labelInfo, labelText, isFull, href } = props
+  const { labelIcon: LabelIcon, labelInfo, labelText, isFull, href, itemType } = props
+  let iconToolTip: string
+  switch (itemType) {
+    case 'department': {
+      iconToolTip = 'Department'
+      break
+    }
+    case 'room': {
+      iconToolTip = 'Room'
+      break
+    }
+    case 'locker': {
+      iconToolTip = 'Locker'
+      break
+    }
+    case 'folder': {
+      iconToolTip = 'Folder'
+      break
+    }
+    default:
+      iconToolTip = ''
+  }
   const { loading } = useData()
   const navigate = useNavigate()
 
@@ -77,7 +99,9 @@ const DocumentTreeItem = (props: Props) => {
       label={
         !loading ? (
           <Box sx={{ display: 'flex', alignItems: 'center', p: 0.5, pr: 0 }} onDoubleClick={handleDoubleClick}>
-            <Box component={LabelIcon} color='var(--black-color)' sx={{ mr: 1 }} />
+            <Tooltip title={iconToolTip}>
+              <Box component={LabelIcon} color='var(--black-color)' sx={{ mr: 1 }} />
+            </Tooltip>
             <Typography variant='body2' sx={{ fontWeight: 'inherit', flexGrow: 1, fontFamily: 'inherit' }}>
               {labelText}
             </Typography>

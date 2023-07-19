@@ -446,7 +446,7 @@ const ImportRequestModal = (props: ImportDocumentModalProps) => {
             disabled={
               formik.values.document.category.id === '' ||
               formik.values.document.folder.id === '' ||
-              formik.values.document.numOfPages === 0 ||
+              formik.values.document.numOfPages <= 0 ||
               formik.values.document.name === '' ||
               formik.values.document.description === '' ||
               formik.values.description === '' ||

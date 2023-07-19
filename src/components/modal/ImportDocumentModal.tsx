@@ -75,8 +75,7 @@ const ImportDocumentModal = (props: ImportDocumentModalProps) => {
     numOfPages: yup
       .number()
       .integer('Number of pages must be an integer')
-      .min(1, 'Number of pages must be greater than 0')
-      .required('Number of pages is required'),
+      .min(1, 'Number of pages must be greater than 0'),
     folder: yup.object({
       id: yup.string()
     }),

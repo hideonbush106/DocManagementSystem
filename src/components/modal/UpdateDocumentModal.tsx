@@ -39,8 +39,16 @@ const UpdateDocumentModal = (props: UpdateDocumentProps) => {
   const { updateDocument, uploadDocumentPdf } = useDocumentApi()
 
   const validationSchema = yup.object({
-    name: yup.string().trim().required('Document name is required'),
-    description: yup.string().trim().required('Description is required'),
+    name: yup
+      .string()
+      .max(50, "Document name can't has more than 50 characters.")
+      .trim()
+      .required('Document name is required'),
+    description: yup
+      .string()
+      .max(100, "Description can't has more than 100 characters.")
+      .trim()
+      .required('Description is required'),
     category: yup.object({
       id: yup.string()
     })

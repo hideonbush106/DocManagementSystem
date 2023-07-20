@@ -1,9 +1,11 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import * as React from 'react'
 import Box from '@mui/material/Box'
 import Tabs from '@mui/material/Tabs'
 import Tab, { TabProps } from '@mui/material/Tab'
 import { SvgIconComponent } from '@mui/icons-material'
 import { useMediaQuery, useTheme } from '@mui/material'
+import { useLocation } from 'react-router-dom'
 // import Notification from '../notification/Notification'
 
 interface LinkTabProps extends TabProps {
@@ -49,8 +51,9 @@ interface NavTabsProps {
 const NavTabs = ({ tabs }: NavTabsProps) => {
   const theme = useTheme()
   const md = useMediaQuery(theme.breakpoints.down('md'))
+  const location = useLocation()
 
-  const [value, setValue] = React.useState(0)
+  const [value, setValue] = React.useState((location.state as any)?.tab || 0)
 
   const handleChange = (_e: React.SyntheticEvent, newValue: number) => {
     setValue(newValue)

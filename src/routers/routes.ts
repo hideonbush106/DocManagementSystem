@@ -35,7 +35,11 @@ export const privateRoutes = [
       }
     ]
   },
-  { path: '/request', component: Requests, title: 'Requests' },
+  {
+    path: '/request',
+    component: Requests,
+    title: 'Requests'
+  },
   { path: '/pending-approval', component: PendingApprovals, title: 'Pending Approvals' },
   { path: '/statistic', component: Statistic, title: 'Statistics', layout: 'main' },
   { path: '/advanced', component: Advanced, title: 'Advanced' }

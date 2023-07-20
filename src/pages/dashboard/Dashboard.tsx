@@ -14,7 +14,7 @@ import { styled } from '@mui/system'
 import { Typography } from '@mui/material'
 import { ViewButton } from '~/components/button/Button'
 import DocumentTable from '~/components/table/DocumentTable'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import ApprovalsTable from '~/components/table/ApprovalsTable'
 import SummaryChart from '~/components/chart/SummaryChart'
 import SpaceChart from '~/components/chart/SpaceChart'
@@ -45,6 +45,7 @@ interface PaginationModel {
 const Dashboard = () => {
   const { user } = useAuth()
   const role = user?.role.toLocaleUpperCase()
+  const navigate = useNavigate()
 
   //fetch API pending approval
   const [loadingApproval, setLoadingApproval] = useState(true)
@@ -222,6 +223,10 @@ const Dashboard = () => {
   //   // eslint-disable-next-line react-hooks/exhaustive-deps
   // }, [paginationApproval, paginationBorrowRequests, paginationImportRequests])
 
+  const handleViewBorrowClick = () => {
+    navigate('/request', { state: { tab: 1 } })
+  }
+
   return (
     <>
       <DashboardWrapper container spacing={{ sm: 2, xs: 0 }} margin={0}>
@@ -290,9 +295,9 @@ const Dashboard = () => {
                 <Subtitle variant='h6'>Borrow Requests</Subtitle>
                 <TitleUnderline />
               </div>
-              <Link to='/request'>
+              <button onClick={handleViewBorrowClick}>
                 <ViewButton text='View' />
-              </Link>
+              </button>
             </SubtitleWrapper>
             <BorrowRequestsTable
               role={role}

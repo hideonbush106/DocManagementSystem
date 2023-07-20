@@ -22,6 +22,19 @@ interface ImportDocumentModalProps {
   handleClose: () => void
 }
 
+const Print = styled(Box)`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  margin: 1rem 0;
+
+  @media print {
+    margin: 0;
+    height: 50vh;
+  }
+`
+
 const ImportDocumentModal = (props: ImportDocumentModalProps) => {
   const { open, handleClose } = props
   const [files, setFiles] = useState<File[]>([])
@@ -30,28 +43,23 @@ const ImportDocumentModal = (props: ImportDocumentModalProps) => {
   const [rooms, setRooms] = useState<Room[]>([])
   const [lockers, setLockers] = useState<Locker[]>([])
   const [folders, setFolders] = useState<Folder[]>([])
+  const [selectedRoom, setSelectedRoom] = useState(false)
+  const [selectedLocker, setSelectedLocker] = useState(false)
+  const [selectedFolder, setSelectedFolder] = useState<Folder | null>()
   const [qrCode, setQrCode] = useState<string>('')
   const { createDocument, uploadDocumentPdf } = useDocumentApi()
   const { getAllDepartments } = useDepartmentApi()
   const { getAllCategories } = useCategoryApi()
   const { getRoomsInDepartment } = useRoomApi()
   const { getLockerInRoom } = useLockerApi()
-  const { getFoldersInLocker } = useFolderApi()
+  const { getFoldersInLocker, getFolder } = useFolderApi()
   const qrCodeRef = useRef(null)
   const componentRef = useRef<HTMLDivElement>(null)
 
-  const Print = styled(Box)`
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 100%;
-    margin: 1rem 0;
-
-    @media print {
-      margin: 0;
-      height: 50vh;
-    }
-  `
+  const isNotEnough = (current: number | undefined, capacity: number | undefined) => {
+    if (current === undefined || capacity === undefined) return false
+    else return capacity - current < formik.values.numOfPages
+  }
 
   const handlePrint = useReactToPrint({
     content: () => qrCodeRef.current,
@@ -70,17 +78,18 @@ const ImportDocumentModal = (props: ImportDocumentModalProps) => {
   })
 
   const validationSchema = yup.object({
-    name: yup.string().trim(),
-    description: yup.string().trim(),
+    name: yup.string().trim().required('Document name is required'),
+    description: yup.string().trim().required('Document description is required'),
     numOfPages: yup
       .number()
       .integer('Number of pages must be an integer')
-      .min(1, 'Number of pages must be greater than 0'),
+      .min(1, 'Number of pages must be greater than 0')
+      .required('Number of pages is required'),
     folder: yup.object({
-      id: yup.string()
+      id: yup.string().required('Folder is required')
     }),
     category: yup.object({
-      id: yup.string()
+      id: yup.string().required('Category is required')
     })
   })
 
@@ -134,6 +143,9 @@ const ImportDocumentModal = (props: ImportDocumentModalProps) => {
     setRooms([])
     setLockers([])
     setFolders([])
+    setSelectedRoom(false)
+    setSelectedLocker(false)
+    setSelectedFolder(null)
     formik.setFieldValue('folder.id', '')
     console.log(formik.values)
     const categories = await getAllCategories(event.target.value)
@@ -145,21 +157,43 @@ const ImportDocumentModal = (props: ImportDocumentModalProps) => {
   const roomHandleChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     setLockers([])
     setFolders([])
-    formik.setFieldValue('folder.id', '')
+    setSelectedRoom(false)
+    setSelectedLocker(false)
+    setSelectedFolder(null)
+    formik.setFieldValue('document.folder.id', '')
     const lockers = await getLockerInRoom(event.target.value)
     setLockers(lockers.data)
+    setSelectedRoom(true)
   }
 
   const lockerHandleChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     setFolders([])
-    formik.setFieldValue('folder.id', '')
+    setSelectedLocker(false)
+    setSelectedFolder(null)
+    formik.setFieldValue('document.folder.id', '')
     const folder = await getFoldersInLocker(event.target.value)
     setFolders(folder.data)
+    setSelectedLocker(true)
+  }
+
+  const folderHandleChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSelectedFolder(null)
+    formik.setFieldValue('folder.id', event.target.value)
+    const folderInfo = await getFolder(event.target.value)
+    setSelectedFolder(folderInfo.data)
   }
 
   useEffect(() => {
     fetchData()
   }, [fetchData, getAllDepartments])
+
+  useEffect(() => {
+    if (!open) {
+      setSelectedRoom(false)
+      setSelectedLocker(false)
+      setSelectedFolder(null)
+    }
+  }, [open])
 
   return (
     <ModalLayout open={open} handleClose={handleClose}>
@@ -346,6 +380,8 @@ const ImportDocumentModal = (props: ImportDocumentModalProps) => {
                   variant='standard'
                   required
                   disabled={lockers.length === 0}
+                  error={selectedRoom && lockers.length === 0}
+                  helperText={selectedRoom && lockers.length === 0 ? 'There is no locker in this room' : ''}
                 >
                   {lockers.map((locker) => (
                     <MenuItem key={locker.id} value={locker.id}>
@@ -355,7 +391,7 @@ const ImportDocumentModal = (props: ImportDocumentModalProps) => {
                 </TextField>
                 <TextField
                   value={formik.values.folder.id}
-                  onChange={formik.handleChange}
+                  onChange={folderHandleChange}
                   name='folder.id'
                   sx={{
                     my: 1,
@@ -369,6 +405,15 @@ const ImportDocumentModal = (props: ImportDocumentModalProps) => {
                   variant='standard'
                   required
                   disabled={folders.length === 0}
+                  error={
+                    (selectedLocker && folders.length === 0) ||
+                    isNotEnough(selectedFolder?.current, selectedFolder?.capacity)
+                  }
+                  helperText={
+                    selectedLocker && folders.length === 0
+                      ? 'There is no folder in this locker'
+                      : selectedFolder && `${selectedFolder?.current}/${selectedFolder?.capacity}`
+                  }
                 >
                   {folders.map((folder) => (
                     <MenuItem key={folder.id} value={folder.id}>
@@ -436,7 +481,8 @@ const ImportDocumentModal = (props: ImportDocumentModalProps) => {
                 formik.values.description === '' ||
                 formik.values.folder.id === '' ||
                 formik.values.numOfPages <= 0 ||
-                formik.values.category.id === ''
+                formik.values.category.id === '' ||
+                isNotEnough(selectedFolder?.current, selectedFolder?.capacity)
               }
               type='submit'
             >

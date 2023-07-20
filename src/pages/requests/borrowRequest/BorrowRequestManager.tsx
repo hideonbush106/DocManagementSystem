@@ -63,7 +63,7 @@ const BorrowRequestManager = () => {
   const [rejectID, setRejectID] = useState<number | null>(null)
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false)
-  const [selectedStatus, setSelectedStatus] = useState<string>('')
+  const [selectedStatus, setSelectedStatus] = useState<string>(RequestStatus.PENDING)
   const [isFetching, setIsFetching] = useState(true)
   const [isScanModalOpen, setIsScanModalOpen] = useState(false)
   const [scanning, setScanning] = useState(false)
@@ -221,7 +221,7 @@ const BorrowRequestManager = () => {
               <CircularProgress />
             </Box>
           ) : borrowRequests.length === 0 ? (
-            <Typography variant='body1'>No matching requests found.</Typography>
+            <Typography variant='body1'>There is no request.</Typography>
           ) : (
             <Box display='flex' flexWrap='wrap'>
               {_DATA.currentData().map((request) => (

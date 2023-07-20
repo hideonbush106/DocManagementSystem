@@ -65,6 +65,7 @@ const PendingApprovals = () => {
         rowCount={rowCountState}
         loading={isLoading}
         paginationModel={paginationModel}
+        reFecthData={() => fetchData()}
         handlePaginationModelChange={handlePaginationModelChange}
       />
     </PendingApprovalsWrapper>

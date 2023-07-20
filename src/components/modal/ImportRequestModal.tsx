@@ -57,21 +57,24 @@ const ImportRequestModal = (props: ImportDocumentModalProps) => {
 
   const validationSchema = yup.object({
     document: yup.object({
-      name: yup.string().required('Document name is required').trim(),
-      description: yup.string().required('Document description is required').trim(),
+      name: yup.string().max(50, 'Input should not exceed 50 characters').trim(),
+      description: yup.string().trim(),
       numOfPages: yup
         .number()
         .integer('Number of pages must be an integer')
-        .min(1, 'Number of pages must be greater than 0')
-        .required('Number of pages is required'),
+        .min(1, 'Number of pages must be greater than 0'),
       folder: yup.object({
-        id: yup.string().required('Folder is required')
+        id: yup.string()
       }),
       category: yup.object({
-        id: yup.string().required('Category is required')
+        id: yup.string()
       })
     }),
-    description: yup.string().required('Request description is required').trim()
+    description: yup
+      .string()
+      .max(100, 'Input should not exceed 100 characters')
+      .required('Request description is required')
+      .trim()
   })
 
   const formik = useFormik({
@@ -295,7 +298,7 @@ const ImportRequestModal = (props: ImportDocumentModalProps) => {
                 }
               }}
               select
-              label='Category Type'
+              label='Category'
               variant='standard'
               name='document.category.id'
               required

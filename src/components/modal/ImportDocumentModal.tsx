@@ -70,8 +70,8 @@ const ImportDocumentModal = (props: ImportDocumentModalProps) => {
   })
 
   const validationSchema = yup.object({
-    name: yup.string().trim(),
-    description: yup.string().trim(),
+    name: yup.string().max(50, 'Input should not exceed 50 characters').trim(),
+    description: yup.string().max(100, 'Input should not exceed 100 characters').trim(),
     numOfPages: yup
       .number()
       .integer('Number of pages must be an integer')
@@ -283,7 +283,7 @@ const ImportDocumentModal = (props: ImportDocumentModalProps) => {
                     }
                   }}
                   select
-                  label='Category Type'
+                  label='Category'
                   variant='standard'
                   name='category.id'
                   required

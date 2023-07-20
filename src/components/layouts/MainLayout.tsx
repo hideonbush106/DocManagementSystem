@@ -41,7 +41,8 @@ const MainLayout = (props: Props) => {
   const [scanData, setScanData] = React.useState<string | null>(null)
   const [response, setResponse] = React.useState({
     data: '',
-    message: ''
+    message: '',
+    details: ''
   })
   const theme = useTheme()
   const { getDepartmentCount } = useDepartmentApi()
@@ -103,16 +104,21 @@ const MainLayout = (props: Props) => {
     if (scanData && scanData !== '') {
       try {
         const response = await checkReturnDocument(scanData)
-        console.log(response)
-        setResponse(response)
-        setScanData(scanData)
-        setScanning(false)
+        if (response) {
+          setResponse(response)
+          setScanData(scanData)
+        }
       } catch (error) {
         console.log(error)
       } finally {
-        handleReturnDocumentModalClose()
-        handleReturnConfirmModalOpen()
-        setScanning(false)
+        if (response.details !== 'Invalid QR code') {
+          handleReturnDocumentModalClose()
+          handleReturnConfirmModalOpen()
+          setScanning(false)
+        } else {
+          handleReturnDocumentModalClose()
+          setScanning(false)
+        }
       }
     }
   }

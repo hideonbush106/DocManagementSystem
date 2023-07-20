@@ -10,6 +10,7 @@ interface ReturnModalProps {
   response: {
     data: string
     message: string
+    details?: string
   }
   scanData: string | null
 }

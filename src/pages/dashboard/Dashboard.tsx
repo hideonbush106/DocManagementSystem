@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-empty-function */
 /* eslint-disable react-hooks/exhaustive-deps */
 import {
   DashboardWrapper,
@@ -265,6 +266,7 @@ const Dashboard = () => {
             </SubtitleWrapper>
             {role === Role.MANAGER ? (
               <ApprovalsTable
+                reFecthData={() => {}}
                 view={'dashboard'}
                 rows={pendingApproval}
                 rowCount={rowCountApproval}

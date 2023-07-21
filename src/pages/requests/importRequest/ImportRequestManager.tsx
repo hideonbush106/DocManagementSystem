@@ -79,7 +79,8 @@ const ImportRequestManager = () => {
     justifyContent: 'flex-end',
 
     [theme.breakpoints.down('sm')]: {
-      justifyContent: 'flex-start',
+      flexDirection: 'column',
+      alignItems: 'flex-start',
       position: 'static'
     },
 
@@ -216,17 +217,19 @@ const ImportRequestManager = () => {
               onChange={handleEmployeeChange}
               onClearFilter={handleClearEmployeeFilter}
             />
-            <FilterRequest
-              selectedStatus={selectedStatus}
-              onChange={handleStatusChange}
-              onClearFilter={handleClearStatusFilter}
-            />
-            <QrCodeScannerIcon
-              sx={{ marginLeft: '20px', color: 'var(--primary-dark-color)' }}
-              fontSize='large'
-              onClick={handleQrIconClick}
-              cursor='pointer'
-            />
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+              <FilterRequest
+                selectedStatus={selectedStatus}
+                onChange={handleStatusChange}
+                onClearFilter={handleClearStatusFilter}
+              />
+              <QrCodeScannerIcon
+                sx={{ marginLeft: '20px', color: 'var(--primary-dark-color)' }}
+                fontSize='large'
+                onClick={handleQrIconClick}
+                cursor='pointer'
+              />
+            </div>
           </WrapperDiv>
           {isFetching ? (
             <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }} width='100%' height='60vh'>

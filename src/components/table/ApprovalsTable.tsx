@@ -94,7 +94,6 @@ const ApprovalsTable = (props: ApprovalsTableProps) => {
 
   const handleDeleteConfirmClose = () => {
     setIsDeleteConfirmOpen(false)
-    reFecthData()
   }
 
   const handleScan = async (scanData: string | null) => {
@@ -316,6 +315,7 @@ const ApprovalsTable = (props: ApprovalsTableProps) => {
         handleClose={handleDeleteConfirmClose}
         id={selectedRowId}
         name={selectedName}
+        reFecthData={reFecthData}
       />
 
       <DataGrid

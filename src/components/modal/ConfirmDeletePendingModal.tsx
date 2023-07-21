@@ -8,15 +8,17 @@ interface DeleteModalProps {
   handleClose: () => void
   id: string
   name: string
+  reFecthData: () => void
 }
 
-const ConfirmDeletePendingModal = ({ open, handleClose, id, name }: DeleteModalProps) => {
+const ConfirmDeletePendingModal = ({ open, handleClose, id, name, reFecthData }: DeleteModalProps) => {
   const { deletePendingDocument } = useDocumentApi()
 
   const handleDeleteDocument = async (id: string) => {
     try {
       await deletePendingDocument(id)
       notifySuccess('Document delected successfully')
+      reFecthData()
     } catch (error) {
       console.log(error)
     } finally {

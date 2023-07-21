@@ -28,7 +28,11 @@ const CreateAdvancedModal = <T extends CreateRoom | CreateLocker | CreateFolder 
             .max(20, `${props.type} name is less than 20 characters`)
         }
       : {
-          name: yup.string().trim().required(`${props.type} name is required`),
+          name: yup
+            .string()
+            .trim()
+            .required(`${props.type} name is required`)
+            .max(20, `${props.type} name is less than 20 characters`),
           capacity: yup
             .number()
             .integer('Capacity must be an integer')

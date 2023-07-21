@@ -140,10 +140,11 @@ const useDocumentApi = () => {
   )
 
   const getPendingDocuments = React.useCallback(
-    async (take: number, page: number, keyword?: string, folderId?: string) => {
+    async (take: number, page: number, keyword?: string, folderId?: string, departmentId?: string) => {
       let endpoint = `/${rootEndpoint}/pending?take=${take}&page=${page + 1}`
       if (keyword) endpoint += `&keyword=${keyword}`
       if (folderId) endpoint += `&folderId=${folderId}`
+      if (departmentId) endpoint += `&departmentId=${departmentId}`
       try {
         const response = await callApi('get', endpoint)
         return response

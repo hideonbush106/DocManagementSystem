@@ -19,6 +19,7 @@ interface ApprovalsTableProps {
   loading: boolean
   paginationModel: PaginationModel
   handlePaginationModelChange: (newPaginationModel: PaginationModel) => void
+  reFecthData: () => void
 }
 
 interface PaginationModel {
@@ -28,7 +29,7 @@ interface PaginationModel {
 
 const ApprovalsTable = (props: ApprovalsTableProps) => {
   let loading = props.loading
-  const { view, rows, rowCount, paginationModel, handlePaginationModelChange } = props
+  const { view, rows, rowCount, paginationModel, handlePaginationModelChange, reFecthData } = props
   let columns: GridColDef[] = []
   const [open, setOpen] = useState(false)
   const [documentId, setDocumentId] = useState('')
@@ -90,6 +91,7 @@ const ApprovalsTable = (props: ApprovalsTableProps) => {
       } finally {
         handleCloseScan()
         setScanning(false)
+        reFecthData()
       }
     }
   }

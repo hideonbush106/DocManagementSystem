@@ -83,15 +83,16 @@ const DocumentDisplay = () => {
     if (scanData && scanData !== '') {
       try {
         const response = await checkReturnDocument(scanData)
-        console.log(response)
-        setResponse(response)
-        setScanData(scanData)
-        setScanning(false)
+        if (response) {
+          setResponse(response)
+          setScanData(scanData)
+          handleReturnConfirmModalOpen()
+        }
       } catch (error) {
         console.log(error)
-      } finally {
         handleReturnDocumentModalClose()
-        handleReturnConfirmModalOpen()
+      } finally {
+        setScanning(false)
       }
     }
   }

@@ -30,6 +30,7 @@ const ImportRequestModal = (props: ImportDocumentModalProps) => {
   const [rooms, setRooms] = useState<Room[]>([])
   const [lockers, setLockers] = useState<Locker[]>([])
   const [folders, setFolders] = useState<Folder[]>([])
+  const [selectedFolder, setSelectedFolder] = useState<Folder | null>()
   const [fileError, setFileError] = useState<string>('')
   const [submitSuccess, setSubmitSuccess] = useState(false)
   const [selectedRoom, setSelectedRoom] = useState(false)
@@ -41,9 +42,14 @@ const ImportRequestModal = (props: ImportDocumentModalProps) => {
   const { getAllCategories } = useCategoryApi()
   const { getRoomsInDepartment } = useRoomApi()
   const { getLockerInRoom } = useLockerApi()
-  const { getFoldersInLocker } = useFolderApi()
+  const { getFoldersInLocker, getFolder } = useFolderApi()
   const { user } = useAuth()
   const deptId = user?.departmentId
+
+  const isNotEnough = (current: number | undefined, capacity: number | undefined) => {
+    if (current === undefined || capacity === undefined) return false
+    else return capacity - current < formik.values.document.numOfPages
+  }
 
   const handleFileChange = (selectedFiles: File[]) => {
     if (selectedFiles.length > 0) {
@@ -136,6 +142,9 @@ const ImportRequestModal = (props: ImportDocumentModalProps) => {
   const roomHandleChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     setLockers([])
     setFolders([])
+    setSelectedRoom(false)
+    setSelectedLocker(false)
+    setSelectedFolder(null)
     formik.setFieldValue('document.folder.id', '')
     const lockers = await getLockerInRoom(event.target.value)
     setLockers(lockers.data)
@@ -144,10 +153,19 @@ const ImportRequestModal = (props: ImportDocumentModalProps) => {
 
   const lockerHandleChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     setFolders([])
+    setSelectedLocker(false)
+    setSelectedFolder(null)
     formik.setFieldValue('document.folder.id', '')
     const folder = await getFoldersInLocker(event.target.value)
     setFolders(folder.data)
     setSelectedLocker(true)
+  }
+
+  const folderHandleChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSelectedFolder(null)
+    formik.setFieldValue('document.folder.id', event.target.value)
+    const folderInfo = await getFolder(event.target.value)
+    setSelectedFolder(folderInfo.data)
   }
 
   useEffect(() => {
@@ -162,6 +180,7 @@ const ImportRequestModal = (props: ImportDocumentModalProps) => {
     if (!open) {
       setSelectedRoom(false)
       setSelectedLocker(false)
+      setSelectedFolder(null)
     }
   }, [open])
 
@@ -374,7 +393,7 @@ const ImportRequestModal = (props: ImportDocumentModalProps) => {
             </TextField>
             <TextField
               value={formik.values.document.folder.id}
-              onChange={formik.handleChange}
+              onChange={folderHandleChange}
               name='document.folder.id'
               sx={{
                 my: 1,
@@ -388,8 +407,15 @@ const ImportRequestModal = (props: ImportDocumentModalProps) => {
               variant='standard'
               required
               disabled={folders.length === 0}
-              error={selectedLocker && folders.length === 0}
-              helperText={selectedLocker && folders.length === 0 ? 'There is no folder in this locker' : ''}
+              error={
+                (selectedLocker && folders.length === 0) ||
+                isNotEnough(selectedFolder?.current, selectedFolder?.capacity)
+              }
+              helperText={
+                selectedLocker && folders.length === 0
+                  ? 'There is no folder in this locker'
+                  : selectedFolder && `${selectedFolder?.current}/${selectedFolder?.capacity}`
+              }
             >
               {folders.map((folder) => (
                 <MenuItem key={folder.id} value={folder.id}>
@@ -453,7 +479,8 @@ const ImportRequestModal = (props: ImportDocumentModalProps) => {
               formik.values.document.name === '' ||
               formik.values.document.description === '' ||
               formik.values.description === '' ||
-              files.length === 0
+              files.length === 0 ||
+              isNotEnough(selectedFolder?.current, selectedFolder?.capacity)
             }
           >
             Submit

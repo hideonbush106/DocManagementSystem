@@ -1,8 +1,9 @@
 import { Info } from '@mui/icons-material'
 import ModalLayout from './ModalLayout'
-import { Box, Button, Typography } from '@mui/material'
+import { Box, Button, TextField, Typography } from '@mui/material'
 import useDocumentApi from '~/hooks/api/useDocumentApi'
 import { notifySuccess } from '~/global/toastify'
+import { useState } from 'react'
 
 interface ReturnModalProps {
   open: boolean
@@ -17,16 +18,24 @@ interface ReturnModalProps {
 const ReturnConfirmModal = (props: ReturnModalProps) => {
   const { open, handleClose, response, scanData } = props
   const { returnDocument } = useDocumentApi()
-
+  const [note, setNote] = useState<string | null>(null)
   const handleReturnDocument = async () => {
     try {
-      await returnDocument(scanData)
-      notifySuccess('Document returned successfully')
+      if (note) {
+        await returnDocument(scanData, note)
+      } else {
+        await returnDocument(scanData)
+      }
+      notifySuccess('Return document successfully')
     } catch (error) {
       console.log(error)
     } finally {
       handleClose()
     }
+  }
+
+  const noteHandleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setNote(event.target.value)
   }
 
   return (
@@ -65,6 +74,7 @@ const ReturnConfirmModal = (props: ReturnModalProps) => {
       <Box
         sx={{
           p: 1.5,
+          px: 7,
           position: 'sticky',
           bottom: -1,
           zIndex: 1,
@@ -76,25 +86,71 @@ const ReturnConfirmModal = (props: ReturnModalProps) => {
           boxShadow: 'rgba(100, 100, 111, 0.2) 0px 7px 29px 0px'
         }}
       >
-        <Typography
-          sx={{
-            fontWeight: 600,
-            textAlign: 'center',
-            color: 'var(--black-color)',
-            my: 6
-          }}
-          variant='h6'
-        >
-          {response.data}
-        </Typography>
-        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          <Button sx={{ my: 1, mr: 1 }} variant='contained' onClick={handleReturnDocument} color='primary'>
-            Continue
-          </Button>
-          <Button sx={{ my: 1, mr: 1 }} variant='outlined' color='error' onClick={handleClose}>
-            Cancel
-          </Button>
-        </Box>
+        {response.data === 'Document can be returned but late.' ? (
+          <>
+            <form
+              method='POST'
+              onSubmit={(event) => {
+                event.preventDefault()
+                handleReturnDocument()
+              }}
+            >
+              <Typography
+                sx={{
+                  fontWeight: 600,
+                  textAlign: 'center',
+                  color: 'var(--black-color)',
+                  my: 6
+                }}
+                variant='h6'
+              >
+                {response.data}
+                <TextField
+                  required
+                  sx={{ my: 2 }}
+                  variant='outlined'
+                  onChange={noteHandleChange}
+                  rows={4}
+                  multiline
+                  value={note}
+                  label='Note'
+                  fullWidth
+                  name='note'
+                />
+              </Typography>
+              <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <Button sx={{ my: 1, mr: 1 }} variant='contained' onClick={handleReturnDocument} color='primary'>
+                  Continue
+                </Button>
+                <Button sx={{ my: 1, mr: 1 }} variant='outlined' color='error' onClick={handleClose}>
+                  Cancel
+                </Button>
+              </Box>
+            </form>
+          </>
+        ) : (
+          <>
+            <Typography
+              sx={{
+                fontWeight: 600,
+                textAlign: 'center',
+                color: 'var(--black-color)',
+                my: 6
+              }}
+              variant='h6'
+            >
+              {response.data}
+            </Typography>
+            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <Button sx={{ my: 1, mr: 1 }} variant='contained' onClick={handleReturnDocument} color='primary'>
+                Continue
+              </Button>
+              <Button sx={{ my: 1, mr: 1 }} variant='outlined' color='error' onClick={handleClose}>
+                Cancel
+              </Button>
+            </Box>
+          </>
+        )}
       </Box>
     </ModalLayout>
   )

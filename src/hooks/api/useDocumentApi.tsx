@@ -178,10 +178,10 @@ const useDocumentApi = () => {
   )
 
   const returnDocument = React.useCallback(
-    async (documentId: string | null) => {
+    async (documentId: string | null, note?: string | null) => {
       const endpoint = `/${rootEndpoint}/return/`
       try {
-        const response = await callApi('post', endpoint, {}, {}, { QRCode: documentId })
+        const response = await callApi('post', endpoint, {}, {}, { QRCode: documentId, note: note })
         return response
       } catch (error) {
         console.log(error)

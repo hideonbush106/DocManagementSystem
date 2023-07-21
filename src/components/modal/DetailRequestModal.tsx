@@ -126,12 +126,6 @@ const DetailRequestModal = ({ open, handleClose, selectedRequest, isLoading }: R
                     <TitleText>Start date: </TitleText> {dayjs(selectedRequest.startDate).format('MM/DD/YYYY')}
                   </Text>
                 )}
-                {selectedRequest.document.borrowedBy && (
-                  <Text>
-                    <TitleText>Borrowed by: </TitleText>
-                    {`${selectedRequest.document.borrowedBy.firstName} ${selectedRequest.document.borrowedBy.lastName}`}
-                  </Text>
-                )}
                 {selectedRequest.borrowDuration && (
                   <Text>
                     <TitleText>Borrow duration: </TitleText> {selectedRequest.borrowDuration}

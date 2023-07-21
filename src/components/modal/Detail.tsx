@@ -161,6 +161,12 @@ const Detail = ({ document, barcode, open, onClose }: DetailProps) => {
           <Text variant='body1'>
             <TitleText>Created at: </TitleText> {dayjs(document?.createdAt).format('MM/DD/YYYY HH:mm:ss')}
           </Text>
+          {document?.borrowedBy && (
+            <Text>
+              <TitleText>Borrowed by: </TitleText>
+              {`${document.borrowedBy.firstName} ${document.borrowedBy.lastName}`}
+            </Text>
+          )}
           <Text variant='body1'>
             <TitleText>Status: </TitleText>
             <span style={{ color: getStatusColor(document?.status), fontWeight: 600 }}>{document?.status}</span>

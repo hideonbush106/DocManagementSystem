@@ -25,6 +25,7 @@ import { RequestStatus } from '~/global/enum'
 import QrCodeScannerIcon from '@mui/icons-material/QrCodeScanner'
 import Scanner from '~/components/modal/Scanner'
 import { notifySuccess } from '~/global/toastify'
+import FilterByEmployee from '~/components/filter/FilterByEmployee'
 
 const Text = styled(Typography)`
   color: var(--black-color);
@@ -61,9 +62,11 @@ const ImportRequestManager = () => {
   const [totalPages, setTotalPages] = useState(1)
   const [selectedRequest, setSelectedRequest] = useState<any>(null)
   const [rejectID, setRejectID] = useState<number | null>(null)
+  const [selectedStatus, setSelectedStatus] = useState<string>(RequestStatus.PENDING)
+  const [selectedEmployee, setSelectedEmployee] = useState<string>('')
+
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false)
-  const [selectedStatus, setSelectedStatus] = useState<string>(RequestStatus.PENDING)
   const [isFetching, setIsFetching] = useState(true)
   const [isScanModalOpen, setIsScanModalOpen] = useState(false)
   const [scanning, setScanning] = useState(false)
@@ -160,8 +163,15 @@ const ImportRequestManager = () => {
     setSelectedStatus(event.target.value)
   }
 
-  const handleClearFilter = () => {
+  const handleEmployeeChange = (event: SelectChangeEvent<string>) => {
+    setSelectedEmployee(event.target.value)
+  }
+
+  const handleClearStatusFilter = () => {
     setSelectedStatus('')
+  }
+  const handleClearEmployeeFilter = () => {
+    setSelectedEmployee('')
   }
 
   const handleQrIconClick = () => {
@@ -201,10 +211,15 @@ const ImportRequestManager = () => {
       >
         <div>
           <WrapperDiv>
+            <FilterByEmployee
+              selectedEmployee={selectedEmployee}
+              onChange={handleEmployeeChange}
+              onClearFilter={handleClearEmployeeFilter}
+            />
             <FilterRequest
               selectedStatus={selectedStatus}
               onChange={handleStatusChange}
-              onClearFilter={handleClearFilter}
+              onClearFilter={handleClearStatusFilter}
             />
             <QrCodeScannerIcon
               sx={{ marginLeft: '20px', color: 'var(--primary-dark-color)' }}

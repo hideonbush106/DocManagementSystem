@@ -11,10 +11,11 @@ import { DocumentDetail } from '~/global/interface'
 import { DocumentStatus } from '~/global/enum'
 import Detail from '../modal/Detail'
 import { Box, CircularProgress } from '@mui/material'
+import ConfirmDeletePendingModal from '../modal/ConfirmDeletePendingModal'
 
 interface ApprovalsTableProps {
   view: 'dashboard' | 'full'
-  rows: never[]
+  rows: Row[]
   rowCount: number
   loading: boolean
   paginationModel: PaginationModel
@@ -27,20 +28,28 @@ interface PaginationModel {
   pageSize: number
 }
 
+interface Row {
+  name: string
+  id: string
+}
+
 const ApprovalsTable = (props: ApprovalsTableProps) => {
   let loading = props.loading
   const { view, rows, rowCount, paginationModel, handlePaginationModelChange, reFecthData } = props
   let columns: GridColDef[] = []
-  const [open, setOpen] = useState(false)
   const [documentId, setDocumentId] = useState('')
-  const [scanning, setScanning] = useState(false)
   const { confirmDocument } = useDocumentApi()
-
-  const [loadingDetail, setLoadingDetail] = useState(false)
   const { getDocument, getDocumentBarcode } = useDocumentApi()
   const [document, setDocument] = useState<DocumentDetail>()
   const [barcode, setBarcode] = useState<string>('')
+  const [selectedRowId, setSelectedRowId] = useState<string>('')
+  const [selectedName, setSelectedName] = useState<string>('')
+
+  const [open, setOpen] = useState(false)
+  const [scanning, setScanning] = useState(false)
+  const [loadingDetail, setLoadingDetail] = useState(false)
   const [openDetail, setOpenDetail] = useState(false)
+  const [isDeleteConfirmOpen, setIsDeleteConfirmOpen] = useState(false)
 
   const handleDetailOpen = async (id: string) => {
     setLoadingDetail(true)
@@ -72,6 +81,20 @@ const ApprovalsTable = (props: ApprovalsTableProps) => {
 
   const handleCloseScan = () => {
     setOpen(false)
+  }
+
+  const handleDeleteconfirmOpen = (id: string) => {
+    setSelectedRowId(id)
+    const selectedRow = rows.find((row) => row.id === id)
+    if (selectedRow) {
+      setSelectedName(selectedRow.name)
+    }
+    setIsDeleteConfirmOpen(true)
+  }
+
+  const handleDeleteConfirmClose = () => {
+    setIsDeleteConfirmOpen(false)
+    reFecthData()
   }
 
   const handleScan = async (scanData: string | null) => {
@@ -242,8 +265,13 @@ const ApprovalsTable = (props: ApprovalsTableProps) => {
               onClick: () => {
                 handleDetailOpen(params.row.id as string)
               }
+            },
+            {
+              text: 'Delete',
+              onClick: () => {
+                handleDeleteconfirmOpen(params.row.id as string)
+              }
             }
-            //{ text: 'Delete', onClick: () => console.log('Delete clicked') }
           ]
           return <ActionsCell id={params.row.id as number} menuItems={menuItems} />
         }
@@ -282,6 +310,13 @@ const ApprovalsTable = (props: ApprovalsTableProps) => {
           <CircularProgress />
         </Box>
       )}
+
+      <ConfirmDeletePendingModal
+        open={isDeleteConfirmOpen}
+        handleClose={handleDeleteConfirmClose}
+        id={selectedRowId}
+        name={selectedName}
+      />
 
       <DataGrid
         columnHeaderHeight={rowHeight + 10}

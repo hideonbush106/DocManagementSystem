@@ -292,7 +292,7 @@ const Dashboard = () => {
                 <Subtitle variant='h6'>Borrow Requests</Subtitle>
                 <TitleUnderline />
               </div>
-              <Link to='/request'>
+              <Link to='/request/borrow'>
                 <ViewButton text='View' />
               </Link>
             </SubtitleWrapper>

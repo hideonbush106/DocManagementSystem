@@ -107,18 +107,13 @@ const MainLayout = (props: Props) => {
         if (response) {
           setResponse(response)
           setScanData(scanData)
+          handleReturnConfirmModalOpen()
         }
       } catch (error) {
         console.log(error)
+        handleReturnDocumentModalClose()
       } finally {
-        if (response.details !== 'Invalid QR code') {
-          handleReturnDocumentModalClose()
-          handleReturnConfirmModalOpen()
-          setScanning(false)
-        } else {
-          handleReturnDocumentModalClose()
-          setScanning(false)
-        }
+        setScanning(false)
       }
     }
   }

@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Modal, Box, TextField, Button } from '@mui/material'
+import { Modal, Box, TextField, Button, FormHelperText } from '@mui/material'
 
 interface RejectionModalProps {
   open: boolean
@@ -9,15 +9,18 @@ interface RejectionModalProps {
 
 const RejectRequestModal: React.FC<RejectionModalProps> = ({ open, onClose, onSubmit }) => {
   const [reason, setReason] = useState('')
+  const [errorMessage, setErrorMessage] = useState('')
 
   const handleReasonChange = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
     const inputValue = event.target.value
     const words = inputValue.trim().split(' ')
     if (words.length <= 50) {
       setReason(inputValue)
+      setErrorMessage('')
     } else {
       const truncatedInput = words.slice(0, 50).join(' ')
       setReason(truncatedInput)
+      setErrorMessage('Reason should be less than or equal to 50 words.')
     }
   }
 
@@ -38,7 +41,7 @@ const RejectRequestModal: React.FC<RejectionModalProps> = ({ open, onClose, onSu
           left: '50%',
           transform: 'translate(-50%, -50%)',
           width: 500,
-          height: 250,
+          height: 260,
           bgcolor: 'background.paper',
           boxShadow: 24,
           p: 4,
@@ -55,14 +58,16 @@ const RejectRequestModal: React.FC<RejectionModalProps> = ({ open, onClose, onSu
           value={reason}
           onChange={handleReasonChange}
           sx={{ width: '400px', marginBottom: '20px' }}
-          error
+          error={!!errorMessage}
           required
+          color='error'
         />
+        {errorMessage && <FormHelperText error>{errorMessage}</FormHelperText>}
         <Button
           variant='contained'
           onClick={handleSubmit}
           color='error'
-          sx={{ padding: '5px 15px' }}
+          sx={{ padding: '5px 15px', marginTop: '15px' }}
           disabled={isReasonEmpty}
         >
           Reject

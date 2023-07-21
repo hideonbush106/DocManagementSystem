@@ -71,7 +71,7 @@ const PendingApprovals = () => {
             setSearchData(value)
           }}
         />
-        <IconButton sx={{ maxHeight: 'fit-content' }} onClick={() => setIsFilterBoxVisible((prev) => !prev)}>
+        <IconButton sx={{ maxHeight: 'fit-content', ml: 2 }} onClick={() => setIsFilterBoxVisible((prev) => !prev)}>
           <FilterListIcon />
         </IconButton>
       </HeaderWrapper>
@@ -80,11 +80,11 @@ const PendingApprovals = () => {
           variant='h5'
           minWidth={'100px'}
           fontWeight={'bold'}
-          style={{ color: 'var(--black-color)', margin: 'auto 0' }}
+          style={{ color: 'var(--black-color)', marginTop: 'auto' }}
         >
           Files
         </Typography>
-        <Collapse in={isFilterBoxVisible} timeout={300} sx={{ mt: -1 }}>
+        <Collapse in={isFilterBoxVisible} timeout={300} sx={{ mt: -1, ml: 'auto' }}>
           <FilterPendingApproval
             selectedDepartment={selectedDepartment}
             setSelectedDepartment={setSelectedDepartment}
@@ -94,6 +94,7 @@ const PendingApprovals = () => {
             setSelectedLocker={setSelectedLocker}
             selectedFolder={selectedFolder}
             setSelectedFolder={setSelectedFolder}
+            filterOpen={isFilterBoxVisible}
           />
         </Collapse>
       </FilterWrapper>

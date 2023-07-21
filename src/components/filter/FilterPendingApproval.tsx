@@ -16,6 +16,7 @@ interface FilterPendingApprovalProps {
   setSelectedLocker: React.Dispatch<React.SetStateAction<Locker>>
   selectedFolder: Folder
   setSelectedFolder: React.Dispatch<React.SetStateAction<Folder>>
+  filterOpen: boolean
 }
 
 const FilterPendingApproval = ({
@@ -26,7 +27,8 @@ const FilterPendingApproval = ({
   selectedLocker,
   setSelectedLocker,
   selectedFolder,
-  setSelectedFolder
+  setSelectedFolder,
+  filterOpen
 }: FilterPendingApprovalProps) => {
   const [departments, setDepartments] = useState<Department[]>([])
   const [rooms, setRooms] = useState<Room[]>([])
@@ -83,6 +85,15 @@ const FilterPendingApproval = ({
   useEffect(() => {
     fetchFolders()
   }, [selectedLocker])
+
+  useEffect(() => {
+    if (!filterOpen) {
+      setSelectedDepartment({ id: '', name: '' })
+      setSelectedRoom({ id: '', name: '', capacity: 0 })
+      setSelectedLocker({ id: '', name: '', capacity: 0 })
+      setSelectedFolder({ id: '', name: '', capacity: 0 })
+    }
+  }, [filterOpen])
 
   //option for autocomplete
   const optionsDept = {
@@ -157,6 +168,7 @@ const FilterPendingApproval = ({
         size='medium'
         autoComplete
         onChange={handleDeptChange}
+        value={selectedDepartment.id ? selectedDepartment.name : null}
         sx={{ width: '150px' }}
         renderInput={(params) => <TextField label='Department' {...params} variant='standard' />}
       />

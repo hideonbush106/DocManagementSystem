@@ -25,6 +25,7 @@
     "@mui/x-data-grid-generator": "^6.6.0",
     "@mui/x-data-grid-pro": "^6.5.0",
     "@mui/x-date-pickers": "^6.9.1",
+    "@novu/notification-center": "^0.16.4",
     "@react-pdf-viewer/core": "^3.12.0",
     "@react-pdf-viewer/default-layout": "^3.12.0",
     "@react-pdf-viewer/scroll-mode": "^3.12.0",

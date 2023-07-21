@@ -66,25 +66,31 @@ interface Props extends TreeItemProps {
 const DocumentTreeItem = (props: Props) => {
   const { labelIcon: LabelIcon, labelInfo, labelText, isFull, href, itemType } = props
   let iconToolTip: string
+  let infoToolTip: string
   switch (itemType) {
     case 'department': {
       iconToolTip = 'Department'
+      infoToolTip = ''
       break
     }
     case 'room': {
       iconToolTip = 'Room'
+      infoToolTip = 'Lockers'
       break
     }
     case 'locker': {
       iconToolTip = 'Locker'
+      infoToolTip = 'Folders'
       break
     }
     case 'folder': {
       iconToolTip = 'Folder'
+      infoToolTip = 'Pages'
       break
     }
     default:
       iconToolTip = ''
+      infoToolTip = ''
   }
   const { loading } = useData()
   const navigate = useNavigate()
@@ -105,13 +111,15 @@ const DocumentTreeItem = (props: Props) => {
             <Typography variant='body2' sx={{ fontWeight: 'inherit', flexGrow: 1, fontFamily: 'inherit' }}>
               {labelText}
             </Typography>
-            <Typography
-              variant='caption'
-              color={isFull ? 'error' : 'inherit'}
-              sx={{ fontFamily: 'inherit', fontWeight: isFull ? 600 : 'inherit' }}
-            >
-              {labelInfo}
-            </Typography>
+            <Tooltip title={infoToolTip}>
+              <Typography
+                variant='caption'
+                color={isFull ? 'error' : 'inherit'}
+                sx={{ fontFamily: 'inherit', fontWeight: isFull ? 600 : 'inherit' }}
+              >
+                {labelInfo}
+              </Typography>
+            </Tooltip>
           </Box>
         ) : (
           <Skeleton animation='wave' variant='text' width='12rem' height='3rem' />

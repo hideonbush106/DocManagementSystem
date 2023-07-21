@@ -179,9 +179,9 @@ const ImportRequestManager = () => {
   const handleClearStatusFilter = () => {
     setSelectedStatus('')
   }
+
   const handleClearEmployeeFilter = () => {
     setSelectedEmployee('')
-    console.log(selectedEmployee)
   }
 
   const handleQrIconClick = () => {

@@ -95,6 +95,7 @@ const Dashboard = () => {
         result = await getBorrowRequestsAll(
           undefined,
           undefined,
+          undefined,
           paginationBorrowRequests.pageSize,
           paginationBorrowRequests.page + 1
         )

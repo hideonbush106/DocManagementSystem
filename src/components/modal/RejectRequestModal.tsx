@@ -23,6 +23,11 @@ const RejectRequestModal: React.FC<RejectionModalProps> = ({ open, onClose, onSu
     }
   }
 
+  const handleClose = () => {
+    setReason('')
+    onClose()
+  }
+
   const handleSubmit = () => {
     onSubmit(reason)
     setReason('')
@@ -31,7 +36,7 @@ const RejectRequestModal: React.FC<RejectionModalProps> = ({ open, onClose, onSu
   const isReasonEmpty = reason.trim() === ''
 
   return (
-    <Modal open={open} onClose={onClose}>
+    <Modal open={open} onClose={handleClose}>
       <Box
         sx={{
           borderRadius: '5px',

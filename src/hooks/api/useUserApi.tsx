@@ -54,8 +54,11 @@ const useUserApi = () => {
   }, [callApi])
 
   const getAllUsers = React.useCallback(
-    async (departmentId: string) => {
-      const endpoint = `/${rootEndpoint}/list?departmentId=${departmentId}`
+    async (departmentId: string | null = null) => {
+      let endpoint = `/${rootEndpoint}/list`
+      if (departmentId !== null) {
+        endpoint += `?departmentId=${departmentId}`
+      }
       try {
         const response = await callApi('get', endpoint)
         return response

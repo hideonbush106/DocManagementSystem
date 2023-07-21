@@ -78,13 +78,13 @@ const ImportRequestManager = () => {
     alignItems: 'center',
     justifyContent: 'flex-end',
 
-    [theme.breakpoints.down('sm')]: {
+    [theme.breakpoints.down('lg')]: {
       flexDirection: 'column',
       alignItems: 'flex-start',
       position: 'static'
     },
 
-    [theme.breakpoints.up('sm')]: {
+    [theme.breakpoints.up('lg')]: {
       position: 'absolute',
       right: '0px',
       top: '-65px'
@@ -93,7 +93,13 @@ const ImportRequestManager = () => {
 
   const fetchImportRequests = async () => {
     try {
-      const response = await getImportRequestsAll(selectedStatus || undefined, undefined, undefined, page)
+      const response = await getImportRequestsAll(
+        selectedStatus || undefined,
+        selectedEmployee || undefined,
+        undefined,
+        undefined,
+        page
+      )
       const responseData = response.data.data
       const totalPages = response.data.total
       if (responseData && Array.isArray(responseData)) {
@@ -108,7 +114,8 @@ const ImportRequestManager = () => {
   }
   useEffect(() => {
     fetchImportRequests()
-  }, [page, selectedStatus])
+  }, [page, selectedStatus, selectedEmployee])
+
   const count = totalPages
   const _DATA = usePagination(importRequests, PER_PAGE)
   const handleChange = (_e: React.ChangeEvent<unknown>, pageNumber: number) => {
@@ -165,6 +172,7 @@ const ImportRequestManager = () => {
   }
 
   const handleEmployeeChange = (event: SelectChangeEvent<string>) => {
+    console.log(event.target.value)
     setSelectedEmployee(event.target.value)
   }
 
@@ -173,6 +181,7 @@ const ImportRequestManager = () => {
   }
   const handleClearEmployeeFilter = () => {
     setSelectedEmployee('')
+    console.log(selectedEmployee)
   }
 
   const handleQrIconClick = () => {

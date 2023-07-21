@@ -140,6 +140,7 @@ const Dashboard = () => {
         result = await getImportRequestsAll(
           undefined,
           undefined,
+          undefined,
           paginationImportRequests.pageSize,
           paginationImportRequests.page + 1
         )

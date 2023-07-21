@@ -13,14 +13,13 @@ const RejectRequestModal: React.FC<RejectionModalProps> = ({ open, onClose, onSu
 
   const handleReasonChange = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
     const inputValue = event.target.value
-    const words = inputValue.trim().split(' ')
-    if (words.length <= 50) {
+    if (inputValue.length <= 50) {
       setReason(inputValue)
       setErrorMessage('')
     } else {
-      const truncatedInput = words.slice(0, 50).join(' ')
+      const truncatedInput = inputValue.slice(0, 50)
       setReason(truncatedInput)
-      setErrorMessage('Reason should be less than or equal to 50 words.')
+      setErrorMessage('Reason should be less than or equal to 50 characters.')
     }
   }
 
@@ -60,7 +59,6 @@ const RejectRequestModal: React.FC<RejectionModalProps> = ({ open, onClose, onSu
           sx={{ width: '400px', marginBottom: '20px' }}
           error={!!errorMessage}
           required
-          color='error'
         />
         {errorMessage && <FormHelperText error>{errorMessage}</FormHelperText>}
         <Button

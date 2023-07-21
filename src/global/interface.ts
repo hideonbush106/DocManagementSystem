@@ -25,6 +25,7 @@ export interface Folder {
   name: string
   capacity: number
   locker?: Locker
+  current?: number
 }
 
 export interface File {

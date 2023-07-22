@@ -5,8 +5,6 @@ import ModalLayout from './ModalLayout'
 import { Box, Button, FormControl, MenuItem, TextField, Typography } from '@mui/material'
 import { DocumentDetail, PossibleLocation } from '~/global/interface'
 import styled from 'styled-components'
-import PdfViewer from './PdfViewer'
-import useMedia from '~/hooks/api/useMedia'
 import useDocumentApi from '~/hooks/api/useDocumentApi'
 import { notifySuccess } from '~/global/toastify'
 
@@ -39,10 +37,7 @@ const MoveDocumentModal = ({ open, handleClose, document, onSubmit }: Props) => 
     capacity: number
     folders: { id: string; name: string; capacity: number; current: number }[]
   }>()
-  const [fileUrl, setFileUrl] = useState<string>('initial')
-  const [openPDF, setOpenPDF] = useState<boolean>(false)
   const { getPossibleLocation, moveDocument } = useDocumentApi()
-  const { getMedia } = useMedia()
   const formik = useFormik({
     enableReinitialize: true,
     initialValues: {
@@ -115,30 +110,6 @@ const MoveDocumentModal = ({ open, handleClose, document, onSubmit }: Props) => 
     if (selectedRoom) {
       const locker = selectedRoom.lockers.find((locker) => locker.id === e.target.value)
       setSelectedLocker(locker)
-    }
-  }
-
-  const getFile = async () => {
-    setOpenPDF(true)
-    try {
-      setFileUrl('initial')
-      const response = await getMedia(document.id || '')
-      const base64toBlob = (data: string) => {
-        const bytes = atob(data)
-        let length = bytes.length
-        const out = new Uint8Array(length)
-        while (length--) {
-          out[length] = bytes.charCodeAt(length)
-        }
-
-        return new Blob([out], { type: 'application/pdf' })
-      }
-      const blob = base64toBlob(response)
-      const url = URL.createObjectURL(blob)
-      setFileUrl(url)
-    } catch (error) {
-      console.log(error)
-      setFileUrl('')
     }
   }
 
@@ -343,23 +314,6 @@ const MoveDocumentModal = ({ open, handleClose, document, onSubmit }: Props) => 
               ))}
             </TextField>
           </Box>
-          <Box display='flex' alignItems='center' justifyContent='center' height='100px'>
-            <Button
-              size='small'
-              variant='contained'
-              onClick={getFile}
-              sx={{
-                width: '95px',
-                height: '40px',
-                lineHeight: 1,
-                fontFamily: 'var(--family-font)',
-                boxShadow: 'none'
-              }}
-            >
-              View PDF
-            </Button>
-          </Box>
-          <PdfViewer fileUrl={fileUrl} open={openPDF} handleClose={() => setOpenPDF(false)} />
         </FormControl>
 
         <Box

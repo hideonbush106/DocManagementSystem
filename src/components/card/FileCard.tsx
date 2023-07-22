@@ -23,6 +23,7 @@ type Props = {
   id: string
   fileId: string
   fileName: string
+  status: DocumentStatus
   action?: boolean
   onClick?: () => void
   fetchFolder?: () => void
@@ -30,7 +31,7 @@ type Props = {
 const FileCard: React.FC<Props> = (props: Props) => {
   const { user } = useAuth()
   const role = user?.role.toLocaleUpperCase()
-  const { icon, name, fileId, fileName, action, onClick } = props
+  const { icon, name, fileId, fileName, status, action, onClick } = props
   const [isBorrowModalOpen, setIsBorrowModalOpen] = useState(false)
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false)
   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false)
@@ -77,24 +78,25 @@ const FileCard: React.FC<Props> = (props: Props) => {
       onClick: () => handleDetailOpen()
     }
   ]
-    .concat(
-      role == Role.MANAGER
-        ? [
-            {
-              text: 'Edit',
-              onClick: () => handleOpenUpdateModal()
-            },
-            {
-              text: 'Move',
-              onClick: () => handleOpenMoveModal()
-            }
-          ]
-        : {
-            text: 'Borrow',
-            onClick: () => handleOpenBorrowModal()
-          }
-    )
-    .filter(Boolean)
+
+  if (status === DocumentStatus.AVAILABLE) {
+    actions.push({
+      text: 'Move',
+      onClick: () => handleOpenMoveModal()
+    })
+  }
+
+  if (role === Role.MANAGER) {
+    actions.push({
+      text: 'Edit',
+      onClick: () => handleOpenUpdateModal()
+    })
+  } else {
+    actions.push({
+      text: 'Borrow',
+      onClick: () => handleOpenBorrowModal()
+    })
+  }
 
   const fetchData = async (id: string) => {
     try {

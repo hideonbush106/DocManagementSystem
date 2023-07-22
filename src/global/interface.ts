@@ -1,3 +1,5 @@
+import { DocumentStatus } from './enum'
+
 export interface Department {
   id: string
   name: string
@@ -31,7 +33,7 @@ export interface File {
   id: string
   name: string
   description: string
-  status: string
+  status: DocumentStatus
   numOfPages: number
   createdAt: Date
   updatedAt: Date

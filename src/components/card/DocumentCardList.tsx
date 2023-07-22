@@ -4,11 +4,13 @@ import DocumentCard from './DocumentCard'
 import { Apartment, SvgIconComponent, Folder, DescriptionOutlined, MeetingRoom, ViewModule } from '@mui/icons-material'
 import FileCard from './FileCard'
 import { useEffect, useState } from 'react'
+import { DocumentStatus } from '~/global/enum'
 
 type Props = {
   items: {
     id: string
     name: string
+    status?: DocumentStatus
   }[]
   type: 'department' | 'room' | 'locker' | 'folder' | 'file'
   itemId?: string | null
@@ -77,6 +79,7 @@ const DocumentCardList = (props: Props) => {
                 name={item.name}
                 fileId={item.id}
                 fileName={item.name}
+                status={item.status as DocumentStatus}
                 id={item.id}
                 action
                 fetchFolder={props.fetchFolder}

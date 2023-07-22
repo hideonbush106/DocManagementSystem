@@ -190,6 +190,19 @@ const useDocumentApi = () => {
     [callApi]
   )
 
+  const deletePendingDocument = React.useCallback(
+    async (documentId: string) => {
+      const endpoint = `/${rootEndpoint}/pending/${documentId}`
+      try {
+        const respone = await callApi('delete', endpoint)
+        return respone
+      } catch (error) {
+        console.log(error)
+      }
+    },
+    [callApi]
+  )
+
   return {
     getDocumentsInFolder,
     getDocument,
@@ -203,7 +216,8 @@ const useDocumentApi = () => {
     getDocumentCount,
     checkReturnDocument,
     returnDocument,
-    getAllDocuments
+    getAllDocuments,
+    deletePendingDocument
   }
 }
 

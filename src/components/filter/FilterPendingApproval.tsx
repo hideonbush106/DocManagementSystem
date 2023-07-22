@@ -88,14 +88,12 @@ const FilterPendingApproval = ({
 
   useEffect(() => {
     if (!filterOpen) {
-      setSelectedDepartment({ id: '', name: '' })
-      setSelectedRoom({ id: '', name: '', capacity: 0 })
-      setSelectedLocker({ id: '', name: '', capacity: 0 })
-      setSelectedFolder({ id: '', name: '', capacity: 0 })
+      selectedDepartment.id && setSelectedDepartment({ id: '', name: '' })
+      selectedRoom.id && setSelectedRoom({ id: '', name: '', capacity: 0 })
+      selectedLocker.id && setSelectedLocker({ id: '', name: '', capacity: 0 })
+      selectedFolder.id && setSelectedFolder({ id: '', name: '', capacity: 0 })
     }
-  }, [filterOpen])
-
-  //option for autocomplete
+  }, [filterOpen]) //option for autocomplete
   const optionsDept = {
     options: departments.map((option) => option.name)
   }

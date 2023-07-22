@@ -161,6 +161,7 @@ const ApprovalsTable = (props: ApprovalsTableProps) => {
         filterable: false,
         headerAlign: 'center',
         align: 'center',
+        sortingOrder: ['asc', 'desc'],
         renderCell: (params) =>
           `${
             paginationModel.pageSize * paginationModel.page +
@@ -176,6 +177,7 @@ const ApprovalsTable = (props: ApprovalsTableProps) => {
         filterable: false,
         minWidth: 85,
         maxWidth: 150,
+        sortingOrder: ['asc', 'desc'],
         valueGetter: ({ row }) => {
           return row.folder.locker.room.department.name
         }
@@ -188,6 +190,7 @@ const ApprovalsTable = (props: ApprovalsTableProps) => {
         flex: 1,
         headerAlign: 'center',
         align: 'center',
+        sortingOrder: ['asc', 'desc'],
         valueGetter: ({ row }) => {
           return row.folder.locker.room.name
         }
@@ -200,6 +203,7 @@ const ApprovalsTable = (props: ApprovalsTableProps) => {
         flex: 1,
         headerAlign: 'center',
         align: 'center',
+        sortingOrder: ['asc', 'desc'],
         valueGetter: ({ row }) => {
           return row.folder.locker.name
         }
@@ -212,7 +216,10 @@ const ApprovalsTable = (props: ApprovalsTableProps) => {
         flex: 1,
         headerAlign: 'center',
         align: 'center',
-        valueFormatter: ({ value }) => value.name
+        sortingOrder: ['asc', 'desc'],
+        valueGetter: ({ row }) => {
+          return row.folder.name
+        }
       },
       {
         field: 'category',
@@ -220,7 +227,10 @@ const ApprovalsTable = (props: ApprovalsTableProps) => {
         minWidth: 100,
         maxWidth: 200,
         flex: 1,
-        valueFormatter: ({ value }) => value.name
+        sortingOrder: ['asc', 'desc'],
+        valueGetter: ({ row }) => {
+          return row.category.name
+        }
       },
       {
         field: 'updatedAt',
@@ -229,6 +239,7 @@ const ApprovalsTable = (props: ApprovalsTableProps) => {
         minWidth: 120,
         headerAlign: 'center',
         align: 'center',
+        sortingOrder: ['desc'],
         valueFormatter: ({ value }) => dayjs(value).format('MM/DD/YYYY')
       },
       {
@@ -333,7 +344,7 @@ const ApprovalsTable = (props: ApprovalsTableProps) => {
         onPaginationModelChange={handlePaginationModelChange}
         initialState={{
           sorting: {
-            sortModel: [{ field: 'updatedAt', sort: 'asc' }]
+            sortModel: [{ field: 'updatedAt', sort: 'desc' }]
           }
         }}
         sx={{

@@ -9,7 +9,7 @@ import { Navigate } from 'react-router-dom'
 import { Role } from '~/global/enum'
 import FilterListIcon from '@mui/icons-material/FilterList'
 import FilterPendingApproval from '~/components/filter/FilterPendingApproval'
-import { Department, Folder, Locker, Room } from '~/global/interface'
+import { Department } from '~/global/interface'
 
 interface PaginationModel {
   page: number
@@ -25,9 +25,9 @@ const PendingApprovals = () => {
   const [rowCountState, setRowCountState] = useState<number>(0)
 
   const [selectedDepartment, setSelectedDepartment] = useState<Department>({ id: '', name: '' })
-  const [selectedRoom, setSelectedRoom] = useState<Room>({ id: '', name: '', capacity: 0 })
-  const [selectedLocker, setSelectedLocker] = useState<Locker>({ id: '', name: '', capacity: 0 })
-  const [selectedFolder, setSelectedFolder] = useState<Folder>({ id: '', name: '', capacity: 0 })
+  // const [selectedRoom, setSelectedRoom] = useState<Room>({ id: '', name: '', capacity: 0 })
+  // const [selectedLocker, setSelectedLocker] = useState<Locker>({ id: '', name: '', capacity: 0 })
+  // const [selectedFolder, setSelectedFolder] = useState<Folder>({ id: '', name: '', capacity: 0 })
 
   const [isFilterBoxVisible, setIsFilterBoxVisible] = useState(false)
 
@@ -42,7 +42,7 @@ const PendingApprovals = () => {
       paginationModel.pageSize,
       paginationModel.page,
       searchData,
-      selectedFolder.id ? selectedFolder.id : undefined,
+      // selectedFolder.id ? selectedFolder.id : undefined,
       selectedDepartment.id ? selectedDepartment.id : undefined
     )
     setData(result.data.data)
@@ -61,7 +61,7 @@ const PendingApprovals = () => {
       fetchData()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [paginationModel, searchData, selectedFolder, selectedDepartment])
+  }, [paginationModel, searchData, /*selectedFolder,*/ selectedDepartment])
 
   return user?.role === Role.MANAGER ? (
     <PendingApprovalsWrapper>
@@ -88,12 +88,12 @@ const PendingApprovals = () => {
           <FilterPendingApproval
             selectedDepartment={selectedDepartment}
             setSelectedDepartment={setSelectedDepartment}
-            selectedRoom={selectedRoom}
-            setSelectedRoom={setSelectedRoom}
-            selectedLocker={selectedLocker}
-            setSelectedLocker={setSelectedLocker}
-            selectedFolder={selectedFolder}
-            setSelectedFolder={setSelectedFolder}
+            // selectedRoom={selectedRoom}
+            // setSelectedRoom={setSelectedRoom}
+            // selectedLocker={selectedLocker}
+            // setSelectedLocker={setSelectedLocker}
+            // selectedFolder={selectedFolder}
+            // setSelectedFolder={setSelectedFolder}
             filterOpen={isFilterBoxVisible}
           />
         </Collapse>

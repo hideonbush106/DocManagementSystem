@@ -95,6 +95,7 @@ const Dashboard = () => {
         result = await getBorrowRequestsAll(
           undefined,
           undefined,
+          undefined,
           paginationBorrowRequests.pageSize,
           paginationBorrowRequests.page + 1
         )
@@ -138,6 +139,7 @@ const Dashboard = () => {
       setLoadingImportRequests(true)
       if (role === Role.MANAGER) {
         result = await getImportRequestsAll(
+          undefined,
           undefined,
           undefined,
           paginationImportRequests.pageSize,

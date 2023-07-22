@@ -17,7 +17,7 @@ const SummaryChart = ({ items }: Props) => {
         series={items.map((item) => item.count)}
         options={{
           labels: items.map((item) => item.status),
-          colors: ['var(--red-color)', 'var(--primary-color)'],
+          colors: ['var(--primary-color)', 'var(--red-color)'],
           plotOptions: {
             pie: {
               customScale: 0.9,

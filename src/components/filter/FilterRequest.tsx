@@ -11,7 +11,7 @@ interface StatusSelectProps {
 
 const FilterRequest: React.FC<StatusSelectProps> = ({ selectedStatus, onChange, onClearFilter }) => {
   return (
-    <FormControl variant='standard' sx={{ minWidth: 150, marginBottom: '1rem' }}>
+    <FormControl variant='standard' sx={{ minWidth: 190, marginBottom: '1rem' }}>
       <InputLabel id='status-select-label'>Status</InputLabel>
       <Select labelId='status-select-label' id='status-select' value={selectedStatus} onChange={onChange}>
         <MenuItem value={RequestStatus.PENDING}>Pending</MenuItem>

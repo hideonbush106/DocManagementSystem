@@ -20,10 +20,11 @@ const useBorrowRequestApi = () => {
   )
   // ? API undone
   const getBorrowRequestsAll = React.useCallback(
-    async (status?: string, documentId?: string, take?: number, page?: number) => {
+    async (status?: string, createdBy?: string, documentId?: string, take?: number, page?: number) => {
       let endpoint = `/${rootEndpoint}`
       if (page) endpoint += `?page=${page}`
       if (status) endpoint += `&status=${status}`
+      if (createdBy) endpoint += `&createdBy=${createdBy}`
       if (documentId) endpoint += `&documentId=${documentId}`
       if (take) endpoint += `&take=${take}`
       try {

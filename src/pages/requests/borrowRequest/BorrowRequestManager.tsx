@@ -25,6 +25,7 @@ import { RequestStatus } from '~/global/enum'
 import QrCodeScannerIcon from '@mui/icons-material/QrCodeScanner'
 import Scanner from '~/components/modal/Scanner'
 import { notifySuccess } from '~/global/toastify'
+import FilterByEmployee from '~/components/filter/FilterByEmployee'
 
 const Text = styled(Typography)`
   color: var(--black-color);
@@ -61,9 +62,11 @@ const BorrowRequestManager = () => {
   const [totalPages, setTotalPages] = useState(1)
   const [selectedRequest, setSelectedRequest] = useState<any>(null)
   const [rejectID, setRejectID] = useState<number | null>(null)
+  const [selectedStatus, setSelectedStatus] = useState<string>(RequestStatus.PENDING)
+  const [selectedEmployee, setSelectedEmployee] = useState<string>('')
+
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false)
-  const [selectedStatus, setSelectedStatus] = useState<string>('')
   const [isFetching, setIsFetching] = useState(true)
   const [isScanModalOpen, setIsScanModalOpen] = useState(false)
   const [scanning, setScanning] = useState(false)
@@ -75,11 +78,13 @@ const BorrowRequestManager = () => {
     alignItems: 'center',
     justifyContent: 'flex-end',
 
-    [theme.breakpoints.down('sm')]: {
-      justifyContent: 'flex-start',
+    [theme.breakpoints.down('lg')]: {
+      flexDirection: 'column',
+      alignItems: 'flex-start',
       position: 'static'
     },
-    [theme.breakpoints.up('sm')]: {
+
+    [theme.breakpoints.up('lg')]: {
       position: 'absolute',
       right: '0px',
       top: '-65px'
@@ -88,7 +93,13 @@ const BorrowRequestManager = () => {
 
   const fetchBorrowRequests = async () => {
     try {
-      const response = await getBorrowRequestsAll(selectedStatus || undefined, undefined, undefined, page)
+      const response = await getBorrowRequestsAll(
+        selectedStatus || undefined,
+        selectedEmployee || undefined,
+        undefined,
+        undefined,
+        page
+      )
       const responseData = response.data.data
       const totalPages = response.data.total
 
@@ -105,7 +116,7 @@ const BorrowRequestManager = () => {
 
   useEffect(() => {
     fetchBorrowRequests()
-  }, [page, selectedStatus])
+  }, [page, selectedStatus, selectedEmployee])
 
   const count = totalPages
   const _DATA = usePagination(borrowRequests, PER_PAGE)
@@ -159,8 +170,17 @@ const BorrowRequestManager = () => {
     setSelectedStatus(event.target.value)
   }
 
+  const handleEmployeeChange = (event: SelectChangeEvent<string>) => {
+    console.log(event.target.value)
+    setSelectedEmployee(event.target.value)
+  }
+
   const handleClearFilter = () => {
     setSelectedStatus('')
+  }
+
+  const handleClearEmployeeFilter = () => {
+    setSelectedEmployee('')
   }
 
   const handleScanModalClose = () => {
@@ -204,24 +224,31 @@ const BorrowRequestManager = () => {
       >
         <div>
           <WrapperDiv>
-            <FilterRequest
-              selectedStatus={selectedStatus}
-              onChange={handleStatusChange}
-              onClearFilter={handleClearFilter}
+            <FilterByEmployee
+              selectedEmployee={selectedEmployee}
+              onChange={handleEmployeeChange}
+              onClearFilter={handleClearEmployeeFilter}
             />
-            <QrCodeScannerIcon
-              sx={{ marginLeft: '20px', color: 'var(--primary-dark-color)' }}
-              fontSize='large'
-              onClick={handleQrIconClick}
-              cursor='pointer'
-            />
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+              <FilterRequest
+                selectedStatus={selectedStatus}
+                onChange={handleStatusChange}
+                onClearFilter={handleClearFilter}
+              />
+              <QrCodeScannerIcon
+                sx={{ marginLeft: '20px', color: 'var(--primary-dark-color)' }}
+                fontSize='large'
+                onClick={handleQrIconClick}
+                cursor='pointer'
+              />
+            </div>
           </WrapperDiv>
           {isFetching ? (
             <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }} width='100%' height='60vh'>
               <CircularProgress />
             </Box>
           ) : borrowRequests.length === 0 ? (
-            <Typography variant='body1'>No matching requests found.</Typography>
+            <Typography variant='body1'>There is no request.</Typography>
           ) : (
             <Box display='flex' flexWrap='wrap'>
               {_DATA.currentData().map((request) => (

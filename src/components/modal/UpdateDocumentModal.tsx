@@ -93,7 +93,8 @@ const UpdateDocumentModal = (props: UpdateDocumentProps) => {
   const unchanged =
     formik.values.name.trim() === document?.name &&
     formik.values.description.trim() === document?.description &&
-    formik.values.category.id === document?.category?.id
+    formik.values.category.id === document?.category?.id &&
+    files.length === 0
 
   return (
     <ModalLayout open={open} handleClose={handleClose}>
@@ -261,6 +262,7 @@ const UpdateDocumentModal = (props: UpdateDocumentProps) => {
                 value={files}
                 onChange={setFiles}
                 maxFiles={1}
+                maxSize={1024 * 1024 * 8}
                 accept='application/pdf'
                 title={`Drag 'n' drop some files here, or click to select files`}
               />

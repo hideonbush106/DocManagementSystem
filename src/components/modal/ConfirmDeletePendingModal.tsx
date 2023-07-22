@@ -17,7 +17,7 @@ const ConfirmDeletePendingModal = ({ open, handleClose, id, name, reFecthData }:
   const handleDeleteDocument = async (id: string) => {
     try {
       await deletePendingDocument(id)
-      notifySuccess('Document delected successfully')
+      notifySuccess('Document deleted successfully')
       reFecthData()
     } catch (error) {
       console.log(error)

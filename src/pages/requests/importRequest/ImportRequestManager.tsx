@@ -146,7 +146,7 @@ const ImportRequestManager = () => {
       await acceptImportRequest(ImportRequestId)
       await fetchImportRequests()
     } catch (error) {
-      console.log('Accept request failed:', error)
+      console.log(error)
     }
   }
   const handleReject = (id: number) => {
@@ -163,7 +163,7 @@ const ImportRequestManager = () => {
         await rejectImportRequest({ id: String(rejectID), rejectedReason: reason })
         await fetchImportRequests()
       } catch (error) {
-        console.log('Reject request failed:', error)
+        console.log(error)
       }
     }
   }
@@ -172,7 +172,6 @@ const ImportRequestManager = () => {
   }
 
   const handleEmployeeChange = (event: SelectChangeEvent<string>) => {
-    console.log(event.target.value)
     setSelectedEmployee(event.target.value)
   }
 

@@ -12,6 +12,7 @@ import Detail from '../modal/Detail'
 import UpdateDocumentModal from '../modal/UpdateDocumentModal'
 import useCategoryApi from '~/hooks/api/useCategoryApi'
 import useMedia from '~/hooks/api/useMedia'
+import MoveDocumentModal from '../modal/MoveDocumentModal'
 
 type Props = {
   icon: {
@@ -22,6 +23,7 @@ type Props = {
   id: string
   fileId: string
   fileName: string
+  status: DocumentStatus
   action?: boolean
   onClick?: () => void
   fetchFolder?: () => void
@@ -29,10 +31,11 @@ type Props = {
 const FileCard: React.FC<Props> = (props: Props) => {
   const { user } = useAuth()
   const role = user?.role.toLocaleUpperCase()
-  const { icon, name, fileId, fileName, action, onClick } = props
+  const { icon, name, fileId, fileName, status, action, onClick } = props
   const [isBorrowModalOpen, setIsBorrowModalOpen] = useState(false)
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false)
   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false)
+  const [isMoveModalOpen, setIsMoveModalOpen] = useState(false)
   const { getDocument, getDocumentBarcode } = useDocumentApi()
   const { getAllCategories } = useCategoryApi()
   const { checkMedia } = useMedia()
@@ -62,27 +65,38 @@ const FileCard: React.FC<Props> = (props: Props) => {
     setIsUpdateModalOpen(false)
   }
 
+  const handleOpenMoveModal = () => {
+    setIsMoveModalOpen(true)
+  }
+  const handleCloseMoveModal = () => {
+    setIsMoveModalOpen(false)
+  }
+
   const actions = [
     {
       text: 'Details',
       onClick: () => handleDetailOpen()
-    },
-    role == Role.MANAGER
-      ? {
-          text: 'Edit',
-          onClick: () => handleOpenUpdateModal()
-        }
-      : {
-          text: 'Borrow',
-          onClick: () => handleOpenBorrowModal()
-        }
-    // {
-    //   text: 'Delete',
-    //   onClick: () => {
-    //     return
-    //   }
-    // }
-  ].filter(Boolean)
+    }
+  ]
+
+  if (status === DocumentStatus.AVAILABLE) {
+    actions.push({
+      text: 'Move',
+      onClick: () => handleOpenMoveModal()
+    })
+  }
+
+  if (role === Role.MANAGER) {
+    actions.push({
+      text: 'Edit',
+      onClick: () => handleOpenUpdateModal()
+    })
+  } else {
+    actions.push({
+      text: 'Borrow',
+      onClick: () => handleOpenBorrowModal()
+    })
+  }
 
   const fetchData = async (id: string) => {
     try {
@@ -142,14 +156,24 @@ const FileCard: React.FC<Props> = (props: Props) => {
         fileName={fileName}
       />
       {role == Role.MANAGER && (
-        <UpdateDocumentModal
-          document={document}
-          isHavePdf={isHavePdf}
-          categories={categories}
-          open={isUpdateModalOpen}
-          handleClose={handleCloseUpdateModal}
-          reload={props.fetchFolder}
-        />
+        <>
+          <UpdateDocumentModal
+            document={document}
+            isHavePdf={isHavePdf}
+            categories={categories}
+            open={isUpdateModalOpen}
+            handleClose={handleCloseUpdateModal}
+            reload={props.fetchFolder}
+          />
+          {document && (
+            <MoveDocumentModal
+              open={isMoveModalOpen}
+              handleClose={handleCloseMoveModal}
+              document={document}
+              onSubmit={props.fetchFolder}
+            />
+          )}
+        </>
       )}
     </Paper>
   )

@@ -120,7 +120,13 @@ const ReturnConfirmModal = (props: ReturnModalProps) => {
                 />
               </Typography>
               <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <Button sx={{ my: 1, mr: 1 }} variant='contained' onClick={handleReturnDocument} color='primary'>
+                <Button
+                  sx={{ my: 1, mr: 1 }}
+                  variant='contained'
+                  disabled={note === null || note === '' || note.length < 10 || note.length > 100}
+                  onClick={handleReturnDocument}
+                  color='primary'
+                >
                   Continue
                 </Button>
                 <Button sx={{ my: 1, mr: 1 }} variant='outlined' color='error' onClick={handleClose}>

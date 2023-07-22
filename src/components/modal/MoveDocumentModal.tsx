@@ -54,7 +54,7 @@ const MoveDocumentModal = ({ open, handleClose, document, onSubmit }: Props) => 
     onSubmit: (value) => {
       moveDocument({ id: document.id, folderId: value.folder.id }).then((res) => {
         if (res) {
-          notifySuccess('Move document successfully')
+          notifySuccess(res.message)
         }
         handleClose()
         onSubmit && onSubmit()

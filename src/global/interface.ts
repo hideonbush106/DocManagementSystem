@@ -208,6 +208,10 @@ export interface DocumentDetail {
     id: string
     name: string
   }
+  borrowedBy: {
+    firstName: string
+    lastName: string
+  }
 }
 
 export interface VerifiedRequset {

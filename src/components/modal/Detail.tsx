@@ -46,6 +46,7 @@ interface DetailProps {
 
 const Detail = ({ document, barcode, open, onClose }: DetailProps) => {
   const qrCodeRef = React.useRef(null)
+  const [isHavePdf, setIsHavePdf] = useState<boolean>(false)
   const handlePrint = useReactToPrint({
     content: () => qrCodeRef.current,
     documentTitle: 'Print QR Code'
@@ -67,7 +68,7 @@ const Detail = ({ document, barcode, open, onClose }: DetailProps) => {
       }
     }
   }
-  const { getMedia } = useMedia()
+  const { getMedia, checkMedia } = useMedia()
   const [fileUrl, setFileUrl] = useState<string>('initial')
   const [openPDF, setOpenPDF] = useState<boolean>(false)
   const style = {
@@ -108,6 +109,20 @@ const Detail = ({ document, barcode, open, onClose }: DetailProps) => {
       setFileUrl('')
     }
   }
+
+  React.useEffect(() => {
+    const checkIsHavePdf = async () => {
+      try {
+        const response = await checkMedia(document?.id || '')
+        setIsHavePdf(response.data)
+      } catch (error) {
+        console.error('Error checking isHavePdf:', error)
+      }
+    }
+    if (document) {
+      checkIsHavePdf()
+    }
+  }, [checkMedia, document])
 
   return (
     <>
@@ -161,6 +176,12 @@ const Detail = ({ document, barcode, open, onClose }: DetailProps) => {
           <Text variant='body1'>
             <TitleText>Created at: </TitleText> {dayjs(document?.createdAt).format('MM/DD/YYYY HH:mm:ss')}
           </Text>
+          {document?.borrowedBy && (
+            <Text>
+              <TitleText>Borrowed by: </TitleText>
+              {`${document.borrowedBy.firstName} ${document.borrowedBy.lastName}`}
+            </Text>
+          )}
           <Text variant='body1'>
             <TitleText>Status: </TitleText>
             <span style={{ color: getStatusColor(document?.status), fontWeight: 600 }}>{document?.status}</span>
@@ -176,19 +197,23 @@ const Detail = ({ document, barcode, open, onClose }: DetailProps) => {
                 width: '90%',
                 height: '35px',
                 display: 'flex',
-                justifyContent: barcode ? 'space-between' : 'center'
+                justifyContent: isHavePdf && barcode ? 'space-between' : 'center'
               }}
               marginTop='1rem'
             >
-              <Button
-                size='small'
-                variant='contained'
-                onClick={getFile}
-                sx={{ width: '95px', lineHeight: 1, fontFamily: 'var(--family-font)', boxShadow: 'none' }}
-              >
-                View PDF
-              </Button>
-              <PdfViewer fileUrl={fileUrl} open={openPDF} handleClose={() => setOpenPDF(false)} />
+              {isHavePdf && (
+                <>
+                  <Button
+                    size='small'
+                    variant='contained'
+                    onClick={getFile}
+                    sx={{ width: '95px', lineHeight: 1, fontFamily: 'var(--family-font)', boxShadow: 'none' }}
+                  >
+                    View PDF
+                  </Button>
+                  <PdfViewer fileUrl={fileUrl} open={openPDF} handleClose={() => setOpenPDF(false)} />
+                </>
+              )}
               {barcode && (
                 <Button
                   size='small'

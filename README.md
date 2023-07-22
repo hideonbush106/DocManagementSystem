@@ -1,4 +1,4 @@
-# Document Management System
+ # Document Management System
 
 This is our project for "Web application Document Management System" (Code subject: SWP391)
 
@@ -30,31 +30,32 @@ Start the server
 
 ## Tech Stack
 
-**Client:** React
+**Client:** React TypeScript with Vite, Novu
 
-**Build tool:** Vite
-
-**Server:** Node, TypeORM, Express, PostgreSQL, Firebase
+**Server:** TypeORM, Express, PostgreSQL, Firebase
 
 ## Environment Variables
 
-To run this project, you will need to add the following environment variables to your .env file to config firebase
+To run this project, you will need to add the following environment variables to your .env file
 
-`VITE_API_KEY`
+`VITE_API_KEY=`
 
-`VITE_AUTH_DOMAIN`
+`VITE_AUTH_DOMAIN=`
 
-`VITE_PROJECT_ID`
+`VITE_PROJECT_ID=`
 
-`VITE_STORAGE_BUCKET`
+`VITE_STORAGE_BUCKET=`
 
-`VITE_MESSAGING_SENDER_ID`
+`VITE_MESSAGING_SENDER_ID=`
 
-`VITE_APP_ID`
+`VITE_APP_ID=`
 
-`VITE_MEASUREMENT_ID`
+`VITE_MEASUREMENT_ID=`
 
-`VITE_API_URL`
+`VITE_API_URL=`
+
+`VITE_NOVU_IDENTIFIER=`
+
 
 ## Authors
 

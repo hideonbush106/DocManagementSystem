@@ -25,6 +25,7 @@ const RejectRequestModal: React.FC<RejectionModalProps> = ({ open, onClose, onSu
 
   const handleClose = () => {
     setReason('')
+    setErrorMessage('')
     onClose()
   }
 

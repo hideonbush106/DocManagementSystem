@@ -151,7 +151,6 @@ const ImportDocumentModal = (props: ImportDocumentModalProps) => {
     setSelectedLocker(false)
     setSelectedFolder(null)
     formik.setFieldValue('folder.id', '')
-    console.log(formik.values)
     const categories = await getAllCategories(event.target.value)
     setCategories(categories.data)
     const rooms = await getRoomsInDepartment(event.target.value)

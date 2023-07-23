@@ -119,8 +119,7 @@ const BorrowRequestEmployee = () => {
   }
   const handleCancel = async (id: string) => {
     try {
-      const response = await cancelBorrowRequest(id)
-      console.log(response)
+      await cancelBorrowRequest(id)
       await fetchBorrowRequests()
     } catch (error) {
       console.error(error)

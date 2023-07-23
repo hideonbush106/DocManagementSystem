@@ -109,7 +109,6 @@ const AuthProvider = ({ children }: Props) => {
         setIdToken(token)
       }
       const token = await userCredential.user.getIdToken()
-      console.log(token)
       // sign in with token to verify user and initialize new session
       await get('/users/login', {}, { Authentication: token, accept: 'application/json' })
       const userInfo = await getUserInfo(token)

@@ -1,3 +1,5 @@
+import { DocumentStatus } from './enum'
+
 export interface Department {
   id: string
   name: string
@@ -25,14 +27,14 @@ export interface Folder {
   name: string
   capacity: number
   locker?: Locker
+  current?: number
 }
 
 export interface File {
   id: string
   name: string
   description: string
-  status: string
-  storageUrl?: string
+  status: DocumentStatus
   numOfPages: number
   createdAt: Date
   updatedAt: Date
@@ -115,6 +117,23 @@ export interface UpdateDocument {
   }
 }
 
+export interface MoveDocument {
+  id: string
+  folderId: string
+}
+
+export interface PossibleLocation {
+  id: string
+  name: string
+  capacity: number
+  lockers: {
+    id: string
+    name: string
+    capacity: number
+    folders: { id: string; name: string; capacity: number; current: number }[]
+  }[]
+}
+
 export interface ConfirmDocument {
   id: string
   locationQRcode: string
@@ -191,10 +210,13 @@ export interface DocumentDetail {
   createdAt: Date
   updatedAt: Date
   folder: {
+    id: string
     name: string
     locker: {
+      id: string
       name: string
       room: {
+        id: string
         name: string
         department: {
           id: string
@@ -206,6 +228,10 @@ export interface DocumentDetail {
   category: {
     id: string
     name: string
+  }
+  borrowedBy: {
+    firstName: string
+    lastName: string
   }
 }
 

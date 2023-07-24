@@ -23,6 +23,11 @@ const ActionsCell: React.FC<ActionsCellProps> = ({ id, menuItems }) => {
     setAnchorEl(null)
   }
 
+  const handleMenuItemClick = (menuItemOnClick: () => void) => () => {
+    menuItemOnClick()
+    handleClose() // Close the menu after clicking on a menu item
+  }
+
   const filteredMenuItems = menuItems.filter((menuItem) => menuItem !== null) as MenuItem[]
 
   return (
@@ -51,8 +56,9 @@ const ActionsCell: React.FC<ActionsCellProps> = ({ id, menuItems }) => {
         {filteredMenuItems.map((menuItem, index) => (
           <MenuItem
             key={index}
-            onClick={menuItem.onClick}
-            sx={{ height: '30px', padding: '5px 10px', color: 'var(--black-color)' }}
+            onClick={handleMenuItemClick(menuItem.onClick)} // Call handleMenuItemClick with the specific onClick function
+            sx={{ height: '40px', padding: '20px 15px', color: 'var(--black-color)' }}
+            divider={index !== filteredMenuItems.length - 1}
           >
             {menuItem.text}
           </MenuItem>

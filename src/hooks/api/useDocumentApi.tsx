@@ -1,4 +1,4 @@
-import { ConfirmDocument, CreateDocument, UpdateDocument } from '~/global/interface'
+import { ConfirmDocument, CreateDocument, MoveDocument, UpdateDocument } from '~/global/interface'
 import useApi from './useApi'
 import React from 'react'
 
@@ -139,10 +139,37 @@ const useDocumentApi = () => {
     [callApi]
   )
 
+  const moveDocument = React.useCallback(
+    async (data: MoveDocument) => {
+      const endpoint = `/${rootEndpoint}/move`
+      try {
+        const response = await callApi('put', endpoint, {}, {}, data)
+        return response
+      } catch (error) {
+        console.log(error)
+      }
+    },
+    [callApi]
+  )
+
+  const getPossibleLocation = React.useCallback(
+    async (data: { numOfPages: number; departmentId: string }) => {
+      const endpoint = `/${rootEndpoint}/possible-location`
+      try {
+        const response = await callApi('post', endpoint, {}, {}, data)
+        return response
+      } catch (error) {
+        console.log(error)
+      }
+    },
+    [callApi]
+  )
+
   const getPendingDocuments = React.useCallback(
-    async (take: number, page: number, keyword?: string, folderId?: string) => {
+    async (take: number, page: number, keyword?: string, departmentId?: string, folderId?: string) => {
       let endpoint = `/${rootEndpoint}/pending?take=${take}&page=${page + 1}`
       if (keyword) endpoint += `&keyword=${keyword}`
+      if (departmentId) endpoint += `&departmentId=${departmentId}`
       if (folderId) endpoint += `&folderId=${folderId}`
       try {
         const response = await callApi('get', endpoint)
@@ -178,11 +205,24 @@ const useDocumentApi = () => {
   )
 
   const returnDocument = React.useCallback(
-    async (documentId: string | null) => {
+    async (documentId: string | null, note?: string | null) => {
       const endpoint = `/${rootEndpoint}/return/`
       try {
-        const response = await callApi('post', endpoint, {}, {}, { QRCode: documentId })
+        const response = await callApi('post', endpoint, {}, {}, { QRCode: documentId, note: note })
         return response
+      } catch (error) {
+        console.log(error)
+      }
+    },
+    [callApi]
+  )
+
+  const deletePendingDocument = React.useCallback(
+    async (documentId: string) => {
+      const endpoint = `/${rootEndpoint}/pending/${documentId}`
+      try {
+        const respone = await callApi('delete', endpoint)
+        return respone
       } catch (error) {
         console.log(error)
       }
@@ -197,13 +237,16 @@ const useDocumentApi = () => {
     findDocument,
     createDocument,
     updateDocument,
+    moveDocument,
+    getPossibleLocation,
     uploadDocumentPdf,
     confirmDocument,
     getPendingDocuments,
     getDocumentCount,
     checkReturnDocument,
     returnDocument,
-    getAllDocuments
+    getAllDocuments,
+    deletePendingDocument
   }
 }
 

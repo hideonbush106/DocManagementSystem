@@ -48,6 +48,7 @@ const SearchDocumentResult = ({ open, handleClose, items, loading }: Props) => {
                   fileId={item.id}
                   fileName={item.name}
                   id={item.id}
+                  status={item.status}
                   action
                   onClick={() => {
                     handleClose()

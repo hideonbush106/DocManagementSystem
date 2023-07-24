@@ -18,7 +18,7 @@ const Advanced = () => {
     { label: 'Locker', component: <LockerAdvanced />, icon: ViewModule },
     { label: 'Folder', component: <FolderAdvanced />, icon: Folder },
     { label: 'Category', component: <CategoryAdvanced />, icon: Category },
-    { label: 'Employee', component: <EmployeeAdvanced />, icon: PeopleAlt },
+    { label: 'Employee', component: <EmployeeAdvanced />, icon: PeopleAlt }
   ]
   return user?.role === Role.MANAGER ? (
     <>

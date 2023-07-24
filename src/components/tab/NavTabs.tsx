@@ -4,7 +4,6 @@ import Tabs from '@mui/material/Tabs'
 import Tab, { TabProps } from '@mui/material/Tab'
 import { SvgIconComponent } from '@mui/icons-material'
 import { useMediaQuery, useTheme } from '@mui/material'
-// import Notification from '../notification/Notification'
 
 interface LinkTabProps extends TabProps {
   label?: string

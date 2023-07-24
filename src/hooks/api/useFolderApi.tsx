@@ -6,7 +6,7 @@ const useFolderApi = () => {
   const callApi = useApi()
   const rootEndpoint = 'folders'
 
-  const getFolders = React.useCallback(
+  const getFolder = React.useCallback(
     async (folderId: string) => {
       const endpoint = `/${rootEndpoint}/${folderId}`
       try {
@@ -84,7 +84,7 @@ const useFolderApi = () => {
     [callApi]
   )
 
-  return { getFolders, deleteFolder, folderQRcode, getFoldersInLocker, createFolder, updateFolder }
+  return { getFolder, deleteFolder, folderQRcode, getFoldersInLocker, createFolder, updateFolder }
 }
 
 export default useFolderApi

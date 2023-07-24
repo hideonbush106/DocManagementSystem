@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-empty-function */
 /* eslint-disable react-hooks/exhaustive-deps */
 import {
   DashboardWrapper,
@@ -94,6 +95,7 @@ const Dashboard = () => {
         result = await getBorrowRequestsAll(
           undefined,
           undefined,
+          undefined,
           paginationBorrowRequests.pageSize,
           paginationBorrowRequests.page + 1
         )
@@ -137,6 +139,7 @@ const Dashboard = () => {
       setLoadingImportRequests(true)
       if (role === Role.MANAGER) {
         result = await getImportRequestsAll(
+          undefined,
           undefined,
           undefined,
           paginationImportRequests.pageSize,
@@ -265,6 +268,7 @@ const Dashboard = () => {
             </SubtitleWrapper>
             {role === Role.MANAGER ? (
               <ApprovalsTable
+                reFecthData={() => {}}
                 view={'dashboard'}
                 rows={pendingApproval}
                 rowCount={rowCountApproval}
@@ -290,7 +294,7 @@ const Dashboard = () => {
                 <Subtitle variant='h6'>Borrow Requests</Subtitle>
                 <TitleUnderline />
               </div>
-              <Link to='/request'>
+              <Link to='/request/borrow'>
                 <ViewButton text='View' />
               </Link>
             </SubtitleWrapper>

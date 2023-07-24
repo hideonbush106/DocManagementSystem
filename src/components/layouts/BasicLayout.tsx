@@ -1,14 +1,14 @@
 import { ReactNode, useRef } from 'react'
 
 // MUI
-import { Badge, Fab, Grid, Typography } from '@mui/material'
-import { NotificationsOutlined } from '@mui/icons-material'
+import { Fab, Grid, Typography } from '@mui/material'
 
 // Components
 import Sidebar from '~/components/sidebar/Sidebar'
 
 // Styles
 import { MainContainer, Wrapper } from './BasicLayout.styled'
+import Notification from '../notification/Notification'
 
 type Props = {
   children: ReactNode
@@ -17,7 +17,6 @@ type Props = {
 
 const BasicLayout = ({ children, title }: Props) => {
   const mainContainerRef = useRef<HTMLDivElement>(null)
-  const isnotification = false
 
   return (
     <Wrapper>
@@ -39,13 +38,7 @@ const BasicLayout = ({ children, title }: Props) => {
                 color: '#000'
               }}
             >
-              {!isnotification ? (
-                <NotificationsOutlined sx={{ margin: 0.5 }} />
-              ) : (
-                <Badge badgeContent color='error'>
-                  <NotificationsOutlined sx={{ margin: 0.5 }} />
-                </Badge>
-              )}
+              <Notification />
             </Fab>
           </Grid>
         </Grid>

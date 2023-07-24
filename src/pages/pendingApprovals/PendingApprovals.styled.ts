@@ -8,4 +8,12 @@ export const PendingApprovalsWrapper = styled.section`
 `
 export const HeaderWrapper = styled.div`
   width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+`
+
+export const FilterWrapper = styled(HeaderWrapper)`
+  align-items: flex-start;
+  flex-wrap: wrap;
 `

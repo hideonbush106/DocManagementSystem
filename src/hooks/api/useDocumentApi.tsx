@@ -140,9 +140,10 @@ const useDocumentApi = () => {
   )
 
   const getPendingDocuments = React.useCallback(
-    async (take: number, page: number, keyword?: string, folderId?: string) => {
+    async (take: number, page: number, keyword?: string, departmentId?: string, folderId?: string) => {
       let endpoint = `/${rootEndpoint}/pending?take=${take}&page=${page + 1}`
       if (keyword) endpoint += `&keyword=${keyword}`
+      if (departmentId) endpoint += `&departmentId=${departmentId}`
       if (folderId) endpoint += `&folderId=${folderId}`
       try {
         const response = await callApi('get', endpoint)
@@ -178,11 +179,24 @@ const useDocumentApi = () => {
   )
 
   const returnDocument = React.useCallback(
-    async (documentId: string | null) => {
+    async (documentId: string | null, note?: string | null) => {
       const endpoint = `/${rootEndpoint}/return/`
       try {
-        const response = await callApi('post', endpoint, {}, {}, { QRCode: documentId })
+        const response = await callApi('post', endpoint, {}, {}, { QRCode: documentId, note: note })
         return response
+      } catch (error) {
+        console.log(error)
+      }
+    },
+    [callApi]
+  )
+
+  const deletePendingDocument = React.useCallback(
+    async (documentId: string) => {
+      const endpoint = `/${rootEndpoint}/pending/${documentId}`
+      try {
+        const respone = await callApi('delete', endpoint)
+        return respone
       } catch (error) {
         console.log(error)
       }
@@ -203,7 +217,8 @@ const useDocumentApi = () => {
     getDocumentCount,
     checkReturnDocument,
     returnDocument,
-    getAllDocuments
+    getAllDocuments,
+    deletePendingDocument
   }
 }
 

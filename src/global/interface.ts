@@ -25,6 +25,7 @@ export interface Folder {
   name: string
   capacity: number
   locker?: Locker
+  current?: number
 }
 
 export interface File {
@@ -206,6 +207,10 @@ export interface DocumentDetail {
   category: {
     id: string
     name: string
+  }
+  borrowedBy: {
+    firstName: string
+    lastName: string
   }
 }
 

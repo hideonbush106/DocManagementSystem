@@ -10,7 +10,6 @@ interface Props {
 
 const PrivateRoute = ({ Component }: Props) => {
   const { user } = useAuth()
-  console.log('user', user)
 
   const route = privateRoutes.find((r) => r.component === Component)
   const title = route ? route.title : ''

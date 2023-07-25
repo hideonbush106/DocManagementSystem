@@ -23,7 +23,7 @@ const DocumentCardList = (props: Props) => {
   useEffect(() => {
     if (props.itemId) {
       const itemIndex = items.findIndex((item) => item.id === props.itemId)
-      if (itemIndex !== -1) setPage(Math.ceil(itemIndex + 1 / ITEMS_PER_PAGE))
+      if (itemIndex !== -1) setPage(Math.ceil((itemIndex + 1) / ITEMS_PER_PAGE))
     }
   }, [props.itemId, items])
 

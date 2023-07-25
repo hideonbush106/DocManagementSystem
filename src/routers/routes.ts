@@ -12,6 +12,8 @@ import Room from '~/pages/document/room/Room'
 import Locker from '~/pages/document/locker/Locker'
 import Folder from '~/pages/document/folder/Folder'
 import File from '~/pages/document/file/File'
+import ImportRequest from '~/pages/requests/importRequest/ImportRequest'
+import BorrowRequest from '~/pages/requests/borrowRequest/BorrowRequest'
 
 export const publicRoutes = [{ path: '/', component: Login }]
 
@@ -35,7 +37,16 @@ export const privateRoutes = [
       }
     ]
   },
-  { path: '/request', component: Requests, title: 'Requests' },
+  {
+    path: '/request',
+    component: Requests,
+    title: 'Requests',
+    children: [
+      { path: '/request', component: ImportRequest, index: false },
+      { path: '/request/import', component: ImportRequest, index: false },
+      { path: '/request/borrow', component: BorrowRequest, index: false }
+    ]
+  },
   { path: '/pending-approval', component: PendingApprovals, title: 'Pending Approvals' },
   { path: '/statistic', component: Statistic, title: 'Statistics', layout: 'main' },
   { path: '/advanced', component: Advanced, title: 'Advanced' }

@@ -39,8 +39,16 @@ const UpdateDocumentModal = (props: UpdateDocumentProps) => {
   const { updateDocument, uploadDocumentPdf } = useDocumentApi()
 
   const validationSchema = yup.object({
-    name: yup.string().trim().required('Document name is required'),
-    description: yup.string().trim().required('Description is required'),
+    name: yup
+      .string()
+      .max(50, "Document name can't has more than 50 characters.")
+      .trim()
+      .required('Document name is required'),
+    description: yup
+      .string()
+      .max(100, "Description can't has more than 100 characters.")
+      .trim()
+      .required('Description is required'),
     category: yup.object({
       id: yup.string()
     })
@@ -85,7 +93,8 @@ const UpdateDocumentModal = (props: UpdateDocumentProps) => {
   const unchanged =
     formik.values.name.trim() === document?.name &&
     formik.values.description.trim() === document?.description &&
-    formik.values.category.id === document?.category?.id
+    formik.values.category.id === document?.category?.id &&
+    files.length === 0
 
   return (
     <ModalLayout open={open} handleClose={handleClose}>
@@ -253,6 +262,7 @@ const UpdateDocumentModal = (props: UpdateDocumentProps) => {
                 value={files}
                 onChange={setFiles}
                 maxFiles={1}
+                maxSize={1024 * 1024 * 8}
                 accept='application/pdf'
                 title={`Drag 'n' drop some files here, or click to select files`}
               />

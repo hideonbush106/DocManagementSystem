@@ -17,5 +17,5 @@ export enum RequestStatus {
 
 export enum Role {
   MANAGER = 'MANAGER',
-  EMPLOYEE = 'EMPLOYEE',
+  EMPLOYEE = 'EMPLOYEE'
 }

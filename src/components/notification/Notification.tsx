@@ -16,6 +16,29 @@ const Notification = () => {
         fetchNotifications: true,
         fetchUserPreferences: true
       }}
+      styles={{
+        footer: {
+          root: { display: 'none' }
+        },
+        loader: {
+          root: { height: 'calc(100vh - 320px)' }
+        },
+        layout: {
+          root: {
+            marginTop: '20px',
+            '.css-2jvpeg': { minHeight: 'fit-content' },
+            boxShadow: '2px 2px 30px 5px rgba(0,0,0,0.2)'
+          }
+        },
+        notifications: {
+          root: {
+            '.infinite-scroll-component': { height: 'calc(100vh - 320px) !important' }
+          },
+          listItem: {
+            unread: { fontWeight: '600', color: 'black', fontSize: '14px' }
+          }
+        }
+      }}
     >
       <PopoverNotificationCenter onNotificationClick={onNotificationClick} colorScheme='light'>
         {({ unseenCount }) => <NotificationBell unseenCount={unseenCount} />}

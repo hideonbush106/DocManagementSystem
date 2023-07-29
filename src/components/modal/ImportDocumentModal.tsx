@@ -78,10 +78,10 @@ const ImportDocumentModal = (props: ImportDocumentModalProps) => {
   })
 
   const validationSchema = yup.object({
-    name: yup.string().trim().max(50, 'Input should not exceed 50 characters').required('Document name is required'),
+    name: yup.string().trim().max(100, 'Input should not exceed 100 characters').required('Document name is required'),
     description: yup
       .string()
-      .max(100, 'Input should not exceed 100 characters')
+      .max(500, 'Input should not exceed 500 characters')
       .trim()
       .required('Document description is required'),
     numOfPages: yup

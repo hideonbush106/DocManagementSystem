@@ -222,14 +222,26 @@ const ImportRequestManager = () => {
           <WrapperDiv>
             <FilterByEmployee
               selectedEmployee={selectedEmployee}
-              onChange={handleEmployeeChange}
-              onClearFilter={handleClearEmployeeFilter}
+              onChange={(event) => {
+                handleEmployeeChange(event)
+                setPage(1)
+              }}
+              onClearFilter={() => {
+                handleClearEmployeeFilter()
+                setPage(1)
+              }}
             />
             <div style={{ display: 'flex', alignItems: 'center' }}>
               <FilterRequest
                 selectedStatus={selectedStatus}
-                onChange={handleStatusChange}
-                onClearFilter={handleClearStatusFilter}
+                onChange={(event) => {
+                  handleStatusChange(event)
+                  setPage(1)
+                }}
+                onClearFilter={() => {
+                  handleClearStatusFilter()
+                  setPage(1)
+                }}
               />
               <QrCodeScannerIcon
                 sx={{ marginLeft: '20px', color: 'var(--primary-dark-color)' }}

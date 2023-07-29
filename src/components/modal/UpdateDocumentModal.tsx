@@ -196,7 +196,7 @@ const UpdateDocumentModal = (props: UpdateDocumentProps) => {
                 }
               }}
               select
-              label='Category Type'
+              label='Category'
               variant='standard'
               name='category.id'
               disabled={categories.length === 0}

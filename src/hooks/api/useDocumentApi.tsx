@@ -1,4 +1,4 @@
-import { ConfirmDocument, CreateDocument, UpdateDocument } from '~/global/interface'
+import { ConfirmDocument, CreateDocument, MoveDocument, UpdateDocument } from '~/global/interface'
 import useApi from './useApi'
 import React from 'react'
 
@@ -139,6 +139,32 @@ const useDocumentApi = () => {
     [callApi]
   )
 
+  const moveDocument = React.useCallback(
+    async (data: MoveDocument) => {
+      const endpoint = `/${rootEndpoint}/move`
+      try {
+        const response = await callApi('put', endpoint, {}, {}, data)
+        return response
+      } catch (error) {
+        console.log(error)
+      }
+    },
+    [callApi]
+  )
+
+  const getPossibleLocation = React.useCallback(
+    async (data: { numOfPages: number; departmentId: string }) => {
+      const endpoint = `/${rootEndpoint}/possible-location`
+      try {
+        const response = await callApi('post', endpoint, {}, {}, data)
+        return response
+      } catch (error) {
+        console.log(error)
+      }
+    },
+    [callApi]
+  )
+
   const getPendingDocuments = React.useCallback(
     async (take: number, page: number, keyword?: string, departmentId?: string, folderId?: string) => {
       let endpoint = `/${rootEndpoint}/pending?take=${take}&page=${page + 1}`
@@ -211,6 +237,8 @@ const useDocumentApi = () => {
     findDocument,
     createDocument,
     updateDocument,
+    moveDocument,
+    getPossibleLocation,
     uploadDocumentPdf,
     confirmDocument,
     getPendingDocuments,

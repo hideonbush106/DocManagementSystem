@@ -79,18 +79,17 @@ const FileCard: React.FC<Props> = (props: Props) => {
     }
   ]
 
-  if (status === DocumentStatus.AVAILABLE) {
-    actions.push({
-      text: 'Move',
-      onClick: () => handleOpenMoveModal()
-    })
-  }
-
   if (role === Role.MANAGER) {
     actions.push({
       text: 'Edit',
       onClick: () => handleOpenUpdateModal()
     })
+    if (status === DocumentStatus.AVAILABLE) {
+      actions.push({
+        text: 'Move',
+        onClick: () => handleOpenMoveModal()
+      })
+    }
   } else {
     actions.push({
       text: 'Borrow',

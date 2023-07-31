@@ -496,6 +496,6 @@ export const mockRequest: mockRequestProps[] = [
     title: 'Import labor contract 2023',
     timeRequest: new Date(),
     detail: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, voluptatum.',
-    status: 'pending'
+    status: 'rejected'
   }
 ]
